@@ -28,6 +28,7 @@ Usage (live, in GitHub Actions — paced, CargoExport endpoint):
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import os
 import re
@@ -115,11 +116,51 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--picks", default=os.path.join(ROOT, "docs", "data", "picks.json"))
     ap.add_argument("--standings", default="", help="JSON snapshot (list of Standings rows)")
+    ap.add_argument("--schedule", default="", help="MatchSchedule snapshot (name bridge)")
     ap.add_argument("--fetch", action="store_true", help="fetch from Leaguepedia CargoExport")
     ap.add_argument("--out", default=os.path.join(ROOT, "verification", "standings_line.json"))
     ap.add_argument("--all-rows", action="store_true",
                     help="score every row, not only UNRESOLVED/MODEL_ELO")
     args = ap.parse_args()
+
+    def load_rows(path):
+        data = json.load(open(path, encoding="utf-8"))
+        if isinstance(data, dict):
+            data = data.get("cargoquery") or data.get("rows") or []
+        return [r.get("title", r) if isinstance(r, dict) else r for r in data]
+
+    schedule_by_page: dict[str, list[tuple[str, str]]] = {}
+    if args.schedule and os.path.exists(args.schedule):
+        for r in load_rows(args.schedule):
+            if not isinstance(r, dict):
+                continue
+            pg = str(r.get("OverviewPage") or "")
+            t1 = str(r.get("Team1") or "")
+            t2 = str(r.get("Team2") or "")
+            if pg and t1 and t2:
+                schedule_by_page.setdefault(pg, []).append((t1, t2))
+
+    def name_score(ours: str, theirs: str) -> int:
+        a, b = norm(ours), norm(theirs)
+        if not a or not b:
+            return 0
+        if a == b:
+            return 3
+        if a in b or b in a:
+            return 2
+        return 1 if difflib.SequenceMatcher(None, a, b).ratio() >= 0.8 else 0
+
+    def resolve_pair(page: str, team: str, other: str):
+        """Bridge Hotspawn -> Leaguepedia names using the fixture pair on the same page."""
+        best, best_score = None, 0
+        for t1, t2 in schedule_by_page.get(page, []):
+            for cand, opp in ((t1, t2), (t2, t1)):
+                if name_score(other, opp) < 2:
+                    continue
+                sc = name_score(team, cand) + name_score(other, opp)
+                if sc > best_score:
+                    best, best_score = cand, sc
+        return (best, "schedule") if best_score >= 4 else (None, "missing")
 
     picks = json.load(open(args.picks, encoding="utf-8"))
     rows = picks.get("matches", [])
@@ -136,14 +177,14 @@ def main() -> int:
         print("need --fetch or --standings <snapshot>", file=sys.stderr)
         return 2
 
-    by_page: dict[str, dict[str, dict]] = {}
+    by_page: dict[str, dict[str, list[dict]]] = {}
     for r in standings:
         if not isinstance(r, dict):
             continue
         page = str(r.get("OverviewPage") or "")
         team = str(r.get("Team") or "")
         if page and team:
-            by_page.setdefault(page, {})[norm(team)] = r
+            by_page.setdefault(page, {}).setdefault(norm(team), []).append(r)
 
     out, moved = [], 0
     for m in rows:
@@ -159,13 +200,44 @@ def main() -> int:
             out.append(rec)
             continue
         t = by_page[page]
-        r1, r2 = t.get(norm(m["team1"])), t.get(norm(m["team2"]))
+
+        def pick(team):
+            """Resolve a Hotspawn name to one standings row; detect division ambiguity."""
+            recs = t.get(norm(team)) or []
+            if not recs:  # fuzzy fallback (same page), needs a close match
+                close = difflib.get_close_matches(norm(team), list(t), n=1, cutoff=0.86)
+                recs = t[close[0]] if close else []
+            if not recs:
+                return None, "missing"
+            signatures = {(num(x.get("WinSeries")), num(x.get("LossSeries")),
+                           num(x.get("WinGames")), num(x.get("LossGames"))) for x in recs}
+            if len(signatures) > 1:
+                return None, "ambiguous"   # same team name in two divisions with different records
+            return recs[0], "ok"
+
+        r1, why1 = pick(m["team1"])
+        r2, why2 = pick(m["team2"])
+        bridged = [None, None]
+        if why1 == "missing" and schedule_by_page:
+            nm, how = resolve_pair(page, m["team1"], m["team2"])
+            if nm:
+                rec1, _why = pick(nm)
+                r1, why1, bridged[0] = rec1, "bridged", nm
+        if why2 == "missing" and schedule_by_page:
+            nm, how = resolve_pair(page, m["team2"], m["team1"])
+            if nm:
+                rec2, _why = pick(nm)
+                r2, why2, bridged[1] = rec2, "bridged", nm
         wr1, n1, kind1 = rate(r1) if r1 else (None, 0, "none")
         wr2, n2, kind2 = rate(r2) if r2 else (None, 0, "none")
+        if why1 == "ambiguous" or why2 == "ambiguous":
+            rec.update({"status": "AMBIGUOUS_DIVISION", "prob_team1": 0.5, "prob_team2": 0.5,
+                        "why": [why1, why2]})
+            out.append(rec)
+            continue
         if wr1 is None or wr2 is None:
-            rec.update({"status": "TEAM_NOT_IN_STANDINGS", "prob_team1": 0.5,
-                        "prob_team2": 0.5,
-                        "teams_found": [bool(r1), bool(r2)]})
+            rec.update({"status": "NO_RECORD", "prob_team1": 0.5, "prob_team2": 0.5,
+                        "why": [why1, why2]})
             out.append(rec)
             continue
         p = wr1 / (wr1 + wr2)
@@ -177,6 +249,7 @@ def main() -> int:
         ws2 = f"{int(num(r2.get('WinSeries')))}-{int(num(r2.get('LossSeries')))}"
         rec.update({
             "status": "SCORED", "prob_team1": p, "prob_team2": round(1 - p, 4),
+            "names_used": [bridged[0] or m["team1"], bridged[1] or m["team2"]],
             "confidence": conf, "basis": kind1,
             "records": [ws1, ws2], "decided": [n1, n2],
             "evidence": (f"Leaguepedia standings ({page}): {m['team1']} {ws1} vs "
@@ -190,7 +263,8 @@ def main() -> int:
         "rows_scored": sum(1 for r in out if r.get("status") == "SCORED"),
         "rows_moved_off_50_50": moved,
         "rows_no_page": sum(1 for r in out if r.get("status") == "NO_STANDINGS_PAGE"),
-        "rows_team_missing": sum(1 for r in out if r.get("status") == "TEAM_NOT_IN_STANDINGS"),
+        "rows_no_record": sum(1 for r in out if r.get("status") == "NO_RECORD"),
+        "rows_ambiguous": sum(1 for r in out if r.get("status") == "AMBIGUOUS_DIVISION"),
         "scored": len(out),
     }
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
