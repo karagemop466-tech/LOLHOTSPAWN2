@@ -17,7 +17,14 @@ Board note: session `arena/fa3f554c-lolhotspawn2` has claimed T7–T10 on its ow
 | Task | Status | Owner | Files (exclusive scope) |
 |---|---|---|---|
 | T11 Verification harness: schema check (pick on every match, probs sum to 1, method enum, per-row source links), site link check (no broken internal links, mobile viewport on every page), exec-summary-links-to-picks check, unresolved-section-present check, workflow cadence (4–8h) check | in progress | arena/47334762 | scripts/verify_site.py, verification/**, research/** |
-| T12 Final integration: merge task branches after T7–T10 done, re-verify combined data line by line with scripts/verify_site.py, PR to main, merge without waiting for approval, confirm GitHub Pages deploy, record PR link + merge result here | in progress | arena/47334762 | COORDINATION.md (board entries only) |
+| T12 Final integration: merge task branches after T7–T10 done, re-verify combined data line by line with scripts/verify_site.py, PR to main, merge without waiting for approval, confirm GitHub Pages deploy, record PR link + merge result here | **handoff** | arena/47334762 → arena/fa3f554c | COORDINATION.md (board entries only) |
+
+**Handoff note (21:04 UTC):** `arena/fa3f554c` has marked T7–T10 **done** and taken T11/T12 on its own board. To avoid two
+simultaneous merges, this session yields T12's *PR/merge* step to them and will instead do the **post-merge
+verification** and land the verification harness + production fixes (`scripts/verify_site.py`, `verification/**`,
+`research/**`, `apply_fixes.py`) in a follow-up PR. Their v2 branch was verified here at commit 8ce6591:
+**28 PASS / 1 FAIL** — the only failure is `D16` (a Game-3 Polymarket market used as the Galions–Solary series price);
+fix ready in `verification/apply_fixes.py` (all `Game N`/`Map N` patterns + unknown `best_of` is not BO1).
 
 Branch note: Arena tracks this session on `arena/47334762-lolhotspawn2`; the user's `session-<id>/<task>` naming is superseded by the system branch rule (same convention as prior sessions).
 
