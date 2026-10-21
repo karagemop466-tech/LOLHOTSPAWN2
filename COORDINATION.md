@@ -24,10 +24,27 @@ Known gaps handed to the next session: lobby parser captured 195 of the 264 LoL 
 | T8 Live source probe: bookmakers, prediction markets, community/result sources | done | arena/fa3f554c | scripts/diag_lab*.py, data/diag/** |
 | T9 Own-line model v2 (league-anchored Elo + market consensus + aliases) | done | arena/fa3f554c | scripts/model.py, data/aliases.json |
 | T10 Mobile-first site rebuild (6 pages, exec summary, tables, unresolved, flagged, methodology) | done | arena/fa3f554c | docs/** |
-| T11 Verification: link/schema/coverage checks in CI, DOM smoke test, Pages deploy confirmation | in progress | arena/fa3f554c | scripts/update_picks.py, .github/workflows/*.yml |
-| T12 PR to main, merge, Pages deploy confirmation | pending | arena/fa3f554c | COORDINATION.md |
+| T11 Verification: link/schema/coverage checks in CI, DOM smoke test, Pages deploy confirmation | done | arena/fa3f554c | scripts/verify_site.py, .github/workflows/*.yml |
+| T12 PR to main, merge, Pages deploy confirmation | done | arena/fa3f554c | COORDINATION.md |
 
 **Session file scope:** `scripts/**`, `.github/workflows/**`, `docs/**`, `data/**`, `COORDINATION.md`, `README.md`. No other session is active; if another session claims a task, it must not edit these paths without logging a request here.
+
+## Verification results (session `arena/fa3f554c`)
+
+| Check | Result | Evidence |
+|---|---|---|
+| Live pipeline on branch | success, 208 fixtures / 208 picks / 9 external market / 0 unresolved | Actions run 39675446733, `data/diag/pipeline.log` |
+| Payload + site verification | 0 errors, 0 warnings (schema v3, links, probabilities, page checks) | `data/diag/verify.json`, `scripts/verify_site.py` |
+| DOM smoke test of all six pages | summary 14 cards, picks 208 rows, unresolved 111 cards, flagged 236 rows, methodology 20 rows, match detail rendered | local jsdom run against `docs/data/picks.json` |
+| PR #5 (v2 pipeline + site) | **merged** (merge commit `2193f87`) | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/5 |
+| PR #6 (low-confidence wording + reason breakdown) | **merged** (merge commit `37248e3`) | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/6 |
+| Production 6h refresh on main | success, commit `15387d1`, Pages build success | Actions run 39676373846 |
+| Pages deployment | success, live at https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ | `pages build and deployment` run 39676527908 |
+| Live page content | summary, picks and match pages render with data and source links | manual fetch of the deployed URLs |
+| Attempted Pages source switch to `/docs` | **HTTP 403 `Resource not accessible by integration`** — canonical site path stays `/docs/`; a root `index.html` redirects there | `PUT /repos/.../pages` response |
+
+Out-of-sample model check published on the methodology page: 30-day window, 658 matches,
+log-loss **0.6266** vs 0.6931 coin-flip baseline, Brier **0.2183** vs 0.25, accuracy **64.4%**.
 
 ## Sources & verification log
 
