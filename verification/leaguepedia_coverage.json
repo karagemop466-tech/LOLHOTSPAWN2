@@ -1,0 +1,3604 @@
+{
+ "summary": {
+  "checked_at": "2026-10-21T21:08:25.646064+00:00",
+  "schedule_rows": 2199,
+  "schedule_pages": [
+   "4 Nations/2024 Season/Autumn Playoffs",
+   "4 Nations/2024 Season/Autumn Season",
+   "4 Nations/2024 Season/Spring Playoffs",
+   "4 Nations/2024 Season/Spring Season",
+   "4 Nations/2024 Season/Sunshine Showdown",
+   "4 Nations/2025 Season/Spring Playoffs",
+   "4 Nations/2025 Season/Spring Split",
+   "4 Nations/2025 Season/Summer Playoffs",
+   "4 Nations/2025 Season/Summer Split",
+   "4 Nations/2025 Season/Winter Playoffs",
+   "4 Nations/2025 Season/Winter Split",
+   "4 Nations/2026 Season/Halloween Heist",
+   "4 Nations/2026 Season/Spring Playoffs",
+   "4 Nations/2026 Season/Spring Split",
+   "4 Nations/2026 Season/Summer Playoffs",
+   "4 Nations/2026 Season/Summer Split",
+   "Komplettligaen/2026 Season/Autumn Split",
+   "Komplettligaen/2026 Season/Spring Playoffs",
+   "Komplettligaen/2026 Season/Spring Split",
+   "Prime League 2nd Division/2025 Season/Season Finals",
+   "Prime League 2nd Division/2025 Season/Spring Playoffs",
+   "Prime League 2nd Division/2025 Season/Spring Relegation",
+   "Prime League 2nd Division/2025 Season/Summer Playoffs",
+   "Prime League 2nd Division/2025 Season/Summer Relegation",
+   "Prime League 2nd Division/2025 Season/Summer Split",
+   "Prime League 2nd Division/2026 Season/Fall Playoffs",
+   "Prime League 2nd Division/2026 Season/Fall Relegation",
+   "Prime League 2nd Division/2026 Season/Fall Split",
+   "Prime League 2nd Division/2026 Season/Season Finals",
+   "Prime League 2nd Division/2026 Season/Spring Playoffs",
+   "Prime League 2nd Division/2026 Season/Spring Relegation",
+   "Prime League 2nd Division/2026 Season/Spring Split",
+   "Prime League 2nd Division/2026 Season/Winter Playoffs",
+   "Prime League 2nd Division/2026 Season/Winter Relegation",
+   "Prime League 2nd Division/2026 Season/Winter Split",
+   "Prime League 2nd Division/2027 Season/Fall Split",
+   "Prime League 3rd Division/2025 Season/Summer Split",
+   "Prime League 3rd Division/2026 Season/Fall Split",
+   "Prime League 3rd Division/2026 Season/Spring Split",
+   "Prime League 3rd Division/2026 Season/Winter Split",
+   "Prime League 3rd Division/2027 Season/Fall Split",
+   "RIVALS LEAGUE/2026 Season/Season 1",
+   "RIVALS LEAGUE/2026 Season/Season 2",
+   "RIVALS LEAGUE/2026 Season/Season 2 Playoffs",
+   "Tunisian Super League Female/2024 Season",
+   "Tunisian Super League/2023 Season",
+   "Tunisian Super League/2024 Season",
+   "Tunisian Super League/2025 Season",
+   "Tunisian Super League/2026 Season"
+  ],
+  "matches": 199,
+  "unresolved": 0,
+  "audited_rows": 199,
+  "matched_fixture": 153,
+  "league_page_only": 26,
+  "claimed_page": 15,
+  "no_source": 5,
+  "by_tournament": {
+   "Komplettligaen 2026 Autumn": {
+    "rows": 6,
+    "fixture": 4,
+    "page": 2,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split"
+   },
+   "RIVALS LEAGUE Season 2": {
+    "rows": 21,
+    "fixture": 21,
+    "page": 0,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2"
+   },
+   "PRM 3rd Division 26-27 Fall": {
+    "rows": 63,
+    "fixture": 57,
+    "page": 6,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split"
+   },
+   "4 Nations 2026 Halloween Heist": {
+    "rows": 18,
+    "fixture": 15,
+    "page": 3,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist"
+   },
+   "Arabian League 2nd Division 2026 Summer": {
+    "rows": 13,
+    "fixture": 0,
+    "page": 9,
+    "none": 4,
+    "url": null
+   },
+   "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": {
+    "rows": 1,
+    "fixture": 0,
+    "page": 1,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/Arabian_Regional_Championship_2026/Qualifiers/LB-Li-SY-PS"
+   },
+   "PRM 2nd Division 26-27 Fall": {
+    "rows": 46,
+    "fixture": 31,
+    "page": 15,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split"
+   },
+   "LigaGG CELOL B 2026 Split 2 Playoffs": {
+    "rows": 4,
+    "fixture": 0,
+    "page": 3,
+    "none": 1,
+    "url": "https://lol.fandom.com/wiki/LigaGG/CELOL_Série_B/2026_Season/Split_2_Playoffs"
+   },
+   "Tunisian Super League 2026": {
+    "rows": 25,
+    "fixture": 25,
+    "page": 0,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season"
+   },
+   "LGC Rising 2026 Playoffs": {
+    "rows": 1,
+    "fixture": 0,
+    "page": 1,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/LoL_Game_Changers/2026_Season/Playoffs"
+   },
+   "LCP 2027 Promotion": {
+    "rows": 1,
+    "fixture": 0,
+    "page": 1,
+    "none": 0,
+    "url": "https://lol.fandom.com/wiki/LCP/2027_Season/Promotion"
+   }
+  }
+ },
+ "rows": [
+  {
+   "team1": "Ascent Gaming",
+   "team2": "NTNUI Kometkameratene",
+   "tournament": "Komplettligaen 2026 Autumn",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T15:00:00Z",
+   "leaguepedia_page": "Komplettligaen/2026 Season/Autumn Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Ascent Gaming",
+    "t2": "NTNUI Kometkameratene",
+    "page": "Komplettligaen/2026 Season/Autumn Split",
+    "start": "2026-10-22 15:00:00",
+    "bestof": 3,
+    "tab": "Round 11"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Solid Gaming",
+   "team2": "DMG Esports Norway",
+   "tournament": "Komplettligaen 2026 Autumn",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T15:00:00Z",
+   "leaguepedia_page": "Komplettligaen/2026 Season/Autumn Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Solid Gaming",
+    "t2": "DMG Esports Norway",
+    "page": "Komplettligaen/2026 Season/Autumn Split",
+    "start": "2026-10-22 15:00:00",
+    "bestof": 3,
+    "tab": "Round 11"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Volda E-Sport",
+   "team2": "CNG Royal",
+   "tournament": "Komplettligaen 2026 Autumn",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T15:00:00Z",
+   "leaguepedia_page": "Komplettligaen/2026 Season/Autumn Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Volda E-Sport",
+    "t2": "CNG Royal",
+    "page": "Komplettligaen/2026 Season/Autumn Split",
+    "start": "2026-10-22 15:00:00",
+    "bestof": 3,
+    "tab": "Round 11"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Your Saviours",
+   "team2": "Mixlag fra Trondheim",
+   "tournament": "Komplettligaen 2026 Autumn",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T15:00:00Z",
+   "leaguepedia_page": "Komplettligaen/2026 Season/Autumn Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Your Saviours",
+    "t2": "Mixlag fra Trondheim",
+    "page": "Komplettligaen/2026 Season/Autumn Split",
+    "start": "2026-10-22 15:00:00",
+    "bestof": 3,
+    "tab": "Round 11"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Turbo Gaming",
+   "team2": "Fritt Fall",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Turbo Gaming",
+    "t2": "Fritt Fall",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-22 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "BlackDivision",
+   "team2": "Babos Gaming Academy",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-22T17:30:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "BlackDivision",
+    "t2": "Babos Gaming Academy",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-22 17:30:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Absolved",
+   "team2": "The Bandits UK",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Absolved",
+    "t2": "The Bandits UK",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 18:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Brod n Friends",
+   "team2": "Crownless",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Brod n Friends",
+    "t2": "Crownless",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 18:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Good Chi",
+   "team2": "Inari Esports",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "HL Tauri Esports",
+   "team2": "Bulldog Esports",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "HL Tauri Esports",
+    "t2": "Bulldog Esports",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 18:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Rich Gang UK",
+   "team2": "Abyssal Randoms",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Rich Gang UK",
+    "t2": "Abyssal Randoms",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 18:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team Vertex",
+   "team2": "Glorp Cat",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team Vertex",
+    "t2": "Glorp Cat",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 18:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Pegasus Esports",
+   "team2": "Victorious Demons",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "NO_SOURCE"
+  },
+  {
+   "team1": "Team VDS",
+   "team2": "Pegasus Esports",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T18:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Playwell Rød Q",
+   "team2": "Rich Gang",
+   "tournament": "Komplettligaen 2026 Autumn",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T18:30:00Z",
+   "leaguepedia_page": "Komplettligaen/2026 Season/Autumn Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Abyssal Randoms",
+   "team2": "Good Chi",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T19:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Abyssal Randoms",
+    "t2": "Good Chi",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 19:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Bulldog Esports",
+   "team2": "Ruddy Ultras",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T19:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Bulldog Esports",
+    "t2": "Ruddy Ultras",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 19:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Crownless",
+   "team2": "Team Vertex",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T19:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Crownless",
+    "t2": "Team Vertex",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 19:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Glorp Cat",
+   "team2": "Brod n Friends",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T19:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Glorp Cat",
+    "t2": "Brod n Friends",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 19:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Inari Esports",
+   "team2": "Rich Gang UK",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T19:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "The Bandits UK",
+   "team2": "PNS",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T19:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "The Bandits UK",
+    "t2": "PNS",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 19:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Abyssal Randoms",
+   "team2": "Inari Esports",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T20:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Glorp Cat",
+   "team2": "Crownless",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T20:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Glorp Cat",
+    "t2": "Crownless",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 20:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Good Chi",
+   "team2": "Rich Gang UK",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-22T20:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Good Chi",
+    "t2": "Rich Gang UK",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 20:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "PNS",
+   "team2": "Absolved",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T20:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "PNS",
+    "t2": "Absolved",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 20:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Ruddy Ultras",
+   "team2": "HL Tauri Esports",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T20:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Ruddy Ultras",
+    "t2": "HL Tauri Esports",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 20:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team Vertex",
+   "team2": "Brod n Friends",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-22T20:00:00Z",
+   "leaguepedia_page": "4 Nations/2026 Season/Halloween Heist",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team Vertex",
+    "t2": "Brod n Friends",
+    "page": "4 Nations/2026 Season/Halloween Heist",
+    "start": "2026-10-22 20:00:00",
+    "bestof": 1,
+    "tab": "Day 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Rich Gang",
+   "team2": "Phenti",
+   "tournament": "Komplettligaen 2026 Autumn",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-23T15:00:00Z",
+   "leaguepedia_page": "Komplettligaen/2026 Season/Autumn Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Levelers",
+   "team2": "MTN ESPORTS TEAM",
+   "tournament": "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-23T16:00:00Z",
+   "leaguepedia_page": "Arabian Regional Championship 2026/Qualifiers/LB-Li-SY-PS",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_Regional_Championship_2026/Qualifiers/LB-Li-SY-PS",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Locked IN",
+   "team2": "The Bandits Prime",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-23T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Phong Vũ Buffalo",
+   "team2": "404 Multigaming e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-23T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Reveal Multigaming",
+   "team2": "Hannover Esports e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-23T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Hannover Esports e.V.",
+    "t2": "Reveal Multigaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-23 16:00:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "NextGeneration Esports",
+   "team2": "Pegasus Esports",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-23T18:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Team VDS",
+   "team2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-23T18:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Victorious Demons",
+   "team2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-23T18:00:00Z",
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "NO_SOURCE"
+  },
+  {
+   "team1": "AceGaming",
+   "team2": "Babos Gaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-23T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AceGaming",
+    "t2": "Babos Gaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-23 18:30:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Reveal Multigaming",
+   "team2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-23T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "reGOLD eSport",
+   "team2": "Team 300",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-23T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "reGOLD eSport",
+    "t2": "Team 300",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-23 18:30:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Berlin 5",
+   "team2": "AceGaming Hearts",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-24T14:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Berlin 5",
+    "t2": "AceGaming Hearts",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-24 14:00:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "BaronX",
+   "team2": "Marere Academy",
+   "tournament": "LigaGG CELOL B 2026 Split 2 Playoffs",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-24T15:00:00Z",
+   "leaguepedia_page": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/LigaGG/CELOL_Série_B/2026_Season/Split_2_Playoffs",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Final Level eSports Academy",
+   "team2": "Infinity Gaming",
+   "tournament": "LigaGG CELOL B 2026 Split 2 Playoffs",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-24T15:00:00Z",
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "NO_SOURCE"
+  },
+  {
+   "team1": "JSK Esports",
+   "team2": "El Menzah Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "JSK Esports",
+    "t2": "El Menzah Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-24 16:00:00",
+    "bestof": 1,
+    "tab": "Day 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Jendouba Esports",
+   "team2": "Enfida Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Jendouba Esports",
+    "t2": "Enfida Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-24 16:00:00",
+    "bestof": 1,
+    "tab": "Day 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Olympique Mnihla",
+   "team2": "Supreme Leaders",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Olympique Mnihla",
+    "t2": "Supreme Leaders",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-24 16:00:00",
+    "bestof": 1,
+    "tab": "Day 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Simplicity Gaming",
+   "team2": "JSK Academy",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Simplicity Gaming",
+    "t2": "JSK Academy",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-24 16:00:00",
+    "bestof": 1,
+    "tab": "Day 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Zahrouni Esports",
+   "team2": "Olympique Mnihla Academy",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Zahrouni Esports",
+    "t2": "Olympique Mnihla Academy",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-24 16:00:00",
+    "bestof": 1,
+    "tab": "Day 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "2 Massive",
+   "team2": "Lund Esports Organization OGs",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "2 Massive",
+    "t2": "Lund Esports Organization OGs",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "DMG Esports Sweden",
+   "team2": "Northern Wolves Esports",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "DMG Esports Sweden",
+    "t2": "Northern Wolves Esports",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-28 17:30:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "FlameHard",
+   "team2": "B2U",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "FlameHard",
+    "t2": "B2U",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Karolinerna",
+   "team2": "Turbo Gaming",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Karolinerna",
+    "t2": "Turbo Gaming",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Lundqvist Darkside",
+   "team2": "Mazepa",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Lundqvist Darkside",
+    "t2": "Mazepa",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-28 18:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "OnlyWinByFF",
+   "team2": "Rich Gang Sweden",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "OnlyWinByFF",
+    "t2": "Rich Gang Sweden",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team Lucidity Esports",
+   "team2": "Fritt Fall",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team Lucidity Esports",
+    "t2": "Fritt Fall",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team cd",
+   "team2": "Tung Sahur Mid",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T16:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team CD",
+    "t2": "Tung Sahur Mid",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 16:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Whalepower Humpbacks",
+   "team2": "1. Esport Club Frankfurt e.V.",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-24T17:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Whalepower Humpbacks",
+    "t2": "1. Esport Club Frankfurt e.V.",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-24 17:00:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Mazepa",
+   "team2": "B2U",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-24T17:00:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Mazepa",
+    "t2": "B2U",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-24 17:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "JSK Academy",
+   "team2": "New Era Team",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T18:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Void Walkers",
+   "team2": "Slam Dunk",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-24T18:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Docta Esports Club",
+   "team2": "Clã NKZ Revengers",
+   "tournament": "LigaGG CELOL B 2026 Split 2 Playoffs",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T15:00:00Z",
+   "leaguepedia_page": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/LigaGG/CELOL_Série_B/2026_Season/Split_2_Playoffs",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Maze GG",
+   "team2": "Viktus",
+   "tournament": "LigaGG CELOL B 2026 Split 2 Playoffs",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T15:00:00Z",
+   "leaguepedia_page": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/LigaGG/CELOL_Série_B/2026_Season/Split_2_Playoffs",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Babos Gaming",
+   "team2": "Hannover Esports e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming",
+    "t2": "Hannover Esports e.V.",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Reveal Multigaming",
+   "team2": "AceGaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Reveal Multigaming",
+    "t2": "AceGaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AIX eSports",
+   "team2": "MT1 Vision",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AIX eSports",
+    "t2": "MT1 Vision",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AceGaming Hearts",
+   "team2": "Emperors Bremen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AceGaming Hearts",
+    "t2": "Emperors Bremen",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Babos Gaming Academy",
+   "team2": "VfB x Engines Stuttgart",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming Academy",
+    "t2": "VfB x Engines Stuttgart",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Defiance eSports",
+   "team2": "REH Gaming",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Duplex Silva Pigeons Edition",
+   "team2": "Sissi State Punks",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Duplex Silva Pigeons Edition",
+    "t2": "Sissi State Punks",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Eintracht Spandau Zwei",
+   "team2": "Team 300 White",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Eintracht Spandau Zwei",
+    "t2": "Team 300 White",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Neko Elite Kittens",
+   "team2": "spongecord prime",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Neko Elite Kittens",
+    "t2": "Spongecord prime",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Rich Gang",
+   "team2": "LOOKSMAXXER",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Whalepower Humpbacks",
+   "team2": "Socken und Sandalen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Black Lion",
+   "team2": "Glacial Guardians",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Black Lion",
+    "t2": "Glacial Guardians",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Second Time Alive Revival",
+   "team2": "Berlin 5",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Second Time Alive Revival",
+    "t2": "Berlin 5",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "JSK Esports",
+   "team2": "Enfida Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "JSK Esports",
+    "t2": "Enfida Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 1,
+    "tab": "Day 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Olympique Mnihla",
+   "team2": "Jendouba Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Olympique Mnihla",
+    "t2": "Jendouba Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 1,
+    "tab": "Day 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Olympique Mnihla Academy",
+   "team2": "El Menzah Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Olympique Mnihla Academy",
+    "t2": "El Menzah Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 1,
+    "tab": "Day 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Simplicity Gaming",
+   "team2": "Supreme Leaders",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Simplicity Gaming",
+    "t2": "Supreme Leaders",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 1,
+    "tab": "Day 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Zahrouni Esports",
+   "team2": "JSK Academy",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Zahrouni Esports",
+    "t2": "JSK Academy",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-25 17:00:00",
+    "bestof": 1,
+    "tab": "Day 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "2 Massive",
+   "team2": "Tung Sahur Mid",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "2 Massive",
+    "t2": "Tung Sahur Mid",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-25 17:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "DMG Esports Sweden",
+   "team2": "FlameHard",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "DMG Esports Sweden",
+    "t2": "FlameHard",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Northern Wolves Esports",
+   "team2": "Rich Gang Sweden",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T17:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Rich Gang Sweden",
+    "t2": "Northern Wolves Esports",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-25 17:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "OnlyWinByFF",
+   "team2": "Mazepa",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T17:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "OnlyWinByFF",
+    "t2": "Mazepa",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-25 17:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team Lucidity Esports",
+   "team2": "Team cd",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T17:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team Lucidity Esports",
+    "t2": "Team CD",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-25 17:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "BlackDivision",
+   "team2": "Kanji Esports KIN",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-25T18:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "BlackDivision",
+    "t2": "Kanji Esports KIN",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 18:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Karolinerna",
+   "team2": "Lund Esports Organization OGs",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T18:00:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Karolinerna",
+    "t2": "Lund Esports Organization OGs",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-25 18:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "404 Multigaming e.V.",
+   "team2": "VfB eSports",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "404 Multigaming e.V.",
+    "t2": "VfB eSports",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-25 18:30:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Locked IN",
+   "team2": "DKB XPERION NXT",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-25T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Lundqvist Darkside",
+   "team2": "B2U",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-25T18:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Lundqvist Darkside",
+    "t2": "B2U",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-25 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Pegasus Esports",
+   "team2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-25T19:00:00Z",
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "NO_SOURCE"
+  },
+  {
+   "team1": "Lund Esports Organization OGs",
+   "team2": "Tung Sahur Mid",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-26T19:00:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Lund Esports Organization OGs",
+    "t2": "Tung Sahur Mid",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-26 19:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Packmiko E-Sports DACH",
+   "team2": "Atruvia Münster Esports",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-27T16:30:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Packmiko E-Sports DACH",
+    "t2": "Atruvia Münster Esports",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-27 16:30:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Mental Rush",
+   "team2": "Vitality Rising Bees",
+   "tournament": "LGC Rising 2026 Playoffs",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-27T17:00:00Z",
+   "leaguepedia_page": "LoL Game Changers/2026 Season/Playoffs",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/LoL_Game_Changers/2026_Season/Playoffs",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "DKB XPERION NXT",
+   "team2": "Phong Vũ Buffalo",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-27T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "No Need Orga",
+   "team2": "AceGaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-27T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "No Need Orga",
+    "t2": "AceGaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-27 17:00:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Hannover Esports e.V.",
+   "team2": "No Need Orga",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-27T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "No Need Orga",
+    "t2": "Hannover Esports e.V.",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-27 19:30:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "VfB eSports",
+   "team2": "regnum4games",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-27T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "VfB eSports",
+    "t2": "regnum4games",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-27 19:30:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "DMG Esports Sweden",
+   "team2": "Northern Wolves Esports",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-28T17:30:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "DMG Esports Sweden",
+    "t2": "Northern Wolves Esports",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-28 17:30:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Lundqvist Darkside",
+   "team2": "Mazepa",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-28T18:00:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Lundqvist Darkside",
+    "t2": "Mazepa",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-10-28 18:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Atruvia Münster Esports",
+   "team2": "Defiance eSports",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-28T18:15:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Atruvia Münster Esports",
+    "t2": "Defiance eSports",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-28 18:15:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Slam Dunk",
+   "team2": "New Era Team",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-28T19:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Purple Emperor Lizards - Atomic",
+   "team2": "Cloud eSport",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-29T18:15:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Cloud eSport",
+    "t2": "Purple Emperor Lizards - Atomic",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-10-29 18:15:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Pegasus Esports",
+   "team2": "JSK Academy",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-29T19:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "AceGaming",
+   "team2": "reGOLD eSport",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-30T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AceGaming",
+    "t2": "reGOLD eSport",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-30 17:00:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AceGaming",
+   "team2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-30T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Reveal Multigaming",
+   "team2": "Team 300",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-30T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Reveal Multigaming",
+    "t2": "Team 300",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-30 17:00:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team Reds",
+   "team2": "NextGeneration Esports",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-30T19:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "DKB XPERION NXT",
+   "team2": "regnum4games",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-30T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "DKB XPERION NXT",
+    "t2": "regnum4games",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-30 19:30:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "VfB eSports",
+   "team2": "Phong Vũ Buffalo",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-30T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "JSK Academy",
+   "team2": "Supreme Leaders",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-31T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "JSK Academy",
+    "t2": "Supreme Leaders",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-31 17:00:00",
+    "bestof": 1,
+    "tab": "Day 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "JSK Esports",
+   "team2": "Olympique Mnihla",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-10-31T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "JSK Esports",
+    "t2": "Olympique Mnihla",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-31 17:00:00",
+    "bestof": 1,
+    "tab": "Day 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Olympique Mnihla Academy",
+   "team2": "Enfida Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-31T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Olympique Mnihla Academy",
+    "t2": "Enfida Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-31 17:00:00",
+    "bestof": 1,
+    "tab": "Day 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Simplicity Gaming",
+   "team2": "Jendouba Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-31T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Simplicity Gaming",
+    "t2": "Jendouba Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-31 17:00:00",
+    "bestof": 1,
+    "tab": "Day 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Zahrouni Esports",
+   "team2": "El Menzah Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-31T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Zahrouni Esports",
+    "t2": "El Menzah Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-10-31 17:00:00",
+    "bestof": 1,
+    "tab": "Day 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Void Walkers",
+   "team2": "Victorious Demons",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-10-31T19:00:00Z",
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "NO_SOURCE"
+  },
+  {
+   "team1": "Void Walkers",
+   "team2": "Team VDS",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-10-31T19:00:00Z",
+   "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Babos Gaming",
+   "team2": "No Need Orga",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming",
+    "t2": "No Need Orga",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team 300",
+   "team2": "Hannover Esports e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team 300",
+    "t2": "Hannover Esports e.V.",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "1. Esport Club Frankfurt e.V.",
+   "team2": "Rich Gang",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Berlin 5",
+   "team2": "Sissi State Punks",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Berlin 5",
+    "t2": "Sissi State Punks",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Black Lion",
+   "team2": "BlackDivision",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Black Lion",
+    "t2": "BlackDivision",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Cloud eSport",
+   "team2": "Defiance eSports",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Cloud eSport",
+    "t2": "Defiance eSports",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Eintracht Spandau Zwei",
+   "team2": "TeamOrangeGaming Academy",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Eintracht Spandau Zwei",
+    "t2": "TeamOrangeGaming Academy",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Emperors Bremen",
+   "team2": "Neko Elite Kittens",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Emperors Bremen",
+    "t2": "Neko Elite Kittens",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Glacial Guardians",
+   "team2": "MT1 Vision",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Glacial Guardians",
+    "t2": "MT1 Vision",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Kanji Esports KIN",
+   "team2": "Babos Gaming Academy",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Kanji Esports KIN",
+    "t2": "Babos Gaming Academy",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "LOOKSMAXXER",
+   "team2": "Whalepower Humpbacks",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "LOOKSMAXXER",
+    "t2": "Whalepower Humpbacks",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Purple Emperor Lizards - Atomic",
+   "team2": "Packmiko E-Sports DACH",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Purple Emperor Lizards - Atomic",
+    "t2": "Packmiko E-Sports DACH",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "REH Gaming",
+   "team2": "Kanji Esports AKA",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Kanji Esports AKA",
+    "t2": "REH Gaming",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Second Time Alive Revival",
+   "team2": "AceGaming Hearts",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Second Time Alive Revival",
+    "t2": "AceGaming Hearts",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team 300 White",
+   "team2": "Socken und Sandalen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team 300 White",
+    "t2": "Socken und Sandalen",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "VfB x Engines Stuttgart",
+   "team2": "AIX eSports",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "VfB x Engines Stuttgart",
+    "t2": "AIX eSports",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "spongecord prime",
+   "team2": "Duplex Silva Pigeons Edition",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Spongecord prime",
+    "t2": "Duplex Silva Pigeons Edition",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 16:00:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "DMG Esports Sweden",
+   "team2": "FlameHard",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "DMG Esports Sweden",
+    "t2": "FlameHard",
+    "page": "RIVALS LEAGUE/2026 Season/Season 2",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "El Menzah Esports",
+   "team2": "Enfida Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "El Menzah Esports",
+    "t2": "Enfida Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 1,
+    "tab": "Day 8"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "JSK Academy",
+   "team2": "Jendouba Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "JSK Academy",
+    "t2": "Jendouba Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 1,
+    "tab": "Day 8"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Olympique Mnihla Academy",
+   "team2": "Olympique Mnihla",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Olympique Mnihla Academy",
+    "t2": "Olympique Mnihla",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 1,
+    "tab": "Day 8"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Simplicity Gaming",
+   "team2": "JSK Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Simplicity Gaming",
+    "t2": "JSK Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 1,
+    "tab": "Day 8"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Zahrouni Esports",
+   "team2": "Supreme Leaders",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Zahrouni Esports",
+    "t2": "Supreme Leaders",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-01 17:00:00",
+    "bestof": 1,
+    "tab": "Day 8"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "MT1 Esports",
+   "team2": "Locked IN",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-01T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "The Bandits Prime",
+   "team2": "404 Multigaming e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-01T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "The Bandits Prime",
+    "t2": "404 Multigaming e.V.",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-01 18:30:00",
+    "bestof": 3,
+    "tab": "Week 3"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "BvP",
+   "team2": "No Need Orga",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-03T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "BvP",
+    "t2": "No Need Orga",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-03 17:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Hannover Esports e.V.",
+   "team2": "Reveal Multigaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-03T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Hannover Esports e.V.",
+    "t2": "Reveal Multigaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-10-23 16:00:00",
+    "bestof": 3,
+    "tab": "Week 2"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Phong Vũ Buffalo",
+   "team2": "404 Multigaming e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-03T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "MT1 Esports",
+   "team2": "DKB XPERION NXT",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-03T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "MT1 Esports",
+    "t2": "DKB XPERION NXT",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-03 19:30:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "regnum4games",
+   "team2": "The Bandits Prime",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-03T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "regnum4games",
+    "t2": "The Bandits Prime",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-03 19:30:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "404 Multigaming e.V.",
+   "team2": "DKB XPERION NXT",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-06T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "404 Multigaming e.V.",
+    "t2": "DKB XPERION NXT",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-06 17:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Locked IN",
+   "team2": "VfB eSports",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-06T17:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "BvP",
+   "team2": "Babos Gaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-06T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming",
+    "t2": "BvP",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-06 19:30:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team 300",
+   "team2": "AceGaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-06T19:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team 300",
+    "t2": "AceGaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-06 19:30:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "El Menzah Esports",
+   "team2": "Olympique Mnihla",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "El Menzah Esports",
+    "t2": "Olympique Mnihla",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-07 17:00:00",
+    "bestof": 1,
+    "tab": "Day 9"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "JSK Academy",
+   "team2": "JSK Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "JSK Academy",
+    "t2": "JSK Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-07 17:00:00",
+    "bestof": 1,
+    "tab": "Day 9"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Olympique Mnihla Academy",
+   "team2": "Simplicity Gaming",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Olympique Mnihla Academy",
+    "t2": "Simplicity Gaming",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-07 17:00:00",
+    "bestof": 1,
+    "tab": "Day 9"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Supreme Leaders",
+   "team2": "Jendouba Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Supreme Leaders",
+    "t2": "Jendouba Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-07 17:00:00",
+    "bestof": 1,
+    "tab": "Day 9"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Zahrouni Esports",
+   "team2": "Enfida Esports",
+   "tournament": "Tunisian Super League 2026",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "leaguepedia_page": "Tunisian Super League/2026 Season",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Zahrouni Esports",
+    "t2": "Enfida Esports",
+    "page": "Tunisian Super League/2026 Season",
+    "start": "2026-11-07 17:00:00",
+    "bestof": 1,
+    "tab": "Day 9"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AceGaming",
+   "team2": "BvP",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AceGaming",
+    "t2": "BvP",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "ex-A41G",
+   "team2": "Babos Gaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "reGOLD eSport",
+   "team2": "Babos Gaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "reGOLD eSport",
+    "t2": "Babos Gaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AIX eSports",
+   "team2": "BlackDivision",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AIX eSports",
+    "t2": "BlackDivision",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Babos Gaming Academy",
+   "team2": "Glacial Guardians",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming Academy",
+    "t2": "Glacial Guardians",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Defiance eSports",
+   "team2": "Kanji Esports AKA",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Defiance eSports",
+    "t2": "Kanji Esports AKA",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Duplex Silva Pigeons Edition",
+   "team2": "AceGaming Hearts",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Duplex Silva Pigeons Edition",
+    "t2": "AceGaming Hearts",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "LOOKSMAXXER",
+   "team2": "1. Esport Club Frankfurt e.V.",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "LOOKSMAXXER",
+    "t2": "1. Esport Club Frankfurt e.V.",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "MT1 Vision",
+   "team2": "Black Lion",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "MT1 Vision",
+    "t2": "Black Lion",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Neko Elite Kittens",
+   "team2": "Berlin 5",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Neko Elite Kittens",
+    "t2": "Berlin 5",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Packmiko E-Sports DACH",
+   "team2": "Cloud eSport",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Packmiko E-Sports DACH",
+    "t2": "Cloud eSport",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "REH Gaming",
+   "team2": "Atruvia Münster Esports",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "REH Gaming",
+    "t2": "Atruvia Münster Esports",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Rich Gang",
+   "team2": "Team 300 White",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Sissi State Punks",
+   "team2": "Second Time Alive Revival",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Sissi State Punks",
+    "t2": "Second Time Alive Revival",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Socken und Sandalen",
+   "team2": "Eintracht Spandau Zwei",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Socken und Sandalen",
+    "t2": "Eintracht Spandau Zwei",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "VfB x Engines Stuttgart",
+   "team2": "Kanji Esports KIN",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "VfB x Engines Stuttgart",
+    "t2": "Kanji Esports KIN",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Whalepower Humpbacks",
+   "team2": "TeamOrangeGaming Academy",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Whalepower Humpbacks",
+    "t2": "TeamOrangeGaming Academy",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "spongecord prime",
+   "team2": "Emperors Bremen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-08T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Spongecord prime",
+    "t2": "Emperors Bremen",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 16:00:00",
+    "bestof": 3,
+    "tab": "Week 6"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Phong Vũ Buffalo",
+   "team2": "MT1 Esports",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-08T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "The Bandits Prime",
+   "team2": "VfB eSports",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-08T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "The Bandits Prime",
+    "t2": "VfB eSports",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-08 18:30:00",
+    "bestof": 3,
+    "tab": "Week 4"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Ground Zero Gaming",
+   "team2": "Frank Esports",
+   "tournament": "LCP 2027 Promotion",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-11T09:00:00Z",
+   "leaguepedia_page": "LCP/2027 Season/Promotion",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/LCP/2027_Season/Promotion",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "CLAIMED_PAGE"
+  },
+  {
+   "team1": "Locked IN",
+   "team2": "404 Multigaming e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-13T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "MT1 Esports",
+   "team2": "The Bandits Prime",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-13T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "MT1 Esports",
+    "t2": "The Bandits Prime",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-13 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Phong Vũ Buffalo",
+   "team2": "regnum4games",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-13T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "VfB eSports",
+   "team2": "DKB XPERION NXT",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-13T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "VfB eSports",
+    "t2": "DKB XPERION NXT",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-13 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AceGaming Hearts",
+   "team2": "Sissi State Punks",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AceGaming Hearts",
+    "t2": "Sissi State Punks",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Atruvia Münster Esports",
+   "team2": "Kanji Esports AKA",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Atruvia Münster Esports",
+    "t2": "Kanji Esports AKA",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Babos Gaming Academy",
+   "team2": "AIX eSports",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming Academy",
+    "t2": "AIX eSports",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Berlin 5",
+   "team2": "Emperors Bremen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Berlin 5",
+    "t2": "Emperors Bremen",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Black Lion",
+   "team2": "VfB x Engines Stuttgart",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Black Lion",
+    "t2": "VfB x Engines Stuttgart",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "BlackDivision",
+   "team2": "MT1 Vision",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "BlackDivision",
+    "t2": "MT1 Vision",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Defiance eSports",
+   "team2": "Purple Emperor Lizards - Atomic",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Defiance eSports",
+    "t2": "Purple Emperor Lizards - Atomic",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Duplex Silva Pigeons Edition",
+   "team2": "Neko Elite Kittens",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Neko Elite Kittens",
+    "t2": "Duplex Silva Pigeons Edition",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Eintracht Spandau Zwei",
+   "team2": "LOOKSMAXXER",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Eintracht Spandau Zwei",
+    "t2": "LOOKSMAXXER",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Glacial Guardians",
+   "team2": "Kanji Esports KIN",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Glacial Guardians",
+    "t2": "Kanji Esports KIN",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "REH Gaming",
+   "team2": "Cloud eSport",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "REH Gaming",
+    "t2": "Cloud eSport",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Rich Gang",
+   "team2": "Whalepower Humpbacks",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "Second Time Alive Revival",
+   "team2": "spongecord prime",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Second Time Alive Revival",
+    "t2": "Spongecord prime",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team 300 White",
+   "team2": "1. Esport Club Frankfurt e.V.",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team 300 White",
+    "t2": "1. Esport Club Frankfurt e.V.",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "TeamOrangeGaming Academy",
+   "team2": "Socken und Sandalen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-15T16:00:00Z",
+   "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "TeamOrangeGaming Academy",
+    "t2": "Socken und Sandalen",
+    "page": "Prime League 3rd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 16:00:00",
+    "bestof": 3,
+    "tab": "Week 7"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "AceGaming",
+   "team2": "Hannover Esports e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "AceGaming",
+    "t2": "Hannover Esports e.V.",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Babos Gaming",
+   "team2": "Reveal Multigaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Babos Gaming",
+    "t2": "Reveal Multigaming",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "BvP",
+   "team2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_LEAGUE_PRIOR",
+   "start_utc": "2026-11-15T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": false,
+   "schedule_row": null,
+   "status": "LEAGUE_PAGE_ONLY"
+  },
+  {
+   "team1": "BvP",
+   "team2": "reGOLD eSport",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO_THIN",
+   "start_utc": "2026-11-15T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "BvP",
+    "t2": "reGOLD eSport",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  },
+  {
+   "team1": "Team 300",
+   "team2": "No Need Orga",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "method": "MODEL_ELO",
+   "start_utc": "2026-11-15T18:30:00Z",
+   "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "leaguepedia_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+   "schedule_fixture_found": true,
+   "schedule_row": {
+    "t1": "Team 300",
+    "t2": "No Need Orga",
+    "page": "Prime League 2nd Division/2027 Season/Fall Split",
+    "start": "2026-11-15 18:30:00",
+    "bestof": 3,
+    "tab": "Week 5"
+   },
+   "status": "MATCHED_FIXTURE"
+  }
+ ]
+}

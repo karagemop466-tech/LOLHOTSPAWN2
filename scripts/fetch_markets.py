@@ -194,6 +194,7 @@ def fetch_polymarket() -> dict:
         if end and (end < now - timedelta(days=2) or end > now + timedelta(days=21)):
             continue
         chosen = None
+        fallback_single = None
         for mk in ev.get("markets") or []:
             try:
                 outs = json.loads(mk.get("outcomes") or "[]")
@@ -204,7 +205,7 @@ def fetch_polymarket() -> dict:
                 continue
             if {str(outs[0]).strip().lower(), str(outs[1]).strip().lower()} == {a.lower(), b.lower()}:
                 q = (mk.get("question") or "").lower()
-                game = "game 1" in q or "game 2" in q or "map 1" in q
+                game = bool(re.search(r"(game|map)\s*\d+", q))
                 # Prefer the series/match market; keep a game-level market only as a
                 # fallback and tag it so the model never mixes units on a Bo3/Bo5.
                 if not game:
@@ -212,6 +213,8 @@ def fetch_polymarket() -> dict:
                     break
                 if chosen is None:
                     chosen = (outs, prices, mk, "game1")
+        if not chosen:
+            chosen = fallback_single
         if not chosen:
             continue
         outs, prices, mk, market_type = chosen

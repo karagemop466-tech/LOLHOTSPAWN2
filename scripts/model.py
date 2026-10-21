@@ -380,7 +380,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             if not pair_ok:
                 continue
             # A game-level market is not a series probability: only allow it on Bo1.
-            if (rec.get("raw") or {}).get("market_type") == "game1" and (f.get("best_of") or 1) > 1:
+            if (rec.get("raw") or {}).get("market_type") == "game1" and f.get("best_of") != 1:
                 continue
             if best_pair is None or delta_h < best_pair[0]:
                 best_pair = (delta_h, f)
