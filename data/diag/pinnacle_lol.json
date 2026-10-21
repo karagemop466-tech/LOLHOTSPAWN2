@@ -35,7 +35,7 @@
   "moneyline": [
    {
     "participantId": 1637769688,
-    "price": -352
+    "price": -351
    },
    {
     "participantId": 1637769689,
@@ -43,19 +43,19 @@
    },
    {
     "participantId": 1637769690,
-    "price": 1677
+    "price": 1655
    },
    {
     "participantId": 1637769691,
-    "price": 3230
+    "price": 3232
    },
    {
     "participantId": 1637769692,
-    "price": 12258
+    "price": 12264
    },
    {
     "participantId": 1637769693,
-    "price": 12189
+    "price": 12195
    }
   ]
  },
@@ -71,11 +71,11 @@
   "moneyline": [
    {
     "designation": "home",
-    "price": 130
+    "price": 126
    },
    {
     "designation": "away",
-    "price": -153
+    "price": -148
    }
   ]
  },

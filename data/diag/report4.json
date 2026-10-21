@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:29:20.823066+00:00",
+ "generated_at": "2026-10-21T20:34:19.524091+00:00",
  "pinnacle_lol": [
   {
    "league_id": 9587,
@@ -37,7 +37,7 @@
    "moneyline": [
     {
      "participantId": 1637769688,
-     "price": -352
+     "price": -351
     },
     {
      "participantId": 1637769689,
@@ -45,19 +45,19 @@
     },
     {
      "participantId": 1637769690,
-     "price": 1677
+     "price": 1655
     },
     {
      "participantId": 1637769691,
-     "price": 3230
+     "price": 3232
     },
     {
      "participantId": 1637769692,
-     "price": 12258
+     "price": 12264
     },
     {
      "participantId": 1637769693,
-     "price": 12189
+     "price": 12195
     }
    ]
   },
@@ -73,11 +73,11 @@
    "moneyline": [
     {
      "designation": "home",
-     "price": 130
+     "price": 126
     },
     {
      "designation": "away",
-     "price": -153
+     "price": -148
     }
    ]
   },
@@ -372,7 +372,7 @@
  "leaguepedia": {
   "sg_500": {
    "status": 200,
-   "bytes": 9504,
+   "bytes": 9490,
    "head": "[\n    {\n        \"Team1\": \"AceGaming Spades\",\n        \"Team2\": \"FC Schalke 04 Esports\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2024-10-01 15:10:00\",\n        \"OverviewPage\": \"Prime Pokal 2024\\/Ma",
    "n": 500,
    "sample": [
@@ -398,7 +398,7 @@
   },
   "sg_5000": {
    "status": 200,
-   "bytes": 83480,
+   "bytes": 83482,
    "head": "[\n    {\n        \"Team1\": \"AceGaming Spades\",\n        \"Team2\": \"FC Schalke 04 Esports\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2024-10-01 15:10:00\",\n        \"OverviewPage\": \"Prime Pokal 2024\\/Ma",
    "n": 5000,
    "sample": [
@@ -456,7 +456,7 @@
   },
   "teams": {
    "status": 200,
-   "bytes": 49088,
+   "bytes": 49160,
    "head": "[\n    {\n        \"Name\": \"00 Nation\",\n        \"OverviewPage\": \"00 Nation\",\n        \"Location\": \"Norway\",\n        \"Region\": \"Europe\"\n    },\n    {\n        \"Name\": \"00 Prospects\",\n        \"OverviewPage\": ",
    "n": 3574,
    "sample": [

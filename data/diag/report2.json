@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:28:23.313301+00:00",
+ "generated_at": "2026-10-21T20:33:12.869637+00:00",
  "hotspawn_fixtures_api": {
   "status": 200,
   "bytes": 9622791,
@@ -981,12 +981,12 @@
   },
   "smarkets_lol": {
    "status": 403,
-   "bytes": 5487,
+   "bytes": 5484,
    "head": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-"
   },
   "betfair_readonly": {
    "status": 403,
-   "bytes": 3647,
+   "bytes": 3644,
    "head": "<!DOCTYPE html>\n<html manifest=\"\" lang=\"en-US\">\n  <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n    <title>Betfair</title>\n    <meta name=\"theme-color\" content=\"#004"
   },
   "midnite_lol": {

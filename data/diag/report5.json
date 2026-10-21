@@ -1,0 +1,570 @@
+{
+ "generated_at": "2026-10-21T20:35:05.355105+00:00",
+ "recent_status": 200,
+ "recent_n": 4688,
+ "recent_tournaments": [
+  [
+   "LCK AS 2026 2nd Championship",
+   281
+  ],
+  [
+   "EM 2026 Summer Main Event",
+   188
+  ],
+  [
+   "LPL 2026 Split 3",
+   167
+  ],
+  [
+   "NLC 2026 Summer",
+   106
+  ],
+  [
+   "LEC 2026 Summer",
+   106
+  ],
+  [
+   "LCK CL 2026 Rounds 3-4",
+   102
+  ],
+  [
+   "LCK 2026 Rounds 3-4",
+   98
+  ],
+  [
+   "PRM 1st Division 2026 Summer",
+   95
+  ],
+  [
+   "LPLOL 2026 Summer",
+   81
+  ],
+  [
+   "LCP 2026 Split 3",
+   80
+  ],
+  [
+   "Rift Legends 2026 Summer",
+   79
+  ],
+  [
+   "PRM 2nd Division 2026 Season Finals",
+   74
+  ],
+  [
+   "World Star Challengers Invitational 2026",
+   74
+  ],
+  [
+   "Demacia Cup Global Invitational 2026",
+   71
+  ],
+  [
+   "Hitpoint 2nd Div Challengers 2026 Summer",
+   70
+  ],
+  [
+   "Benelux Ascend Series 2026 Summer Split",
+   68
+  ],
+  [
+   "Road Of Legends 2026 Summer",
+   67
+  ],
+  [
+   "NACL 2026 Summer",
+   67
+  ],
+  [
+   "LRS 2026 Split 2",
+   66
+  ],
+  [
+   "TCL 2026 Summer",
+   65
+  ],
+  [
+   "Arabian League 2026 Summer",
+   64
+  ],
+  [
+   "LCS 2026 Summer",
+   64
+  ],
+  [
+   "LES 2026 Summer",
+   63
+  ],
+  [
+   "CBLOL 2026 Split 2",
+   62
+  ],
+  [
+   "KeSPA Cup 2026",
+   61
+  ],
+  [
+   "HCC 2026 Summer",
+   58
+  ],
+  [
+   "Hitpoint Masters 2026 Summer",
+   58
+  ],
+  [
+   "MSI 2026",
+   56
+  ],
+  [
+   "LRN 2026 Split 2",
+   56
+  ],
+  [
+   "2026 Asia Masters Elite Invitational Tournament 2",
+   56
+  ],
+  [
+   "LPL 2026 Grand Finals",
+   55
+  ],
+  [
+   "CD 2026 Split 2",
+   52
+  ],
+  [
+   "Esports World Cup 2026",
+   51
+  ],
+  [
+   "LigaGG CELOL A 2026 Split 2",
+   51
+  ],
+  [
+   "HLL 2026 Summer",
+   50
+  ],
+  [
+   "NACL 2026 Summer Playoffs",
+   47
+  ],
+  [
+   "EM 2026 Summer LCQ",
+   47
+  ],
+  [
+   "Nexus League 2026 Summer",
+   45
+  ],
+  [
+   "LFL 2026 Summer",
+   45
+  ],
+  [
+   "UEM 2026",
+   44
+  ],
+  [
+   "Equal Esports Cup 2026 Group Stage",
+   42
+  ],
+  [
+   "CD 2026 Split 2 Playoffs",
+   42
+  ],
+  [
+   "LCK 2026 Season Playoffs",
+   41
+  ],
+  [
+   "Icelandic Esports League 2026 Autumn",
+   41
+  ],
+  [
+   "LCK CL 2026 Season Playoffs",
+   40
+  ],
+  [
+   "CBLOL 2026 Split 2 Playoffs",
+   40
+  ],
+  [
+   "EBL 2026 Summer",
+   39
+  ],
+  [
+   "LCS 2026 Summer Playoffs",
+   39
+  ],
+  [
+   "PRM 2nd Division 26-27 Fall",
+   39
+  ],
+  [
+   "PCS 2026 Summer",
+   38
+  ],
+  [
+   "LJL 2026 Summer Championship",
+   37
+  ],
+  [
+   "LFL 2026 Summer Playoffs",
+   37
+  ],
+  [
+   "Nexus Tour 2026 Playoffs",
+   36
+  ],
+  [
+   "PRM 1st Division 2026 Summer Playoffs",
+   35
+  ],
+  [
+   "LIT 2026 Summer Playoffs",
+   34
+  ],
+  [
+   "Arabian League 2026 Summer Playoffs",
+   34
+  ],
+  [
+   "Arabian League 2nd Division 2026 Summer",
+   34
+  ],
+  [
+   "Hitpoint 2nd Div Challengers 2026 Summer Playoffs",
+   32
+  ],
+  [
+   "LRN 2026 Split 2 Playoffs",
+   31
+  ],
+  [
+   "LEC 2026 Summer Playoffs",
+   31
+  ]
+ ],
+ "recent_max_date": "2026-10-20 20:13:00",
+ "league_checks": {
+  "RIVALS%": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Bulldog Academy\",\n        \"Team2\": \"B2U\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2026-04-12 18:36:00\",\n        \"OverviewPage\": \"RIVALS LEAGUE\\/2026 Season\\/Season 1\",\n",
+   "n": 4,
+   "sample": [
+    {
+     "Team1": "Bulldog Academy",
+     "Team2": "B2U",
+     "Winner": 2,
+     "DateTime UTC": "2026-04-12 18:36:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 1",
+     "Tournament": "RIVALS LEAGUE Season 1",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Bulldog Academy",
+     "Team2": "B2U",
+     "Winner": 2,
+     "DateTime UTC": "2026-04-12 17:11:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 1",
+     "Tournament": "RIVALS LEAGUE Season 1",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Bulldog Academy",
+     "Team2": "B2U",
+     "Winner": 2,
+     "DateTime UTC": "2026-04-12 16:16:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 1",
+     "Tournament": "RIVALS LEAGUE Season 1",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "Komplettligaen%": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Bitfix RG\",\n        \"Team2\": \"VES Japan\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2026-06-13 17:26:00\",\n        \"OverviewPage\": \"Komplettligaen\\/2026 Season\\/Spring Pla",
+   "n": 4,
+   "sample": [
+    {
+     "Team1": "Bitfix RG",
+     "Team2": "VES Japan",
+     "Winner": 2,
+     "DateTime UTC": "2026-06-13 17:26:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Spring Playoffs",
+     "Tournament": "Komplettligaen 2026 Spring Playoffs",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "VES Japan",
+     "Team2": "Bitfix RG",
+     "Winner": 2,
+     "DateTime UTC": "2026-06-13 16:29:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Spring Playoffs",
+     "Tournament": "Komplettligaen 2026 Spring Playoffs",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Bitfix RG",
+     "Team2": "VES Japan",
+     "Winner": 2,
+     "DateTime UTC": "2026-06-13 15:36:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Spring Playoffs",
+     "Tournament": "Komplettligaen 2026 Spring Playoffs",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "Prime League 3rd%": {
+   "status": 200,
+   "head": "[]",
+   "n": 0,
+   "sample": []
+  },
+  "Tunisian%": {
+   "status": 200,
+   "head": "[]",
+   "n": 0,
+   "sample": []
+  },
+  "4 Nations%": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Brod n Friends\",\n        \"Team2\": \"Belfast Storm\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-20 18:22:00\",\n        \"OverviewPage\": \"4 Nations\\/2025 Season\\/Summer",
+   "n": 5,
+   "sample": [
+    {
+     "Team1": "Brod n Friends",
+     "Team2": "Belfast Storm",
+     "Winner": 1,
+     "DateTime UTC": "2025-09-20 18:22:00",
+     "OverviewPage": "4 Nations/2025 Season/Summer Playoffs",
+     "Tournament": "4 Nations 2025 Summer Playoffs",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Belfast Storm",
+     "Team2": "Brod n Friends",
+     "Winner": 2,
+     "DateTime UTC": "2025-09-20 17:23:00",
+     "OverviewPage": "4 Nations/2025 Season/Summer Playoffs",
+     "Tournament": "4 Nations 2025 Summer Playoffs",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Brod n Friends",
+     "Team2": "Belfast Storm",
+     "Winner": 2,
+     "DateTime UTC": "2025-09-20 16:19:00",
+     "OverviewPage": "4 Nations/2025 Season/Summer Playoffs",
+     "Tournament": "4 Nations 2025 Summer Playoffs",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "LigaGG%": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Smoke Tram Ascension\",\n        \"Team2\": \"SharkBite Furious Gaming White\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2026-10-18 20:54:00\",\n        \"OverviewPage\": \"LigaGG\\",
+   "n": 5,
+   "sample": [
+    {
+     "Team1": "Smoke Tram Ascension",
+     "Team2": "SharkBite Furious Gaming White",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-18 20:54:00",
+     "OverviewPage": "LigaGG/CELOL S\u00e9rie A/2026 Season/Split 2",
+     "Tournament": "LigaGG CELOL A 2026 Split 2",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "EmBRAZA! Esports",
+     "Team2": "Invictus Team",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-18 20:05:00",
+     "OverviewPage": "LigaGG/CELOL S\u00e9rie A/2026 Season/Split 2",
+     "Tournament": "LigaGG CELOL A 2026 Split 2",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Cl\u00e3 NKZ V\u00d3RAX",
+     "Team2": "Marere e-Sports",
+     "Winner": 2,
+     "DateTime UTC": "2026-10-18 20:03:00",
+     "OverviewPage": "LigaGG/CELOL S\u00e9rie A/2026 Season/Split 2",
+     "Tournament": "LigaGG CELOL A 2026 Split 2",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "LGC Rising%": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Vitality Rising Bees\",\n        \"Team2\": \"G2 Hel\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2026-10-20 18:04:00\",\n        \"OverviewPage\": \"LoL Game Changers\\/2026 Season\\",
+   "n": 5,
+   "sample": [
+    {
+     "Team1": "Vitality Rising Bees",
+     "Team2": "G2 Hel",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-20 18:04:00",
+     "OverviewPage": "LoL Game Changers/2026 Season/Playoffs",
+     "Tournament": "LGC Rising 2026 Playoffs",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Vitality Rising Bees",
+     "Team2": "G2 Hel",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-20 17:08:00",
+     "OverviewPage": "LoL Game Changers/2026 Season/Playoffs",
+     "Tournament": "LGC Rising 2026 Playoffs",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Vitality Rising Bees",
+     "Team2": "G2 Hel",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-20 16:04:00",
+     "OverviewPage": "LoL Game Changers/2026 Season/Playoffs",
+     "Tournament": "LGC Rising 2026 Playoffs",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "Arabian League 2nd%": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Void Walkers\",\n        \"Team2\": \"Team Reds\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2026-10-17 20:25:00\",\n        \"OverviewPage\": \"Arabian League 2nd Division\\/2026 Se",
+   "n": 5,
+   "sample": [
+    {
+     "Team1": "Void Walkers",
+     "Team2": "Team Reds",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-17 20:25:00",
+     "OverviewPage": "Arabian League 2nd Division/2026 Season/Summer Split",
+     "Tournament": "Arabian League 2nd Division 2026 Summer",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "New Era Team",
+     "Team2": "NextGeneration Esports",
+     "Winner": 1,
+     "DateTime UTC": "2026-10-17 20:19:00",
+     "OverviewPage": "Arabian League 2nd Division/2026 Season/Summer Split",
+     "Tournament": "Arabian League 2nd Division 2026 Summer",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Team Reds",
+     "Team2": "Void Walkers",
+     "Winner": 2,
+     "DateTime UTC": "2026-10-17 19:21:00",
+     "OverviewPage": "Arabian League 2nd Division/2026 Season/Summer Split",
+     "Tournament": "Arabian League 2nd Division 2026 Summer",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  }
+ },
+ "history_windows": [
+  {
+   "from": "2024-10-01",
+   "to": "2025-04-01",
+   "status": 200,
+   "n": 4498,
+   "first": "2024-10-01 15:10:00",
+   "last": "2025-03-31 23:43:00"
+  },
+  {
+   "from": "2025-04-01",
+   "to": "2025-10-01",
+   "status": 200,
+   "n": 5000,
+   "first": "2025-04-01 00:22:00",
+   "last": "2025-06-17 21:04:00"
+  },
+  {
+   "from": "2025-10-01",
+   "to": "2026-04-01",
+   "status": 200,
+   "n": 4593,
+   "first": "2025-10-01 05:08:00",
+   "last": "2026-03-31 23:12:00"
+  },
+  {
+   "from": "2026-04-01",
+   "to": "2026-10-22",
+   "status": 200,
+   "n": 5000,
+   "first": "2026-04-01 08:11:00",
+   "last": "2026-07-23 10:07:00"
+  }
+ ],
+ "history_total": 19091,
+ "liquipedia": {
+  "RIVALS LEAGUE/Season 2": {
+   "status": 200,
+   "bytes": 207673,
+   "html_len": 198222,
+   "classes": {
+    "match-info": 0,
+    "brkts-match": 0,
+    "brkts-popup": 0,
+    "team-template-team-standard": 0,
+    "match-row": 0,
+    "wikitable": 1
+   },
+   "slice": "=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/leagueoflegends/index.php?title=RIVALS_LEAGUE/Season_2&amp;action=edit&amp;section=8\" title=\"Edit section: Streams\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div> <div class=\"table-responsive\"><table class=\"wikitable\" style=\"text-align:center;margin:0;margin-bottom:1em\"><tbody><tr><th>Language</th><td><span class=\"flag\"><img alt=\"Sweden\" src=\"/commons/images/thumb/0/02/Se_hd.png/36px-Se_hd.png\" decoding=\"async\" title=\"Sweden\" width=\"36\" height=\"24\" srcset=\"/commons/images/thumb/0/02/Se_hd.png/54px-Se_hd.png 1.5x, /commons/images/thumb/0/02/Se_hd.png/72px-Se_hd.png 2x\" /></span></td></tr><tr><th>Streams</th><td style=\"vertical-align:top\"><a target=\"_blank\" rel=\"noopener\" class=\"external text\" href=\"https://www.twitch.tv/rivalsleaguelol\"><i class=\"lp-icon lp-twitch\" style=\"margin-bottom:3.0px;\"></i></a><br /><a target=\"_blank\" rel=\"noopener\" class=\"external text\" href=\"https://www.youtube.com/@rivalsleaguese/live\"><i class=\"lp-icon lp-youtube\" style=\"margin-bottom:3.0px;\"></i></a></td></tr></tbody></table></div> <div class=\"mw-heading mw-heading3\"><h3 id=\"Talent\">Talent</h3><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/leagueoflegends/index.php?title=RIVALS_LEAGUE/Season_2&amp;action=edit&amp;section=9\" title=\"Edit section: Talent\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div> <div class=\"mw-heading mw-heading2\"><h2 id=\"Additional_Data\">Additional Data</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/leagueoflegends/index.php?title=RIVALS_LEAGUE/Season_2&amp;action=edit&amp;section=10\" title=\"Edit section: Additional Data\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div> <div class=\"mw-heading mw-heading3\"><h3 id=\"Country_Representation\">Country Representation</h3><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/leagueoflegends/index.php?title=RIVALS_LEAGUE/Season_2&amp;action=edit&amp;section=11\" title=\"Edit section: Country "
+  },
+  "Komplettligaen/2026/Autumn": {
+   "status": 200,
+   "bytes": 286585,
+   "html_len": 273883,
+   "classes": {
+    "match-info": 70,
+    "brkts-match": 0,
+    "brkts-popup": 0,
+    "team-template-team-standard": 0,
+    "match-row": 0,
+    "wikitable": 4
+   },
+   "slice": "style=\"display:inline-flex\"><i class=\"fas fa-chevron-right fa-xs\"></i></span></div><div class=\"carousel-fade carousel-fade--left\"></div><div class=\"carousel-fade carousel-fade--right\"></div><div class=\"carousel-content\" style=\"gap:0.5rem\"><div class=\"carousel-item\" style=\"width:12.5rem\"><div class=\"match-info match-info--vertical\"><div class=\"match-info-top-row\"><span class=\"match-info-countdown\"><span class=\"timer-object\" data-format=\"compact\" data-timestamp=\"1792594800\">Oct 21 - 17:00 <abbr data-tz=\"+02:00\" title=\"Central European Summer Time (UTC+2)\">CEST</abbr></span></span><div class=\"match-info-stream-buttons\"></div></div><span class=\"match-info-stage\">Round 11</span><div class=\"match-info-header match-info-header-vertical\"><div class=\"match-info-opponent-row\"><div class=\"match-info-opponent-identity\"><div class=\"block-team\"><span class=\"team-template-image-icon\"><a href=\"/leagueoflegends/VES_Japan\" title=\"VES Japan\"><img alt=\"\" src=\"/commons/images/thumb/2/22/VES_Japan_lightmode.png/50px-VES_Japan_lightmode.png\" decoding=\"async\" width=\"50\" height=\"50\" srcset=\"/commons/images/thumb/2/22/VES_Japan_lightmode.png/75px-VES_Japan_lightmode.png 1.5x, /commons/images/thumb/2/22/VES_Japan_lightmode.png/100px-VES_Japan_lightmode.png 2x\" /></a></span><span class=\"name\" style=\"white-space:pre;text-overflow:ellipsis;overflow:hidden\"><a href=\"/leagueoflegends/index.php?title=VES_Japan&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"VES Japan (page does not exist)\">VES</a></span></div></div><span class=\"match-info-opponent-score\"></span></div><div class=\"match-info-opponent-row\"><div class=\"match-info-opponent-identity\"><div class=\"block-team\"><span class=\"team-template-image-icon\"><a href=\"/leagueoflegends/Phenti\" title=\"Phenti\"><img alt=\"\" src=\"/commons/images/thumb/0/04/Phenti_allmode.png/46px-Phenti_allmode.png\" decoding=\"async\" width=\"46\" height=\"50\" srcset=\"/commons/images/thumb/0/04/Phenti_allmode.png/69px-Phenti_allmode.png 1.5x, /commons/images/0/04/Phenti_allmode.png 2x\" /></a></span><span class=\"name\" style=\"white-space:pre;text-overflow:ellipsis;overflow:hid"
+  },
+  "Prime League 3rd Division/2027 Season/Fall Split": {
+   "status": 200,
+   "bytes": 362,
+   "html_len": 0,
+   "classes": {
+    "match-info": 0,
+    "brkts-match": 0,
+    "brkts-popup": 0,
+    "team-template-team-standard": 0,
+    "match-row": 0,
+    "wikitable": 0
+   }
+  },
+  "4 Nations/2026 Season/Halloween Heist": {
+   "status": 200,
+   "bytes": 362,
+   "html_len": 0,
+   "classes": {
+    "match-info": 0,
+    "brkts-match": 0,
+    "brkts-popup": 0,
+    "team-template-team-standard": 0,
+    "match-row": 0,
+    "wikitable": 0
+   }
+  },
+  "Tunisian Super League/2026 Season": {
+   "status": 200,
+   "bytes": 362,
+   "html_len": 0,
+   "classes": {
+    "match-info": 0,
+    "brkts-match": 0,
+    "brkts-popup": 0,
+    "team-template-team-standard": 0,
+    "match-row": 0,
+    "wikitable": 0
+   }
+  }
+ }
+}
