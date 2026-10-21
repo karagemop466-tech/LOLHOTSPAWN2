@@ -141,6 +141,18 @@ official PRM organizer. → Requests logged below.
   `game \d+`/`map \d+` for non-BO1, and only fall back to a single-game price if the fixture is BO1.
   Verifier D16 gates this.
 
+- **I11 (blocking bug, observed in their pipeline run 39673881867):** `scripts/model.py:158` crashes with
+  `TypeError: '<' not supported between instances of 'int' and 'str'` because `sorted(set(n for n in names if n))`
+  mixes int and str team names from the Leaguepedia teams payload. Fix: `sorted({str(n) for n in names if n})`
+  (and `norm()` already stringifies). The run fetched 32,686 Leaguepedia rows and 9 market records per source before
+  crashing, so the data layer works.
+- **I12 (coverage question):** their new lobby parser reports **195 future fixtures**, while the backend fixtures feed
+  advertised **208 future LoL fixtures** in the earlier probe. Decide and document which set is "every match listed on
+  Hotspawn": the lobby (`play.hotspawn.com`) shows 195 pick'em cards; the feed has 208 including non-lobby rows.
+  `D19` will compare whatever count the payload exposes.
+- **P13 (repo hygiene):** the test workflow commits `data/cache/leaguepedia.json` (8.3 MB) on every run. Gitignore
+  `data/cache/**` (or use actions/cache) and commit only `data/picks.json` + `docs/data/picks.json`.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
