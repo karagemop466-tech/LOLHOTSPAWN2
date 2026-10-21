@@ -1,0 +1,371 @@
+{
+ "matchschedule_scores": {
+  "prm3": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Second Time Alive Revival\",\n        \"Team2\": \"Spongecord prime\",\n        \"Team1Score\": null,\n        \"Team2Score\": null,\n        \"Winner\": null,\n        \"DateTime UTC\": \"2026",
+   "n": 500,
+   "sample": [
+    {
+     "Team1": "Second Time Alive Revival",
+     "Team2": "Spongecord prime",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 16:00:00",
+     "OverviewPage": "Prime League 3rd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 7",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Berlin 5",
+     "Team2": "Emperors Bremen",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 16:00:00",
+     "OverviewPage": "Prime League 3rd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 7",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Neko Elite Kittens",
+     "Team2": "Duplex Silva Pigeons Edition",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 16:00:00",
+     "OverviewPage": "Prime League 3rd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 7",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "AceGaming Hearts",
+     "Team2": "Sissi State Punks",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 16:00:00",
+     "OverviewPage": "Prime League 3rd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 7",
+     "DateTime UTC__precision": 0
+    }
+   ],
+   "with_scores": 436
+  },
+  "tunisian": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Zahrouni Esports\",\n        \"Team2\": \"Enfida Esports\",\n        \"Team1Score\": null,\n        \"Team2Score\": null,\n        \"Winner\": null,\n        \"DateTime UTC\": \"2026-11-07 17:0",
+   "n": 450,
+   "sample": [
+    {
+     "Team1": "Zahrouni Esports",
+     "Team2": "Enfida Esports",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-07 17:00:00",
+     "OverviewPage": "Tunisian Super League/2026 Season",
+     "BestOf": 1,
+     "Tab": "Day 9",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Supreme Leaders",
+     "Team2": "Jendouba Esports",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-07 17:00:00",
+     "OverviewPage": "Tunisian Super League/2026 Season",
+     "BestOf": 1,
+     "Tab": "Day 9",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "El Menzah Esports",
+     "Team2": "Olympique Mnihla",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-07 17:00:00",
+     "OverviewPage": "Tunisian Super League/2026 Season",
+     "BestOf": 1,
+     "Tab": "Day 9",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "JSK Academy",
+     "Team2": "JSK Esports",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-07 17:00:00",
+     "OverviewPage": "Tunisian Super League/2026 Season",
+     "BestOf": 1,
+     "Tab": "Day 9",
+     "DateTime UTC__precision": 0
+    }
+   ],
+   "with_scores": 425
+  },
+  "rivals": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"TBD\",\n        \"Team2\": \"TBD\",\n        \"Team1Score\": null,\n        \"Team2Score\": null,\n        \"Winner\": null,\n        \"DateTime UTC\": \"2026-12-13 17:00:00\",\n        \"Overview",
+   "n": 111,
+   "sample": [
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-12-13 17:00:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 2 Playoffs",
+     "BestOf": 3,
+     "Tab": "Grand Final",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-12-12 17:00:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 2 Playoffs",
+     "BestOf": 3,
+     "Tab": "Round 4",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-29 17:00:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 2 Playoffs",
+     "BestOf": 3,
+     "Tab": "Round 3",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-28 17:00:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 2 Playoffs",
+     "BestOf": 3,
+     "Tab": "Round 4",
+     "DateTime UTC__precision": 0
+    }
+   ],
+   "with_scores": 78
+  },
+  "komplett": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Rich Gang (Norwegian Team)\",\n        \"Team2\": \"Phenti\",\n        \"Team1Score\": null,\n        \"Team2Score\": null,\n        \"Winner\": null,\n        \"DateTime UTC\": \"2026-10-23 15",
+   "n": 138,
+   "sample": [
+    {
+     "Team1": "Rich Gang (Norwegian Team)",
+     "Team2": "Phenti",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-10-23 15:00:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Autumn Split",
+     "BestOf": 3,
+     "Tab": "Round 10",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Playwell R\u00f8d Q",
+     "Team2": "Rich Gang (Norwegian Team)",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-10-22 18:30:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Autumn Split",
+     "BestOf": 3,
+     "Tab": "Round 11",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Volda E-Sport",
+     "Team2": "CNG Royal",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-10-22 15:00:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Autumn Split",
+     "BestOf": 3,
+     "Tab": "Round 11",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Your Saviours",
+     "Team2": "Mixlag fra Trondheim",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-10-22 15:00:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Autumn Split",
+     "BestOf": 3,
+     "Tab": "Round 11",
+     "DateTime UTC__precision": 0
+    }
+   ],
+   "with_scores": 132
+  },
+  "4nations": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"TBD\",\n        \"Team2\": \"TBD\",\n        \"Team1Score\": null,\n        \"Team2Score\": null,\n        \"Winner\": null,\n        \"DateTime UTC\": \"2026-11-21 14:00:00\",\n        \"Overview",
+   "n": 500,
+   "sample": [
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-21 14:00:00",
+     "OverviewPage": "4 Nations/2026 Season/Halloween Heist",
+     "BestOf": 5,
+     "Tab": "Finals",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-19 19:00:00",
+     "OverviewPage": "4 Nations/2026 Season/Halloween Heist",
+     "BestOf": 3,
+     "Tab": "Round 4",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-16 19:00:00",
+     "OverviewPage": "4 Nations/2026 Season/Halloween Heist",
+     "BestOf": 3,
+     "Tab": "Round 3",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "TBD",
+     "Team2": "TBD",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-12 19:00:00",
+     "OverviewPage": "4 Nations/2026 Season/Halloween Heist",
+     "BestOf": 3,
+     "Tab": "Round 2",
+     "DateTime UTC__precision": 0
+    }
+   ],
+   "with_scores": 472
+  },
+  "prm2": {
+   "status": 200,
+   "head": "[\n    {\n        \"Team1\": \"Team 300\",\n        \"Team2\": \"No Need Orga\",\n        \"Team1Score\": null,\n        \"Team2Score\": null,\n        \"Winner\": null,\n        \"DateTime UTC\": \"2026-11-15 18:30:00\",\n   ",
+   "n": 500,
+   "sample": [
+    {
+     "Team1": "Team 300",
+     "Team2": "No Need Orga",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 18:30:00",
+     "OverviewPage": "Prime League 2nd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 5",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "AceGaming",
+     "Team2": "Hannover Esports e.V.",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 18:30:00",
+     "OverviewPage": "Prime League 2nd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 5",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Babos Gaming",
+     "Team2": "Reveal Multigaming",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 18:30:00",
+     "OverviewPage": "Prime League 2nd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 5",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "BvP",
+     "Team2": "reGOLD eSport",
+     "Team1Score": null,
+     "Team2Score": null,
+     "Winner": null,
+     "DateTime UTC": "2026-11-15 18:30:00",
+     "OverviewPage": "Prime League 2nd Division/2027 Season/Fall Split",
+     "BestOf": 3,
+     "Tab": "Week 5",
+     "DateTime UTC__precision": 0
+    }
+   ],
+   "with_scores": 460
+  }
+ },
+ "riot": {
+  "esports-api.lolesports/getLeagues?hl=en-US": {
+   "status": 403,
+   "len": 43,
+   "n": 0,
+   "names": [],
+   "prime": []
+  },
+  "esports-api.lolesports/getSchedule?hl=en-US": {
+   "status": 403,
+   "len": 43,
+   "n": 0,
+   "sample": []
+  },
+  "prod-relapi.ewp.gg/per/getLeagues?hl=en-US": {
+   "status": 403,
+   "len": 43,
+   "n": 0,
+   "names": [],
+   "prime": []
+  },
+  "prod-relapi.ewp.gg/per/getSchedule?hl=en-US": {
+   "status": 403,
+   "len": 43,
+   "n": 0,
+   "sample": []
+  }
+ },
+ "rivals_wikitext_len": 8492,
+ "rivals_wikitext_sample": "{{DISPLAYTITLE:RIVALS LEAGUE Season 2}}\n{{NLC Navbox}}\n{{RIVALS LEAGUE 2026 Tabs}}\n{{Tournament Tabs 4}}\n{{Infobox league\n|name=RIVALS LEAGUE Season 2\n|shortname=Season 2\n|tickername=RIVALS LEAGUE Season 2\n|image=RIVALS_LEAGUE_League_of_Legends_Logo_allmode.png\n|icon=RIVALS_LEAGUE_League_of_Legends_Icon_allmode.png\n|series=RIVALS League\n|organizer=Svenska Onlineligan|organizer-link=https://www.svenskaonlineligan.se\n|organizer2=Rivalerna E-sportf\u00f6rening|organizer2-link=\n|organizer3=PXB|organizer3-link=https://pxb.gg/\n|sponsor=\n|type=Online/Offline\n|country=Sweden\n|city=\n|venue= |venuedesc=Finals\n|prizepool=\n|localcurrency=sek\n|sdate=\n|edate=\n|liquipediatier=4\n|website=https://www.rivalsleague.gg/\n|challengermode=\n|rulebook=https://www.rivalsleague.gg/lol/rules\n|instagram=RivalsLeagueSE\n|youtube=@RivalsLeagueSE\n|facebook=\n|twitter=RIVALSLEAGUELOL\n|twitch=RivalsLeagueSE\n|team_number=16\n|previous=RIVALS LEAGUE/Season 1{{!}}Season 1\n|next=RIVALS LEAGUE/Season 3{{!}}Season 3\n}}\n\n\n{{SectionLinks\n|teamsHeader=Participating Teams\n|resultsHeader=Results\n<!--|newsHeader=Additional Content-->\n|broadcastHeader=Broadcasts\n|formatHeader=Format\n<!--|activeStageHeader=Knockout Stage-->\n}}\n\n==Prize Pool==\n{{TeamPrizePool|cutafter=8|localcurrency=sek|points=rivals26\n|tournament1=RIVALS_LEAGUE/Season_2/Swiss Stage|tournament2=RIVALS LEAGUE/Season 2/Playoffs\n|qualifies1=RIVALS LEAGUE/Season 3|qualifies1name=Season 3\n|qualifies2=RIVALS_LEAGUE/Season_2/Relegation|qualifies2name=Relegation Match\n|{{Slot|place=1|qualified1=true|localprize=|points=}}\n|{{Slot|place=2|qualified1=true|localprize=|points=}}\n|{{Slot|place=3|qualified1=true|localprize=|points=}}\n|{{Slot|place=4|qualified1=true|localprize=|points=}}\n|{{Slot|place=5-8|qualified1=true|localprize=|points=}}\n|{{Slot|place=9-11|qualified2=true|localprize=|points=}}\n|{{Slot|place=12-14|qualified2=true|localprize=|points=}}\n|{{Slot|place=15-16|qualified2=true|localprize=|points=}}\n}}\n\n==Participating Teams==\n{{TeamParticipants\n|{{Opponent|2 Massive\n |players={{Persons\n  |{{Person|role=top||flag=}}\n  |{{Person|role=jgl||flag=}}\n  |{{Person|role=mid||flag=}}\n  |{{Person|role=bot||flag=}}\n  |{{Person|role=sup||flag=}}\n }}\n  |qualification={{Qualification|method=league|page=RIVALS_LEAGUE/Season_1|text=Season 1}}\n}}\n|{{Opponent|Bardicted to U\n |players={{Persons\n  |{{Person|role=top||flag=}}\n  |{{Person|role=jgl||flag=}}\n  |{{Person|role=mid||flag=}}\n  |{{Person|role=bot||flag=}}\n  |{{Person|role=sup||flag=}}\n }}\n  |qualification={{Q",
+ "rivals_match_templates": 0
+}

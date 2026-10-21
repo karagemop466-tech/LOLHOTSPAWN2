@@ -333,6 +333,24 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
          "pick_prob matches max(prob_team1, prob_team2) on every row")
     emit("D6", f"method is one of {sorted(METHODS)}", bad_method,
          "all methods documented")
+    bad_conf = sorted({str(r.get("confidence")) for r in rows
+                       if str(r.get("confidence") or "") not in
+                       ("High", "Medium", "Low", "None", "None yet", "")})
+    rep.add("D6b", "confidence labels are from the documented set",
+            PASS if not bad_conf else WARN,
+            "High/Medium/Low/None only" if not bad_conf else f"unknown: {bad_conf}")
+    bad_urls = []
+    for r in rows:
+        for src in (r.get("sources") or []):
+            u = src.get("url") if isinstance(src, dict) else None
+            if u and urlparse(u).scheme not in ("http", "https"):
+                bad_urls.append(f"{r.get('team1')} vs {r.get('team2')}: {u}")
+            elif u and not urlparse(u).netloc:
+                bad_urls.append(f"{r.get('team1')} vs {r.get('team2')}: {u}")
+    rep.add("D7c", "every source URL is absolute http(s)",
+            PASS if not bad_urls else FAIL,
+            "all source URLs well formed" if not bad_urls else f"{len(bad_urls)} malformed",
+            bad_urls[:10])
     emit("D7", "every row links at least one official/trusted source", no_source,
          f"all {len(rows)} rows carry at least one source URL")
     if weak_source:
@@ -520,7 +538,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     js_path = os.path.join(DOCS, "assets", "app.js")
     js_text = open(js_path, encoding="utf-8").read() if os.path.exists(js_path) else ""
     required = ["index.html", "picks.html", "unresolved.html", "flagged.html",
-                "methodology.html", "assets/style.css", "assets/app.js",
+                "methodology.html", "match.html", "assets/style.css", "assets/app.js",
                 "data/picks.json"]
     missing = [f for f in required if not os.path.exists(os.path.join(DOCS, f))]
     if missing:

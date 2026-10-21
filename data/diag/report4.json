@@ -1,0 +1,533 @@
+{
+ "generated_at": "2026-10-21T20:43:45.465182+00:00",
+ "pinnacle_lol": [
+  {
+   "league_id": 9587,
+   "id": 1638750814,
+   "start": "2026-10-23T18:00:00Z",
+   "teams": [
+    "Liquid",
+    "CTBC Flying Oyster"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": -285
+    },
+    {
+     "designation": "away",
+     "price": 228
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1637769687,
+   "start": "2026-10-18T18:00:00Z",
+   "teams": [
+    "LCK",
+    "LPL",
+    "LEC",
+    "LCS",
+    "CBLOL",
+    "LCP"
+   ],
+   "bestOf": null,
+   "moneyline": [
+    {
+     "participantId": 1637769688,
+     "price": -351
+    },
+    {
+     "participantId": 1637769689,
+     "price": 360
+    },
+    {
+     "participantId": 1637769690,
+     "price": 1655
+    },
+    {
+     "participantId": 1637769691,
+     "price": 3232
+    },
+    {
+     "participantId": 1637769692,
+     "price": 12264
+    },
+    {
+     "participantId": 1637769693,
+     "price": 12195
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638750815,
+   "start": "2026-10-23T20:00:00Z",
+   "teams": [
+    "G2",
+    "Dplus KIA"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": 126
+    },
+    {
+     "designation": "away",
+     "price": -148
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638755459,
+   "start": "2026-10-24T00:00:00Z",
+   "teams": [
+    "Bilibili",
+    "Movistar KOI"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": -512
+    },
+    {
+     "designation": "away",
+     "price": 368
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638748200,
+   "start": "2026-10-23T17:00:00Z",
+   "teams": [
+    "Gen.G",
+    "Invictus"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": -435
+    },
+    {
+     "designation": "away",
+     "price": 323
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638754606,
+   "start": "2026-10-23T23:00:00Z",
+   "teams": [
+    "Secret Whales",
+    "LYON"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": 123
+    },
+    {
+     "designation": "away",
+     "price": -145
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638748205,
+   "start": "2026-10-23T22:00:00Z",
+   "teams": [
+    "LOS",
+    "T1"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": 516
+    },
+    {
+     "designation": "away",
+     "price": -800
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638750902,
+   "start": "2026-10-23T19:00:00Z",
+   "teams": [
+    "Anyone's Legend",
+    "Karmine Corp"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": -200
+    },
+    {
+     "designation": "away",
+     "price": 167
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1638748203,
+   "start": "2026-10-23T21:00:00Z",
+   "teams": [
+    "Hanwha Life",
+    "Top Esports"
+   ],
+   "bestOf": 1,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": -490
+    },
+    {
+     "designation": "away",
+     "price": 355
+    }
+   ]
+  },
+  {
+   "league_id": 9587,
+   "id": 1637750238,
+   "start": "2026-10-18T18:00:00Z",
+   "teams": [
+    "Gen.G",
+    "Hanwha Life",
+    "T1",
+    "Bilibili",
+    "Anyone's Legend",
+    "Dplus KIA",
+    "G2",
+    "Invictus",
+    "Top Esports",
+    "LYON",
+    "Liquid",
+    "Karmine Corp",
+    "Movistar KOI",
+    "Cloud9",
+    "LOS",
+    "Secret Whales",
+    "CTBC Flying Oyster",
+    "FURIA",
+    "MVK"
+   ],
+   "bestOf": 5,
+   "moneyline": [
+    {
+     "participantId": 1637768329,
+     "price": 125
+    },
+    {
+     "participantId": 1637768330,
+     "price": 379
+    },
+    {
+     "participantId": 1637768331,
+     "price": 590
+    },
+    {
+     "participantId": 1637768332,
+     "price": 470
+    },
+    {
+     "participantId": 1637768333,
+     "price": 1654
+    },
+    {
+     "participantId": 1637768334,
+     "price": 1264
+    },
+    {
+     "participantId": 1637768335,
+     "price": 1032
+    },
+    {
+     "participantId": 1637768336,
+     "price": 2970
+    },
+    {
+     "participantId": 1637768337,
+     "price": 4678
+    },
+    {
+     "participantId": 1637768338,
+     "price": 6657
+    },
+    {
+     "participantId": 1637768339,
+     "price": 3857
+    },
+    {
+     "participantId": 1637768340,
+     "price": 4957
+    },
+    {
+     "participantId": 1637768341,
+     "price": 8141
+    },
+    {
+     "participantId": 1637768343,
+     "price": 16224
+    },
+    {
+     "participantId": 1637768344,
+     "price": 16224
+    },
+    {
+     "participantId": 1637768345,
+     "price": 16224
+    }
+   ]
+  },
+  {
+   "league_id": 225201,
+   "id": 1638717698,
+   "start": "2026-10-22T16:00:00Z",
+   "teams": [
+    "Solary 0, Galions 3",
+    "Solary 1, Galions 3",
+    "Solary 2, Galions 3",
+    "Solary 3, Galions 0",
+    "Solary 3, Galions 1",
+    "Solary 3, Galions 2"
+   ],
+   "bestOf": null,
+   "moneyline": null
+  },
+  {
+   "league_id": 225201,
+   "id": 1638709103,
+   "start": "2026-10-22T16:00:00Z",
+   "teams": [
+    "Solary",
+    "Galions"
+   ],
+   "bestOf": 5,
+   "moneyline": [
+    {
+     "designation": "home",
+     "price": 105
+    },
+    {
+     "designation": "away",
+     "price": -127
+    }
+   ]
+  }
+ ],
+ "bovada": {
+  "prematch": {
+   "status": 200,
+   "bytes": 14963,
+   "head": null,
+   "events": 2,
+   "sample": "[{'path': [{'id': '9417391', 'link': '/esports/league-of-legends/world-championship-26', 'description': \"World Championship '26\", 'type': 'LEAGUE', 'sportCode': 'ESPT', 'order': 9223372036854775807, 'leaf': True, 'current': False}, {'id': '117310', 'link': '/esports/league-of-legends', 'description': 'League Of Legends', 'type': 'COMPETITION', 'sportCode': 'ESPT', 'order': 1, 'leaf': False, 'current': True}, {'id': '6000', 'link': '/esports', 'description': 'Esports', 'type': 'SPORT', 'sportCode': 'ESPT', 'order': 1, 'leaf': False, 'current': False}], 'events': [{'id': '32451771', 'description': 'Gen.G vs Invictus Gaming', 'type': 'GAMEEVENT', 'link': '/esports/league-of-legends/world-championship-26/gen-g-invictus-gaming-202610231300', 'status': 'U', 'sport': 'ESPT', 'startTime': 1792774800000, 'live': False, 'awayTeamFirst': False, 'denySameGame': 'NO', 'teaserAllowed': True, 'competitionId': '9417391', 'notes': '', 'numMarkets': 21, 'lastModified': 1792607584162, 'competitors': [{'id': '32451771-11894232', 'name': 'Gen.G', 'home': True, 'shortName': 'Gen.G'}, {'id': '32451771-13151842', 'name': 'Invictus Gaming', 'home': False, 'shortName': 'Invictus'}], 'displayGroups': [{'id':"
+  },
+  "all": {
+   "status": 200,
+   "bytes": 14963,
+   "head": null,
+   "events": 2,
+   "sample": "[{'path': [{'id': '9417391', 'link': '/esports/league-of-legends/world-championship-26', 'description': \"World Championship '26\", 'type': 'LEAGUE', 'sportCode': 'ESPT', 'order': 9223372036854775807, 'leaf': True, 'current': False}, {'id': '117310', 'link': '/esports/league-of-legends', 'description': 'League Of Legends', 'type': 'COMPETITION', 'sportCode': 'ESPT', 'order': 1, 'leaf': False, 'current': True}, {'id': '6000', 'link': '/esports', 'description': 'Esports', 'type': 'SPORT', 'sportCode': 'ESPT', 'order': 1, 'leaf': False, 'current': False}], 'events': [{'id': '32451771', 'description': 'Gen.G vs Invictus Gaming', 'type': 'GAMEEVENT', 'link': '/esports/league-of-legends/world-championship-26/gen-g-invictus-gaming-202610231300', 'status': 'U', 'sport': 'ESPT', 'startTime': 1792774800000, 'live': False, 'awayTeamFirst': False, 'denySameGame': 'NO', 'teaserAllowed': True, 'competitionId': '9417391', 'notes': '', 'numMarkets': 21, 'lastModified': 1792607584162, 'competitors': [{'id': '32451771-11894232', 'name': 'Gen.G', 'home': True, 'shortName': 'Gen.G'}, {'id': '32451771-13151842', 'name': 'Invictus Gaming', 'home': False, 'shortName': 'Invictus'}], 'displayGroups': [{'id':"
+  }
+ },
+ "polymarket": {
+  "events": 59,
+  "with_markets": 59,
+  "match_events": [
+   "LoL: Caldya Esport vs Lausanne-Sport Esports (BO1) - Nexus League Regular Season",
+   "LoL: Lille Esport vs Galions Sharks (BO1) - Nexus League Regular Season",
+   "LoL: Onion Team vs BRUTE (BO3) - Hitpoint Masters Regular Season",
+   "LoL: Contingent Esports vs University of Mississippi (BO5) - North American Challengers League Playoffs",
+   "LoL: The Bandits vs Dynasty (BO3) - Road Of Legends Regular Season",
+   "LoL: Onetricks vs The Secret Man (BO3) - FLASH Oceania Playoffs",
+   "LoL: Project Conquerors vs Galions Sharks (BO5) - Nexus League Playoffs",
+   "LoL: Karmine Corp Blue Stars vs Project Conquerors (BO5) - Nexus League Playoffs",
+   "LoL: Galions vs Solary (BO5) - EMEA Masters Playoffs",
+   "LoL: Gen.G vs Invictus Gaming (BO1) - Worlds Group Stage",
+   "LoL: Team Liquid vs CTBC Flying Oyster (BO1) - Worlds Group Stage",
+   "LoL: Anyone's Legend vs Karmine Corp (BO1) - Worlds Group Stage",
+   "LoL: G2 Esports vs Dplus KIA (BO1) - Worlds Group Stage",
+   "LoL: Hanwha Life Esports vs Top Esports (BO1) - Worlds Group Stage",
+   "LoL: LOS vs T1 (BO1) - Worlds Group Stage",
+   "LoL: Team Secret Whales vs LYON (BO1) - Worlds Group Stage",
+   "LoL: Bilibili Gaming vs Movistar KOI (BO1) - Worlds Group Stage"
+  ]
+ },
+ "leaguepedia": {
+  "sg_500": {
+   "status": 200,
+   "bytes": 9490,
+   "head": "[\n    {\n        \"Team1\": \"AceGaming Spades\",\n        \"Team2\": \"FC Schalke 04 Esports\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2024-10-01 15:10:00\",\n        \"OverviewPage\": \"Prime Pokal 2024\\/Ma",
+   "n": 500,
+   "sample": [
+    {
+     "Team1": "AceGaming Spades",
+     "Team2": "FC Schalke 04 Esports",
+     "Winner": 2,
+     "DateTime UTC": "2024-10-01 15:10:00",
+     "OverviewPage": "Prime Pokal 2024/Main Event",
+     "Tournament": "PRM Pokal 2024 Main Event",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "EPIC-DUDES",
+     "Team2": "DKB XPERION NXT RAW",
+     "Winner": 1,
+     "DateTime UTC": "2024-10-01 15:11:00",
+     "OverviewPage": "Prime Pokal 2024/Main Event",
+     "Tournament": "PRM Pokal 2024 Main Event",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "sg_5000": {
+   "status": 200,
+   "bytes": 97618,
+   "head": "[\n    {\n        \"Team1\": \"AceGaming Spades\",\n        \"Team2\": \"FC Schalke 04 Esports\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2024-10-01 15:10:00\",\n        \"OverviewPage\": \"Prime Pokal 2024\\/Ma",
+   "n": 5000,
+   "sample": [
+    {
+     "Team1": "AceGaming Spades",
+     "Team2": "FC Schalke 04 Esports",
+     "Winner": 2,
+     "DateTime UTC": "2024-10-01 15:10:00",
+     "OverviewPage": "Prime Pokal 2024/Main Event",
+     "Tournament": "PRM Pokal 2024 Main Event",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "EPIC-DUDES",
+     "Team2": "DKB XPERION NXT RAW",
+     "Winner": 1,
+     "DateTime UTC": "2024-10-01 15:11:00",
+     "OverviewPage": "Prime Pokal 2024/Main Event",
+     "Tournament": "PRM Pokal 2024 Main Event",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "redirects": {
+   "status": 200,
+   "bytes": 89,
+   "head": "Error: No field named \"Name\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  },
+  "schedule": {
+   "status": 200,
+   "bytes": 4229,
+   "head": "[\n    {\n        \"Team1\": \"VES Japan\",\n        \"Team2\": \"Phenti\",\n        \"DateTime UTC\": \"2026-10-21 15:00:00\",\n        \"OverviewPage\": \"Komplettligaen\\/2026 Season\\/Autumn Split\",\n        \"BestOf\": 3",
+   "n": 288,
+   "sample": [
+    {
+     "Team1": "VES Japan",
+     "Team2": "Phenti",
+     "DateTime UTC": "2026-10-21 15:00:00",
+     "OverviewPage": "Komplettligaen/2026 Season/Autumn Split",
+     "BestOf": 3,
+     "Tab": "Round 11",
+     "DateTime UTC__precision": 0
+    },
+    {
+     "Team1": "Team CD",
+     "Team2": "Fritt Fall",
+     "DateTime UTC": "2026-10-21 16:30:00",
+     "OverviewPage": "RIVALS LEAGUE/2026 Season/Season 2",
+     "BestOf": 3,
+     "Tab": "Week 5",
+     "DateTime UTC__precision": 0
+    }
+   ]
+  },
+  "teams": {
+   "status": 200,
+   "bytes": 54693,
+   "head": "[\n    {\n        \"Name\": \"00 Nation\",\n        \"OverviewPage\": \"00 Nation\",\n        \"Location\": \"Norway\",\n        \"Region\": \"Europe\"\n    },\n    {\n        \"Name\": \"00 Prospects\",\n        \"OverviewPage\": ",
+   "n": 3574,
+   "sample": [
+    {
+     "Name": "00 Nation",
+     "OverviewPage": "00 Nation",
+     "Location": "Norway",
+     "Region": "Europe"
+    },
+    {
+     "Name": "00 Prospects",
+     "OverviewPage": "00 Prospects",
+     "Location": "Norway",
+     "Region": "Europe"
+    }
+   ]
+  }
+ },
+ "liquipedia": {
+  "4 Nations 2026 Halloween Heist": {
+   "search_status": 200,
+   "hits": []
+  },
+  "PRM 3rd Division 26-27 Fall": {
+   "search_status": 200,
+   "hits": [
+    "Twiizt",
+    "Nilah/Matches"
+   ]
+  },
+  "RIVALS LEAGUE Season 2": {
+   "search_status": 200,
+   "hits": [
+    "RIVALS LEAGUE/Season 2",
+    "FlameHard/Results",
+    "Show Matches",
+    "RIVALS LEAGUE/Season 1"
+   ]
+  },
+  "Tunisian Super League 2026": {
+   "search_status": 200,
+   "hits": [
+    "Qualifier Tournaments",
+    "LFL/2026/Invitational",
+    "Arabian League/2026/Spring/Promotion",
+    "LPLOL/2025/Summer"
+   ]
+  },
+  "Komplettligaen 2026 Autumn": {
+   "search_status": 200,
+   "hits": [
+    "Komplettligaen/2026/Autumn",
+    "C-Tier Tournaments",
+    "Main Page",
+    "Komplettligaen/2026/Autumn/Promotion"
+   ]
+  },
+  "PRM 2nd Division 26-27 Fall": {
+   "search_status": 200,
+   "hits": [
+    "Twiizt",
+    "Tryndamere/Matches",
+    "Urgot/Matches",
+    "Janna/Matches"
+   ]
+  },
+  "team_absolved_status": 200,
+  "team_absolved_len": 252243,
+  "team_absolved_matchinfo_at": -1,
+  "tour_4nations_status": 200,
+  "tour_4nations_len": 0,
+  "tour_4nations_matchinfo_at": -1
+ }
+}
