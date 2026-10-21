@@ -72,6 +72,17 @@ jobs:
           PY
           python3 scripts/verify_site.py
 
+      - name: Commit the failure log (if this run failed)
+        if: failure()
+        run: |
+          git config user.name "picks-bot"
+          git config user.email "actions@github.com"
+          git add data/diag/pipeline.log || true
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "picks: failure log [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
+
       - name: Commit the refreshed data
         run: |
           set -euxo pipefail

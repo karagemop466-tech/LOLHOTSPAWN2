@@ -275,4 +275,11 @@ picture; each item is resolved or explicitly dispositioned below.
 `scripts/verify_site.py --leaguepedia-schedule data/diag` → **31 PASS · 0 FAIL · 1 WARN** (D18 start-time deltas),
 `verification/test_verifier.py` 27/27, `verification/check_dom_contract.py` PASS, jsdom smoke test on all six pages.
 
-**Integration PR for this follow-up:** #8 — merged after this log entry, with the post-merge verifier run recorded below.
+**Integration PR for this follow-up:** #8 — **merged** (merge commit `d8b848c`, 21:22 UTC).
+
+**Post-merge state (main):**
+- `verify.yml` run **39677101080 → success** on the merge commit (27 self-tests + 31 checks).
+- production refresh `28d9755` (208 fixtures, 9 market, 199 model, 0 unresolved) → Pages build **39677401560 success**.
+- live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
+- parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
+- Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
