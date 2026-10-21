@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:37:34.935211+00:00",
+ "generated_at": "2026-10-21T20:43:00.698357+00:00",
  "fixtures_lol": {
   "total": 1501,
   "future": 208,
@@ -440,22 +440,22 @@
  "leaguepedia": {
   "cargo_simple": {
    "status": 200,
-   "bytes": 257,
+   "bytes": 263,
    "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
   },
   "cargo_teamredirects2": {
    "status": 200,
-   "bytes": 263,
+   "bytes": 257,
    "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
   },
   "cargo_schedule": {
    "status": 200,
-   "bytes": 263,
-   "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
+   "bytes": 148,
+   "head": "{\"error\":{\"code\":\"internal_api_error_MWException\",\"info\":\"[92947731a4c4d7510314ae5ad25db1ed] Caught exception of type MWException\",\"errorclass\":\"MWException\"}}"
   },
   "cargo_export": {
    "status": 200,
-   "bytes": 1900,
+   "bytes": 1663,
    "head": "[\n    {\n        \"Team1\": \"100 Thieves\",\n        \"Team2\": \"Cloud9\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-05 21:53:00\",\n        \"OverviewPage\": \"LTA North\\/2025 Season\\/Split 3\",\n        \"DateTime UTC__precision\": 0\n    },\n    {\n        \"Team1\": \"100 Thieves\",\n        \"Team2\": \"Cloud9\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-05 23:36:00\",\n        \"OverviewPage\": \"LTA North\\/2025 Season\\/Split 3\",\n        \"DateTime UTC__precision\": 0\n    },\n    {\n        \"Team1\": \"10"
   }
  },

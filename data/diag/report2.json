@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-10-21T20:37:14.003127+00:00",
+ "generated_at": "2026-10-21T20:42:42.862954+00:00",
  "hotspawn_fixtures_api": {
   "status": 200,
-  "bytes": 9622791,
+  "bytes": 9622790,
   "err": null,
   "root_type": "list",
   "n": 12016,
@@ -1011,7 +1011,7 @@
   },
   "bovada_lol": {
    "status": 200,
-   "bytes": 2497944,
+   "bytes": 2497943,
    "head": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/><link rel=\"preload\" as=\"script\" fetc"
   }
  }

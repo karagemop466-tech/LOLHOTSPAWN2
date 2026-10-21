@@ -138,13 +138,13 @@
  "sites": {
   "primeleague": {
    "status": 403,
-   "bytes": 1102,
+   "bytes": 1093,
    "title": "Establishing a secure connection ...",
    "head": "<!DOCTYPE html> <html> <head> <title>Establishing a secure connection ...</title> <meta name=\"viewport\" content=\"width=device-width, initial-scale=0.8\"> <link href=\"/.bunny-shield/"
   },
   "primeleague_api": {
    "status": 403,
-   "bytes": 1097,
+   "bytes": 1101,
    "title": "Establishing a secure connection ...",
    "head": "<!DOCTYPE html> <html> <head> <title>Establishing a secure connection ...</title> <meta name=\"viewport\" content=\"width=device-width, initial-scale=0.8\"> <link href=\"/.bunny-shield/"
   },

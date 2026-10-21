@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:38:21.675540+00:00",
+ "generated_at": "2026-10-21T20:43:45.465182+00:00",
  "pinnacle_lol": [
   {
    "league_id": 9587,
@@ -398,7 +398,7 @@
   },
   "sg_5000": {
    "status": 200,
-   "bytes": 83561,
+   "bytes": 97618,
    "head": "[\n    {\n        \"Team1\": \"AceGaming Spades\",\n        \"Team2\": \"FC Schalke 04 Esports\",\n        \"Winner\": 2,\n        \"DateTime UTC\": \"2024-10-01 15:10:00\",\n        \"OverviewPage\": \"Prime Pokal 2024\\/Ma",
    "n": 5000,
    "sample": [
@@ -456,7 +456,7 @@
   },
   "teams": {
    "status": 200,
-   "bytes": 49110,
+   "bytes": 54693,
    "head": "[\n    {\n        \"Name\": \"00 Nation\",\n        \"OverviewPage\": \"00 Nation\",\n        \"Location\": \"Norway\",\n        \"Region\": \"Europe\"\n    },\n    {\n        \"Name\": \"00 Prospects\",\n        \"OverviewPage\": ",
    "n": 3574,
    "sample": [
