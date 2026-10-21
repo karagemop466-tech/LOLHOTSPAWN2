@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:21:24.459212+00:00",
+ "generated_at": "2026-10-21T20:22:50.587458+00:00",
  "checks": [
   {
    "name": "hotspawn_lol_lobby",
@@ -21,7 +21,7 @@
    "name": "leaguepedia_teamredirects",
    "url": "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=TeamRedirects&fields=TR.AllName%2CTR.Name&limit=500",
    "status": 200,
-   "bytes": 372,
+   "bytes": 159,
    "ctype": "application/json; charset=utf-8",
    "note": ""
   },
@@ -123,7 +123,7 @@
    "name": "betfair",
    "url": "https://api.betfair.com/exchange/betting/rest/v1.0/listEventTypes/",
    "status": 403,
-   "bytes": 4549,
+   "bytes": 4548,
    "ctype": "text/html; charset=UTF-8",
    "note": "",
    "err": "HTTPError"
@@ -157,11 +157,10 @@
   {
    "name": "oddsportal_lol",
    "url": "https://www.oddsportal.com/lol/",
-   "status": 503,
-   "bytes": 0,
-   "ctype": "",
-   "note": "",
-   "err": "HTTPError"
+   "status": 200,
+   "bytes": 491898,
+   "ctype": "text/html; charset=utf-8",
+   "note": ""
   },
   {
    "name": "esportspages_lol",
@@ -339,8 +338,8 @@
    "head": ""
   },
   "oddsportal_lol": {
-   "status": 503,
-   "head": ""
+   "status": 200,
+   "head": "<!DOCTYPE html><html lang=\"en\" class=\"opensans_aaadb7a3-module__b9fGUa__variable montserrat_5d237d23-module__hkFSxG__variable\"><head><meta charSet=\"utf-8\"/><met"
   },
   "esportspages_lol": {
    "status": 200,
