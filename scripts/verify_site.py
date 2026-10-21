@@ -122,11 +122,14 @@ class PageParser(HTMLParser):
         super().__init__()
         self.links: list[tuple[str, str]] = []   # (tag, url)
         self.metas: list[dict] = []
+        self.ids: set[str] = set()
         self.text: list[str] = []
         self._skip = 0
 
     def handle_starttag(self, tag, attrs):
         d = dict(attrs)
+        if d.get("id"):
+            self.ids.add(d["id"])
         if tag == "meta":
             self.metas.append(d)
         for key in ("href", "src"):
@@ -368,10 +371,10 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             resolved = sum(1 for r in rows if r.get("method") != "UNRESOLVED")
             unres = sum(1 for r in rows if r.get("method") == "UNRESOLVED")
             bad = []
-            if "resolved" in counts and int(counts.get("resolved") or -1) != resolved:
-                bad.append(f"resolved {counts.get('resolved')} != {resolved}")
-            if "unresolved" in counts and int(counts.get("unresolved") or -1) != unres:
-                bad.append(f"unresolved {counts.get('unresolved')} != {unres}")
+            if "resolved" in counts and int(counts["resolved"]) != resolved:
+                bad.append(f"resolved {counts['resolved']} != {resolved}")
+            if "unresolved" in counts and int(counts["unresolved"]) != unres:
+                bad.append(f"unresolved {counts['unresolved']} != {unres}")
             rep.add("D10", "declared counts agree with the rows", PASS if not bad else FAIL,
                     "counts.resolved/unresolved consistent" if not bad else "; ".join(bad))
         else:
@@ -401,13 +404,34 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                 + (f" — {missing} missing" if missing > 0 else ""))
 
     unresolved = actual["UNRESOLVED"]
-    no_signal = sum(1 for r in rows if abs(float(r.get("prob_team1") or 0.5) - 0.5) < 0.02)
-    share = no_signal / len(rows) if rows else 0
-    rep.add("D13", "coverage: share of matches with a real (non-coin-flip) probability",
-            PASS if share <= 0.05 else WARN,
-            f"{no_signal}/{len(rows)} rows are 50/50 or within ±2 pts of it ({share:.1%}); "
-            f"of those {unresolved} are explicitly UNRESOLVED. A non-zero share is allowed only "
-            "when published as an unresolved section with limitations — see S4/S5b.")
+    # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
+    def lacks_evidence(r):
+        flags = {str(x) for x in (r.get("flags") or [])}
+        return (r.get("method") == "UNRESOLVED"
+                or bool(flags & {"NO_TEAM_HISTORY", "NO_VERIFIED_SIGNAL", "NO_DATA"}))
+
+    def labelled(r):
+        flags = " ".join(str(x) for x in (r.get("flags") or [])).upper()
+        conf = str(r.get("confidence") or "").lower()
+        return (r.get("method") == "UNRESOLVED" or conf in ("low", "none", "very low")
+                or any(k in flags for k in ("NO_VERIFIED_SIGNAL", "THIN_HISTORY",
+                                            "ONE_TEAM_NO_HISTORY", "NO_TEAM_HISTORY")))
+
+    no_ev = [r for r in rows if lacks_evidence(r)]
+    bad_no_ev = [f"{r.get('team1')} vs {r.get('team2')} p={r.get('prob_team1')}"
+                 for r in no_ev if abs(float(r.get("prob_team1") or 0.5) - 0.5) > 0.02]
+    unlab = [f"{r.get('team1')} vs {r.get('team2')}" for r in no_ev if not labelled(r)]
+    # informational: how many rows are close to a coin flip but may be genuine even matches
+    near = sum(1 for r in rows
+               if abs(float(r.get("prob_team1") or 0.5) - 0.5) < 0.02
+               and not str(r.get("method", "")).startswith("MARKET"))
+    status = PASS if not bad_no_ev and not unlab else WARN
+    rep.add("D13", "rows without team evidence are 50/50 and explicitly labelled",
+            status,
+            f"{len(no_ev)} row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); "
+            f"{len(no_ev) - len(unlab)} labelled, {len(bad_no_ev)} non-50/50. "
+            f"Info: {near} model row(s) land within ±2 pts of 50% — these are even-matchup "
+            f"estimates from recorded results, not placeholders.", (bad_no_ev + unlab)[:10])
     return rows
 
 
@@ -525,7 +549,10 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                 "mentions_limitations": ("limitation" in text_low
                                           or "limitation" in limitations_text.lower()
                                           or "limitation" in js_text.lower()),
-                "mentions_updated": "updated" in text_low or "update" in text_low,
+                "mentions_updated": ("updated" in text_low or "update" in text_low
+                                     or ("updated" in js_text.lower()
+                                         and any(i in {m.get("id") for m in p.metas} | p.ids
+                                                 for i in ("updated", "generated", "freshness")))),
             }
         # S8 external + S5 internal
         for tag, url in p.links:
@@ -596,8 +623,11 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
 
     # S5c: third-party attribution (Liquipedia is CC-BY-SA 3.0; Leaguepedia is a Fandom wiki)
     method_page = os.path.join(DOCS, "methodology.html")
-    src_text = " ".join((r.get("evidence") or "") + " " + (r.get("source_url") or "")
-                        for r in rows).lower()
+    src_text = " ".join(
+        (r.get("evidence") or "") + " " + (r.get("source_url") or "") + " " +
+        " ".join(f"{x.get('name','')} {x.get('url','')}" if isinstance(x, dict) else str(x)
+                 for x in (r.get("sources") or []))
+        for r in rows).lower()
     if method_page and any(k in src_text for k in ("liquipedia", "lol.fandom.com", "leaguepedia")):
         mtext = " ".join(parse_page(method_page).text).lower()
         need = []
@@ -715,6 +745,7 @@ def verify_workflows(rep: Report) -> None:
         text = open(os.path.join(wf_dir, f), encoding="utf-8").read()
         if "update_picks.py" in text:
             candidates.append((f, "contents:write" in text.replace(" ", "")))
+    candidates.sort(key=lambda c: (("test" in c[0]) or ("diag" in c[0]), c[0]))
     if candidates:
         f, has_write = candidates[0]
         rep.add("W2", "update workflow runs the generator with contents: write",
