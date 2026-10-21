@@ -91,6 +91,10 @@ official PRM organizer. → Requests logged below.
   2 splits of league results for ratings; expose `leaguepedia_ok`, `leagues_queried`, `teams_with_results`,
   `games_used` in the payload. Details + exact query template: `research/betting-sources.md` §7.
 
+- **I9 (display, T10): tier "W" is shown as "Tier W" on the site for 137 rows.** "W" is the parser's artefact for
+  Hotspawn's *"waiting for information"* stage, not a tier (real tiers in the feed: S/A/C/D). The new fixtures API
+  exposes `tier` and `stage` separately — display "Tier: waiting for information" (or omit the tier) instead of "W".
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
