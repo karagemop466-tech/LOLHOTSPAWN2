@@ -131,6 +131,16 @@ official PRM organizer. → Requests logged below.
 - **P10/P11 (reliability):** the update workflow swallows git failures (`|| true`) and its inline check covers only two
   invariants. Integration adds `scripts/verify_site.py` to CI and removes the silent-failure paths.
 
+- **I10 (FAIL, must fix before merge): the new Polymarket selector still admits single-game markets.** In
+  `scripts/fetch_markets.py` (commit f203d1f) the acceptance test is
+  `if "game 1" not in q and "game 2" not in q and "winner" in q or "vs" in q:` — Python binds this as
+  `(… and … and …) or ("vs" in q)`, and virtually every market question contains the team pair ("… vs …"), so the
+  **Game 1/2/3/4/5 child market is accepted first** and `break`s. Polymarket exposes `groupItemTitle`
+  ("Match Winner" vs "Game 1 Winner") and a series market slug (event slug without `-gameN`): select
+  `groupItemTitle == "Match Winner"` (or the event market whose question has no `game N`/`map N`), exclude
+  `game \d+`/`map \d+` for non-BO1, and only fall back to a single-game price if the fixture is BO1.
+  Verifier D16 gates this.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
