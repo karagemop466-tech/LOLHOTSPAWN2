@@ -2,7 +2,7 @@ name: DIAG lab (temporary)
 on:
   push:
     branches: ["arena/**"]
-    paths: ["scripts/diag_lab.py", "scripts/diag_lab2.py", "scripts/diag_lab3.py", ".github/workflows/diag.yml"]
+    paths: ["scripts/diag_lab.py", "scripts/diag_lab2.py", "scripts/diag_lab3.py", "scripts/diag_lab4.py", ".github/workflows/diag.yml"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -20,6 +20,8 @@ jobs:
         run: python3 scripts/diag_lab2.py || true
       - name: Run diagnostics v3
         run: python3 scripts/diag_lab3.py || true
+      - name: Run diagnostics v4
+        run: python3 scripts/diag_lab4.py || true
       - name: Commit diagnostics
         run: |
           git config user.name "diag-bot"; git config user.email "actions@github.com"
