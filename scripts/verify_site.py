@@ -201,6 +201,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
     bad_teams, bad_pick, bad_prob, bad_pickprob, bad_method = [], [], [], [], []
     no_source, weak_source, market_no_url, unresolved_unflagged, dup = [], [], [], [], []
     game1_as_series, generic_unresolved_link = [], []
+    no_start_utc = []
     banned_prob_source = []
     seen = set()
     for i, m in enumerate(rows):
@@ -211,6 +212,8 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             bad_teams.append(label)
         if not (m.get("start_utc") or m.get("start_raw") or m.get("start")):
             bad_teams.append(f"{label} [no start time]")
+        elif not m.get("start_utc"):
+            no_start_utc.append(f"{label} start_raw={m.get('start_raw')!r} (not parsed)")
         pick = m.get("pick") or ""
         if pick not in (t1, t2):
             bad_pick.append(f"{label} pick={pick!r}")
@@ -299,6 +302,10 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
 
     emit("D2", "two distinct teams and a start time on every match", bad_teams,
          f"all {len(rows)} rows have team1, team2 and a start time")
+    if no_start_utc:
+        rep.add("D2b", "every match has a machine-readable UTC start", WARN,
+                f"{len(no_start_utc)} row(s) have a display time that did not parse to UTC "
+                "(unverified start — flagged)", no_start_utc[:10])
     emit("D3", "a pick exists and is one of the two teams", bad_pick,
          "every match has a pick equal to team1 or team2")
     emit("D4", "probabilities are in range and sum to 1", bad_prob,
@@ -352,6 +359,61 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             "A non-zero share is allowed only when published as an unresolved section "
             "with limitations — see S4 and the site's Unresolved page.")
     return rows
+
+
+def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
+    """Cross-check fixture start times against a Leaguepedia MatchSchedule snapshot."""
+    if not path:
+        rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
+                "no --leaguepedia-schedule snapshot supplied")
+        return
+    if not os.path.exists(path):
+        rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
+                f"snapshot not found: {path}")
+        return
+    try:
+        sched = json.load(open(path, encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", FAIL,
+                f"snapshot unreadable: {exc!r}")
+        return
+    if isinstance(sched, dict):
+        sched = sched.get("cargoquery") or sched.get("rows") or []
+    idx: dict[tuple[str, str], list[dict]] = {}
+    for r in sched:
+        r = r.get("title", r) if isinstance(r, dict) else r
+        if not isinstance(r, dict):
+            continue
+        t1 = norm(r.get("Team1") or r.get("team1") or "")
+        t2 = norm(r.get("Team2") or r.get("team2") or "")
+        if t1 and t2:
+            idx.setdefault((t1, t2), []).append(r)
+            idx.setdefault((t2, t1), []).append(r)
+    if not idx:
+        rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
+                "snapshot contained no usable rows")
+        return
+    same, diff, unmatched = 0, [], []
+    for m in rows:
+        hits = idx.get((norm(m.get("team1")), norm(m.get("team2")))) or []
+        if not hits:
+            unmatched.append(f"{m.get('team1')} vs {m.get('team2')}")
+            continue
+        ours = (m.get("start_utc") or "")[:16].replace("T", " ")
+        theirs = str(hits[0].get("DateTime UTC") or hits[0].get("DateTime_UTC") or "")[:16]
+        if ours and theirs and ours == theirs:
+            same += 1
+        else:
+            diff.append(f"{m.get('team1')} vs {m.get('team2')}: ours={ours or '—'} lp={theirs or '—'}")
+    checked = same + len(diff)
+    if not checked:
+        rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
+                f"no fixture matched the snapshot ({len(unmatched)} unmatched)")
+        return
+    rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule",
+            PASS if not diff else FAIL,
+            f"{same}/{checked} matched fixture times agree with Leaguepedia; "
+            f"{len(unmatched)} fixture(s) not in the snapshot", diff[:12])
 
 
 def verify_data_files(rep: Report) -> None:
@@ -695,6 +757,8 @@ def main() -> int:
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--check-external", action="store_true",
                     help="HTTP-check every external link on the site (needs network)")
+    ap.add_argument("--leaguepedia-schedule", default="",
+                    help="Leaguepedia MatchSchedule snapshot JSON to cross-check start times")
     ap.add_argument("--live-url", default="",
                     help="deployed Pages base URL to confirm serving (needs network)")
     args = ap.parse_args()
@@ -704,6 +768,7 @@ def main() -> int:
     if payload is None:
         payload, err2 = load_json(DATA_PATHS[0])
     rows = verify_data(rep, payload, err or "docs/data/picks.json", args.max_age_hours)
+    verify_schedule(rep, rows, args.leaguepedia_schedule)
     verify_data_files(rep)
     verify_site(rep, rows)
     verify_workflows(rep)

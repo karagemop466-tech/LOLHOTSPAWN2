@@ -71,6 +71,18 @@ official PRM organizer. → Requests logged below.
   (b) bridge team names and build the standings/results model. The current evidence string
   "No external market and no Leaguepedia team history found" is **false** for these rows and must not ship.
 
+- **I5 (caveat, not our error): Polymarket `gameStartTime` is stale.** For G2 vs Dplus KIA the market says 20:00 UTC
+  while Leaguepedia MatchSchedule and our row both say 21:00 UTC; for Team Liquid vs CFO the market says 18:00 UTC vs
+  Leaguepedia/ours 22:00 UTC. Gen.G vs IG agrees (17:00 UTC). **Our times are the correct ones** (172/172 matched
+  fixtures agree with Leaguepedia, verifier D18). Do not use market start times for scheduling or lock times.
+- **I6 (WARN, D2b): `start_raw="Oct 24, 24:00"` fails to parse** → `start_utc` empty for Team Secret Whales vs LYON,
+  which sorts last and cannot be shown with a lock time. Fix: normalise `24:00` to next-day `00:00` (true start is
+  2026-10-24 00:00 UTC per Leaguepedia MatchSchedule).
+- **I7 (verified good):** the published Polymarket prices for the BO1 Worlds matches match the market exactly
+  (Gen.G 0.775/0.225; TL 0.715/0.285; G2 0.395/0.605 — Gamma API, 2026-10-21 20:33 UTC). The Galions–Solary BO5
+  series market (slug `lol-gal-sly-2026-10-22`, `groupItemTitle: Match Winner`) also shows 0.515/0.485 today, i.e. the
+  published number is coincidentally right but the selector picked the **Game 1** child market — a latent bug. → R5.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that

@@ -1,18 +1,18 @@
 {
- "verified_at": "2026-10-21T20:32:06.971821+00:00",
+ "verified_at": "2026-10-21T20:33:02.240453+00:00",
  "status": "FAIL",
  "counts": {
-  "PASS": 27,
+  "PASS": 28,
   "FAIL": 1,
-  "WARN": 4,
+  "WARN": 5,
   "SKIP": 0
  },
  "data_matches": 195,
  "methods": {
-  "MARKET_POLYMARKET": 8,
   "MARKET_BOOKS": 0,
+  "MODEL_ELO": 61,
   "UNRESOLVED": 126,
-  "MODEL_ELO": 61
+  "MARKET_POLYMARKET": 8
  },
  "checks": [
   {
@@ -26,6 +26,15 @@
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
    "detail": "all 195 rows have team1, team2 and a start time"
+  },
+  {
+   "id": "D2b",
+   "title": "every match has a machine-readable UTC start",
+   "status": "WARN",
+   "detail": "1 row(s) have a display time that did not parse to UTC (unverified start — flagged)",
+   "items": [
+    "Team Secret Whales vs LYON start_raw='Oct 24, 24:00' (not parsed)"
+   ]
   },
   {
    "id": "D3",
@@ -145,6 +154,12 @@
    "title": "coverage: share of matches without an external market line",
    "status": "WARN",
    "detail": "126/195 rows are UNRESOLVED 50/50 (64.6%). A non-zero share is allowed only when published as an unresolved section with limitations — see S4 and the site's Unresolved page."
+  },
+  {
+   "id": "D18",
+   "title": "start times cross-checked against Leaguepedia MatchSchedule",
+   "status": "PASS",
+   "detail": "172/172 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot"
   },
   {
    "id": "D14",

@@ -1,11 +1,12 @@
 # Verification report — FAIL
-_2026-10-21T20:32:06.971821+00:00_
-195 matches · MARKET_POLYMARKET: 8 · MARKET_BOOKS: 0 · UNRESOLVED: 126 · MODEL_ELO: 61
+_2026-10-21T20:33:02.240453+00:00_
+195 matches · MARKET_BOOKS: 0 · MODEL_ELO: 61 · UNRESOLVED: 126 · MARKET_POLYMARKET: 8
 
 | check | status | detail |
 |---|---|---|
 | D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.3h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 195 rows have team1, team2 and a start time |
+| D2b every match has a machine-readable UTC start | WARN | 1 row(s) have a display time that did not parse to UTC (unverified start — flagged) |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
@@ -21,6 +22,7 @@ _2026-10-21T20:32:06.971821+00:00_
 | D10 counts_by_method agrees with the rows | PASS | counts consistent |
 | D11 declared count equals number of rows | PASS | count=195, rows=195 |
 | D13 coverage: share of matches without an external market line | WARN | 126/195 rows are UNRESOLVED 50/50 (64.6%). A non-zero share is allowed only when published as an unresolved section with limitations — see S4 and the site's Unresolved page. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 172/172 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot |
 | D14 canonical data and site data are identical | PASS | identical |
 | S1 all required site files exist | PASS | 8 files present |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
@@ -54,6 +56,9 @@ _2026-10-21T20:32:06.971821+00:00_
 | REQ10 | Automatic refresh every 4-8 hours, no manual input | PASS | W1, W2, D1 |
 | REQ11 | Site integrity: no broken internal links, root entry point works | PASS | S1, S6, S8 |
 | REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
+
+**D2b items:**
+- Team Secret Whales vs LYON start_raw='Oct 24, 24:00' (not parsed)
 
 **D7b items:**
 - Team VDS vs Pegasus Esports -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
