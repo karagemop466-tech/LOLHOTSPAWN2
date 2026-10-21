@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-21T20:30:36.402692+00:00",
+ "verified_at": "2026-10-21T20:32:06.971821+00:00",
  "status": "FAIL",
  "counts": {
   "PASS": 27,
@@ -10,16 +10,16 @@
  "data_matches": 195,
  "methods": {
   "MARKET_POLYMARKET": 8,
-  "MODEL_ELO": 61,
   "MARKET_BOOKS": 0,
-  "UNRESOLVED": 126
+  "UNRESOLVED": 126,
+  "MODEL_ELO": 61
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.2h old)"
+   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.3h old)"
   },
   {
    "id": "D2",
@@ -247,6 +247,140 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
+  },
+  {
+   "id": "REQ",
+   "title": "requirements traceability",
+   "status": "WARN",
+   "detail": "REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 WARN; REQ6 WARN; REQ7 PASS; REQ8 WARN; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS",
+   "items": [
+    "REQ1: A pick exists for every match (pick is one of the two teams) -> PASS",
+    "REQ2: Win probabilities for both teams on every match, summing to 100% -> PASS",
+    "REQ3: Probabilities come from outside Hotspawn (books/markets/our results model) -> PASS",
+    "REQ4: External betting lines used where they exist (markets first) -> PASS",
+    "REQ5: Every match without a market line still gets a pick + documented method -> WARN",
+    "REQ6: Separate unresolved section, with limitations, linked from the exec summary -> WARN",
+    "REQ7: Executive summary links in-site to the updated picks list -> PASS",
+    "REQ8: Every table row carries an official/trusted source link (or is flagged unverified) -> WARN",
+    "REQ9: Mobile-friendly: responsive viewport + responsive CSS + readable cards -> PASS",
+    "REQ10: Automatic refresh every 4-8 hours, no manual input -> PASS",
+    "REQ11: Site integrity: no broken internal links, root entry point works -> PASS",
+    "REQ12: Third-party sources attributed where their data is used -> PASS"
+   ],
+   "aggregate": true
+  }
+ ],
+ "requirements": [
+  {
+   "id": "REQ1",
+   "requirement": "A pick exists for every match (pick is one of the two teams)",
+   "status": "PASS",
+   "checks": [
+    "D3",
+    "D11"
+   ]
+  },
+  {
+   "id": "REQ2",
+   "requirement": "Win probabilities for both teams on every match, summing to 100%",
+   "status": "PASS",
+   "checks": [
+    "D4",
+    "D5"
+   ]
+  },
+  {
+   "id": "REQ3",
+   "requirement": "Probabilities come from outside Hotspawn (books/markets/our results model)",
+   "status": "PASS",
+   "checks": [
+    "D12",
+    "W3"
+   ]
+  },
+  {
+   "id": "REQ4",
+   "requirement": "External betting lines used where they exist (markets first)",
+   "status": "PASS",
+   "checks": [
+    "D8a",
+    "D6"
+   ]
+  },
+  {
+   "id": "REQ5",
+   "requirement": "Every match without a market line still gets a pick + documented method",
+   "status": "WARN",
+   "checks": [
+    "D8b",
+    "D13"
+   ]
+  },
+  {
+   "id": "REQ6",
+   "requirement": "Separate unresolved section, with limitations, linked from the exec summary",
+   "status": "WARN",
+   "checks": [
+    "S4",
+    "S5",
+    "S5b"
+   ]
+  },
+  {
+   "id": "REQ7",
+   "requirement": "Executive summary links in-site to the updated picks list",
+   "status": "PASS",
+   "checks": [
+    "S4"
+   ]
+  },
+  {
+   "id": "REQ8",
+   "requirement": "Every table row carries an official/trusted source link (or is flagged unverified)",
+   "status": "WARN",
+   "checks": [
+    "D7",
+    "D8a",
+    "D8b",
+    "D17"
+   ]
+  },
+  {
+   "id": "REQ9",
+   "requirement": "Mobile-friendly: responsive viewport + responsive CSS + readable cards",
+   "status": "PASS",
+   "checks": [
+    "S2",
+    "S7"
+   ]
+  },
+  {
+   "id": "REQ10",
+   "requirement": "Automatic refresh every 4-8 hours, no manual input",
+   "status": "PASS",
+   "checks": [
+    "W1",
+    "W2",
+    "D1"
+   ]
+  },
+  {
+   "id": "REQ11",
+   "requirement": "Site integrity: no broken internal links, root entry point works",
+   "status": "PASS",
+   "checks": [
+    "S1",
+    "S6",
+    "S8"
+   ]
+  },
+  {
+   "id": "REQ12",
+   "requirement": "Third-party sources attributed where their data is used",
+   "status": "PASS",
+   "checks": [
+    "S5c"
+   ]
   }
  ]
 }

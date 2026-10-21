@@ -78,14 +78,17 @@ class Report:
         self.started = datetime.now(timezone.utc)
 
     def add(self, cid: str, title: str, status: str, detail: str = "",
-            items: list | None = None) -> None:
+            items: list | None = None, aggregate: bool = False) -> None:
         rec = {"id": cid, "title": title, "status": status, "detail": detail}
         if items:
             rec["items"] = items
+        if aggregate:
+            rec["aggregate"] = True   # summary row; not counted in pass/fail totals
         self.checks.append(rec)
 
     def count(self, status: str) -> int:
-        return sum(1 for c in self.checks if c["status"] == status)
+        return sum(1 for c in self.checks
+                   if c["status"] == status and not c.get("aggregate"))
 
     @property
     def ok(self) -> bool:
@@ -709,6 +712,53 @@ def main() -> int:
     if args.live_url:
         verify_live(rep, args.live_url)
 
+    # ---- requirements traceability (maps the brief to concrete checks)
+    def worst(*ids):
+        vals = [c["status"] for c in rep.checks if c["id"] in ids]
+        if any(v == FAIL for v in vals):
+            return FAIL
+        if any(v == WARN for v in vals):
+            return WARN
+        if vals and all(v == SKIP for v in vals):
+            return SKIP
+        return PASS if vals else SKIP
+
+    requirements = [
+        ("REQ1", "A pick exists for every match (pick is one of the two teams)",
+         ["D3", "D11"]),
+        ("REQ2", "Win probabilities for both teams on every match, summing to 100%",
+         ["D4", "D5"]),
+        ("REQ3", "Probabilities come from outside Hotspawn (books/markets/our results model)",
+         ["D12", "W3"]),
+        ("REQ4", "External betting lines used where they exist (markets first)",
+         ["D8a", "D6"]),
+        ("REQ5", "Every match without a market line still gets a pick + documented method",
+         ["D8b", "D13"]),
+        ("REQ6", "Separate unresolved section, with limitations, linked from the exec summary",
+         ["S4", "S5", "S5b"]),
+        ("REQ7", "Executive summary links in-site to the updated picks list",
+         ["S4"]),
+        ("REQ8", "Every table row carries an official/trusted source link (or is flagged unverified)",
+         ["D7", "D8a", "D8b", "D17"]),
+        ("REQ9", "Mobile-friendly: responsive viewport + responsive CSS + readable cards",
+         ["S2", "S7"]),
+        ("REQ10", "Automatic refresh every 4-8 hours, no manual input",
+         ["W1", "W2", "D1"]),
+        ("REQ11", "Site integrity: no broken internal links, root entry point works",
+         ["S1", "S6", "S8"]),
+        ("REQ12", "Third-party sources attributed where their data is used",
+         ["S5c"]),
+    ]
+    req_status = (FAIL if any(worst(*ids) == FAIL for _r, _t, ids in requirements)
+                  else WARN if any(worst(*ids) == WARN for _r, _t, ids in requirements)
+                  else PASS)
+    rep.add("REQ", "requirements traceability", req_status,
+            "; ".join(f"{rid} {worst(*ids)}" for rid, _title, ids in requirements),
+            [f"{rid}: {title} -> {worst(*ids)}" for rid, title, ids in requirements],
+            aggregate=True)
+    out_requirements = [{"id": rid, "requirement": title, "status": worst(*ids),
+                         "checks": ids} for rid, title, ids in requirements]
+
     os.makedirs(os.path.dirname(args.json_out), exist_ok=True)
     out = {
         "verified_at": datetime.now(timezone.utc).isoformat(),
@@ -717,6 +767,7 @@ def main() -> int:
         "data_matches": len(rows),
         "methods": {k: sum(1 for r in rows if r.get("method") == k) for k in METHODS},
         "checks": rep.checks,
+        "requirements": out_requirements,
     }
     with open(args.json_out, "w", encoding="utf-8") as fh:
         json.dump(out, fh, indent=1, ensure_ascii=False)
@@ -729,6 +780,10 @@ def main() -> int:
     for c in rep.checks:
         detail = c["detail"].replace("|", "\\|")
         lines.append(f"| {c['id']} {c['title']} | {c['status']} | {detail} |")
+    lines += ["", "## Requirements traceability", "",
+              "| id | requirement | status | checks |", "|---|---|---|---|"]
+    for r in out_requirements:
+        lines.append(f"| {r['id']} | {r['requirement']} | {r['status']} | {', '.join(r['checks'])} |")
     for c in rep.checks:
         if c.get("items"):
             lines.append(f"\n**{c['id']} items:**")

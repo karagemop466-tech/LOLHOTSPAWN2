@@ -1,10 +1,10 @@
 # Verification report — FAIL
-_2026-10-21T20:30:36.402692+00:00_
-195 matches · MARKET_POLYMARKET: 8 · MODEL_ELO: 61 · MARKET_BOOKS: 0 · UNRESOLVED: 126
+_2026-10-21T20:32:06.971821+00:00_
+195 matches · MARKET_POLYMARKET: 8 · MARKET_BOOKS: 0 · UNRESOLVED: 126 · MODEL_ELO: 61
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.2h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.3h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 195 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -36,6 +36,24 @@ _2026-10-21T20:30:36.402692+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | update-picks.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
+| REQ requirements traceability | WARN | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 WARN; REQ6 WARN; REQ7 PASS; REQ8 WARN; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
+
+## Requirements traceability
+
+| id | requirement | status | checks |
+|---|---|---|---|
+| REQ1 | A pick exists for every match (pick is one of the two teams) | PASS | D3, D11 |
+| REQ2 | Win probabilities for both teams on every match, summing to 100% | PASS | D4, D5 |
+| REQ3 | Probabilities come from outside Hotspawn (books/markets/our results model) | PASS | D12, W3 |
+| REQ4 | External betting lines used where they exist (markets first) | PASS | D8a, D6 |
+| REQ5 | Every match without a market line still gets a pick + documented method | WARN | D8b, D13 |
+| REQ6 | Separate unresolved section, with limitations, linked from the exec summary | WARN | S4, S5, S5b |
+| REQ7 | Executive summary links in-site to the updated picks list | PASS | S4 |
+| REQ8 | Every table row carries an official/trusted source link (or is flagged unverified) | WARN | D7, D8a, D8b, D17 |
+| REQ9 | Mobile-friendly: responsive viewport + responsive CSS + readable cards | PASS | S2, S7 |
+| REQ10 | Automatic refresh every 4-8 hours, no manual input | PASS | W1, W2, D1 |
+| REQ11 | Site integrity: no broken internal links, root entry point works | PASS | S1, S6, S8 |
+| REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
 
 **D7b items:**
 - Team VDS vs Pegasus Esports -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
@@ -77,3 +95,17 @@ _2026-10-21T20:30:36.402692+00:00_
 - PRM 3rd Division 26-27 Fall
 - RIVALS LEAGUE Season 2
 - Tunisian Super League 2026
+
+**REQ items:**
+- REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
+- REQ2: Win probabilities for both teams on every match, summing to 100% -> PASS
+- REQ3: Probabilities come from outside Hotspawn (books/markets/our results model) -> PASS
+- REQ4: External betting lines used where they exist (markets first) -> PASS
+- REQ5: Every match without a market line still gets a pick + documented method -> WARN
+- REQ6: Separate unresolved section, with limitations, linked from the exec summary -> WARN
+- REQ7: Executive summary links in-site to the updated picks list -> PASS
+- REQ8: Every table row carries an official/trusted source link (or is flagged unverified) -> WARN
+- REQ9: Mobile-friendly: responsive viewport + responsive CSS + readable cards -> PASS
+- REQ10: Automatic refresh every 4-8 hours, no manual input -> PASS
+- REQ11: Site integrity: no broken internal links, root entry point works -> PASS
+- REQ12: Third-party sources attributed where their data is used -> PASS
