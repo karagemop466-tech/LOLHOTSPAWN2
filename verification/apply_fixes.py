@@ -52,6 +52,20 @@ NEW_MARKET = '''            if {str(outs[0]).strip().lower(), str(outs[1]).strip
 FIX_MARKET = ("scripts/fetch_markets.py", OLD_MARKET, NEW_MARKET,
               "Never use a Game-N/Map-N child market as a series price (I1/I10)")
 
+FIX_GAME_REGEX = (
+    "scripts/fetch_markets.py",
+    '                game = "game 1" in q or "game 2" in q or "map 1" in q',
+    '                game = bool(re.search(r"(game|map)\\s*\\d+", q))',
+    "Detect every Game-N/Map-N market (not only game 1/2, map 1)",
+)
+
+FIX_BO_UNKNOWN = (
+    "scripts/model.py",
+    '            if (rec.get("raw") or {}).get("market_type") == "game1" and (f.get("best_of") or 1) > 1:',
+    '            if (rec.get("raw") or {}).get("market_type") == "game1" and f.get("best_of") != 1:',
+    "Only allow a game-level market when the fixture is known BO1 (unknown best_of is not BO1)",
+)
+
 NEED_FALLBACK = ("scripts/fetch_markets.py", "        chosen = None\n",
                  "        chosen = None\n        fallback_single = None\n",
                  "declare fallback_single before the market loop")
@@ -80,6 +94,8 @@ def main() -> int:
     print(apply_fix(*FIX_MODEL_NAMES[:3], FIX_MODEL_NAMES[3], args.check))
     print(apply_fix(*NEED_FALLBACK, args.check))
     print(apply_fix(*FIX_MARKET, args.check))
+    print(apply_fix(*FIX_GAME_REGEX, args.check))
+    print(apply_fix(*FIX_BO_UNKNOWN, args.check))
 
     # market loop needs the fallback used after the loop
     mk = os.path.join(ROOT, "scripts", "fetch_markets.py")

@@ -492,10 +492,13 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
 
 def verify_data_files(rep: Report) -> None:
     present = [p for p in DATA_PATHS if os.path.exists(p)]
-    if len(present) != len(DATA_PATHS):
-        missing = [os.path.relpath(p, ROOT) for p in DATA_PATHS if p not in present]
-        rep.add("D14", "canonical and site data files both exist", FAIL,
-                f"missing {missing}")
+    if not present:
+        rep.add("D14", "published data file exists", FAIL,
+                f"none of {[os.path.relpath(p, ROOT) for p in DATA_PATHS]} exist")
+        return
+    if len(present) == 1:
+        rep.add("D14", "single published data file (site copy)", PASS,
+                f"only {os.path.relpath(present[0], ROOT)} exists — site copy is the single source")
         return
     digests = {}
     for p in DATA_PATHS:

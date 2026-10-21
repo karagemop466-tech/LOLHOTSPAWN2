@@ -54,15 +54,32 @@ def norm(s: str) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--schedule", default=os.path.join(ROOT, "data", "diag", "lp_schedule.json"))
+    ap.add_argument("--schedule-dir", default="",
+                    help="directory of MatchSchedule json snapshots to merge (e.g. data/diag)")
     ap.add_argument("--picks", default=os.path.join(ROOT, "docs", "data", "picks.json"))
     ap.add_argument("--out", default=os.path.join(ROOT, "verification", "leaguepedia_coverage.json"))
     ap.add_argument("--md", default=os.path.join(ROOT, "verification", "leaguepedia_coverage.md"))
+    ap.add_argument("--rows", choices=["unresolved", "model", "all"], default="all")
     args = ap.parse_args()
 
     rows = json.load(open(args.picks, encoding="utf-8")).get("matches", [])
-    schedule = json.load(open(args.schedule, encoding="utf-8"))
-    if isinstance(schedule, dict):  # tolerate {"cargoquery":[{"title":{...}}]} shapes
-        schedule = schedule.get("cargoquery") or schedule.get("rows") or []
+    if args.schedule_dir:
+        schedule = []
+        for fn in sorted(os.listdir(args.schedule_dir)):
+            if not fn.endswith(".json") or not fn.startswith("ms_"):
+                continue
+            try:
+                part = json.load(open(os.path.join(args.schedule_dir, fn), encoding="utf-8"))
+            except Exception:
+                continue
+            if isinstance(part, dict):
+                part = part.get("cargoquery") or part.get("rows") or []
+            if isinstance(part, list):
+                schedule += part
+    else:
+        schedule = json.load(open(args.schedule, encoding="utf-8"))
+        if isinstance(schedule, dict):  # tolerate {"cargoquery":[{"title":{...}}]} shapes
+            schedule = schedule.get("cargoquery") or schedule.get("rows") or []
     sched = []
     for r in schedule:
         r = r.get("title", r) if isinstance(r, dict) else r
@@ -80,6 +97,10 @@ def main() -> int:
     for r in sched:
         by_page.setdefault(r["page"], []).append(r)
 
+    if args.rows == "unresolved":
+        rows = [m for m in rows if m.get("method") == "UNRESOLVED"]
+    elif args.rows == "model":
+        rows = [m for m in rows if not str(m.get("method", "")).startswith("MARKET")]
     results, unresolved = [], [m for m in rows if m.get("method") == "UNRESOLVED"]
     for m in rows:
         tour = (m.get("tournament") or "").strip()
@@ -98,6 +119,16 @@ def main() -> int:
                 if by_page.get(p):
                     hit_page = p
                     break
+        claimed = (m.get("leaguepedia_page") or "").strip()
+        if not hit_page and not claimed:
+            u = m.get("leaguepedia_url") or ""
+            if "/wiki/" in u:
+                claimed = u.split("/wiki/", 1)[1].replace("_", " ")
+        if not hit_page and claimed and not by_page.get(claimed):
+            hit_page = claimed
+            status_override = "CLAIMED_PAGE"
+        else:
+            status_override = None
         results.append({
             "team1": m["team1"], "team2": m["team2"], "tournament": tour,
             "method": m.get("method"), "start_utc": m.get("start_utc"),
@@ -105,8 +136,9 @@ def main() -> int:
             "leaguepedia_url": (WIKI + hit_page.replace(" ", "_")) if hit_page else None,
             "schedule_fixture_found": bool(hit_fixture),
             "schedule_row": sample,
-            "status": ("MATCHED_FIXTURE" if hit_fixture else
-                       "LEAGUE_PAGE_ONLY" if hit_page else "NO_SOURCE"),
+            "status": (status_override or
+                       ("MATCHED_FIXTURE" if hit_fixture else
+                        "LEAGUE_PAGE_ONLY" if hit_page else "NO_SOURCE")),
         })
 
     summary = {
@@ -115,40 +147,40 @@ def main() -> int:
         "schedule_pages": sorted(by_page),
         "matches": len(rows),
         "unresolved": len(unresolved),
-        "unresolved_matched_fixture": sum(1 for r in results
-                                          if r["method"] == "UNRESOLVED" and r["status"] == "MATCHED_FIXTURE"),
-        "unresolved_league_page_only": sum(1 for r in results
-                                           if r["method"] == "UNRESOLVED" and r["status"] == "LEAGUE_PAGE_ONLY"),
-        "unresolved_no_source": sum(1 for r in results
-                                    if r["method"] == "UNRESOLVED" and r["status"] == "NO_SOURCE"),
+        "audited_rows": len(results),
+        "matched_fixture": sum(1 for r in results if r["status"] == "MATCHED_FIXTURE"),
+        "league_page_only": sum(1 for r in results if r["status"] == "LEAGUE_PAGE_ONLY"),
+        "claimed_page": sum(1 for r in results if r["status"] == "CLAIMED_PAGE"),
+        "no_source": sum(1 for r in results if r["status"] == "NO_SOURCE"),
         "by_tournament": {},
     }
     for r in results:
-        if r["method"] != "UNRESOLVED":
+        if args.rows == "unresolved" and r["method"] != "UNRESOLVED":
             continue
         b = summary["by_tournament"].setdefault(
             r["tournament"], {"rows": 0, "fixture": 0, "page": 0, "none": 0, "url": r["leaguepedia_url"]})
         b["rows"] += 1
         b[{"MATCHED_FIXTURE": "fixture", "LEAGUE_PAGE_ONLY": "page",
-           "NO_SOURCE": "none"}[r["status"]]] += 1
+           "CLAIMED_PAGE": "page", "NO_SOURCE": "none"}[r["status"]]] += 1
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     json.dump({"summary": summary, "rows": results}, open(args.out, "w", encoding="utf-8"),
               indent=1, ensure_ascii=False)
 
-    md = ["# Leaguepedia coverage audit (unresolved rows)", "",
+    md = ["# Leaguepedia coverage audit", "",
           f"_{summary['checked_at']}_ · schedule rows: {summary['schedule_rows']} · "
           f"pages: {len(summary['schedule_pages'])}", "",
-          f"**{summary['unresolved']} unresolved rows** → "
-          f"{summary['unresolved_matched_fixture']} have the exact fixture on a Leaguepedia league page, "
-          f"{summary['unresolved_league_page_only']} have only the league page, "
-          f"{summary['unresolved_no_source']} have no Leaguepedia page at all.", "",
-          "| Hotspawn tournament | unresolved | fixture matched | league page only | no source | Leaguepedia page |",
+          f"**{summary['audited_rows']} audited rows** ({args.rows}) → "
+          f"{summary['matched_fixture']} have the exact fixture on a Leaguepedia league page, "
+          f"{summary['league_page_only']} have the league page only, "
+          f"{summary['claimed_page']} cite a page not present in this snapshot, "
+          f"{summary['no_source']} have no Leaguepedia page at all.", "",
+          "| Hotspawn tournament | rows | fixture matched | league page only | no source | Leaguepedia page |",
           "|---|---|---|---|---|---|"]
     for t, b in sorted(summary["by_tournament"].items(), key=lambda kv: -kv[1]["rows"]):
         md.append(f"| {t} | {b['rows']} | {b['fixture']} | {b['page']} | {b['none']} | {b['url'] or '—'} |")
     md += ["", "## Rows with no Leaguepedia source", ""]
-    none = [r for r in results if r["method"] == "UNRESOLVED" and r["status"] == "NO_SOURCE"]
+    none = [r for r in results if r["status"] == "NO_SOURCE"]
     md += [f"- {r['team1']} vs {r['team2']} — {r['tournament']}" for r in none] or ["- none"]
     open(args.md, "w", encoding="utf-8").write("\n".join(md) + "\n")
 
