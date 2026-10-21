@@ -211,3 +211,28 @@ official PRM organizer. → Requests logged below.
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
 Hotspawn crowd % never feeds a probability. Baseline on current main: **26 PASS · 2 WARN · 0 FAIL**
 (WARN: 61 model rows cite an API help page; 64.6% of rows still unresolved). Reports in `verification/`.
+
+
+## Post-merge verification — session `arena/47334762` (T11 done, T12 in progress)
+
+`arena/fa3f554c` merged PR #5 (v2 pipeline + 6-page site) at 2026-10-21T21:03:55Z; the 6-hour workflow refreshed the
+payload on `main` (208 fixtures, 9 market, 199 model, 0 unresolved). This session then merged `main`, applied the two
+verified production fixes and re-ran the full suite.
+
+**Result on the merged branch (208 fixtures, generated 21:07 UTC):**
+`python3 scripts/verify_site.py --leaguepedia-schedule data/diag` → **31 PASS · 0 FAIL · 1 WARN**
+— the WARN is `D18`: 4 fixtures have different Hotspawn vs Leaguepedia start times (P14, flagged; Hotspawn governs
+pick locks). `verification/test_verifier.py` 27/27 · DOM contract PASS ·
+coverage audit: 153 exact Leaguepedia fixtures / 26 league-page-only / 15 claimed page / **5 rows with no page**
+(4 Arabian League 2nd, 1 LigaGG — all ~50% priors, Low confidence).
+
+**Fixes applied here (verified end-to-end by the branch pipeline run 39676044544, success):**
+- `fetch_markets.py`: every `Game N`/`Map N` market is detected, not just game 1/2/map 1.
+- `model.py`: a game-level market is only allowed when the fixture is **known BO1** (unknown `best_of` is not BO1).
+  After the fix, Galions–Solary uses the BO5 series market (Pinnacle 53.4 / Bovada 50.0 / Polymarket 55.5 → 53.4).
+- `scripts/verify_site.py` kept as the single verifier (superset of the 142-line version; its `match.html`,
+  confidence-label and URL checks are preserved).
+- `.github/workflows/verify.yml` added: 27 self-tests + 31 checks + external-link and live-Pages checks every 6 h.
+
+**T12 remaining:** open the verification follow-up PR to `main`, merge it, confirm the Pages deploy and record the PR
+link + build id here and in `verification/FINAL_REPORT.md` §8.

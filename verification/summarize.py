@@ -24,14 +24,16 @@ def main() -> int:
 
     lines = ["# Coverage by league", "",
              f"_generated {data.get('generated_at', '?')} · {len(rows)} matches_", "",
-             "| League | rows | market | standings | elo | 50/50 | rows with a source link |",
-             "|---|---|---|---|---|---|---|"]
+             "| League | rows | market | model | unresolved | rows with a source link |",
+             "|---|---|---|---|---|---|"]
     tot = Counter()
     for league, rs in sorted(by.items(), key=lambda kv: -len(kv[1])):
         c = Counter(m.get("method") for m in rs)
-        linked = sum(1 for m in rs if any(m.get(k) for k in ("market_url", "source_url", "hotspawn_url")))
-        lines.append(f"| {league} | {len(rs)} | {c.get('MARKET_POLYMARKET', 0) + c.get('MARKET_BOOKS', 0)} "
-                     f"| {c.get('MODEL_STANDINGS', 0)} | {c.get('MODEL_ELO', 0)} | {c.get('UNRESOLVED', 0)} "
+        market = sum(v for k, v in c.items() if str(k).startswith("MARKET"))
+        model = sum(v for k, v in c.items() if str(k).startswith("MODEL"))
+        linked = sum(1 for m in rs if any(m.get(k) for k in ("market_url", "source_url", "hotspawn_url"))
+                     or m.get("sources"))
+        lines.append(f"| {league} | {len(rs)} | {market} | {model} | {c.get('UNRESOLVED', 0)} "
                      f"| {linked}/{len(rs)} |")
         tot.update(c)
     lines += ["", f"**Totals:** " + " · ".join(f"{k}: {v}" for k, v in sorted(tot.items()))]
