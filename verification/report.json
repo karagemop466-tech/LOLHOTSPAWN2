@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-21T21:09:00.308401+00:00",
+ "verified_at": "2026-10-21T21:09:59.940731+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 31,
@@ -9,15 +9,15 @@
  },
  "data_matches": 208,
  "methods": {
-  "MARKET_BOOKS": 0,
-  "MARKET_POLYMARKET": 0,
-  "MARKET_SINGLE": 0,
-  "MODEL_ELO": 92,
   "UNRESOLVED": 0,
-  "MODEL_ELO_THIN": 72,
+  "MARKET_BOOKS": 0,
   "MODEL_STANDINGS": 0,
+  "MODEL_ELO": 92,
+  "MARKET_POLYMARKET": 0,
+  "MODEL_LEAGUE_PRIOR": 35,
   "MARKET_CONSENSUS": 9,
-  "MODEL_LEAGUE_PRIOR": 35
+  "MARKET_SINGLE": 0,
+  "MODEL_ELO_THIN": 72
  },
  "checks": [
   {
