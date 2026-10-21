@@ -15,7 +15,10 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - name: Run pipeline
-        run: python3 scripts/update_picks.py
+        env: {PYTHONUNBUFFERED: "1"}
+        run: |
+          mkdir -p data/diag
+          python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
       - name: Show summary
         run: python3 - <<'PY'
           import json
@@ -26,9 +29,10 @@ jobs:
           print(json.dumps(d['sources_status'],indent=1)[:1500])
           PY
       - name: Commit outputs (branch only, for review)
+        if: always()
         run: |
           git config user.name "picks-bot"; git config user.email "actions@github.com"
-          git add data docs/data
+          git add data docs/data .github/workflows/pipeline-test.yml
           git diff --cached --quiet || git commit -m "pipeline: test run [skip ci]"
           git pull --rebase origin "${GITHUB_REF_NAME}" || true
           git push origin HEAD:"${GITHUB_REF_NAME}" || true
