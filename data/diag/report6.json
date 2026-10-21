@@ -1,0 +1,403 @@
+{
+ "standings": {
+  "prm3": {
+   "status": 200,
+   "head": "Error: No field named \"Wins\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  },
+  "prm2": {
+   "status": 200,
+   "head": "Error: No field named \"Wins\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  },
+  "4nations": {
+   "status": 200,
+   "head": "Error: No field named \"Wins\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  },
+  "rivals": {
+   "status": 200,
+   "head": "Error: No field named \"Wins\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  },
+  "komplett": {
+   "status": 200,
+   "head": "Error: No field named \"Wins\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  },
+  "tunisian": {
+   "status": 200,
+   "head": "Error: No field named \"Wins\" found for any of the specified database tables.",
+   "err": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  }
+ },
+ "tournament_results": {
+  "status": 200,
+  "head": "[\n    {\n        \"OverviewPage\": \"4 Nations Tournament 2014\",\n        \"Team\": \"Cambridge Dongers\",\n        \"Place\": \"5-8\",\n        \"Prize\": null,\n        \"Phase\": null\n    },\n    {\n        \"OverviewPag",
+  "n": 100,
+  "pages": [
+   "4 Nations Tournament 2014",
+   "4 Nations/2023 Season/Autumn Playoffs",
+   "4 Nations/2023 Season/Autumn Season",
+   "4 Nations/2024 Season/Autumn Playoffs",
+   "4 Nations/2024 Season/Autumn Season",
+   "4 Nations/2024 Season/Spring Playoffs",
+   "4 Nations/2024 Season/Spring Season",
+   "4 Nations/2024 Season/Sunshine Showdown",
+   "4 Nations/2025 Season/Spring Playoffs",
+   "4 Nations/2025 Season/Spring Split",
+   "4 Nations/2025 Season/Summer Playoffs",
+   "4 Nations/2025 Season/Summer Split"
+  ]
+ },
+ "prm3_schedule": {
+  "status": 200,
+  "head": "[\n    {\n        \"Team1\": \"1. Esport Club Frankfurt e.V.\",\n        \"Team2\": \"404 Multigaming e.V.\",\n        \"DateTime UTC\": \"2025-11-14 18:00:00\",\n        \"OverviewPage\": \"Prime League 3rd Division\\/20",
+  "n": 200,
+  "sample": [
+   {
+    "Team1": "1. Esport Club Frankfurt e.V.",
+    "Team2": "404 Multigaming e.V.",
+    "DateTime UTC": "2025-11-14 18:00:00",
+    "OverviewPage": "Prime League 3rd Division/2026 Season/Fall Split",
+    "BestOf": 2,
+    "Tab": "Week 6",
+    "DateTime UTC__precision": 0
+   },
+   {
+    "Team1": "1. Esport Club Frankfurt e.V.",
+    "Team2": "404 Multigaming e.V.",
+    "DateTime UTC": "2026-02-20 18:00:00",
+    "OverviewPage": "Prime League 3rd Division/2026 Season/Winter Split",
+    "BestOf": 3,
+    "Tab": "Week 3",
+    "DateTime UTC__precision": 0
+   },
+   {
+    "Team1": "1. Esport Club Frankfurt e.V.",
+    "Team2": "AceGaming Wildcard",
+    "DateTime UTC": "2026-06-11 17:00:00",
+    "OverviewPage": "Prime League 3rd Division/2026 Season/Spring Split",
+    "BestOf": 3,
+    "Tab": "Week 4",
+    "DateTime UTC__precision": 0
+   },
+   {
+    "Team1": "1. Esport Club Frankfurt e.V.",
+    "Team2": "DIVIZON",
+    "DateTime UTC": "2022-02-27 18:00:00",
+    "OverviewPage": "Prime League 3rd Division/2022 Season/Spring Season",
+    "BestOf": 2,
+    "Tab": "Week 3",
+    "DateTime UTC__precision": 0
+   },
+   {
+    "Team1": "1. Esport Club Frankfurt e.V.",
+    "Team2": "E-Void Sports",
+    "DateTime UTC": "2025-10-26 18:00:00",
+    "OverviewPage": "Prime League 3rd Division/2026 Season/Fall Split",
+    "BestOf": 2,
+    "Tab": "Week 4",
+    "DateTime UTC__precision": 0
+   }
+  ],
+  "pages": [
+   "Prime League 3rd Division/2022 Season/Spring Playoffs",
+   "Prime League 3rd Division/2022 Season/Spring Season",
+   "Prime League 3rd Division/2022 Season/Summer Season",
+   "Prime League 3rd Division/2022 Season/Winter Relegation",
+   "Prime League 3rd Division/2022 Season/Winter Season",
+   "Prime League 3rd Division/2023 Season/Spring Playoffs",
+   "Prime League 3rd Division/2023 Season/Spring Season",
+   "Prime League 3rd Division/2023 Season/Summer Playoffs",
+   "Prime League 3rd Division/2023 Season/Summer Season",
+   "Prime League 3rd Division/2024 Season/Spring Playoffs",
+   "Prime League 3rd Division/2024 Season/Spring Season",
+   "Prime League 3rd Division/2024 Season/Summer Season",
+   "Prime League 3rd Division/2025 Season/Spring Split",
+   "Prime League 3rd Division/2025 Season/Summer Split",
+   "Prime League 3rd Division/2025 Season/Winter Split",
+   "Prime League 3rd Division/2026 Season/Fall Split",
+   "Prime League 3rd Division/2026 Season/Spring Split",
+   "Prime League 3rd Division/2026 Season/Winter Split",
+   "Prime League 3rd Division/2027 Season/Fall Split"
+  ]
+ },
+ "tunisian_schedule": {
+  "status": 200,
+  "head": "[\n    {\n        \"Team1\": \"Association Sportive Mansoura\",\n        \"Team2\": \"Thysdrus Esports\",\n        \"DateTime UTC\": \"2025-11-22 19:00:00\",\n        \"OverviewPage\": \"Tunisian Super League\\/2025 Seaso",
+  "n": 200,
+  "pages": [
+   "Tunisian Super League Female/2024 Season",
+   "Tunisian Super League/2023 Season",
+   "Tunisian Super League/2024 Season",
+   "Tunisian Super League/2025 Season",
+   "Tunisian Super League/2026 Season"
+  ]
+ },
+ "sites": {
+  "primeleague": {
+   "status": 403,
+   "bytes": 1102,
+   "title": "Establishing a secure connection ...",
+   "head": "<!DOCTYPE html> <html> <head> <title>Establishing a secure connection ...</title> <meta name=\"viewport\" content=\"width=device-width, initial-scale=0.8\"> <link href=\"/.bunny-shield/"
+  },
+  "primeleague_api": {
+   "status": 403,
+   "bytes": 1097,
+   "title": "Establishing a secure connection ...",
+   "head": "<!DOCTYPE html> <html> <head> <title>Establishing a secure connection ...</title> <meta name=\"viewport\" content=\"width=device-width, initial-scale=0.8\"> <link href=\"/.bunny-shield/"
+  },
+  "4nations": {
+   "status": 0,
+   "bytes": 0,
+   "title": null,
+   "head": ""
+  },
+  "rivals": {
+   "status": 200,
+   "bytes": 0,
+   "title": "RIVALS LEAGUE",
+   "head": "<!doctype html> <html lang=\"sv\"> <head> <meta charset=\"UTF-8\" /> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /> <title>RIVALS LEAGUE</title> <meta name=\"d"
+  },
+  "komplett": {
+   "status": 200,
+   "bytes": 0,
+   "title": "Komplettligaen - Norsk e-sport",
+   "head": "<!doctype html> <html lang=\"no\"> <head> <meta charset=\"utf-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <title>Komplettligaen - Norsk e-sport</title> <m"
+  },
+  "ligagg": {
+   "status": 0,
+   "bytes": 0,
+   "title": null,
+   "head": ""
+  },
+  "tunisian": {
+   "status": 0,
+   "bytes": 0,
+   "title": null,
+   "head": ""
+  },
+  "tunisian2": {
+   "status": 0,
+   "bytes": 0,
+   "title": null,
+   "head": ""
+  },
+  "lol_tn": {
+   "status": 0,
+   "bytes": 0,
+   "title": null,
+   "head": ""
+  }
+ },
+ "liq_pages": {
+  "Prime League": [
+   "Prime League",
+   "Prime League/2. Liga/2025/Championship Points",
+   "Prime League/2. Liga/2025/Fall",
+   "Prime League/2. Liga/2025/Fall/Group Stage",
+   "Prime League/2. Liga/2025/Fall/Playoffs",
+   "Prime League/2. Liga/2025/Fall/Playoffs Play-In",
+   "Prime League/2. Liga/2025/Fall/Relegation Play-In",
+   "Prime League/2. Liga/2025/Finals",
+   "Prime League/2. Liga/2025/Spring",
+   "Prime League/2. Liga/2025/Spring/Last Chance Qualifier",
+   "Prime League/2. Liga/2025/Spring/Playoffs",
+   "Prime League/2. Liga/2025/Spring/Promotion",
+   "Prime League/2. Liga/2025/Spring/Swiss Stage",
+   "Prime League/2. Liga/2025/Summer",
+   "Prime League/2. Liga/2025/Summer/Group Stage",
+   "Prime League/2. Liga/2025/Summer/Playoffs",
+   "Prime League/2. Liga/2025/Summer/Promotion",
+   "Prime League/2. Liga/2026/Championship Points",
+   "Prime League/2. Liga/2026/Fall",
+   "Prime League/2. Liga/2026/Fall/Group Stage",
+   "Prime League/2. Liga/2026/Fall/Playoffs",
+   "Prime League/2. Liga/2026/Fall/Playoffs Play-In",
+   "Prime League/2. Liga/2026/Fall/Promotion",
+   "Prime League/2. Liga/2026/Fall/Relegation Play-In",
+   "Prime League/2. Liga/2026/Finals",
+   "Prime League/2. Liga/2026/Spring",
+   "Prime League/2. Liga/2026/Spring/Group Stage",
+   "Prime League/2. Liga/2026/Spring/Playoffs",
+   "Prime League/2. Liga/2026/Spring/Playoffs Play-In",
+   "Prime League/2. Liga/2026/Spring/Promotion",
+   "Prime League/2. Liga/2026/Spring/Relegation Play-In",
+   "Prime League/2. Liga/2026/Winter",
+   "Prime League/2. Liga/2026/Winter/Group Stage",
+   "Prime League/2. Liga/2026/Winter/Playoffs",
+   "Prime League/2. Liga/2026/Winter/Playoffs Play-In",
+   "Prime League/2. Liga/2026/Winter/Promotion",
+   "Prime League/2. Liga/2026/Winter/Relegation Play-In",
+   "Prime League/2020/1st Division/Split Points",
+   "Prime League/2020/All-Stars",
+   "Prime League/2020/All-Stars/Statistics",
+   "Prime League/2020/Pro Division/Championship Points",
+   "Prime League/2020/Season Finals",
+   "Prime League/2020/Season Finals/Main Stage",
+   "Prime League/2020/Season Finals/Main Stage/Statistics",
+   "Prime League/2020/Season Finals/Play-In",
+   "Prime League/2020/Season Finals/Play-In/Statistics",
+   "Prime League/2020/Season Finals/Statistics",
+   "Prime League/2020/Spring/1st Division",
+   "Prime League/2020/Spring/1st Division/Group Stage",
+   "Prime League/2020/Spring/1st Division/Statistics",
+   "Prime League/2020/Spring/Pro Division",
+   "Prime League/2020/Spring/Pro Division/Group Stage",
+   "Prime League/2020/Spring/Pro Division/Group Stage/Statistics",
+   "Prime League/2020/Spring/Pro Division/Playoffs",
+   "Prime League/2020/Spring/Pro Division/Playoffs/Statistics",
+   "Prime League/2020/Spring/Pro Division/Statistics",
+   "Prime League/2020/Summer/1st Division",
+   "Prime League/2020/Summer/1st Division/Group Stage",
+   "Prime League/2020/Summer/1st Division/Promotion",
+   "Prime League/2020/Summer/1st Division/Promotion/Statistics"
+  ],
+  "4 Nations": [
+   "4 Nations/2024/Autumn",
+   "4 Nations/2024/Autumn/Group Stage",
+   "4 Nations/2024/Autumn/Playoffs",
+   "4 Nations/2024/Fall",
+   "4 Nations/2024/Fall/Playoffs",
+   "4 Nations/2024/Spring",
+   "4 Nations/2024/Spring/Group Stage",
+   "4 Nations/2024/Spring/Playoffs",
+   "4 Nations/2025/Autumn",
+   "4 Nations/2025/Spring",
+   "4 Nations/2025/Spring/Group Stage",
+   "4 Nations/2025/Spring/Playoffs",
+   "4 Nations/2025/Spring/Promotion",
+   "4 Nations/2025/Summer",
+   "4 Nations/2025/Summer/Group Stage",
+   "4 Nations/2025/Summer/Playoffs",
+   "4 Nations/2025/Summer/Promotion",
+   "4 Nations/2025/Winter",
+   "4 Nations/2025/Winter/Group Stage",
+   "4 Nations/2025/Winter/Playoffs",
+   "4 Nations/2026/Spring",
+   "4 Nations/2026/Spring/Group Stage",
+   "4 Nations/2026/Spring/Playoffs",
+   "4 Nations/2026/Spring/Promotion",
+   "4 Nations/2026/Summer",
+   "4 Nations/2026/Summer/Group Stage",
+   "4 Nations/2026/Summer/Playoffs",
+   "4 Nations/2026/Summer/Promotion",
+   "4 Nations/2027/Spring/Promotion",
+   "4 Nations/Division 2/2025/Spring",
+   "4 Nations/Division 2/2025/Spring/Group Stage",
+   "4 Nations/Division 2/2025/Spring/Playoffs",
+   "4 Nations/Division 2/2025/Summer",
+   "4 Nations/Division 2/2025/Summer/Group Stage",
+   "4 Nations/Division 2/2025/Summer/Playoffs",
+   "4 Nations/Division 2/2025/Summer/Promotion",
+   "4 Nations/Division 2/2025/Winter",
+   "4 Nations/Division 2/2025/Winter/Group Stage",
+   "4 Nations/Division 2/2025/Winter/Playoffs",
+   "4 Nations/Division 2/2026/Spring",
+   "4 Nations/Division 2/2026/Spring/Group Stage",
+   "4 Nations/Division 2/2026/Spring/Playoffs",
+   "4 Nations/Division 2/2026/Summer"
+  ],
+  "Tunisian": [],
+  "RIVALS LEAGUE": [
+   "RIVALS LEAGUE/2026/Winter",
+   "RIVALS LEAGUE/2026/Winter/Playoffs",
+   "RIVALS LEAGUE/2026/Winter/Relegation",
+   "RIVALS LEAGUE/2026/Winter/Swiss Stage",
+   "RIVALS LEAGUE/Division 2/Season 1",
+   "RIVALS LEAGUE/Division 2/Season 1/Group Stage",
+   "RIVALS LEAGUE/Division 2/Season 1/Playoffs",
+   "RIVALS LEAGUE/Division 2/Season 1/Qualifier",
+   "RIVALS LEAGUE/Season 1",
+   "RIVALS LEAGUE/Season 1/Playoffs",
+   "RIVALS LEAGUE/Season 1/Qualifier",
+   "RIVALS LEAGUE/Season 1/Relegation",
+   "RIVALS LEAGUE/Season 1/Swiss Stage",
+   "RIVALS LEAGUE/Season 2"
+  ],
+  "Komplettligaen": [
+   "Komplettligaen/2026/Autumn",
+   "Komplettligaen/2026/Autumn/Group Stage",
+   "Komplettligaen/2026/Autumn/Playoffs",
+   "Komplettligaen/2026/Autumn/Promotion",
+   "Komplettligaen/2026/Championship Points",
+   "Komplettligaen/2026/Playoffs",
+   "Komplettligaen/2026/Spring",
+   "Komplettligaen/2026/Spring/Promotion",
+   "Komplettligaen/Division 2/2026/Autumn",
+   "Komplettligaen/Division 2/2026/Spring"
+  ]
+ },
+ "liq_matchinfo_block": "match-info match-info--vertical\"><div class=\"match-info-top-row\"><span class=\"match-info-countdown\"><span class=\"timer-object\" data-format=\"compact\" data-timestamp=\"1792594800\">Oct 21 - 17:00 <abbr data-tz=\"+02:00\" title=\"Central European Summer Time (UTC+2)\">CEST</abbr></span></span><div class=\"match-info-stream-buttons\"></div></div><span class=\"match-info-stage\">Round 11</span><div class=\"match-info-header match-info-header-vertical\"><div class=\"match-info-opponent-row\"><div class=\"match-info-opponent-identity\"><div class=\"block-team\"><span class=\"team-template-image-icon\"><a href=\"/leagueoflegends/VES_Japan\" title=\"VES Japan\"><img alt=\"\" src=\"/commons/images/thumb/2/22/VES_Japan_lightmode.png/50px-VES_Japan_lightmode.png\" decoding=\"async\" width=\"50\" height=\"50\" srcset=\"/commons/images/thumb/2/22/VES_Japan_lightmode.png/75px-VES_Japan_lightmode.png 1.5x, /commons/images/thumb/2/22/VES_Japan_lightmode.png/100px-VES_Japan_lightmode.png 2x\" /></a></span><span class=\"name\" style=\"white-space:pre;text-overflow:ellipsis;overflow:hidden\"><a href=\"/leagueoflegends/index.php?title=VES_Japan&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"VES Japan (page does not exist)\">VES</a></span></div></div><span class=\"match-info-opponent-score\"></span></div><div class=\"match-info-opponent-row\"><div class=\"match-info-opponent-identity\"><div class=\"block-team\"><span class=\"team-template-image-icon\"><a href=\"/leagueoflegends/Phenti\" title=\"Phenti\"><img alt=\"\" src=\"/commons/images/thumb/0/04/Phenti_allmode.png/46px-Phenti_allmode.png\" decoding=\"async\" width=\"46\" height=\"50\" srcset=\"/commons/images/thumb/0/04/Phenti_allmode.png/69px-Phenti_allmode.png 1.5x, /commons/images/0/04/Phenti_allmode.png 2x\" /></a></span><span class=\"name\" style=\"white-space:pre;text-overflow:ellipsis;overflow:hidden\"><a href=\"/leagueoflegends/index.php?title=Phenti&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Phenti (page does not exist)\">PHE</a></span></div></div><span class=\"match-info-opponent-score\"></span></div></div></div></div><div class=\"carousel-item\" style=\"width:12.5rem\"><div class=\"match-info match-info--vertical\"><div class=\"match-info-top-row\"><span class=\"match-info-countdown\"><span class=\"timer-object\" data-format=\"compact\" data-timestamp=\"1792681200\">Oct 22 - 17:00 <abbr data-tz=\"+02:00\" title=\"Central European Summer Time (UTC+2)\">CEST</abbr></span></span><div class=\"match-info-stream-buttons\"></div></div><span class=\"match-info-stage\">Round 11</span><div class=\"match-info-header match-info-header-vertical\"><div class=\"match-info-opponent-row\"><div class=\"match-info-opponent-identity\"><div class=\"block-team\"><span class=\"team-template-image-icon\"><a href=\"/leagueoflegends/Playwell_R%C3%B8d_Q\" title=\"Playwell R\u00f8d Q\"><img alt=\"\" src=\"/commons/images/thumb/b/b9/Playwell_Esports_allmode.png/82px-Playwell_Esports_allmode.png\" decoding=\"async\" width=\"82\" height=\"50\" srcset=\"/commons/images/thumb/b/b9/Playwell_Esports_allmode.png/123px-Playwell_Esports_allmode.png 1.5x, /commons/images/thumb/b/b9/Playwell_Esports_allmode.png/164px-Playwell_Esports_allmode.png 2x\" /></a></span><span class=\"name\" style=\"white-space:pre;text-overflow:ellipsis;overflow:hidden\"><a href=\"/leagueoflegends/index.php?title=Playwell_R%C3%B8d_Q&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Playwell R\u00f8d Q (page does not exist)\">PRQ</a></span></div></div><span class=\"match-info-opponent-score\"></span></div><div class=\"match-info-opponent-row\"><div class=\"match-info-opponent-identity\"><div class=\"block-team\"><span class=\"team-template-image-icon team-template-lightmode\"><a href=\"/leagueoflegends/Bitfix_RG\" title=\"Bitfix RG\"><img alt=\"\" src=\"/commons/images/thumb/5/59/Rich_Gang_Esports_lightmode.png/50px-Rich_Gang_Esports_lightmode.png\" decoding=\"async\" width=\"50\" height=\"50\" srcset=\"/commons/images/thumb/5/59/Rich_Gang_Esports_lightmode.png/75px-Rich_Gang_Esports_lightmode.png 1.5x, /commons/images/thumb/5/59/Rich_Gang_Esports_lightmode.png/100px-Rich_Gang_Esports_lightmode.png 2x\" /></a></span><span class=\"team-template-image-icon team-template-darkmode\"><a href=\"/leagueoflegends/Bitfix_RG\" title=\"Bitfix RG\"><img alt=\"\" src=\"/commons/images/thumb/c/c9/Rich_Gang_Esports_darkmode.png/50px-Rich_Gang_Esports_darkmode.png\" decoding=\"async\" width=\"50\" height=\"50\" srcset=\"/commons/images/thumb/c/c9/Rich_Gang_Esports_darkmode.png/75px-Rich_Gang_Esports_darkmode.png 1.5x, /commons/images/thumb/c/c9/Rich_Gang_Esports_darkmode.png/100px-Rich_Gang_Esports_darkmode.png 2x\" /></a></s",
+ "liq_matchinfo_n": 5,
+ "liq_matchinfo_samples": [
+  {
+   "ts": [
+    "1792594800"
+   ],
+   "titles": [
+    "Central European Summer Time (UTC+2)",
+    "VES Japan",
+    "VES Japan (page does not exist)",
+    "Phenti",
+    "Phenti (page does not exist)"
+   ],
+   "scores": []
+  },
+  {
+   "ts": [
+    "1792681200"
+   ],
+   "titles": [
+    "Central European Summer Time (UTC+2)",
+    "Playwell R\u00f8d Q",
+    "Playwell R\u00f8d Q (page does not exist)",
+    "Bitfix RG",
+    "Bitfix RG",
+    "Bitfix RG"
+   ],
+   "scores": []
+  },
+  {
+   "ts": [
+    "1792681200"
+   ],
+   "titles": [
+    "Central European Summer Time (UTC+2)",
+    "Volda E-Sport",
+    "Volda E-Sport (page does not exist)",
+    "CNG Royal",
+    "CNG Royal"
+   ],
+   "scores": []
+  },
+  {
+   "ts": [
+    "1792681200"
+   ],
+   "titles": [
+    "Central European Summer Time (UTC+2)",
+    "Your Saviours",
+    "Your Saviours (page does not exist)",
+    "Mixlag fra Trondheim",
+    "Mixlag fra Trondheim (page does not exist)"
+   ],
+   "scores": []
+  },
+  {
+   "ts": [
+    "1792681200"
+   ],
+   "titles": [
+    "Central European Summer Time (UTC+2)",
+    "Ascent Gaming",
+    "Ascent Gaming",
+    "Ascent Gaming (page does not exist)",
+    "NTNUI Kometkameratene",
+    "NTNUI Kometkameratene (page does not exist)"
+   ],
+   "scores": []
+  }
+ ]
+}

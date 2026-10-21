@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:33:32.468223+00:00",
+ "generated_at": "2026-10-21T20:37:34.935211+00:00",
  "fixtures_lol": {
   "total": 1501,
   "future": 208,
@@ -445,17 +445,17 @@
   },
   "cargo_teamredirects2": {
    "status": 200,
-   "bytes": 257,
+   "bytes": 263,
    "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
   },
   "cargo_schedule": {
    "status": 200,
-   "bytes": 257,
+   "bytes": 263,
    "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
   },
   "cargo_export": {
    "status": 200,
-   "bytes": 1687,
+   "bytes": 1900,
    "head": "[\n    {\n        \"Team1\": \"100 Thieves\",\n        \"Team2\": \"Cloud9\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-05 21:53:00\",\n        \"OverviewPage\": \"LTA North\\/2025 Season\\/Split 3\",\n        \"DateTime UTC__precision\": 0\n    },\n    {\n        \"Team1\": \"100 Thieves\",\n        \"Team2\": \"Cloud9\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-05 23:36:00\",\n        \"OverviewPage\": \"LTA North\\/2025 Season\\/Split 3\",\n        \"DateTime UTC__precision\": 0\n    },\n    {\n        \"Team1\": \"10"
   }
  },
@@ -571,14 +571,14 @@
  "books": {
   "bovada_lol_coupon": {
    "status": 200,
-   "bytes": 14965,
+   "bytes": 14963,
    "lol_mentions": 2,
    "odds_mentions": 53,
    "head": "[{\"path\":[{\"id\":\"9417391\",\"link\":\"/esports/league-of-legends/world-championship-26\",\"description\":\"World Championship '26\",\"type\":\"LEAGUE\",\"sportCode\":\"ESPT\",\"order\":9223372036854775807,\"leaf\":true,\"current\":false},{\"id\":\"117310\",\"link\":\"/esports/lea"
   },
   "bovada_lol_page": {
    "status": 200,
-   "bytes": 2497943,
+   "bytes": 2498029,
    "lol_mentions": 36,
    "odds_mentions": 114,
    "head": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/assets/_next/static/chunks/"
