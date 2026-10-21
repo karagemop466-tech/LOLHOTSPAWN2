@@ -113,6 +113,8 @@
     const fresh = $("#freshness");
     const t = whenLocal(d.generated_at);
     if (upd) upd.innerHTML = `<b>Updated</b> ${esc(t.text)}`;
+    const fu = $("#footer-updated");
+    if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · every 6 hours.`;
     if (fresh) {
       const ok = isFresh(d);
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
@@ -268,6 +270,8 @@
       NO_HOTSPAWN_MATCH_PAGE: "Hotspawn match page not published",
       TIER_UNVERIFIED: "Hotspawn tier unverified",
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
+      START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
+      CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
     };
     return map[f] || f;
   }
@@ -349,11 +353,20 @@
       <dt>Teams with 365d games</dt><dd>${d.model.teams_with_recent_games}</dd>
       <dt>Elo K</dt><dd>${d.model.k_base} (scaled by BestOf and score margin)</dd>
       <dt>Inactivity half-life</dt><dd>${d.model.half_life_days} days</dd>
-      <dt>Competition priors</dt><dd>${d.model.competitions_with_prior}</dd>
+      <dt>Competition priors</dt><dd>${d.model.competitions_with_prior} leagues mapped to strength tiers</dd>
       <dt>Global prior</dt><dd>${d.model.global_prior}</dd>
     </dl>`;
     const g = $("#generated");
     if (g) g.textContent = `${whenLocal(d.generated_at).text} · next update ${whenUTC(d.next_update_utc)}`;
+    const ft = $("#backtest");
+    const b = d.model && d.model.backtest;
+    if (ft) ft.innerHTML = b ? `<dl class="kv">
+        <dt>Test window</dt><dd>Last ${b.window_days} days (${b.n} matches)</dd>
+        <dt>Log-loss</dt><dd><b>${b.log_loss}</b> <span class="small">(coin-flip baseline ${b.baseline_log_loss})</span></dd>
+        <dt>Brier score</dt><dd><b>${b.brier}</b> <span class="small">(baseline ${b.baseline_brier})</span></dd>
+        <dt>Accuracy</dt><dd>${(b.accuracy * 100).toFixed(1)}%</dd>
+      </dl><p class="tiny">Out-of-sample: ratings fitted before the window and frozen; only matches where both teams were already rated are scored.</p>`
+      : `<p>No backtest available for this run.</p>`;
   }
 
   function wirePicks() {

@@ -55,6 +55,7 @@ CHECKED_UNAVAILABLE = [
 
 LIMITATIONS = [
     "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Bovada and Polymarket list the World Championship and EMEA Masters, not regional amateur leagues.",
+    "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule records results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
     "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
@@ -67,7 +68,8 @@ def build_payload(fixtures, markets, leaguepedia, picks):
     now = now_utc()
     matches = picks["matches"]
     unresolved = [m for m in matches if m["method"] == "UNRESOLVED"]
-    low_conf = [m for m in matches if m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR")]
+    low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
+                (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
     market_matches = [m for m in matches if m["market"]]
     reasons = Counter()
     for m in unresolved:
@@ -109,7 +111,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "fixtures": len(matches),
             "next_24h": len(next_24h),
             "market": len(market_matches),
-            "model": sum(1 for m in matches if m.get("model")),
+            "model": sum(1 for m in matches if m["method"].startswith("MODEL")),
             "resolved": picks["coverage"]["resolved"],
             "unresolved": picks["coverage"]["unresolved"],
             "low_confidence": len(low_conf),
@@ -121,6 +123,13 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "count": len(unresolved),
             "low_confidence_count": len(low_conf),
             "reasons": [{"reason": k, "count": v} for k, v in reasons.most_common()],
+            "low_confidence_reasons": [{"reason": k, "count": v}
+                                       for k, v in Counter(
+                                           "One team has no recorded history (league prior used)"
+                                           if "ONE_TEAM_NO_HISTORY" in m["flags"] else
+                                           "Cross-league comparison" if "CROSS_LEAGUE_MODEL" in m["flags"] else
+                                           "Thin history (<8 games in 365 days)"
+                                           for m in low_conf).most_common()],
             "limitations": LIMITATIONS,
         },
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],

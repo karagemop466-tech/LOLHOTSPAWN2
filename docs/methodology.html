@@ -1,12 +1,162 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Method & Sources — Hotspawn LoL Picks</title><link rel="stylesheet" href="assets/style.css"></head><body>
-<header><h1>🎮 Hotspawn LoL Pick'em — Our Picks</h1><div class="sub" id="updated">Loading latest update…</div></header><nav><a href="index.html">🏠 Summary</a><a href="picks.html">✅ All Picks</a><a href="unresolved.html">⚠️ Unresolved</a><a href="flagged.html">🚩 Flagged</a><a href="methodology.html">📖 Method & Sources</a></nav>
-<main><h2>📖 Method & Sources (verified 2026-10-21)</h2>
-<div class="card"><h3>How a pick is generated (in order)</h3><ol>
-<li><b>Fixture list only from Hotspawn:</b> <a href="https://play.hotspawn.com/lol-pickems">play.hotspawn.com/lol-pickems</a> — teams, tournament, start, tier/points, match URL. Picks lock 5 min before start per <a href="https://play.hotspawn.com/how-it-works">play.hotspawn.com/how-it-works</a>. Hotspawn crowd % is context only, <b>never</b> a probability input.</li>
-<li><b>💰 Esportsbook lines:</b> OddsPapi (LoL sportId 18, Winner market 181; network incl. Pinnacle/bet365; docs: <a href="https://oddspapi.io/sports/esports/lol">oddspapi.io/sports/esports/lol</a>) when the free <code>ODDSPAPI_KEY</code> secret is set. Decimal odds de-vigged: p=(1/odds)/Σ(1/odds), median across books.</li>
-<li><b>💰 Prediction market:</b> Polymarket public Gamma API <a href="https://gamma-api.polymarket.com">gamma-api.polymarket.com</a> (LoL-tagged events), outcome prices used directly.</li>
-<li><b>🧮 Our own line (fallback for low-tier/no-market matches):</b> Elo (start 1500, K=32) over Leaguepedia <a href="https://lol.fandom.com/api.php?action=help&modules=cargoquery">Cargo API</a> ScoreboardGames results, last 180 days; P=1/(1+10<sup>−Δ/400</sup>), shrunk toward 50% by games played. Community/results source: <a href="https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki">Leaguepedia</a>; cross-check stats at <a href="https://gol.gg/tournament/list/">gol.gg</a>.</li>
-<li><b>⚠️ Unresolved:</b> no market + no team history → 50/50, nominal pick, flagged on the <a href="unresolved.html">Unresolved</a> and <a href="flagged.html">Flagged</a> pages with limitations.</li></ol></div>
-<div class="card"><h3>Updating</h3><p>GitHub Actions workflow <code>update-picks.yml</code> runs every 6 hours (within the requested 4–8h), re-scrapes, re-prices, commits <code>data/picks.json</code> and redeploys this site. Every row links its evidence source and the official Hotspawn match page where available; unconfirmed values are left as 50/50 and flagged, never invented.</p></div>
-<div class="card"><h3>Established LoL betting sources consulted</h3><ul><li>Pinnacle (sharp benchmark; public API closed to general public since 2025-07-23 — <a href="https://github.com/pinnacleapi/pinnacleapi-documentation">github.com/pinnacleapi/pinnacleapi-documentation</a>), reached via OddsPapi when keyed.</li><li>Polymarket (public Gamma API, above).</li><li>OddsPapi bookmaker network (350+ books, LoL sportId 18).</li></ul><p>Not betting advice. Pick'em is free-to-play on Hotspawn.</p></div></main>
-<script>document.getElementById('updated').textContent='Method verified 2026-10-21'</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology &amp; sources — Hotspawn LoL Picks</title>
+<meta name="description" content="How every Hotspawn LoL fixture gets a pick: de-vigged external lines, a league-anchored Elo model, verification rules, out-of-sample validation and the full source list.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="methodology">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+    </a>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    </div>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="error-box"></div>
+  <div id="freshness-warning" class="hidden"></div>
+
+  <p class="eyebrow">Method &amp; verification</p>
+  <h1>How the picks are made</h1>
+  <p class="lede">Fixtures come from Hotspawn. Probabilities never do. Each row is priced from external betting lines
+  when they exist, otherwise from our own Elo model trained on recorded match results.</p>
+
+  <section class="card">
+    <h3>1. Fixture list</h3>
+    <p class="small">We read Hotspawn's public lobby state (the same JSON the Pick'em page loads) and keep the League of Legends fixtures
+    with their teams, competition, best-of format, stage, tier badge and start time. Start times are taken from Hotspawn's own epoch
+    timestamp in UTC — never from the visitor's local rendering. Fixtures without a published Hotspawn match page are still listed and
+    flagged <span class="flag">NO_HOTSPAWN_MATCH_PAGE</span> so no dead link is produced.</p>
+  </section>
+
+  <section class="card">
+    <h3>2. External market consensus</h3>
+    <p class="small">For each fixture we look for two-way prices from established bookmakers and prediction markets.
+    Decimal odds are converted to implied probabilities and then <b>de-vigged</b>: the two implied probabilities are normalised so they sum to 1,
+    removing the bookmaker margin. Multiple sources are combined by median when at least three agree, otherwise by a fixed-quality weighted mean
+    (Pinnacle 1.0, Bovada 0.8, Polymarket 0.7; other books 0.6).</p>
+    <ul class="clean small">
+      <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability. ≤6 points = High confidence, ≤10 = Medium, more = Low.</li>
+      <li>Matching a bookmaker row to a Hotspawn fixture uses team-name aliases plus the closest start time within ±36 hours. Bookmakers publish drifting start times; the observed delta is shown on each match page and delta &gt;1.5 h sets <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>.</li>
+      <li>Bookmaker prices are used as published; no line is invented, smoothed or extrapolated to another match.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h3>3. Our Elo model (when no external line exists)</h3>
+    <p class="small">A chronological Elo rating is computed from Leaguepedia's recorded match results over a two-year window.
+    Only completed matches with a recorded winner are used. Updates are weighted by format and score margin.</p>
+    <ul class="clean small">
+      <li><b>Base K</b> 24, scaled ×0.8 for Bo1, ×1.0 for Bo3, ×1.3 for Bo5+; score-margin multiplier up to ×1.5.</li>
+      <li><b>Activity decay</b>: a team's rating drifts back toward its competition base with a 365-day half-life while inactive.</li>
+      <li><b>Competition-strength priors</b>: pooling every league in one Elo pool without cross-play inflates teams that farm wins in weak or academy leagues. Each team is therefore anchored to the tier of the competition it actually plays in (international &gt; top regional leagues &gt; EMEA/ERLs &gt; national divisions &gt; academy/amateur). This is a documented prior, not a measured quantity — see the limitation below.</li>
+      <li><b>Shrinkage</b>: with few games, the Elo probability is pulled toward 50/50 (shrink = games/(games+8)).</li>
+      <li><b>Head-to-head</b>: a smoothed H2H term contributes at most 15% and only with at least three meetings.</li>
+      <li><b>One missing side</b>: the competition median rating (or tier prior) is substituted and the shrink is halved; the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
+      <li><b>No history at all</b>: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h3>4. Out-of-sample validation</h3>
+    <p class="small">To show how the model actually performs, ratings are fitted on data before the last 30 days, frozen, and then scored on the
+    matches played in those 30 days (only matches where both teams already had a rating). Log-loss and Brier score are compared with a coin-flip
+    baseline; accuracy is the share of matches where the higher-probability side won.</p>
+    <div id="backtest" class="small">Loading validation…</div>
+  </section>
+
+  <section class="card">
+    <h3>5. What we refuse to do</h3>
+    <ul class="clean small">
+      <li><b>Hotspawn's crowd percentage is never an input.</b> It is crowd behaviour, not a probability, and is displayed only as context.</li>
+      <li><b>No inferred values.</b> If a price, result or time cannot be read from a linked source, it stays blank or the row is flagged — never filled from memory or pattern-matching.</li>
+      <li><b>No silent edits.</b> Irregularities are published with the source link on <a href="flagged.html">Flagged for review</a>.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h3>Model run details</h3>
+    <div id="model-info">Loading model details…</div>
+    <p class="tiny" id="generated"></p>
+  </section>
+
+  <section>
+    <h2>Source status for this update</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Rows</th><th scope="col">Note</th></tr></thead>
+        <tbody id="sources-status">
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Checked but unavailable</h2>
+    <p class="small">Every provider below was attempted during source research and could not be used. Listing them keeps the coverage gap explicit.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Provider</th><th scope="col">Observed</th><th scope="col">Consequence</th></tr></thead>
+        <tbody id="checked-unavailable">
+          <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Known limitations</h3>
+    <ol class="small" id="limitations"><li>See <a href="unresolved.html">Unresolved &amp; low confidence</a>.</li></ol>
+  </section>
+
+  <section class="card">
+    <h3>Update cadence &amp; verification</h3>
+    <p class="small">The pipeline runs on a GitHub Actions schedule every six hours: it fetches the Hotspawn fixture list, external prices and
+    Leaguepedia results, rebuilds the model, verifies that every fixture has either a market line or a model output, and publishes
+    <a href="data/picks.json">data/picks.json</a>. Each run records its source status above; if a fetch fails the run is flagged rather than
+    publishing partial or invented numbers. Every table row links the exact page used for its values.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Information is for research and entertainment; it is not betting advice.</p>
+    <p class="small"><a href="index.html">← Back to summary</a></p>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Mobile">
+  <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
+  <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
+  <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
+</nav>
+
+<script src="assets/app.js" defer></script>
+<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
+</body>
+</html>

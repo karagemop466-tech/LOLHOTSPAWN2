@@ -82,8 +82,12 @@ def get_json(url: str, headers: dict | None = None, timeout: int = 60, retries: 
 
 def norm(s) -> str:
     """ASCII-folded alphanumeric key used for fuzzy team matching."""
-    s = unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]", "", s.lower())
+    raw = str(s or "")
+    for a, b in (("Ø", "O"), ("ø", "o"), ("Æ", "AE"), ("æ", "ae"), ("Å", "A"), ("å", "a"),
+                 ("Œ", "OE"), ("œ", "oe"), ("ß", "ss"), ("Đ", "D"), ("đ", "d")):
+        raw = raw.replace(a, b)
+    folded = unicodedata.normalize("NFKD", raw).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]", "", folded.lower())
 
 
 def clean_name(s) -> str:

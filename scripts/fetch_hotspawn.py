@@ -99,12 +99,24 @@ def normalise(raw: dict, permalinks: dict) -> dict | None:
 
 
 def main() -> int:
-    collected, err = _from_lobby()
-    if err:
-        log(f"lobby parse failed ({err}); trying fixtures API")
-        collected, err = _from_api()
-    if err:
-        raise SystemExit(f"Hotspawn fixture fetch failed: {err}")
+    # The lobby renders only the fixtures it has match pages for (195 today);
+    # the official fixtures endpoint carries every upcoming LoL fixture (208).
+    # Merge: API provides the complete list, lobby provides match permalinks.
+    api, api_err = _from_api()
+    lobby, lobby_err = _from_lobby()
+    api_fixtures = [x for x in (api or {}).get("fixtures", []) if str(x.get("sport_alias")).lower() == "lol"]
+    lobby_fixtures = [x for x in (lobby or {}).get("fixtures", []) if str(x.get("sport_alias")).lower() == "lol"]
+    if api_fixtures:
+        collected = {"fixtures": api_fixtures, "permalinks": (lobby or {}).get("permalinks") or {},
+                     "week": (lobby or {}).get("week") or {},
+                     "http": api.get("http"), "bytes": api.get("bytes"), "via": "fixtures-api+lobby-permalinks"}
+        if lobby_err:
+            log(f"lobby parse issue ({lobby_err}); continuing with API fixtures only")
+    elif lobby_fixtures:
+        collected = lobby
+        collected["via"] = "lobby-ng-state"
+    else:
+        raise SystemExit(f"Hotspawn fixture fetch failed: api={api_err} lobby={lobby_err}")
 
     now = now_utc()
     cutoff = now - timedelta(minutes=10)

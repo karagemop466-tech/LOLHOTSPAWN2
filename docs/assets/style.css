@@ -256,3 +256,7 @@ footer.site a { color: var(--brand); }
 .stack { display: grid; gap: 10px; }
 .two-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
 @media (min-width: 860px) { .two-col { grid-template-columns: 1.25fr .75fr; align-items: start; } }
+
+/* footer alias used by the v2 pages */
+footer.site-footer { border-top: 1px solid var(--line); margin-top: 34px; padding: 20px 0 28px; color: var(--muted); font-size: 13px; }
+footer.site-footer a { color: var(--brand); }

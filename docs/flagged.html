@@ -1,4 +1,140 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flagged for Review — Hotspawn LoL</title><link rel="stylesheet" href="assets/style.css"></head><body>
-<header><h1>🎮 Hotspawn LoL Pick'em — Our Picks</h1><div class="sub" id="updated">Loading latest update…</div></header><nav><a href="index.html">🏠 Summary</a><a href="picks.html">✅ All Picks</a><a href="unresolved.html">⚠️ Unresolved</a><a href="flagged.html">🚩 Flagged</a><a href="methodology.html">📖 Method & Sources</a></nav>
-<main><h2>🚩 Flagged for Review</h2><p>Items that could not be verified from an official/trusted source. They do not block publication.</p><div id="list">Loading…</div><div class="card"><h3>Standing flags</h3><ul><li>Hotspawn lobby is not directly reachable from every network (403/anti-bot on some) — scraper runs in GitHub Actions; raw parser debug is in <code>data/debug.json</code> in the repo.</li><li>Matches with tier “WAITING FOR INFORMATION” on Hotspawn have unverified tier/points — flagged in data by that tier label.</li><li>OddsPapi bookmaker lines require a free <code>ODDSPAPI_KEY</code> repo secret; without it only Polymarket + our Elo model run. OddsPapi: <a href="https://oddspapi.io/sports/esports/lol">oddspapi.io/sports/esports/lol</a></li><li>50/50 UNRESOLVED rows are unverified by design — see <a href="unresolved.html">Unresolved</a>.</li></ul></div></main>
-<script src="assets/app.js"></script><script>load().then(d=>{document.getElementById('updated').textContent='Last updated: '+new Date(d.generated_at).toLocaleString();const u=d.matches.filter(m=>m.method=='UNRESOLVED'||!m.start_utc);document.getElementById('list').innerHTML=u.map(m=>card(m)).join('')||'<div class="card">No flagged matches in current data.</div>'})</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flagged for review — Hotspawn LoL Picks</title>
+<meta name="description" content="Irregularities and unverified items: thin history, name and time mismatches, tier uncertainty and model–market disagreements, each with source links.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="flagged">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+    </a>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    </div>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="error-box"></div>
+  <div id="freshness-warning" class="hidden"></div>
+
+  <p class="eyebrow">Nothing is hidden</p>
+  <h1>Flagged for review</h1>
+  <p class="lede">
+    Anything irregular, uncertain or unverified is listed here with a link to the source that was checked.
+    Flags do not block publication — every affected row is still shown, labelled, and linked to its evidence so it can be reviewed by hand.
+  </p>
+
+  <section>
+    <h2>Flag counts</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Flag</th><th scope="col">Rows</th><th scope="col"></th></tr></thead>
+        <tbody id="flag-groups">
+          <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading flags…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Flagged fixtures</h2>
+    <p class="small">Newest first rows follow the current fixture list. Open a match for the full evidence trail.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Start</th><th scope="col">Match</th><th scope="col">Flags</th><th scope="col">Pick</th></tr></thead>
+        <tbody id="flagged-body">
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What each flag means</h2>
+    <div class="card">
+      <dl class="kv small">
+        <dt><span class="flag">NO_EXTERNAL_MARKET</span></dt><dd>No bookmaker or prediction-market line was found for this fixture, so the pick comes from our own model (or is unresolved).</dd>
+        <dt><span class="flag">NO_TEAM_HISTORY</span></dt><dd>Neither team has recorded games in the last 365 days; the row is an explicit 50/50 placeholder.</dd>
+        <dt><span class="flag">ONE_TEAM_NO_HISTORY</span></dt><dd>One side has no usable history, so the model substitutes the competition median or tier prior and shrinks toward 50/50.</dd>
+        <dt><span class="flag">THIN_HISTORY</span></dt><dd>Fewer than five recorded games in 365 days for at least one team — the rating is unstable.</dd>
+        <dt><span class="flag">MODEL_ELO_THIN</span></dt><dd>The Elo row is published but one side has fewer than eight games; confidence is capped at Low.</dd>
+        <dt><span class="flag">CROSS_LEAGUE_MODEL</span></dt><dd>The two teams' recent competitions differ, so absolute league strength matters more than usual. Confidence is capped and any model–market gap is treated as indicative.</dd>
+        <dt><span class="flag">MODEL_DISAGREES_WITH_MARKET</span></dt><dd>The model differs from the external consensus by 8 points or more in the same competition. The published pick follows the market; the gap is shown.</dd>
+        <dt><span class="flag">MARKET_DISAGREEMENT</span></dt><dd>Sources disagree with each other by more than 10 probability points.</dd>
+        <dt><span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span></dt><dd>A bookmaker's start time differs from Hotspawn's by more than 90 minutes. Hotspawn's timestamp is used for display; the delta is recorded on the match page.</dd>
+        <dt><span class="flag">START_TIME_MISMATCH</span></dt><dd>Hotspawn and Leaguepedia disagree on the start time by more than 30 minutes.</dd>
+        <dt><span class="flag">NO_HOTSPAWN_MATCH_PAGE</span></dt><dd>Hotspawn lists the fixture but has not published a match page, so the row links the lobby instead of a dead match URL.</dd>
+        <dt><span class="flag">TIER_UNVERIFIED</span></dt><dd>Hotspawn has not assigned a tier badge yet (the fixture is still waiting for information).</dd>
+        <dt><span class="flag">NO_VERIFIED_SIGNAL</span></dt><dd>No external market and no model output — unresolved placeholder.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <h2>Source status for this update</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Rows</th><th scope="col">Note</th></tr></thead>
+        <tbody id="sources-status">
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading source status…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Checked but unavailable</h2>
+    <p class="small">Providers we attempted and could not use. They are listed so the gap in coverage is explicit, not hidden.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Provider</th><th scope="col">Observed</th><th scope="col">Consequence</th></tr></thead>
+        <tbody id="checked-unavailable">
+          <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="loading"><span class="spinner"></span>Loading flagged data…</div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <p class="small">Flagged rows are published, not withheld. Check them against the linked source before using a number.</p>
+    <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Mobile">
+  <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
+  <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
+  <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
+</nav>
+
+<script src="assets/app.js" defer></script>
+<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
+</body>
+</html>

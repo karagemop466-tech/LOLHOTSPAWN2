@@ -1,38 +1,60 @@
-name: Pipeline test
+name: Pipeline test (branch verification)
+
 on:
   workflow_dispatch:
   push:
     branches: ["arena/**"]
-    paths: ["scripts/**", ".github/workflows/pipeline-test.yml"]
+    paths:
+      - "scripts/**"
+      - "docs/**"
+      - ".github/workflows/pipeline-test.yml"
+
 permissions:
   contents: write
+
+concurrency:
+  group: pipeline-test-${{ github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - name: Run pipeline
-        env: {PYTHONUNBUFFERED: "1"}
+        with:
+          python-version: "3.12"
+
+      - name: Run the live pipeline
+        env:
+          PYTHONUNBUFFERED: "1"
         run: |
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
-      - name: Show summary
-        run: python3 - <<'PY'
-          import json
-          d=json.load(open('docs/data/picks.json'))
-          print(json.dumps(d['counts'],indent=1))
-          print(json.dumps(d['coverage'],indent=1))
-          print(json.dumps(d['unresolved'],indent=1)[:1200])
-          print(json.dumps(d['sources_status'],indent=1)[:1500])
-          PY
-      - name: Commit outputs (branch only, for review)
+
+      - name: Summarise the run
         if: always()
         run: |
-          git config user.name "picks-bot"; git config user.email "actions@github.com"
+          python3 - <<'PY'
+          import json, os
+          p = "docs/data/picks.json"
+          if not os.path.exists(p):
+              print("no payload produced"); raise SystemExit(0)
+          d = json.load(open(p))
+          print(json.dumps(d.get("counts"), indent=1))
+          print(json.dumps(d.get("coverage"), indent=1))
+          print(json.dumps(d.get("unresolved"), indent=1)[:1200])
+          print(json.dumps(d.get("sources_status"), indent=1)[:1600])
+          PY
+
+      - name: Commit outputs for review
+        if: always()
+        run: |
+          git config user.name "picks-bot"
+          git config user.email "actions@github.com"
           git add data docs/data .github/workflows/pipeline-test.yml
-          git diff --cached --quiet || git commit -m "pipeline: test run [skip ci]"
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "pipeline: test run [skip ci]"
           git pull --rebase origin "${GITHUB_REF_NAME}" || true
-          git push origin HEAD:"${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true

@@ -1,5 +1,114 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unresolved Picks — Hotspawn LoL</title><link rel="stylesheet" href="assets/style.css"></head><body>
-<header><h1>🎮 Hotspawn LoL Pick'em — Our Picks</h1><div class="sub" id="updated">Loading latest update…</div></header><nav><a href="index.html">🏠 Summary</a><a href="picks.html">✅ All Picks</a><a href="unresolved.html">⚠️ Unresolved</a><a href="flagged.html">🚩 Flagged</a><a href="methodology.html">📖 Method & Sources</a></nav>
-<main><h2>⚠️ Unresolved & low-confidence picks</h2><div class="warn"><b>Why these are unresolved:</b> no line on Polymarket or in the OddsPapi esportsbook network (Pinnacle/bet365 et al., when key configured), and/or no usable Leaguepedia result history for these (often tier-3/amateur) teams. <b>How we still give a pick:</b> our Leaguepedia Elo if any history exists (shrunk toward 50% when thin), otherwise an explicit 50/50 no-lean. <b>Limitations:</b> incomplete tier-3 coverage, volatile amateur rosters, no market cross-check, Hotspawn tier/time sometimes “WAITING FOR INFORMATION”. Treat 50/50 rows as coin flips, not edges.</div><div id="list">Loading…</div></main>
-<footer><a href="methodology.html">Method & sources</a></footer>
-<script src="assets/app.js"></script><script>load().then(d=>{document.getElementById('updated').textContent='Last updated: '+new Date(d.generated_at).toLocaleString();const u=d.matches.filter(m=>m.method=='UNRESOLVED'||/Low/.test(m.confidence||''));document.getElementById('list').innerHTML=u.length?u.map(card).join(''):'<div class="card">None — every match currently resolves to a market or model pick.</div>'})</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unresolved &amp; low-confidence picks — Hotspawn LoL Picks</title>
+<meta name="description" content="Every Hotspawn LoL fixture without a verified signal, published as an explicit placeholder with the reasons and limitations written out.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="unresolved">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+    </a>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    </div>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="error-box"></div>
+  <div id="freshness-warning" class="hidden"></div>
+
+  <p class="eyebrow">Transparency</p>
+  <h1>Unresolved &amp; low-confidence picks</h1>
+  <p class="lede">
+    Every match on Hotspawn's list gets a published pick — but a pick is only as good as its inputs.
+    When there is no external line and no usable recorded history, the row is <b>unresolved</b>: we show an
+    explicit 50/50 placeholder, label it, and explain it here. It is <b>not</b> an edge or a recommendation.
+  </p>
+
+  <div class="note">
+    <p><b>Why this page exists.</b> Bookmakers and prediction markets price the top competitions — the World Championship,
+    the EMEA Masters, the major regional leagues. They do not price most national leagues, third divisions or amateur cups.
+    Leaguepedia records results unevenly at that level, and brand-new rosters have no games at all. Rather than invent a number,
+    we publish the placeholder and tell you which input was missing. Hotspawn's crowd percentage is never used as a substitute.</p>
+    <p class="small" id="unresolved-counts">Loading…</p>
+  </div>
+
+  <div class="two-col">
+    <section class="card">
+      <h3>⚠️ Unresolved — explicit 50/50 placeholders</h3>
+      <p class="small">No external market line and no team has enough recorded games for the model. The probability is a placeholder only.</p>
+      <div id="unresolved-body"><div class="loading"><span class="spinner"></span>Loading…</div></div>
+    </section>
+
+    <section class="card">
+      <h3>🧮 Low confidence — a real but weak signal</h3>
+      <p class="small">These rows do have a pick from the model, but it relies on thin history (&lt;8 games), a league-tier prior for one side, or a cross-league comparison. Treat the number as indicative.</p>
+      <div id="lowconf-body"><div class="loading"><span class="spinner"></span>Loading…</div></div>
+    </section>
+  </div>
+
+  <section class="card" id="reasons-card">
+    <h3>Counts by reason</h3>
+    <ul class="clean small" id="reasons"><li>Loading…</li></ul>
+  </section>
+
+  <section class="card">
+    <h3>Written limitations</h3>
+    <ol class="small" id="limitations"><li>Loading…</li></ol>
+    <p class="small">Also see <a href="methodology.html">Methodology &amp; sources</a> for exactly how probabilities are produced and
+    <a href="flagged.html">Flagged for review</a> for individual irregularities.</p>
+  </section>
+
+  <section class="card">
+    <h3>What we do instead of guessing</h3>
+    <ul class="clean small">
+      <li><b>No line, no problem — as long as there is history.</b> Our Elo model uses recorded results and is anchored to the strength tier of the competition each team plays in.</li>
+      <li><b>One side unknown?</b> We use the competition's median rating (or its tier prior) for the missing side and mark the row <span class="flag">MODEL_LEAGUE_PRIOR</span> / <span class="flag">ONE_TEAM_NO_HISTORY</span>.</li>
+      <li><b>Both sides unknown?</b> The row stays unresolved (50/50 placeholder) and appears above — it is never dressed up as a model output.</li>
+      <li><b>Verification.</b> Every row links its Hotspawn fixture and either the bookmaker/market page or the Leaguepedia tournament page used. No value is inferred without a link.</li>
+    </ul>
+  </section>
+
+  <div class="loading"><span class="spinner"></span>Loading unresolved data…</div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <p class="small">Fixtures from Hotspawn's public lobby; probabilities from external markets where available, otherwise our own Elo model. Hotspawn crowd percentages are never used.</p>
+    <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Mobile">
+  <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
+  <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
+  <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
+</nav>
+
+<script src="assets/app.js" defer></script>
+<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
+</body>
+</html>

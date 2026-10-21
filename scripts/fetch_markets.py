@@ -191,7 +191,7 @@ def fetch_polymarket() -> dict:
             end = datetime.fromisoformat(str(ev.get("endDate")).replace("Z", "+00:00"))
         except Exception:
             pass
-        if end and (end < now - timedelta(days=2) or end > now + timedelta(days=4)):
+        if end and (end < now - timedelta(days=2) or end > now + timedelta(days=21)):
             continue
         chosen = None
         for mk in ev.get("markets") or []:
@@ -204,14 +204,17 @@ def fetch_polymarket() -> dict:
                 continue
             if {str(outs[0]).strip().lower(), str(outs[1]).strip().lower()} == {a.lower(), b.lower()}:
                 q = (mk.get("question") or "").lower()
-                if "game 1" not in q and "game 2" not in q and "winner" in q or "vs" in q:
-                    chosen = (outs, prices, mk)
+                game = "game 1" in q or "game 2" in q or "map 1" in q
+                # Prefer the series/match market; keep a game-level market only as a
+                # fallback and tag it so the model never mixes units on a Bo3/Bo5.
+                if not game:
+                    chosen = (outs, prices, mk, "series")
                     break
                 if chosen is None:
-                    chosen = (outs, prices, mk)
+                    chosen = (outs, prices, mk, "game1")
         if not chosen:
             continue
-        outs, prices, mk = chosen
+        outs, prices, mk, market_type = chosen
         if str(outs[0]).strip().lower() == a.lower():
             pa, pb = prices[0], prices[1]
         else:
@@ -219,6 +222,7 @@ def fetch_polymarket() -> dict:
         rec = _record("Polymarket", "polymarket", "Polymarket: " + title, end, a, b, pa, pb,
                       POLY_PAGE + str(ev.get("slug") or ""), note=f"Polymarket: {mk.get('question')}",
                       raw={"event_slug": ev.get("slug"), "market": mk.get("question"),
+                           "market_type": market_type,
                            "volume": ev.get("volume"), "liquidity": ev.get("liquidity")})
         if rec:
             records.append(rec)
