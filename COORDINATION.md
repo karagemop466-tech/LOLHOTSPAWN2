@@ -59,6 +59,18 @@ official PRM organizer. → Requests logged below.
   → **R6 to T9 owner.**
 - **I3 (WARN, D7b): 61 model rows cite the Cargo API help page as `source_url`** (same root cause as R2 above).
 
+- **I4 (decisive, 2026-10-21 20:31 UTC): the 126 "unresolved" rows are all resolvable to a verified source page.**
+  Audit `verification/leaguepedia_coverage.py` against the Leaguepedia MatchSchedule snapshot (288 future rows,
+  16 league pages, captured by arena/fa3f554c in `data/diag/lp_schedule.json`):
+  **112/126 unresolved rows have the exact fixture listed on a Leaguepedia league page; 14/126 have the league page;
+  0 have no source.** Per-league pages: PRM 3rd `Prime_League_3rd_Division/2027_Season/Fall_Split` (47/52 exact),
+  RIVALS S2 (18/18), 4 Nations Halloween Heist (15/18), Tunisian Super League (16/16), PRM 2nd (5/8),
+  Komplettligaen (4/6), LigaGG CELOL B (3/4), Arabian League 2nd (2/2), Arabian Regional Qualifiers (1/1),
+  LGC Rising (1/1). Full table: `verification/leaguepedia_coverage.md`.
+  → **R7 to T9/T10 owner:** use MatchSchedule to (a) set `source_url` = the Leaguepedia league page for every row,
+  (b) bridge team names and build the standings/results model. The current evidence string
+  "No external market and no Leaguepedia team history found" is **false** for these rows and must not ship.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
