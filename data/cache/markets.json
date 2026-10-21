@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:51:25.506813Z",
+ "generated_at": "2026-10-21T20:59:30.111534Z",
  "statuses": [
   {
    "source": "Pinnacle",
@@ -60,27 +60,6 @@
    "source": "Pinnacle",
    "source_key": "pinnacle",
    "competition": "League of Legends - World Championship",
-   "start_utc": "2026-10-23T19:00:00Z",
-   "team_a": "Anyone's Legend",
-   "team_b": "Karmine Corp",
-   "prob_a": 0.6403,
-   "prob_b": 0.3597,
-   "decimal_a": 1.5,
-   "decimal_b": 2.67,
-   "url": "https://www.pinnacle.com/en/esports/league-of-legends",
-   "note": "Pinnacle moneyline (matchup 1638750902)",
-   "raw": {
-    "matchup_id": 1638750902,
-    "league_id": 9587,
-    "american_home": -200,
-    "american_away": 167,
-    "api": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/9587/matchups"
-   }
-  },
-  {
-   "source": "Pinnacle",
-   "source_key": "pinnacle",
-   "competition": "League of Legends - World Championship",
    "start_utc": "2026-10-23T17:00:00Z",
    "team_a": "Gen.G",
    "team_b": "Invictus",
@@ -123,6 +102,27 @@
    "source": "Pinnacle",
    "source_key": "pinnacle",
    "competition": "League of Legends - World Championship",
+   "start_utc": "2026-10-24T00:00:00Z",
+   "team_a": "Bilibili",
+   "team_b": "Movistar KOI",
+   "prob_a": 0.7966,
+   "prob_b": 0.2034,
+   "decimal_a": 1.1953,
+   "decimal_b": 4.68,
+   "url": "https://www.pinnacle.com/en/esports/league-of-legends",
+   "note": "Pinnacle moneyline (matchup 1638755459)",
+   "raw": {
+    "matchup_id": 1638755459,
+    "league_id": 9587,
+    "american_home": -512,
+    "american_away": 368,
+    "api": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/9587/matchups"
+   }
+  },
+  {
+   "source": "Pinnacle",
+   "source_key": "pinnacle",
+   "competition": "League of Legends - World Championship",
    "start_utc": "2026-10-23T22:00:00Z",
    "team_a": "LOS",
    "team_b": "T1",
@@ -144,6 +144,27 @@
    "source": "Pinnacle",
    "source_key": "pinnacle",
    "competition": "League of Legends - World Championship",
+   "start_utc": "2026-10-23T19:00:00Z",
+   "team_a": "Anyone's Legend",
+   "team_b": "Karmine Corp",
+   "prob_a": 0.6403,
+   "prob_b": 0.3597,
+   "decimal_a": 1.5,
+   "decimal_b": 2.67,
+   "url": "https://www.pinnacle.com/en/esports/league-of-legends",
+   "note": "Pinnacle moneyline (matchup 1638750902)",
+   "raw": {
+    "matchup_id": 1638750902,
+    "league_id": 9587,
+    "american_home": -200,
+    "american_away": 167,
+    "api": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/9587/matchups"
+   }
+  },
+  {
+   "source": "Pinnacle",
+   "source_key": "pinnacle",
+   "competition": "League of Legends - World Championship",
    "start_utc": "2026-10-23T21:00:00Z",
    "team_a": "Hanwha Life",
    "team_b": "Top Esports",
@@ -158,27 +179,6 @@
     "league_id": 9587,
     "american_home": -490,
     "american_away": 355,
-    "api": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/9587/matchups"
-   }
-  },
-  {
-   "source": "Pinnacle",
-   "source_key": "pinnacle",
-   "competition": "League of Legends - World Championship",
-   "start_utc": "2026-10-24T00:00:00Z",
-   "team_a": "Bilibili",
-   "team_b": "Movistar KOI",
-   "prob_a": 0.7966,
-   "prob_b": 0.2034,
-   "decimal_a": 1.1953,
-   "decimal_b": 4.68,
-   "url": "https://www.pinnacle.com/en/esports/league-of-legends",
-   "note": "Pinnacle moneyline (matchup 1638755459)",
-   "raw": {
-    "matchup_id": 1638755459,
-    "league_id": 9587,
-    "american_home": -512,
-    "american_away": 368,
     "api": "https://guest.api.arcadia.pinnacle.com/0.1/leagues/9587/matchups"
    }
   },
@@ -407,12 +407,13 @@
    "decimal_a": null,
    "decimal_b": null,
    "url": "https://polymarket.com/event/lol-gal-sly-2026-10-22",
-   "note": "Polymarket: LoL: Galions vs Solary - Game 1 Winner",
+   "note": "Polymarket: LoL: Galions vs Solary - Game 3 Winner",
    "raw": {
     "event_slug": "lol-gal-sly-2026-10-22",
-    "market": "LoL: Galions vs Solary - Game 1 Winner",
-    "volume": 28431.264053,
-    "liquidity": 67459.2793
+    "market": "LoL: Galions vs Solary - Game 3 Winner",
+    "market_type": "series",
+    "volume": 28460.264053,
+    "liquidity": 67800.6046
    }
   },
   {
@@ -431,8 +432,9 @@
    "raw": {
     "event_slug": "lol-gen-ig1-2026-10-23",
     "market": "LoL: Gen.G vs Invictus Gaming (BO1) - Worlds Group Stage",
+    "market_type": "series",
     "volume": 72083.36719199999,
-    "liquidity": 222104.6355
+    "liquidity": 218124.0281
    }
   },
   {
@@ -451,8 +453,9 @@
    "raw": {
     "event_slug": "lol-tl2-cfo-2026-10-23",
     "market": "LoL: Team Liquid vs CTBC Flying Oyster (BO1) - Worlds Group Stage",
-    "volume": 18702.010868999998,
-    "liquidity": 201271.9952
+    "market_type": "series",
+    "volume": 19079.010868999998,
+    "liquidity": 200263.9576
    }
   },
   {
@@ -471,8 +474,9 @@
    "raw": {
     "event_slug": "lol-al-kc-2026-10-23",
     "market": "LoL: Anyone's Legend vs Karmine Corp (BO1) - Worlds Group Stage",
-    "volume": 147210.773872,
-    "liquidity": 177785.8128
+    "market_type": "series",
+    "volume": 147216.829327,
+    "liquidity": 176687.3417
    }
   },
   {
@@ -491,8 +495,9 @@
    "raw": {
     "event_slug": "lol-g2-dk-2026-10-23",
     "market": "LoL: G2 Esports vs Dplus KIA (BO1) - Worlds Group Stage",
-    "volume": 290221.78334200004,
-    "liquidity": 324477.7985
+    "market_type": "series",
+    "volume": 290226.701375,
+    "liquidity": 322845.9651
    }
   },
   {
@@ -511,8 +516,9 @@
    "raw": {
     "event_slug": "lol-hle1-tes-2026-10-23",
     "market": "LoL: Hanwha Life Esports vs Top Esports (BO1) - Worlds Group Stage",
-    "volume": 63497.540129,
-    "liquidity": 125944.4043
+    "market_type": "series",
+    "volume": 63497.54012899999,
+    "liquidity": 124676.2946
    }
   },
   {
@@ -531,8 +537,9 @@
    "raw": {
     "event_slug": "lol-los-t1-2026-10-23",
     "market": "LoL: LOS vs T1 (BO1) - Worlds Group Stage",
+    "market_type": "series",
     "volume": 32923.766054,
-    "liquidity": 178484.2029
+    "liquidity": 179521.3645
    }
   },
   {
@@ -551,8 +558,9 @@
    "raw": {
     "event_slug": "lol-tsw-ly-2026-10-23",
     "market": "LoL: Team Secret Whales vs LYON (BO1) - Worlds Group Stage",
-    "volume": 16520.147066999998,
-    "liquidity": 232440.8535
+    "market_type": "series",
+    "volume": 16536.638591999996,
+    "liquidity": 232042.0535
    }
   },
   {
@@ -571,8 +579,9 @@
    "raw": {
     "event_slug": "lol-blg-mkoi-2026-10-23",
     "market": "LoL: Bilibili Gaming vs Movistar KOI (BO1) - Worlds Group Stage",
-    "volume": 15133.371150000003,
-    "liquidity": 95381.5129
+    "market_type": "series",
+    "volume": 15138.926706000002,
+    "liquidity": 96062.0954
    }
   }
  ]

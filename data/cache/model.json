@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:58:48.910567Z",
+ "generated_at": "2026-10-21T21:00:12.209450Z",
  "model": {
   "matches_used": 31627,
   "teams_rated": 5496,
@@ -148,21 +148,21 @@
  },
  "market_unmatched": [],
  "coverage": {
-  "fixtures": 195,
-  "resolved": 195,
+  "fixtures": 208,
+  "resolved": 208,
   "unresolved": 0,
   "resolved_pct": 100.0,
   "with_external_market": 9,
-  "with_model": 186,
-  "with_team_specific_model": 159,
-  "with_prior_only": 27,
-  "published_picks": 195,
+  "with_model": 199,
+  "with_team_specific_model": 164,
+  "with_prior_only": 35,
+  "published_picks": 208,
   "both_market_and_model": 9,
   "counts_by_method": {
    "MARKET_CONSENSUS": 9,
-   "MODEL_ELO": 90,
-   "MODEL_ELO_THIN": 69,
-   "MODEL_LEAGUE_PRIOR": 27
+   "MODEL_ELO": 92,
+   "MODEL_ELO_THIN": 72,
+   "MODEL_LEAGUE_PRIOR": 35
   }
  },
  "matches": [
@@ -251,7 +251,7 @@
       "prob_team2": 0.485,
       "decimal_team1": null,
       "decimal_team2": null,
-      "note": "Polymarket: LoL: Galions vs Solary - Game 1 Winner",
+      "note": "Polymarket: LoL: Galions vs Solary - Game 3 Winner",
       "start_utc": "2026-10-22T18:00:00Z",
       "start_delta_hours": 6.0,
       "competition": "Polymarket: LoL: Galions vs Solary (BO5) - EMEA Masters Playoffs"
@@ -1079,6 +1079,70 @@
      "name": "Leaguepedia tournament",
      "url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
      "claim": "Recorded results used for the Elo model (4 Nations/2026 Season/Halloween Heist)."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "id": "1079138",
+   "team1": "Pegasus Esports",
+   "team2": "Victorious Demons",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-22T18:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 60,
+    "team2_pct": 40,
+    "total_picks": 5,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.5111,
+   "prob_team2": 0.4889,
+   "pick": "Pegasus Esports",
+   "pick_prob": 0.5111,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1491,
+    "elo_prior": 1472,
+    "known_side": "team1",
+    "games_known_365d": 13,
+    "shrink": 0.394,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": "Arabian League 2nd Division/2026 Season/Spring Split",
+    "team2_recent_competition": null
+   },
+   "market": null,
+   "evidence": "Only one side rated (1491, 13 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
     }
    ],
    "resolved": true
@@ -2194,6 +2258,69 @@
    "resolved": true
   },
   {
+   "id": "1079024",
+   "team1": "Phong Vũ Buffalo",
+   "team2": "404 Multigaming e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-23T16:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 9,
+    "team2_pct": 91,
+    "total_picks": 22,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.3908,
+   "prob_team2": 0.6092,
+   "pick": "404 Multigaming e.V.",
+   "pick_prob": 0.6092,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1596,
+    "elo_prior": 1472,
+    "known_side": "team2",
+    "games_known_365d": 35,
+    "shrink": 0.636,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": null,
+    "team2_recent_competition": "Prime League 3rd Division/2026 Season/Winter Split"
+   },
+   "market": null,
+   "evidence": "Only one side rated (1596, 35 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1082745",
    "team1": "Reveal Multigaming",
    "team2": "Hannover Esports e.V.",
@@ -2518,6 +2645,70 @@
    "resolved": true
   },
   {
+   "id": "1079140",
+   "team1": "Victorious Demons",
+   "team2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-23T18:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 20,
+    "team2_pct": 80,
+    "total_picks": 5,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.4934,
+   "prob_team2": 0.5066,
+   "pick": "Team Reds",
+   "pick_prob": 0.5066,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1495,
+    "elo_prior": 1472,
+    "known_side": "team2",
+    "games_known_365d": 5,
+    "shrink": 0.2,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": null,
+    "team2_recent_competition": "Arabian League 2nd Division/2026 Season/Summer Split"
+   },
+   "market": null,
+   "evidence": "Only one side rated (1495, 5 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1067677",
    "team1": "Hanwha Life Esports",
    "team2": "Top Esports",
@@ -2708,6 +2899,69 @@
      "name": "Leaguepedia tournament",
      "url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
      "claim": "Recorded results used for the Elo model (Prime League 2nd Division/2027 Season/Fall Split)."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "id": "1079026",
+   "team1": "Reveal Multigaming",
+   "team2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-23T18:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.5731,
+   "prob_team2": 0.4269,
+   "pick": "Reveal Multigaming",
+   "pick_prob": 0.5731,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1550,
+    "elo_prior": 1472,
+    "known_side": "team1",
+    "games_known_365d": 39,
+    "shrink": 0.661,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": "Prime League 2nd Division/2026 Season/Winter Split",
+    "team2_recent_competition": null
+   },
+   "market": null,
+   "evidence": "Only one side rated (1550, 39 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
     }
    ],
    "resolved": true
@@ -4145,6 +4399,72 @@
    "resolved": true
   },
   {
+   "id": "1074653",
+   "team1": "DMG Esports Sweden",
+   "team2": "Northern Wolves Esports",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "competition_id": "36332",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-24T16:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 88,
+    "team2_pct": 12,
+    "total_picks": 17,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.5024,
+   "prob_team2": 0.4976,
+   "pick": "DMG Esports Sweden",
+   "pick_prob": 0.5024,
+   "method": "MODEL_ELO_THIN",
+   "method_label": "Own Elo model (thin history)",
+   "confidence": "Low",
+   "model": {
+    "elo_team1": 1468,
+    "elo_team2": 1464,
+    "games_team1_365d": 5,
+    "games_team2_365d": 5,
+    "shrink": 0.385,
+    "h2h": null,
+    "prior_used": null,
+    "tournament_page": "",
+    "team1_recent_competition": "RIVALS LEAGUE/2026 Season/Season 2",
+    "team2_recent_competition": "RIVALS LEAGUE/2026 Season/Season 2",
+    "cross_league": false,
+    "team1_competition_base": 1470,
+    "team2_competition_base": 1470
+   },
+   "market": null,
+   "evidence": "Elo 1468 vs 1464 (5 / 5 games in 365d; competition bases 1470 / 1470).",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1074654",
    "team1": "FlameHard",
    "team2": "B2U",
@@ -4270,6 +4590,72 @@
      "name": "Leaguepedia tournament",
      "url": "https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2",
      "claim": "Recorded results used for the Elo model (RIVALS LEAGUE/2026 Season/Season 2)."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "id": "1074656",
+   "team1": "Lundqvist Darkside",
+   "team2": "Mazepa",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "competition_id": "36332",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-24T16:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 94,
+    "team2_pct": 6,
+    "total_picks": 16,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.567,
+   "prob_team2": 0.433,
+   "pick": "Lundqvist Darkside",
+   "pick_prob": 0.567,
+   "method": "MODEL_ELO",
+   "method_label": "Own Elo model",
+   "confidence": "Medium",
+   "model": {
+    "elo_team1": 1511,
+    "elo_team2": 1426,
+    "games_team1_365d": 12,
+    "games_team2_365d": 10,
+    "shrink": 0.556,
+    "h2h": null,
+    "prior_used": null,
+    "tournament_page": "",
+    "team1_recent_competition": "RIVALS LEAGUE/2026 Season/Season 1",
+    "team2_recent_competition": "RIVALS LEAGUE/2026 Season/Season 1",
+    "cross_league": false,
+    "team1_competition_base": 1470,
+    "team2_competition_base": 1470
+   },
+   "market": null,
+   "evidence": "Elo 1511 vs 1426 (12 / 10 games in 365d; competition bases 1470 / 1470).",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
     }
    ],
    "resolved": true
@@ -6098,6 +6484,72 @@
    "resolved": true
   },
   {
+   "id": "1074661",
+   "team1": "DMG Esports Sweden",
+   "team2": "FlameHard",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "competition_id": "36332",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-25T17:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 81,
+    "team2_pct": 19,
+    "total_picks": 16,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.4401,
+   "prob_team2": 0.5599,
+   "pick": "FlameHard",
+   "pick_prob": 0.5599,
+   "method": "MODEL_ELO_THIN",
+   "method_label": "Own Elo model (thin history)",
+   "confidence": "Low",
+   "model": {
+    "elo_team1": 1468,
+    "elo_team2": 1580,
+    "games_team1_365d": 5,
+    "games_team2_365d": 10,
+    "shrink": 0.385,
+    "h2h": null,
+    "prior_used": null,
+    "tournament_page": "",
+    "team1_recent_competition": "RIVALS LEAGUE/2026 Season/Season 2",
+    "team2_recent_competition": "RIVALS LEAGUE/2026 Season/Season 1",
+    "cross_league": false,
+    "team1_competition_base": 1470,
+    "team2_competition_base": 1470
+   },
+   "market": null,
+   "evidence": "Elo 1468 vs 1580 (5 / 10 games in 365d; competition bases 1470 / 1470).",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1074665",
    "team1": "Northern Wolves Esports",
    "team2": "Rich Gang Sweden",
@@ -6614,6 +7066,72 @@
    "resolved": true
   },
   {
+   "id": "1079143",
+   "team1": "Pegasus Esports",
+   "team2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-25T19:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.4982,
+   "prob_team2": 0.5018,
+   "pick": "Team Reds",
+   "pick_prob": 0.5018,
+   "method": "MODEL_ELO_THIN",
+   "method_label": "Own Elo model (thin history)",
+   "confidence": "Low",
+   "model": {
+    "elo_team1": 1491,
+    "elo_team2": 1495,
+    "games_team1_365d": 13,
+    "games_team2_365d": 5,
+    "shrink": 0.385,
+    "h2h": null,
+    "prior_used": null,
+    "tournament_page": "",
+    "team1_recent_competition": "Arabian League 2nd Division/2026 Season/Spring Split",
+    "team2_recent_competition": "Arabian League 2nd Division/2026 Season/Summer Split",
+    "cross_league": false,
+    "team1_competition_base": 1530,
+    "team2_competition_base": 1530
+   },
+   "market": null,
+   "evidence": "Elo 1491 vs 1495 (13 / 5 games in 365d; competition bases 1530 / 1530).",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1081831",
    "team1": "Lund Esports Organization OGs",
    "team2": "Tung Sahur Mid",
@@ -6889,9 +7407,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/no-need-orga-vs-acegaming-prm-2nd-division-26-27-fall-1079032",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 84,
-    "team2_pct": 16,
-    "total_picks": 19,
+    "team1_pct": 80,
+    "team2_pct": 20,
+    "total_picks": 20,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -6955,7 +7473,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 19,
+    "total_picks": 20,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -7017,9 +7535,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/vfb-esports-vs-regnum4games-prm-2nd-division-26-27-fall-1079034",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 89,
-    "team2_pct": 11,
-    "total_picks": 19,
+    "team1_pct": 90,
+    "team2_pct": 10,
+    "total_picks": 20,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -7084,7 +7602,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 9,
+    "total_picks": 10,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
@@ -7149,7 +7667,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 9,
+    "total_picks": 10,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "RIVALS LEAGUE/2026 Season/Season 2",
@@ -7277,9 +7795,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/slam-dunk-vs-new-era-team-arabian-league-2nd-division-2026-summer-1079144",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 82,
-    "team2_pct": 18,
-    "total_picks": 17,
+    "team1_pct": 78,
+    "team2_pct": 22,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
@@ -7345,7 +7863,7 @@
    "crowd": {
     "team1_pct": 88,
     "team2_pct": 12,
-    "total_picks": 25,
+    "total_picks": 26,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 3rd Division/2027 Season/Fall Split",
@@ -7408,7 +7926,7 @@
    "crowd": {
     "team1_pct": 94,
     "team2_pct": 6,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
@@ -7473,7 +7991,7 @@
    "crowd": {
     "team1_pct": 6,
     "team2_pct": 94,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -7521,6 +8039,69 @@
    "resolved": true
   },
   {
+   "id": "1079035",
+   "team1": "AceGaming",
+   "team2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-30T17:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.4872,
+   "prob_team2": 0.5128,
+   "pick": "ex-A41G",
+   "pick_prob": 0.5128,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1452,
+    "elo_prior": 1472,
+    "known_side": "team1",
+    "games_known_365d": 16,
+    "shrink": 0.444,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": "Prime League 2nd Division/2026 Season/Winter Split",
+    "team2_recent_competition": null
+   },
+   "market": null,
+   "evidence": "Only one side rated (1452, 16 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1079036",
    "team1": "Reveal Multigaming",
    "team2": "Team 300",
@@ -7535,9 +8116,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/reveal-multigaming-vs-team-300-prm-2nd-division-26-27-fall-1079036",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 82,
-    "team2_pct": 18,
-    "total_picks": 17,
+    "team1_pct": 78,
+    "team2_pct": 22,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -7599,9 +8180,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/team-reds-vs-nextgeneration-esports-arabian-league-2nd-division-2026-summer-1079147",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 88,
-    "team2_pct": 12,
-    "total_picks": 17,
+    "team1_pct": 83,
+    "team2_pct": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Arabian League 2nd Division/2026 Season/Summer Split",
@@ -7666,7 +8247,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -7734,7 +8315,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": null,
@@ -7794,9 +8375,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/jsk-academy-vs-supreme-leaders-tunisian-super-league-2026-1080933",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 18,
-    "team2_pct": 82,
-    "total_picks": 17,
+    "team1_pct": 17,
+    "team2_pct": 83,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Tunisian Super League/2026 Season",
@@ -7860,9 +8441,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/jsk-esports-vs-olympique-mnihla-tunisian-super-league-2026-1080934",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 88,
-    "team2_pct": 12,
-    "total_picks": 17,
+    "team1_pct": 89,
+    "team2_pct": 11,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Tunisian Super League/2026 Season",
@@ -7927,7 +8508,7 @@
    "crowd": {
     "team1_pct": 6,
     "team2_pct": 94,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Tunisian Super League/2026 Season",
@@ -7993,7 +8574,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Tunisian Super League/2026 Season",
@@ -8057,9 +8638,9 @@
    "hotspawn_url": "https://www.hotspawn.com/matches/zahrouni-esports-vs-el-menzah-esports-tunisian-super-league-2026-1080937",
    "source_lobby": "https://play.hotspawn.com/lol-pickems",
    "crowd": {
-    "team1_pct": 24,
-    "team2_pct": 76,
-    "total_picks": 17,
+    "team1_pct": 28,
+    "team2_pct": 72,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "leaguepedia_page": "Tunisian Super League/2026 Season",
@@ -8104,6 +8685,70 @@
      "name": "Leaguepedia tournament",
      "url": "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season",
      "claim": "Recorded results used for the Elo model (Tunisian Super League/2026 Season)."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "id": "1079148",
+   "team1": "Void Walkers",
+   "team2": "Victorious Demons",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-31T19:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 25,
+    "team2_pct": 75,
+    "total_picks": 4,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.5341,
+   "prob_team2": 0.4659,
+   "pick": "Void Walkers",
+   "pick_prob": 0.5341,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1578,
+    "elo_prior": 1472,
+    "known_side": "team1",
+    "games_known_365d": 6,
+    "shrink": 0.231,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": "Arabian League 2nd Division/2026 Season/Summer Split",
+    "team2_recent_competition": null
+   },
+   "market": null,
+   "evidence": "Only one side rated (1578, 6 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY",
+    "TIER_UNVERIFIED"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
     }
    ],
    "resolved": true
@@ -9856,6 +10501,71 @@
    "resolved": true
   },
   {
+   "id": "1079044",
+   "team1": "Hannover Esports e.V.",
+   "team2": "Reveal Multigaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-11-03T17:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 100,
+    "team2_pct": 0,
+    "total_picks": 11,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.4654,
+   "prob_team2": 0.5346,
+   "pick": "Reveal Multigaming",
+   "pick_prob": 0.5346,
+   "method": "MODEL_ELO",
+   "method_label": "Own Elo model",
+   "confidence": "Medium",
+   "model": {
+    "elo_team1": 1517,
+    "elo_team2": 1550,
+    "games_team1_365d": 21,
+    "games_team2_365d": 39,
+    "shrink": 0.724,
+    "h2h": null,
+    "prior_used": null,
+    "tournament_page": "",
+    "team1_recent_competition": "Prime League 2nd Division/2026 Season/Winter Split",
+    "team2_recent_competition": "Prime League 2nd Division/2026 Season/Winter Split",
+    "cross_league": false,
+    "team1_competition_base": 1500,
+    "team2_competition_base": 1500
+   },
+   "market": null,
+   "evidence": "Elo 1517 vs 1550 (21 / 39 games in 365d; competition bases 1500 / 1500).",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
+    }
+   ],
+   "resolved": true
+  },
+  {
    "id": "1082746",
    "team1": "Phong Vũ Buffalo",
    "team2": "404 Multigaming e.V.",
@@ -10694,6 +11404,69 @@
      "name": "Leaguepedia tournament",
      "url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
      "claim": "Recorded results used for the Elo model (Prime League 2nd Division/2027 Season/Fall Split)."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "id": "1079052",
+   "team1": "ex-A41G",
+   "team2": "Babos Gaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-11-08T16:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.3817,
+   "prob_team2": 0.6183,
+   "pick": "Babos Gaming",
+   "pick_prob": 0.6183,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1601,
+    "elo_prior": 1472,
+    "known_side": "team2",
+    "games_known_365d": 40,
+    "shrink": 0.667,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": null,
+    "team2_recent_competition": "Prime League 2nd Division/2026 Season/Winter Split"
+   },
+   "market": null,
+   "evidence": "Only one side rated (1601, 40 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
     }
    ],
    "resolved": true
@@ -13280,6 +14053,69 @@
      "name": "Leaguepedia tournament",
      "url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
      "claim": "Recorded results used for the Elo model (Prime League 2nd Division/2027 Season/Fall Split)."
+    }
+   ],
+   "resolved": true
+  },
+  {
+   "id": "1079061",
+   "team1": "BvP",
+   "team2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-11-15T18:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "source_lobby": "https://play.hotspawn.com/lol-pickems",
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "leaguepedia_page": null,
+   "leaguepedia_url": null,
+   "fixture_match": null,
+   "prob_team1": 0.4986,
+   "prob_team2": 0.5014,
+   "pick": "ex-A41G",
+   "pick_prob": 0.5014,
+   "method": "MODEL_LEAGUE_PRIOR",
+   "method_label": "League/overall prior (no team history)",
+   "confidence": "Low",
+   "model": {
+    "elo_known": 1465,
+    "elo_prior": 1472,
+    "known_side": "team1",
+    "games_known_365d": 3,
+    "shrink": 0.13,
+    "prior_used": "global median",
+    "tournament_page": "",
+    "team1_recent_competition": "Prime League 2nd Division/2027 Season/Fall Split",
+    "team2_recent_competition": null
+   },
+   "market": null,
+   "evidence": "Only one side rated (1465, 3 games); other side uses global median 1472.",
+   "flags": [
+    "NO_EXTERNAL_MARKET",
+    "NO_HOTSPAWN_MATCH_PAGE",
+    "ONE_TEAM_NO_HISTORY",
+    "THIN_HISTORY"
+   ],
+   "sources": [
+    {
+     "name": "Hotspawn fixture",
+     "url": "https://play.hotspawn.com/lol-pickems",
+     "claim": "Teams, tournament, start time (fixture list only; never a probability input)."
+    },
+    {
+     "name": "Leaguepedia results",
+     "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+     "claim": "Recorded match results used for the Elo model."
     }
    ],
    "resolved": true

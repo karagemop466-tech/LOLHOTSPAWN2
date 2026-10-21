@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-10-21T20:51:20.651192Z",
+ "generated_at": "2026-10-21T20:59:25.895951Z",
  "lobby": "https://play.hotspawn.com/lol-pickems",
  "lobby_generic": "https://play.hotspawn.com/lobby",
  "fixtures_api": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
- "via": "lobby-ng-state",
+ "via": "fixtures-api+lobby-permalinks",
  "lobby_http": 200,
- "lobby_bytes": 1985584,
+ "lobby_bytes": 9622790,
  "week": {
   "weekId": 274,
   "sportAlias": "lol",
@@ -98,8 +98,8 @@
    }
   ]
  },
- "count": 195,
- "without_match_page": 0,
+ "count": 208,
+ "without_match_page": 13,
  "sources": [
   {
    "name": "Hotspawn LoL Pick'em lobby",
@@ -410,6 +410,29 @@
     "team1_pct": 93,
     "team2_pct": 7,
     "total_picks": 15,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1079138",
+   "team1": "Pegasus Esports",
+   "team2": "Victorious Demons",
+   "team1_id": "88512",
+   "team2_id": "71939",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-22T18:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 60,
+    "team2_pct": 40,
+    "total_picks": 5,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -806,6 +829,29 @@
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
   },
   {
+   "id": "1079024",
+   "team1": "Phong Vũ Buffalo",
+   "team2": "404 Multigaming e.V.",
+   "team1_id": "8834",
+   "team2_id": "19123",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-23T16:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 9,
+    "team2_pct": 91,
+    "total_picks": 22,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
    "id": "1082745",
    "team1": "Reveal Multigaming",
    "team2": "Hannover Esports e.V.",
@@ -898,6 +944,29 @@
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
   },
   {
+   "id": "1079140",
+   "team1": "Victorious Demons",
+   "team2": "Team Reds",
+   "team1_id": "71939",
+   "team2_id": "264945",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-23T18:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 20,
+    "team2_pct": 80,
+    "total_picks": 5,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
    "id": "1067677",
    "team1": "Hanwha Life Esports",
    "team2": "Top Esports",
@@ -939,6 +1008,29 @@
     "team1_pct": 89,
     "team2_pct": 11,
     "total_picks": 27,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1079026",
+   "team1": "Reveal Multigaming",
+   "team2": "ex-A41G",
+   "team1_id": "235214",
+   "team2_id": "264941",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-23T18:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -1312,6 +1404,29 @@
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
   },
   {
+   "id": "1074653",
+   "team1": "DMG Esports Sweden",
+   "team2": "Northern Wolves Esports",
+   "team1_id": "126609",
+   "team2_id": "263904",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "competition_id": "36332",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-24T16:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 88,
+    "team2_pct": 12,
+    "total_picks": 17,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
    "id": "1074654",
    "team1": "FlameHard",
    "team2": "B2U",
@@ -1353,6 +1468,29 @@
     "team1_pct": 24,
     "team2_pct": 76,
     "total_picks": 25,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1074656",
+   "team1": "Lundqvist Darkside",
+   "team2": "Mazepa",
+   "team1_id": "54525",
+   "team2_id": "247778",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "competition_id": "36332",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-24T16:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 94,
+    "team2_pct": 6,
+    "total_picks": 16,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2002,6 +2140,29 @@
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
   },
   {
+   "id": "1074661",
+   "team1": "DMG Esports Sweden",
+   "team2": "FlameHard",
+   "team1_id": "126609",
+   "team2_id": "150322",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "competition_id": "36332",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-25T17:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 81,
+    "team2_pct": 19,
+    "total_picks": 16,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
    "id": "1074665",
    "team1": "Northern Wolves Esports",
    "team2": "Rich Gang Sweden",
@@ -2186,6 +2347,29 @@
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
   },
   {
+   "id": "1079143",
+   "team1": "Pegasus Esports",
+   "team2": "Team Reds",
+   "team1_id": "88512",
+   "team2_id": "264945",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-25T19:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
    "id": "1081831",
    "team1": "Lund Esports Organization OGs",
    "team2": "Tung Sahur Mid",
@@ -2293,9 +2477,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/no-need-orga-vs-acegaming-prm-2nd-division-26-27-fall-1079032",
    "crowd": {
-    "team1_pct": 84,
-    "team2_pct": 16,
-    "total_picks": 19,
+    "team1_pct": 80,
+    "team2_pct": 20,
+    "total_picks": 20,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2318,7 +2502,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 19,
+    "total_picks": 20,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2339,9 +2523,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/vfb-esports-vs-regnum4games-prm-2nd-division-26-27-fall-1079034",
    "crowd": {
-    "team1_pct": 89,
-    "team2_pct": 11,
-    "total_picks": 19,
+    "team1_pct": 90,
+    "team2_pct": 10,
+    "total_picks": 20,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2364,7 +2548,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 9,
+    "total_picks": 10,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2387,7 +2571,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 9,
+    "total_picks": 10,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2431,9 +2615,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/slam-dunk-vs-new-era-team-arabian-league-2nd-division-2026-summer-1079144",
    "crowd": {
-    "team1_pct": 82,
-    "team2_pct": 18,
-    "total_picks": 17,
+    "team1_pct": 78,
+    "team2_pct": 22,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2456,7 +2640,7 @@
    "crowd": {
     "team1_pct": 88,
     "team2_pct": 12,
-    "total_picks": 25,
+    "total_picks": 26,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2479,7 +2663,7 @@
    "crowd": {
     "team1_pct": 94,
     "team2_pct": 6,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2502,7 +2686,30 @@
    "crowd": {
     "team1_pct": 6,
     "team2_pct": 94,
-    "total_picks": 17,
+    "total_picks": 18,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1079035",
+   "team1": "AceGaming",
+   "team2": "ex-A41G",
+   "team1_id": "86632",
+   "team2_id": "264941",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-30T17:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2523,9 +2730,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/reveal-multigaming-vs-team-300-prm-2nd-division-26-27-fall-1079036",
    "crowd": {
-    "team1_pct": 82,
-    "team2_pct": 18,
-    "total_picks": 17,
+    "team1_pct": 78,
+    "team2_pct": 22,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2546,9 +2753,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/team-reds-vs-nextgeneration-esports-arabian-league-2nd-division-2026-summer-1079147",
    "crowd": {
-    "team1_pct": 88,
-    "team2_pct": 12,
-    "total_picks": 17,
+    "team1_pct": 83,
+    "team2_pct": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2571,7 +2778,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2594,7 +2801,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2615,9 +2822,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/jsk-academy-vs-supreme-leaders-tunisian-super-league-2026-1080933",
    "crowd": {
-    "team1_pct": 18,
-    "team2_pct": 82,
-    "total_picks": 17,
+    "team1_pct": 17,
+    "team2_pct": 83,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2638,9 +2845,9 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/jsk-esports-vs-olympique-mnihla-tunisian-super-league-2026-1080934",
    "crowd": {
-    "team1_pct": 88,
-    "team2_pct": 12,
-    "total_picks": 17,
+    "team1_pct": 89,
+    "team2_pct": 11,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2663,7 +2870,7 @@
    "crowd": {
     "team1_pct": 6,
     "team2_pct": 94,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2686,7 +2893,7 @@
    "crowd": {
     "team1_pct": 100,
     "team2_pct": 0,
-    "total_picks": 17,
+    "total_picks": 18,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -2707,9 +2914,32 @@
    "status": "scheduled",
    "hotspawn_url": "https://www.hotspawn.com/matches/zahrouni-esports-vs-el-menzah-esports-tunisian-super-league-2026-1080937",
    "crowd": {
-    "team1_pct": 24,
-    "team2_pct": 76,
-    "total_picks": 17,
+    "team1_pct": 28,
+    "team2_pct": 72,
+    "total_picks": 18,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1079148",
+   "team1": "Void Walkers",
+   "team2": "Victorious Demons",
+   "team1_id": "252804",
+   "team2_id": "71939",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "competition_id": "36502",
+   "tier": "WAITING FOR INFORMATION",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-10-31T19:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 25,
+    "team2_pct": 75,
+    "total_picks": 4,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -3336,6 +3566,29 @@
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
   },
   {
+   "id": "1079044",
+   "team1": "Hannover Esports e.V.",
+   "team2": "Reveal Multigaming",
+   "team1_id": "245774",
+   "team2_id": "235214",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-11-03T17:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 100,
+    "team2_pct": 0,
+    "total_picks": 11,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
    "id": "1082746",
    "team1": "Phong Vũ Buffalo",
    "team2": "404 Multigaming e.V.",
@@ -3630,6 +3883,29 @@
     "team1_pct": 92,
     "team2_pct": 8,
     "total_picks": 13,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1079052",
+   "team1": "ex-A41G",
+   "team2": "Babos Gaming",
+   "team1_id": "264941",
+   "team2_id": "190299",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-11-08T16:00:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
@@ -4550,6 +4826,29 @@
     "team1_pct": 100,
     "team2_pct": 0,
     "total_picks": 12,
+    "note": "Hotspawn community pick percentage. Context only: never used in any probability."
+   },
+   "source_lobby": "https://play.hotspawn.com/lol-pickems"
+  },
+  {
+   "id": "1079061",
+   "team1": "BvP",
+   "team2": "ex-A41G",
+   "team1_id": "264940",
+   "team2_id": "264941",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "competition_id": "36492",
+   "tier": "C",
+   "stage": "waiting for information",
+   "points": 10,
+   "best_of": null,
+   "start_utc": "2026-11-15T18:30:00Z",
+   "status": "cancelled",
+   "hotspawn_url": null,
+   "crowd": {
+    "team1_pct": 0,
+    "team2_pct": 0,
+    "total_picks": 0,
     "note": "Hotspawn community pick percentage. Context only: never used in any probability."
    },
    "source_lobby": "https://play.hotspawn.com/lol-pickems"
