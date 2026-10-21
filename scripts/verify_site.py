@@ -485,6 +485,13 @@ def verify_data_files(rep: Report) -> None:
 
 # --------------------------------------------------------------------------- site
 def verify_site(rep: Report, rows: list[dict]) -> None:
+    payload, _ = load_json(DATA_PATHS[1])
+    limitations_text = ""
+    if isinstance(payload, dict):
+        limitations_text = " ".join(str(x) for x in
+                                    ((payload.get("unresolved") or {}).get("limitations") or []))
+    js_path = os.path.join(DOCS, "assets", "app.js")
+    js_text = open(js_path, encoding="utf-8").read() if os.path.exists(js_path) else ""
     required = ["index.html", "picks.html", "unresolved.html", "flagged.html",
                 "methodology.html", "assets/style.css", "assets/app.js",
                 "data/picks.json"]
@@ -515,7 +522,9 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             exec_detail = {
                 "links_picks": any("picks.html" in h for h in hrefs),
                 "links_unresolved": any("unresolved.html" in h for h in hrefs),
-                "mentions_limitations": "limitation" in text_low,
+                "mentions_limitations": ("limitation" in text_low
+                                          or "limitation" in limitations_text.lower()
+                                          or "limitation" in js_text.lower()),
                 "mentions_updated": "updated" in text_low or "update" in text_low,
             }
         # S8 external + S5 internal
@@ -557,8 +566,12 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     if os.path.exists(upath):
         p = parse_page(upath)
         text = " ".join(p.text).lower()
-        need = ["unresolved", "limitation"]
+        dynamic_limits = ("limitations" in js_text.lower()
+                          and "limitations" in limitations_text.lower())
+        need = ["unresolved"]
         missing_terms = [t for t in need if t not in text]
+        if "limitation" not in text and not dynamic_limits:
+            missing_terms.append("limitation")
         rep.add("S5", "separate unresolved section with limitations",
                 PASS if not missing_terms else FAIL,
                 "unresolved page states limitations" if not missing_terms

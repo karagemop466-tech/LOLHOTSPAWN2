@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-21T20:54:58.854499+00:00",
+ "verified_at": "2026-10-21T20:58:10.071240+00:00",
  "status": "FAIL",
  "counts": {
   "PASS": 27,
@@ -9,22 +9,22 @@
  },
  "data_matches": 195,
  "methods": {
-  "MODEL_ELO": 61,
+  "MARKET_CONSENSUS": 0,
+  "UNRESOLVED": 126,
+  "MARKET_POLYMARKET": 8,
   "MODEL_LEAGUE_PRIOR": 0,
   "MARKET_BOOKS": 0,
-  "MODEL_STANDINGS": 0,
   "MODEL_ELO_THIN": 0,
   "MARKET_SINGLE": 0,
-  "UNRESOLVED": 126,
-  "MARKET_CONSENSUS": 0,
-  "MARKET_POLYMARKET": 8
+  "MODEL_STANDINGS": 0,
+  "MODEL_ELO": 61
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.6h old)"
+   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.7h old)"
   },
   {
    "id": "D2",

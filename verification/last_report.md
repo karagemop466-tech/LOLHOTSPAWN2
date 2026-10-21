@@ -1,10 +1,10 @@
 # Verification report — FAIL
-_2026-10-21T20:54:58.854499+00:00_
-195 matches · MODEL_ELO: 61 · MODEL_LEAGUE_PRIOR: 0 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0 · MODEL_ELO_THIN: 0 · MARKET_SINGLE: 0 · UNRESOLVED: 126 · MARKET_CONSENSUS: 0 · MARKET_POLYMARKET: 8
+_2026-10-21T20:58:10.071240+00:00_
+195 matches · MARKET_CONSENSUS: 0 · UNRESOLVED: 126 · MARKET_POLYMARKET: 8 · MODEL_LEAGUE_PRIOR: 0 · MARKET_BOOKS: 0 · MODEL_ELO_THIN: 0 · MARKET_SINGLE: 0 · MODEL_STANDINGS: 0 · MODEL_ELO: 61
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.6h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.7h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 195 rows have team1, team2 and a start time |
 | D2b every match has a machine-readable UTC start | WARN | 1 row(s) have a display time that did not parse to UTC (unverified start — flagged) |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
