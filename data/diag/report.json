@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:22:50.587458+00:00",
+ "generated_at": "2026-10-21T20:24:08.810938+00:00",
  "checks": [
   {
    "name": "hotspawn_lol_lobby",
@@ -21,7 +21,7 @@
    "name": "leaguepedia_teamredirects",
    "url": "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=TeamRedirects&fields=TR.AllName%2CTR.Name&limit=500",
    "status": 200,
-   "bytes": 159,
+   "bytes": 372,
    "ctype": "application/json; charset=utf-8",
    "note": ""
   },
@@ -71,7 +71,7 @@
    "name": "polymarket_gamma_tag",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=5",
    "status": 200,
-   "bytes": 81006,
+   "bytes": 81021,
    "ctype": "application/json",
    "note": ""
   },
@@ -123,7 +123,7 @@
    "name": "betfair",
    "url": "https://api.betfair.com/exchange/betting/rest/v1.0/listEventTypes/",
    "status": 403,
-   "bytes": 4548,
+   "bytes": 4551,
    "ctype": "text/html; charset=UTF-8",
    "note": "",
    "err": "HTTPError"
