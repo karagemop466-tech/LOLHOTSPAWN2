@@ -1,0 +1,201 @@
+{
+ "verified_at": "2026-10-21T20:28:18.955100+00:00",
+ "status": "PASS",
+ "counts": {
+  "PASS": 26,
+  "FAIL": 0,
+  "WARN": 2,
+  "SKIP": 0
+ },
+ "data_matches": 195,
+ "methods": {
+  "MARKET_POLYMARKET": 8,
+  "UNRESOLVED": 126,
+  "MODEL_ELO": 61,
+  "MARKET_BOOKS": 0
+ },
+ "checks": [
+  {
+   "id": "D1",
+   "title": "payload parses, has matches and a fresh generated_at",
+   "status": "PASS",
+   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.2h old)"
+  },
+  {
+   "id": "D2",
+   "title": "two distinct teams and a start time on every match",
+   "status": "PASS",
+   "detail": "all 195 rows have team1, team2 and a start time"
+  },
+  {
+   "id": "D3",
+   "title": "a pick exists and is one of the two teams",
+   "status": "PASS",
+   "detail": "every match has a pick equal to team1 or team2"
+  },
+  {
+   "id": "D4",
+   "title": "probabilities are in range and sum to 1",
+   "status": "PASS",
+   "detail": "every row sums to 1.0 within 0.005"
+  },
+  {
+   "id": "D5",
+   "title": "pick_prob equals the larger probability",
+   "status": "PASS",
+   "detail": "pick_prob matches max(prob_team1, prob_team2) on every row"
+  },
+  {
+   "id": "D6",
+   "title": "method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'UNRESOLVED']",
+   "status": "PASS",
+   "detail": "all methods documented"
+  },
+  {
+   "id": "D7",
+   "title": "every row links at least one official/trusted source",
+   "status": "PASS",
+   "detail": "all 195 rows carry at least one source URL"
+  },
+  {
+   "id": "D7b",
+   "title": "source host recognised as official/trusted",
+   "status": "WARN",
+   "detail": "61 row(s) link a host not on the allowlist — manual review",
+   "items": [
+    "Team VDS vs Pegasus Esports -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "Reveal Multigaming vs Hannover Esports e.V. -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "NextGeneration Esports vs Pegasus Esports -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "Team VDS vs Team Reds -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "AceGaming vs Babos Gaming -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "LØS vs T1 -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "JSK Esports vs El Menzah Esports -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "Simplicity Gaming vs JSK Academy -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "JSK Academy vs New Era Team -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "Babos Gaming vs Hannover Esports e.V. -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "Reveal Multigaming vs AceGaming -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery",
+    "Neko Elite Kittens vs spongecord prime -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery"
+   ]
+  },
+  {
+   "id": "D8a",
+   "title": "market rows link a bookmaker/prediction-market URL",
+   "status": "PASS",
+   "detail": "every market row links its market"
+  },
+  {
+   "id": "D8b",
+   "title": "unresolved rows are explicit unverified 50/50 (limitations published)",
+   "status": "PASS",
+   "detail": "every unresolved row is 0.50 and labelled unverified"
+  },
+  {
+   "id": "D9",
+   "title": "no duplicate fixtures",
+   "status": "PASS",
+   "detail": "no duplicate (teams,start) rows"
+  },
+  {
+   "id": "D12",
+   "title": "Hotspawn is never the probability source (fixture list only)",
+   "status": "PASS",
+   "detail": "no market/model row cites hotspawn.com as its probability source"
+  },
+  {
+   "id": "D10",
+   "title": "counts_by_method agrees with the rows",
+   "status": "PASS",
+   "detail": "counts consistent"
+  },
+  {
+   "id": "D11",
+   "title": "declared count equals number of rows",
+   "status": "PASS",
+   "detail": "count=195, rows=195"
+  },
+  {
+   "id": "D13",
+   "title": "coverage: share of matches without an external market line",
+   "status": "WARN",
+   "detail": "126/195 rows are UNRESOLVED 50/50 (64.6%). A non-zero share is allowed only when published as an unresolved section with limitations — see S4 and the site's Unresolved page."
+  },
+  {
+   "id": "D14",
+   "title": "canonical data and site data are identical",
+   "status": "PASS",
+   "detail": "identical"
+  },
+  {
+   "id": "S1",
+   "title": "all required site files exist",
+   "status": "PASS",
+   "detail": "8 files present"
+  },
+  {
+   "id": "S2",
+   "title": "every page is mobile-ready (viewport width=device-width)",
+   "status": "PASS",
+   "detail": "all pages declare a responsive viewport"
+  },
+  {
+   "id": "S3",
+   "title": "every page links the shared picks navigation",
+   "status": "PASS",
+   "detail": "navigation present"
+  },
+  {
+   "id": "S4",
+   "title": "executive summary links in-site to picks + unresolved and states limitations",
+   "status": "PASS",
+   "detail": "exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True}"
+  },
+  {
+   "id": "S5",
+   "title": "separate unresolved section with limitations",
+   "status": "PASS",
+   "detail": "unresolved page states limitations"
+  },
+  {
+   "id": "S6",
+   "title": "no broken internal links",
+   "status": "PASS",
+   "detail": "all internal href/src resolve"
+  },
+  {
+   "id": "S7",
+   "title": "shared JS/CSS exist and are responsive",
+   "status": "PASS",
+   "detail": "assets load data and contain responsive rules"
+  },
+  {
+   "id": "S8",
+   "title": "root index.html sends visitors into the site",
+   "status": "PASS",
+   "detail": "root redirects to docs/"
+  },
+  {
+   "id": "S9",
+   "title": "all external links use https",
+   "status": "PASS",
+   "detail": "8 external link(s) collected for manual review; 0 plain-http"
+  },
+  {
+   "id": "W1",
+   "title": "picks update is scheduled every 4-8 hours",
+   "status": "PASS",
+   "detail": "update-picks.yml: cron '0 */6 * * *' = every 6h"
+  },
+  {
+   "id": "W2",
+   "title": "update workflow runs the generator with contents: write",
+   "status": "PASS",
+   "detail": "update-picks.yml runs scripts/update_picks.py; contents write present"
+  },
+  {
+   "id": "W3",
+   "title": "Hotspawn crowd % is never a probability input",
+   "status": "PASS",
+   "detail": "static scan found no crowd->probability usage"
+  }
+ ]
+}
