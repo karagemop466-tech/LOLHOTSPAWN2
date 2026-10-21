@@ -21,7 +21,7 @@ which *official results* sources can produce a defensible line when no book does
 | **Polymarket** | Prediction market | Public Gamma API returns LoL-tagged events; probe found **59 LoL events**, including tier-2/3 titles (Nexus League, Hitpoint Masters, North American Challengers League) | Public, no key | `data/diag/report3.json` → `prediction.polymarket_events`; pipeline already matches Worlds 2026 (8 rows) | Liquidity is thin outside majors and many LoL markets are historical. Matching team names is fragile (aliases). Never use Hotspawn crowd % — only the market price. |
 | **Bovada** | US-facing esportsbook | LoL coupon JSON returns 200 and lists "World Championship '26" | Public JSON used by its own front-end | `data/diag/report3.json` → `books.bovada_lol_coupon` | Major leagues only (third-party reviews cite LCK/LPL/LCP/LCS/LEC/LFL/Prime League/TCL). No tier-3 amateur. |
 | **bet365 / DraftKings / FanDuel / BetMGM / GG.BET / Betway / Thunderpick etc.** | Established books | LoL majors; some carry Prime League / academy leagues | Require accounts/geoblocking; no public odds API | Third-party round-ups only (e.g. [esports.gg](https://esports.gg/guides/betting/league-of-legends-betting-sites/), [Covers](https://www.covers.com/betting/esports-betting-sites)) | **UNVERIFIED per-fixture** for this project: we could not read their prices programmatically from an official feed. Do not claim their line on the site without a per-match link. |
-| **Riot lolesports API** (`esports-api.lolesports.com/persisted/gw`) | **Unofficial** Riot front-end API | Riot-operated leagues only (Worlds, MSI, LCK, LPL, LEC, LCP …) | Public front-end key | [unofficial API docs](https://vickz84259.github.io/lolesports-api-docs/), [community guide](https://github.com/kingjakeu/lolesports/blob/main/doc/unofficial-riot-api-guide.md) | Not official, no SLA; **does not** carry amateur leagues. Useful only as a fixture/start-time cross-check for majors. |
+| **Riot lolesports API** (`esports-api.lolesports.com/persisted/gw`) | **Unofficial** Riot front-end API | Riot-operated leagues only (Worlds, MSI, LCK, LPL, LEC, LCP …) | Public front-end key | [unofficial API docs](https://vickz84259.github.io/lolesports-api-docs/), [community guide](https://github.com/kingjakeu/lolesports/blob/main/doc/unofficial-riot-api-guide.md) | Not official, no SLA; **does not** carry amateur leagues. **Returns 403 from GitHub Actions for all four endpoints (measured 2026-10-21, `data/diag/report7.json`)** → not usable in production. |
 
 **Conclusion for market coverage:** only the Worlds 2026 fixtures (9 in the current feed) are priced by a sharp book
 we can reach; Polymarket adds a handful more. Every tier-3/amateur fixture in the feed has **no** book line we could
@@ -213,3 +213,17 @@ https://lol.fandom.com/wiki/Special:CargoExport?tables=MatchSchedule
   &where=OverviewPage='<page>' AND Winner IS NOT NULL
   &order_by=DateTime_UTC DESC&limit=200&format=json
 ```
+
+---
+
+## 10. Riot lolesports endpoints from Actions (measured 2026-10-21, `data/diag/report7.json`)
+
+| endpoint | status | note |
+|---|---|---|
+| `esports-api.lolesports.com/persisted/gw/getLeagues` | **403** | blocked for our runners |
+| `esports-api.lolesports.com/persisted/gw/getSchedule` | **403** | blocked |
+| `prod-relapi.ewp.gg/persisted/gw/getLeagues` | **403** | blocked |
+| `prod-relapi.ewp.gg/persisted/gw/getSchedule` | **403** | blocked |
+
+Consequence: the Riot front-end API cannot be a production dependency here (and it never covered amateur leagues).
+Leaguepedia `MatchSchedule` remains the only reliable fixture/results feed for the low-tier leagues.
