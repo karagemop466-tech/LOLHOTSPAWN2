@@ -1,1 +1,5 @@
 __pycache__/
+
+# generated caches and duplicate payloads (rebuilt by the pipeline, not versioned)
+data/cache/
+data/picks.json

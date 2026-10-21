@@ -144,7 +144,7 @@
     set("#stat-unresolved", c.unresolved ?? "—");
     const cov = d.coverage || {};
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a pick with verified inputs (${cov.resolved_pct ?? 0}%). ${cov.unresolved ?? 0} are published as explicit 50/50 placeholders and listed on the <a href="unresolved.html">Unresolved page</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a published pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external market lines, <b>${cov.with_team_specific_model ?? 0}</b> from the Elo model, <b>${cov.with_prior_only ?? 0}</b> from a league prior, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. Low-confidence rows are labelled and explained on the <a href="unresolved.html">Unresolved page</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 

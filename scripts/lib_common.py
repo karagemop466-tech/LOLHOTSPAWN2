@@ -163,11 +163,14 @@ def load_json(path: str, default=None):
         return default
 
 
-def write_json(path: str, obj) -> None:
+def write_json(path: str, obj, compact: bool = False) -> None:
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, indent=1, ensure_ascii=False, sort_keys=False)
+        if compact:
+            json.dump(obj, f, separators=(",", ":"), ensure_ascii=False)
+        else:
+            json.dump(obj, f, indent=1, ensure_ascii=False, sort_keys=False)
         f.write("\n")
     os.replace(tmp, path)
 

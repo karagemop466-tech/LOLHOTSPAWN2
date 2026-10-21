@@ -18,7 +18,6 @@ import model
 from lib_common import load_json, log, now_utc, utc_iso, write_json
 
 DOCS_DATA = "docs/data/picks.json"
-ROOT_DATA = "data/picks.json"
 
 CHECKED_UNAVAILABLE = [
     {"name": "Betfair Exchange", "url": "https://www.betfair.com/exchange/plus/",
@@ -162,8 +161,7 @@ def main() -> int:
         raise SystemExit("missing cache inputs; run without --use-cache")
     picks = model.run(fixtures, leaguepedia, markets)
     payload = build_payload(fixtures, markets, leaguepedia, picks)
-    write_json(DOCS_DATA, payload)
-    write_json(ROOT_DATA, payload)
+    write_json(DOCS_DATA, payload, compact=True)
     log(f"wrote {DOCS_DATA}: {payload['counts']}")
     return 0
 
