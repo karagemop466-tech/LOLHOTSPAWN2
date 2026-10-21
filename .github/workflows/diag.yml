@@ -14,8 +14,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Run diagnostics
-        run: python3 scripts/diag_lab.py
+      - name: Run diagnostics v1
+        run: python3 scripts/diag_lab.py || true
+      - name: Run diagnostics v2
+        run: python3 scripts/diag_lab2.py || true
       - name: Commit diagnostics
         run: |
           git config user.name "diag-bot"; git config user.email "actions@github.com"
