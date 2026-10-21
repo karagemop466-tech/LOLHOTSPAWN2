@@ -13,6 +13,7 @@ an explicit list of source links for every row.
 from __future__ import annotations
 
 import math
+import re
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
@@ -380,7 +381,12 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             if not pair_ok:
                 continue
             # A game-level market is not a series probability: only allow it on Bo1.
-            if (rec.get("raw") or {}).get("market_type") == "game" and f.get("best_of") != 1:
+            # Belt and braces: detect it from the label too, so a stale cache or a
+            # different feed cannot leak a Game-N price into a series row.
+            market_note = f"{rec.get('note') or ''} {rec.get('competition') or ''}".lower()
+            is_game_market = ((rec.get("raw") or {}).get("market_type") == "game"
+                              or bool(re.search(r"\b(game|map)\s*\d", market_note)))
+            if is_game_market and f.get("best_of") != 1:
                 continue
             if best_pair is None or delta_h < best_pair[0]:
                 best_pair = (delta_h, f)
