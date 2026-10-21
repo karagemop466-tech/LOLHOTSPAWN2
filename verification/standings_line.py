@@ -108,6 +108,15 @@ def rate(r: dict):
     return None, 0, "none"
 
 
+def calibrate(p: float, multi_division: bool) -> float:
+    """Multi-division pages: the table does not expose which division a team is in,
+    so cross-division records are only weak evidence. Shrink toward 50% and cap."""
+    if multi_division:
+        p = 0.5 + (p - 0.5) * 0.5
+        return round(min(0.75, max(0.25, p)), 4)
+    return round(min(0.90, max(0.10, p)), 4)
+
+
 def norm(s) -> str:
     return re.sub(r"[^a-z0-9]", "", (str(s or "")).lower())
 
@@ -240,18 +249,22 @@ def main() -> int:
                         "why": [why1, why2]})
             out.append(rec)
             continue
-        p = wr1 / (wr1 + wr2)
-        p = round(min(0.95, max(0.05, p)), 4)
+        multi = sum(1 for r in by_page[page].values() for x in r
+                    if int(float(x.get("Place") or 0)) == 1) > 1
+        p = calibrate(wr1 / (wr1 + wr2), multi)
         if abs(p - 0.5) >= 0.02:
             moved += 1
         conf = "HIGH" if min(n1, n2) >= 5 else "MEDIUM" if min(n1, n2) >= 2 else "LOW"
+        if multi:
+            conf = "LOW"
+        rec_multi = multi
         ws1 = f"{int(num(r1.get('WinSeries')))}-{int(num(r1.get('LossSeries')))}"
         ws2 = f"{int(num(r2.get('WinSeries')))}-{int(num(r2.get('LossSeries')))}"
         rec.update({
             "status": "SCORED", "prob_team1": p, "prob_team2": round(1 - p, 4),
             "names_used": [bridged[0] or m["team1"], bridged[1] or m["team2"]],
             "confidence": conf, "basis": kind1,
-            "records": [ws1, ws2], "decided": [n1, n2],
+            "records": [ws1, ws2], "decided": [n1, n2], "multi_division": rec_multi,
             "evidence": (f"Leaguepedia standings ({page}): {m['team1']} {ws1} vs "
                          f"{m['team2']} {ws2}"),
         })

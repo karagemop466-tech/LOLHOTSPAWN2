@@ -33,7 +33,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 from check_leaguepedia_coverage import LEAGUE_MAP  # noqa: E402
-from standings_line import fetch_pages, norm, rate  # noqa: E402
+from standings_line import calibrate, fetch_pages, norm, rate  # noqa: E402
 
 WIKI = "https://lol.fandom.com/wiki/"
 MODEL_METHOD = "MODEL_STANDINGS"
@@ -150,12 +150,16 @@ def main() -> int:
         if wr1 is None or wr2 is None:
             m["standings_status"] = "NO_RECORD"
             continue
-        p = round(min(0.95, max(0.05, wr1 / (wr1 + wr2))), 4)
+        multi = sum(1 for recs in by_page[page].values() for x in recs
+                    if int(float(x.get("Place") or 0)) == 1) > 1
+        p = calibrate(wr1 / (wr1 + wr2), multi)
         rec1 = f"{int(float(r1.get('WinSeries') or 0))}-{int(float(r1.get('LossSeries') or 0))}"
         rec2 = f"{int(float(r2.get('WinSeries') or 0))}-{int(float(r2.get('LossSeries') or 0))}"
         conf = "High — official standings, ≥5 series" if min(g1, g2) >= 5 else \
                "Medium — official standings, 2-4 series" if min(g1, g2) >= 2 else \
                "Low — official standings, ≤1 series"
+        if multi:
+            conf = "Low — multi-division standings (division not published in the data); shrunk toward 50%"
         m.update({
             "prob_team1": p, "prob_team2": round(1 - p, 4),
             "pick": m["team1"] if p >= 0.5 else m["team2"],
@@ -166,6 +170,7 @@ def main() -> int:
             "confidence": conf,
             "source_url": page_url(page),
             "standings": {"records": [rec1, rec2], "decided": [g1, g2], "basis": kind,
+                          "multi_division": multi,
                           "names_used": [n1, n2]},
             "standings_status": "SCORED",
         })
