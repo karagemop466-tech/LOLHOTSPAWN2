@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hotspawn LoL Picks — Executive Summary</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<header><h1>🎮 Hotspawn LoL Pick'em — Our Picks</h1><div class="sub" id="updated">Loading latest update…</div></header><nav><a href="index.html">🏠 Summary</a><a href="picks.html">✅ All Picks</a><a href="unresolved.html">⚠️ Unresolved</a><a href="flagged.html">🚩 Flagged</a><a href="methodology.html">📖 Method & Sources</a></nav>
+<main>
+<h2>Executive Summary</h2>
+<p>Every League of Legends match listed on the <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn Pick'em lobby ↗</a> gets a pick and a win probability here — including low-tier matches with no bookmaker coverage. Probabilities come from <b>outside Hotspawn</b>: established esportsbook/prediction-market lines where they exist, otherwise our own Elo model built from Leaguepedia results. Hotspawn crowd % is <b>never</b> used as a probability. Auto-updated every 6 hours by GitHub Actions — no manual input.</p>
+<div class="biglinks">
+<a href="picks.html">✅ All Picks →</a>
+<a href="unresolved.html">⚠️ Unresolved Picks →</a>
+<a href="flagged.html">🚩 Flagged for Review →</a>
+</div>
+<div class="card"><h3>Coverage right now</h3><div id="stats">Loading…</div></div>
+<h2 id="featured">⭐ Featured picks (real betting-market lines)</h2><div id="featured-list">Loading…</div>
+<h2>⚠️ Unresolved picks — summary & limitations</h2>
+<div class="warn"><p>Some Hotspawn fixtures (e.g. PRM 3rd Division, regional amateur leagues) are priced by <b>no</b> esportsbook we can access (checked: Polymarket, OddsPapi bookmaker network incl. Pinnacle/bet365 where a key is configured) and may have little/no Leaguepedia history. For those we still publish a pick, but label it clearly:</p><ul><li><b>Our Elo model</b> pick if either team has recorded results — low confidence when history is thin (&lt;10 games).</li><li><b>50/50 “no lean”</b> if neither team has any verifiable history — pick shown is nominal only, <b>not an edge</b>.</li><li>Limitations: amateur rosters change often, Leaguepedia coverage of tier-3+ leagues is incomplete, no market exists to validate against, and start times/tier on Hotspawn may show “WAITING FOR INFORMATION”.</li></ul><p><a href="unresolved.html"><b>See the full unresolved list →</b></a></p></div>
+<div id="unres-preview"></div>
+</main><footer>Sources & verification on the <a href="methodology.html">Method & Sources</a> page. Not betting advice.</footer>
+<script src="assets/app.js"></script><script>
+load().then(d=>{document.getElementById('updated').textContent='Last updated: '+new Date(d.generated_at).toLocaleString()+' · '+d.count+' LoL matches · updates every 6h';
+const c=d.counts_by_method;document.getElementById('stats').innerHTML='<b>'+d.count+' matches</b> · 💰 esportsbook: '+(c.MARKET_BOOKS||0)+' · 💰 Polymarket: '+(c.MARKET_POLYMARKET||0)+' · 🧮 our Elo model: '+(c.MODEL_ELO||0)+' · ⚠️ unresolved 50/50: '+(c.UNRESOLVED||0);
+const f=d.matches.filter(m=>m.method.startsWith('MARKET'));document.getElementById('featured-list').innerHTML=f.length?f.slice(0,20).map(card).join(''):'<div class="card">No matches currently have an external betting-market line. Everything below that is priced by our Elo model or unresolved — see All Picks.</div>';
+const u=d.matches.filter(m=>m.method=='UNRESOLVED'||/Low/.test(m.confidence||''));document.getElementById('unres-preview').innerHTML=u.slice(0,5).map(card).join('')+(u.length?'<p><a href="unresolved.html">All '+u.length+' unresolved/low-confidence picks →</a></p>':'')}).catch(e=>{document.getElementById('stats').textContent='Data not generated yet — the scheduled GitHub Action publishes picks.json. '+e})
+</script></body></html>

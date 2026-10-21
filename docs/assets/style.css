@@ -1,0 +1,23 @@
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#0b1020;color:#eef1ff;line-height:1.45}
+a{color:#7dd3fc}header{background:#111a33;padding:14px 16px;position:sticky;top:0;z-index:10;border-bottom:2px solid #f59e0b}
+header h1{font-size:20px;margin:0}.sub{color:#aab;font-size:13px}
+nav{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;background:#0e1530;position:sticky;top:57px;z-index:9}
+nav a{background:#1e2a4a;color:#fff;text-decoration:none;padding:10px 14px;border-radius:999px;font-size:15px;font-weight:600}
+nav a:active,nav a:hover{background:#f59e0b;color:#111}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.card{background:#131c38;border:1px solid #26335e;border-radius:14px;padding:14px;margin:12px 0}
+.pick{border-left:6px solid #22c55e}.market{border-left-color:#f59e0b}.unres{border-left-color:#ef4444}
+.teams{font-size:18px;font-weight:700}.vs{color:#94a3b8;font-weight:400;font-size:14px}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:8px 0;background:#334}
+.bar i{display:block;background:#22c55e}.bar b{display:block;background:#475569}
+.pct{font-size:22px;font-weight:800;color:#4ade80}.meta{color:#aab;font-size:13px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#26335e;font-size:12px;margin:2px}
+.biglinks{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:640px){.biglinks{grid-template-columns:1fr 1fr 1fr}}
+.biglinks a{display:block;background:#f59e0b;color:#111;text-decoration:none;font-weight:800;font-size:18px;padding:18px;border-radius:14px;text-align:center}
+input,select{width:100%;padding:12px;font-size:16px;border-radius:10px;border:1px solid #334;background:#0e1530;color:#fff;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px;border-bottom:1px solid #26335e;text-align:left}
+@media(max-width:640px){table,thead,tbody,tr,td{display:block}thead{display:none}tr{margin:10px 0;background:#131c38;border-radius:12px;padding:10px}}
+.warn{background:#3b1220;border:1px solid #ef4444;border-radius:12px;padding:12px}
+footer{padding:20px 16px;color:#889;font-size:13px}
