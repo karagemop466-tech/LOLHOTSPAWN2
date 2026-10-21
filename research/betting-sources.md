@@ -129,3 +129,42 @@ link it. Market prices must credit the book/market with a link.
    and expose `leaguepedia_ok` in its debug block; a run with no Leaguepedia data must not pretend the model ran.
 4. OddsPapi has no key configured, so no bookmaker median is computed anywhere; the site must not imply bookmaker
    coverage it does not have.
+
+---
+
+## 7. Addendum — why the current model outputs ~50/50 and the targeted fix
+
+Measured on the live data (2026-10-21 20:16 UTC, `docs/data/picks.json`):
+
+| method | rows | probability range |
+|---|---|---|
+| MARKET_POLYMARKET | 8 | 0.395 – 0.825 (real signal) |
+| MODEL_ELO | 61 | **0.455 – 0.545** (median 0.511; every row "Low — thin team history") |
+| UNRESOLVED | 126 | 0.500 |
+
+So 187 of 195 published rows (96%) are coin-flips: the site technically "has a pick for every match", but only the
+8 market rows carry information. The Elo model is not *wrong* — it is starved: the fixtures' teams have 0–9 recorded
+games each, and the shrink factor `min(games)/(min+10)` pulls a 3-game sample to ~23% of its raw edge.
+
+Root causes and the fix (verified against the Leaguepedia data captured in `data/diag/`):
+
+1. **Global 6,000-row pagination crowds out tier-3.** The production query pulls `ScoreboardGames` for the last 180
+   days in date order, limit 500 × 12 pages. Major-league games fill the cap; the amateur teams we need appear at the
+   margins (the captured 5,000-row slice 2024-10 → 2025-04 contains only **9 of the 99** unresolved teams).
+   **Fix:** query per league instead of globally — 16 league pages cover every future fixture
+   (`MatchSchedule.OverviewPage` values in `data/diag/lp_schedule.json`). One Cargo call per league:
+   `tables=ScoreboardGames&fields=SG.Team1,SG.Team2,SG.Winner,SG.DateTime_UTC,SG.OverviewPage,SG.Tournament`
+   `&where=SG.OverviewPage LIKE 'Prime League 3rd Division%' AND SG.DateTime_UTC >= '2025-06-01'&limit=500&order_by=SG.DateTime_UTC`.
+   16 paced requests (≥3 s apart) respect the anonymous rate limit and cannot be crowded out.
+2. **Off-season teams need prior splits, not a 180-day window.** `MatchSchedule` pages for these leagues expose prior
+   splits (`.../2026 Season/Spring Split`, etc.). Querying the league page across 2 splits gives each team enough
+   games for a stable rating; the model must label how many games and which splits were used.
+3. **Fixtures must come from MatchSchedule, not only ScoreboardGames.** 112/126 unresolved fixtures are already listed
+   with exact UTC times and BestOf on Leaguepedia (see `verification/leaguepedia_coverage.md`), so name matching and
+   per-league source links are available without scraping HTML.
+4. **Expose coverage in the payload**: e.g. `leaguepedia_ok`, `leagues_queried`, `teams_with_results`, and a per-row
+   `games_used`/`splits_used`, so a rate-limited run is visibly different from a real one.
+
+If the targeted queries still return no games for a league (possible for LigaGG/Arabian/Tunisian amateur events), the
+row stays 50/50 and the Unresolved page states exactly that, with the league page link — which is the honest outcome
+the brief asks for.
