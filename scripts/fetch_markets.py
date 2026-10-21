@@ -24,8 +24,14 @@ OUT = "data/cache/markets.json"
 PIN_KEY = {"x-api-key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R", "Accept": "application/json"}
 PIN_BASE = "https://guest.api.arcadia.pinnacle.com/0.1"
 PIN_PAGE = "https://www.pinnacle.com/en/esports/league-of-legends"
-BOVADA_API = ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
-              "esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en")
+BOVADA_APIS = (
+    ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
+     "esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en"),
+    ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
+     "esports/league-of-legends?marketFilterId=def&lang=en"),
+    ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
+     "esports/league-of-legends"),
+)
 BOVADA_PAGE = "https://www.bovada.lv/sports/esports/league-of-legends"
 POLY_PAGE = "https://polymarket.com/event/"
 POLY_API = "https://gamma-api.polymarket.com"
@@ -112,12 +118,36 @@ def fetch_pinnacle() -> dict:
     return {"status": status, "records": records}
 
 
+def _bovada_groups(data):
+    """Accept a list of coupon groups, a bare event list, or a wrapped object."""
+    if isinstance(data, dict):
+        for key in ("events", "data", "results"):
+            if isinstance(data.get(key), list):
+                data = data[key]
+                break
+    if not isinstance(data, list):
+        return []
+    if data and isinstance(data[0], dict) and "competitors" in data[0]:
+        return [{"path": [], "events": data}]
+    return data
+
+
 def fetch_bovada() -> dict:
     status = {"source": "Bovada", "key": "bovada", "url": BOVADA_PAGE, "status": "error", "count": 0}
-    data, r = get_json(BOVADA_API, headers={"Referer": BOVADA_PAGE, "Origin": "https://www.bovada.lv"})
-    if not isinstance(data, list):
-        status["error"] = f"coupon feed HTTP {r.get('status')}"
+    data, r, used = None, {}, None
+    for url in BOVADA_APIS:
+        data, r = get_json(url, headers={"Referer": BOVADA_PAGE, "Origin": "https://www.bovada.lv"})
+        groups = _bovada_groups(data)
+        if any(g.get("events") for g in groups if isinstance(g, dict)):
+            used = url
+            break
+        time.sleep(0.5)
+    groups = _bovada_groups(data)
+    if not groups:
+        status["error"] = f"coupon feed HTTP {r.get('status')} (no event groups)"
         return {"status": status, "records": []}
+    status["feed"] = used or BOVADA_APIS[0]
+    data = groups
     records = []
     comps = []
     for group in data:

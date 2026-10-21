@@ -94,11 +94,13 @@ def build_payload(fixtures, markets, leaguepedia, picks):
     for s in markets.get("statuses", []):
         source_status.append({"name": s.get("source"), "url": s.get("url"), "status": s.get("status"),
                               "count": s.get("count"), "note": s.get("note") or s.get("error")})
+    lp_degraded = bool(leaguepedia.get("degraded")) or leaguepedia["counts"]["results"] <= 1000
     source_status.append({"name": "Leaguepedia MatchSchedule",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
-                          "status": "ok" if leaguepedia["counts"]["results"] > 1000 else "degraded",
+                          "status": "degraded" if lp_degraded else "ok",
                           "count": leaguepedia["counts"]["results"],
-                          "note": "Recorded results + schedules, exact UTC."})
+                          "note": (leaguepedia.get("degraded_reason")
+                                   or "Recorded results + schedules, exact UTC.")})
     source_status.append({"name": "Hotspawn LoL Pick'em lobby", "url": fixtures["lobby"],
                           "status": "ok" if fixtures["count"] >= 50 else "degraded",
                           "count": fixtures["count"], "note": "Fixture list only."})

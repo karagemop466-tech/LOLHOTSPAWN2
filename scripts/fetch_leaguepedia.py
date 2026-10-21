@@ -153,6 +153,7 @@ def main() -> int:
     tour_counts = Counter(x["overview"] for x in results)
     payload = {
         "generated_at": utc_iso(now),
+        "degraded": False,
         "counts": {"rows": len(clean), "results": len(results), "schedule": len(schedule),
                    "teams": len(teams), "export_calls": calls},
         "errors": errors,
@@ -167,7 +168,20 @@ def main() -> int:
         "teams": teams,
     }
     if len(results) < 1000:
-        raise SystemExit(f"Leaguepedia returned only {len(results)} results - refusing to overwrite good data")
+        # A rate-limited / broken run must not wipe good data. Fall back to the
+        # last good snapshot, mark it degraded and let the pipeline publish with
+        # an explicit degraded source status instead of failing the whole run.
+        prev = load_json(OUT)
+        if prev and prev.get("results"):
+            prev["degraded"] = True
+            prev["degraded_reason"] = (f"fresh export returned only {len(results)} results "
+                                       f"({len(errors)} errors); using snapshot from "
+                                       f"{prev.get('generated_at')}")
+            prev["last_attempt_utc"] = utc_iso(now)
+            write_json(OUT, prev)
+            log("leaguepedia: " + prev["degraded_reason"])
+            return 0
+        raise SystemExit(f"Leaguepedia returned only {len(results)} results and no fallback snapshot exists")
     write_json(OUT, payload)
     log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, {len(teams)} teams")
     return 0
