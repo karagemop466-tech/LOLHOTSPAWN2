@@ -1,0 +1,977 @@
+[
+ {
+  "path": [
+   {
+    "id": "9417391",
+    "link": "/esports/league-of-legends/world-championship-26",
+    "description": "World Championship '26",
+    "type": "LEAGUE",
+    "sportCode": "ESPT",
+    "order": 9223372036854775807,
+    "leaf": true,
+    "current": false
+   },
+   {
+    "id": "117310",
+    "link": "/esports/league-of-legends",
+    "description": "League Of Legends",
+    "type": "COMPETITION",
+    "sportCode": "ESPT",
+    "order": 1,
+    "leaf": false,
+    "current": true
+   },
+   {
+    "id": "6000",
+    "link": "/esports",
+    "description": "Esports",
+    "type": "SPORT",
+    "sportCode": "ESPT",
+    "order": 1,
+    "leaf": false,
+    "current": false
+   }
+  ],
+  "events": [
+   {
+    "id": "32451771",
+    "description": "Gen.G vs Invictus Gaming",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/gen-g-invictus-gaming-202610231300",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792774800000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 21,
+    "lastModified": 1792607584162,
+    "competitors": [
+     {
+      "id": "32451771-11894232",
+      "name": "Gen.G",
+      "home": true,
+      "shortName": "Gen.G"
+     },
+     {
+      "id": "32451771-13151842",
+      "name": "Invictus Gaming",
+      "home": false,
+      "shortName": "Invictus"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537193810",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448320933",
+          "description": "Gen.G",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451771-11894232",
+          "price": {
+           "id": "40308547192",
+           "american": "-550",
+           "decimal": "1.181818",
+           "fractional": "2/11"
+          }
+         },
+         {
+          "id": "2448321186",
+          "description": "Invictus Gaming",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451771-13151842",
+          "price": {
+           "id": "40308547193",
+           "american": "+350",
+           "decimal": "4.50",
+           "fractional": "7/2"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451006",
+    "description": "Hanwha Life Esports vs Top Esports",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/hanwha-life-esports-top-esports-202610231400",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792778400000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 20,
+    "lastModified": 1792582243562,
+    "competitors": [
+     {
+      "id": "32451006-11894231",
+      "name": "Hanwha Life Esports",
+      "home": true,
+      "shortName": "Hanwha Life Esports"
+     },
+     {
+      "id": "32451006-16169724",
+      "name": "Top Esports",
+      "home": false,
+      "shortName": "Esports"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537195753",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448326841",
+          "description": "Hanwha Life Esports",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451006-11894231",
+          "price": {
+           "id": "40304741356",
+           "american": "-500",
+           "decimal": "1.200",
+           "fractional": "1/5"
+          }
+         },
+         {
+          "id": "2448326842",
+          "description": "Top Esports",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451006-16169724",
+          "price": {
+           "id": "40304746854",
+           "american": "+325",
+           "decimal": "4.250",
+           "fractional": "13/4"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451373",
+    "description": "Team Liquid vs CTBC Flying Oyster",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/team-liquid-ctbc-flying-oyster-202610231400",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792778400000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 20,
+    "lastModified": 1792586913065,
+    "competitors": [
+     {
+      "id": "32451373-16553088",
+      "name": "Team Liquid",
+      "home": true,
+      "shortName": "Liquid"
+     },
+     {
+      "id": "32451373-16532006",
+      "name": "CTBC Flying Oyster",
+      "home": false,
+      "shortName": "CTBC"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537194012",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448320794",
+          "description": "Team Liquid",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451373-16553088",
+          "price": {
+           "id": "40269958099",
+           "american": "-285",
+           "decimal": "1.350877",
+           "fractional": "20/57"
+          }
+         },
+         {
+          "id": "2448320795",
+          "description": "CTBC Flying Oyster",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451373-16532006",
+          "price": {
+           "id": "40270015975",
+           "american": "+210",
+           "decimal": "3.100",
+           "fractional": "21/10"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451002",
+    "description": "Anyone's Legend vs Karmine Corp",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/anyone-s-legend-karmine-corp-202610231600",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792785600000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 21,
+    "lastModified": 1792584700723,
+    "competitors": [
+     {
+      "id": "32451002-16522586",
+      "name": "Anyone's Legend",
+      "home": true,
+      "shortName": "Anyone's"
+     },
+     {
+      "id": "32451002-16499312",
+      "name": "Karmine Corp",
+      "home": false,
+      "shortName": "Karmine"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537193116",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448321466",
+          "description": "Anyone's Legend",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451002-16522586",
+          "price": {
+           "id": "40308313638",
+           "american": "-250",
+           "decimal": "1.400",
+           "fractional": "2/5"
+          }
+         },
+         {
+          "id": "2448321467",
+          "description": "Karmine Corp",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451002-16499312",
+          "price": {
+           "id": "40308313637",
+           "american": "+185",
+           "decimal": "2.850",
+           "fractional": "37/20"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451000",
+    "description": "G2 Esports vs Dplus KIA",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/g2-esports-dplus-kia-202610231700",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792789200000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 20,
+    "lastModified": 1792613909543,
+    "competitors": [
+     {
+      "id": "32451000-11898280",
+      "name": "G2 Esports",
+      "home": true,
+      "shortName": "G2"
+     },
+     {
+      "id": "32451000-16450158",
+      "name": "Dplus KIA",
+      "home": false
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537194009",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448320786",
+          "description": "G2 Esports",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451000-11898280",
+          "price": {
+           "id": "40304875910",
+           "american": "+120",
+           "decimal": "2.200",
+           "fractional": "6/5"
+          }
+         },
+         {
+          "id": "2448320787",
+          "description": "Dplus KIA",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451000-16450158",
+          "price": {
+           "id": "40304887870",
+           "american": "-155",
+           "decimal": "1.645161",
+           "fractional": "20/31"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451003",
+    "description": "Los Grandes vs T1",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/los-grandes-t1-202610231900",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792796400000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 20,
+    "lastModified": 1792611791729,
+    "competitors": [
+     {
+      "id": "32451003-16521309",
+      "name": "LOS",
+      "home": true,
+      "shortName": "Grandes"
+     },
+     {
+      "id": "32451003-16433454",
+      "name": "T1",
+      "home": false,
+      "shortName": "T1"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537193805",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448320846",
+          "description": "LOS",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451003-16521309",
+          "price": {
+           "id": "40313152442",
+           "american": "+650",
+           "decimal": "7.500",
+           "fractional": "13/2"
+          }
+         },
+         {
+          "id": "2448320847",
+          "description": "T1",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451003-16433454",
+          "price": {
+           "id": "40313163179",
+           "american": "-1200",
+           "decimal": "1.083333",
+           "fractional": "1/12"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451374",
+    "description": "Bilibili Gaming vs Movistar KOI",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/bilibili-gaming-movistar-koi-202610232000",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792800000000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 21,
+    "lastModified": 1792584238030,
+    "competitors": [
+     {
+      "id": "32451374-11881911",
+      "name": "Bilibili Gaming",
+      "home": true,
+      "shortName": "Bilibili Gaming"
+     },
+     {
+      "id": "32451374-16607039",
+      "name": "Movistar KOI",
+      "home": false,
+      "shortName": "Movistar"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537194016",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448320802",
+          "description": "Bilibili Gaming",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451374-11881911",
+          "price": {
+           "id": "40306729995",
+           "american": "-650",
+           "decimal": "1.153846",
+           "fractional": "2/13"
+          }
+         },
+         {
+          "id": "2448321140",
+          "description": "Movistar KOI",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451374-16607039",
+          "price": {
+           "id": "40306724942",
+           "american": "+400",
+           "decimal": "5.00",
+           "fractional": "4/1"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   },
+   {
+    "id": "32451001",
+    "description": "Team Secret vs Lyon Gaming",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/world-championship-26/team-secret-lyon-gaming-202610232000",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792800000000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "9417391",
+    "notes": "",
+    "numMarkets": 20,
+    "lastModified": 1792604943165,
+    "competitors": [
+     {
+      "id": "32451001-11882839",
+      "name": "Team Secret",
+      "home": true,
+      "shortName": "Team Secret"
+     },
+     {
+      "id": "32451001-11933586",
+      "name": "Lyon Gaming",
+      "home": false,
+      "shortName": "Lyon"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "537194014",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2448320798",
+          "description": "Team Secret",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32451001-11882839",
+          "price": {
+           "id": "40304894486",
+           "american": "+135",
+           "decimal": "2.350",
+           "fractional": "27/20"
+          }
+         },
+         {
+          "id": "2448320799",
+          "description": "Lyon Gaming",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32451001-11933586",
+          "price": {
+           "id": "40304894487",
+           "american": "-175",
+           "decimal": "1.571429",
+           "fractional": "4/7"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   }
+  ]
+ },
+ {
+  "path": [
+   {
+    "id": "11497573",
+    "link": "/esports/league-of-legends/emea-masters-summer",
+    "description": "EMEA Masters Summer",
+    "type": "LEAGUE",
+    "sportCode": "ESPT",
+    "order": 9223372036854775807,
+    "leaf": true,
+    "current": false
+   },
+   {
+    "id": "117310",
+    "link": "/esports/league-of-legends",
+    "description": "League Of Legends",
+    "type": "COMPETITION",
+    "sportCode": "ESPT",
+    "order": 1,
+    "leaf": false,
+    "current": true
+   },
+   {
+    "id": "6000",
+    "link": "/esports",
+    "description": "Esports",
+    "type": "SPORT",
+    "sportCode": "ESPT",
+    "order": 1,
+    "leaf": false,
+    "current": false
+   }
+  ],
+  "events": [
+   {
+    "id": "32300190",
+    "description": "Galions vs Solary",
+    "type": "GAMEEVENT",
+    "link": "/esports/league-of-legends/emea-masters-summer/galions-solary-202610220800",
+    "status": "U",
+    "sport": "ESPT",
+    "startTime": 1792670400000,
+    "live": false,
+    "awayTeamFirst": false,
+    "denySameGame": "NO",
+    "teaserAllowed": true,
+    "competitionId": "11497573",
+    "notes": "",
+    "numMarkets": 14,
+    "lastModified": 1792614388579,
+    "competitors": [
+     {
+      "id": "32300190-16752940",
+      "name": "Galions",
+      "home": true,
+      "shortName": "Galions"
+     },
+     {
+      "id": "32300190-12173714",
+      "name": "Solary",
+      "home": false,
+      "shortName": "Solary"
+     }
+    ],
+    "displayGroups": [
+     {
+      "id": "100-344",
+      "description": "Game Lines",
+      "defaultType": true,
+      "alternateType": false,
+      "markets": [
+       {
+        "id": "536154697",
+        "descriptionKey": "Main Dynamic Asian Handicap",
+        "description": "Point Spread",
+        "key": "2W-HCAP",
+        "marketTypeId": "120900",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2444488829",
+          "description": "Galions",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32300190-16752940",
+          "price": {
+           "id": "40328966910",
+           "handicap": "1.5",
+           "american": "-230",
+           "decimal": "1.434783",
+           "fractional": "10/23"
+          }
+         },
+         {
+          "id": "2444488830",
+          "description": "Solary",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32300190-12173714",
+          "price": {
+           "id": "40328966911",
+           "handicap": "-1.5",
+           "american": "+175",
+           "decimal": "2.750",
+           "fractional": "7/4"
+          }
+         }
+        ]
+       },
+       {
+        "id": "536153819",
+        "descriptionKey": "Head To Head",
+        "description": "Moneyline",
+        "key": "2W-12",
+        "marketTypeId": "120792",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2444487012",
+          "description": "Galions",
+          "status": "O",
+          "type": "H",
+          "competitorId": "32300190-16752940",
+          "price": {
+           "id": "40328966914",
+           "american": "-115",
+           "decimal": "1.870",
+           "fractional": "20/23"
+          }
+         },
+         {
+          "id": "2444488828",
+          "description": "Solary",
+          "status": "O",
+          "type": "A",
+          "competitorId": "32300190-12173714",
+          "price": {
+           "id": "40328966915",
+           "american": "-115",
+           "decimal": "1.870",
+           "fractional": "20/23"
+          }
+         }
+        ]
+       },
+       {
+        "id": "536154700",
+        "descriptionKey": "Main Dynamic Over/Under",
+        "description": "Total",
+        "key": "2W-OU",
+        "marketTypeId": "121106",
+        "status": "O",
+        "singleOnly": false,
+        "notes": "",
+        "period": {
+         "id": "12146",
+         "description": "Game",
+         "abbreviation": "G",
+         "live": false,
+         "main": true
+        },
+        "availableSGP": false,
+        "outcomes": [
+         {
+          "id": "2444488837",
+          "description": "Over",
+          "status": "O",
+          "type": "O",
+          "price": {
+           "id": "40306723982",
+           "handicap": "4.5",
+           "american": "+165",
+           "decimal": "2.650",
+           "fractional": "33/20"
+          }
+         },
+         {
+          "id": "2444488838",
+          "description": "Under",
+          "status": "O",
+          "type": "U",
+          "price": {
+           "id": "40306723983",
+           "handicap": "4.5",
+           "american": "-220",
+           "decimal": "1.454545",
+           "fractional": "5/11"
+          }
+         }
+        ]
+       }
+      ],
+      "order": 1
+     }
+    ],
+    "availableSGP": false,
+    "hasStreaming": true
+   }
+  ]
+ }
+]

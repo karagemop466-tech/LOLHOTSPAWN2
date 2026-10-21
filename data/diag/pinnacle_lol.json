@@ -1,0 +1,330 @@
+[
+ {
+  "league_id": 9587,
+  "id": 1638750814,
+  "start": "2026-10-23T18:00:00Z",
+  "teams": [
+   "Liquid",
+   "CTBC Flying Oyster"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": -285
+   },
+   {
+    "designation": "away",
+    "price": 228
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1637769687,
+  "start": "2026-10-18T18:00:00Z",
+  "teams": [
+   "LCK",
+   "LPL",
+   "LEC",
+   "LCS",
+   "CBLOL",
+   "LCP"
+  ],
+  "bestOf": null,
+  "moneyline": [
+   {
+    "participantId": 1637769688,
+    "price": -352
+   },
+   {
+    "participantId": 1637769689,
+    "price": 360
+   },
+   {
+    "participantId": 1637769690,
+    "price": 1677
+   },
+   {
+    "participantId": 1637769691,
+    "price": 3230
+   },
+   {
+    "participantId": 1637769692,
+    "price": 12258
+   },
+   {
+    "participantId": 1637769693,
+    "price": 12189
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638750815,
+  "start": "2026-10-23T20:00:00Z",
+  "teams": [
+   "G2",
+   "Dplus KIA"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": 130
+   },
+   {
+    "designation": "away",
+    "price": -153
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638755459,
+  "start": "2026-10-24T00:00:00Z",
+  "teams": [
+   "Bilibili",
+   "Movistar KOI"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": -512
+   },
+   {
+    "designation": "away",
+    "price": 368
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638748200,
+  "start": "2026-10-23T17:00:00Z",
+  "teams": [
+   "Gen.G",
+   "Invictus"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": -435
+   },
+   {
+    "designation": "away",
+    "price": 323
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638754606,
+  "start": "2026-10-23T23:00:00Z",
+  "teams": [
+   "Secret Whales",
+   "LYON"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": 123
+   },
+   {
+    "designation": "away",
+    "price": -145
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638748205,
+  "start": "2026-10-23T22:00:00Z",
+  "teams": [
+   "LOS",
+   "T1"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": 516
+   },
+   {
+    "designation": "away",
+    "price": -800
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638750902,
+  "start": "2026-10-23T19:00:00Z",
+  "teams": [
+   "Anyone's Legend",
+   "Karmine Corp"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": -200
+   },
+   {
+    "designation": "away",
+    "price": 167
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1638748203,
+  "start": "2026-10-23T21:00:00Z",
+  "teams": [
+   "Hanwha Life",
+   "Top Esports"
+  ],
+  "bestOf": 1,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": -490
+   },
+   {
+    "designation": "away",
+    "price": 355
+   }
+  ]
+ },
+ {
+  "league_id": 9587,
+  "id": 1637750238,
+  "start": "2026-10-18T18:00:00Z",
+  "teams": [
+   "Gen.G",
+   "Hanwha Life",
+   "T1",
+   "Bilibili",
+   "Anyone's Legend",
+   "Dplus KIA",
+   "G2",
+   "Invictus",
+   "Top Esports",
+   "LYON",
+   "Liquid",
+   "Karmine Corp",
+   "Movistar KOI",
+   "Cloud9",
+   "LOS",
+   "Secret Whales",
+   "CTBC Flying Oyster",
+   "FURIA",
+   "MVK"
+  ],
+  "bestOf": 5,
+  "moneyline": [
+   {
+    "participantId": 1637768329,
+    "price": 125
+   },
+   {
+    "participantId": 1637768330,
+    "price": 379
+   },
+   {
+    "participantId": 1637768331,
+    "price": 590
+   },
+   {
+    "participantId": 1637768332,
+    "price": 470
+   },
+   {
+    "participantId": 1637768333,
+    "price": 1654
+   },
+   {
+    "participantId": 1637768334,
+    "price": 1264
+   },
+   {
+    "participantId": 1637768335,
+    "price": 1032
+   },
+   {
+    "participantId": 1637768336,
+    "price": 2970
+   },
+   {
+    "participantId": 1637768337,
+    "price": 4678
+   },
+   {
+    "participantId": 1637768338,
+    "price": 6657
+   },
+   {
+    "participantId": 1637768339,
+    "price": 3857
+   },
+   {
+    "participantId": 1637768340,
+    "price": 4957
+   },
+   {
+    "participantId": 1637768341,
+    "price": 8141
+   },
+   {
+    "participantId": 1637768343,
+    "price": 16224
+   },
+   {
+    "participantId": 1637768344,
+    "price": 16224
+   },
+   {
+    "participantId": 1637768345,
+    "price": 16224
+   }
+  ]
+ },
+ {
+  "league_id": 225201,
+  "id": 1638717698,
+  "start": "2026-10-22T16:00:00Z",
+  "teams": [
+   "Solary 0, Galions 3",
+   "Solary 1, Galions 3",
+   "Solary 2, Galions 3",
+   "Solary 3, Galions 0",
+   "Solary 3, Galions 1",
+   "Solary 3, Galions 2"
+  ],
+  "bestOf": null,
+  "moneyline": null
+ },
+ {
+  "league_id": 225201,
+  "id": 1638709103,
+  "start": "2026-10-22T16:00:00Z",
+  "teams": [
+   "Solary",
+   "Galions"
+  ],
+  "bestOf": 5,
+  "moneyline": [
+   {
+    "designation": "home",
+    "price": 105
+   },
+   {
+    "designation": "away",
+    "price": -127
+   }
+  ]
+ }
+]

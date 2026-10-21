@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:25:51.571748+00:00",
+ "generated_at": "2026-10-21T20:28:23.313301+00:00",
  "hotspawn_fixtures_api": {
   "status": 200,
   "bytes": 9622791,
@@ -771,7 +771,7 @@
   {
    "id": 4,
    "name": "Basketball",
-   "n": 258
+   "n": 254
   },
   {
    "id": 6,
@@ -811,12 +811,12 @@
   {
    "id": 18,
    "name": "Handball",
-   "n": 31
+   "n": 30
   },
   {
    "id": 19,
    "name": "Hockey",
-   "n": 218
+   "n": 217
   },
   {
    "id": 22,
@@ -846,12 +846,12 @@
   {
    "id": 29,
    "name": "Soccer",
-   "n": 1059
+   "n": 1038
   },
   {
    "id": 33,
    "name": "Tennis",
-   "n": 148
+   "n": 160
   },
   {
    "id": 34,
@@ -899,8 +899,8 @@
   },
   "cargo_teamredirects": {
    "status": 200,
-   "bytes": 159,
-   "head": "{\"error\":{\"code\":\"internal_api_error_MWException\",\"info\":\"[cb76de3b3252d117e4aac51f8d20f5be] Caught exception of type MWException\",\"errorclass\":\"MWException\"}}"
+   "bytes": 372,
+   "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"*\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
   },
   "cargo_tournamentresults": {
    "status": 200,
@@ -914,7 +914,7 @@
   },
   "cargoquery_noformat": {
    "status": 200,
-   "bytes": 46473,
+   "bytes": 46472,
    "head": "<!DOCTYPE html>\n<html class=\"client-nojs odyssey-noads\" lang=\"en\" dir=\"ltr\">\n<head>\n<meta charset=\"UTF-8\">\n<title>MediaWiki API result - Leaguepedia | League of Legends Esports Wiki</title>\n<script>document.documentElement.className=\"client-js odyssey-noads\";RLCONF={\"wgBreakFrames\":false,\"wgSeparatorTransformTable\":[\"\",\"\"],\"wgDigitTransformTable\":[\"\",\"\"],\"wgDefaultDateFormat\":\"dmy\",\"wgMonthNames\":[\"\",\"January\",\"February\",\"March\",\"April\",\"May\",\"June\",\"July\",\"August\",\"September\",\"October\",\"Novembe"
   }
  },
@@ -981,12 +981,12 @@
   },
   "smarkets_lol": {
    "status": 403,
-   "bytes": 5485,
+   "bytes": 5487,
    "head": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-"
   },
   "betfair_readonly": {
    "status": 403,
-   "bytes": 3645,
+   "bytes": 3647,
    "head": "<!DOCTYPE html>\n<html manifest=\"\" lang=\"en-US\">\n  <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n    <title>Betfair</title>\n    <meta name=\"theme-color\" content=\"#004"
   },
   "midnite_lol": {
@@ -1011,7 +1011,7 @@
   },
   "bovada_lol": {
    "status": 200,
-   "bytes": 2498278,
+   "bytes": 2497944,
    "head": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/><link rel=\"preload\" as=\"script\" fetc"
   }
  }
