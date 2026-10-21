@@ -42,6 +42,9 @@ import sys
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
 from urllib.parse import urlparse
+import urllib.request
+import urllib.error
+import concurrent.futures
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
@@ -50,6 +53,9 @@ DATA_PATHS = [os.path.join(ROOT, "data", "picks.json"),
 OUT_DIR = os.path.join(ROOT, "verification")
 
 METHODS = {"MARKET_BOOKS", "MARKET_POLYMARKET", "MODEL_ELO", "UNRESOLVED"}
+EXTERNAL_LINKS: list[str] = []
+UA = ("Mozilla/5.0 (compatible; LOLHOTSPAWN2-verify/1.0; "
+      "+https://github.com/karagemop466-tech/LOLHOTSPAWN2)")
 # Source hosts accepted as official/trusted. Hotspawn is accepted for the fixture
 # list only; it is explicitly rejected as a probability source (requirement).
 FIXTURE_HOSTS = ("hotspawn.com",)
@@ -191,6 +197,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
 
     bad_teams, bad_pick, bad_prob, bad_pickprob, bad_method = [], [], [], [], []
     no_source, weak_source, market_no_url, unresolved_unflagged, dup = [], [], [], [], []
+    game1_as_series, generic_unresolved_link = [], []
     banned_prob_source = []
     seen = set()
     for i, m in enumerate(rows):
@@ -259,6 +266,15 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             if method == "MODEL_ELO" and su and re.search(
                     r"action=help|/wiki/Leaguepedia:League_of_Legends_Esports_Wiki", su):
                 weak_source.append(f"{label} -> model evidence link is a docs page: {su}")
+        ev_low = (m.get("evidence") or "").lower()
+        if method == "MARKET_POLYMARKET" and re.search(
+                r"game\s*1|map\s*1|games?\s*one", ev_low) and "bo1" not in ev_low:
+            game1_as_series.append(
+                f"{label} — evidence is a single-game market: {m.get('evidence')}")
+        if method == "UNRESOLVED":
+            su = (m.get("source_url") or "")
+            if re.search(r"/wiki/Leaguepedia:League_of_Legends_Esports_Wiki$", su):
+                generic_unresolved_link.append(f"{label} -> generic wiki link {su}")
         if method == "UNRESOLVED":
             flags = " ".join(str(m.get(k) or "") for k in ("confidence", "evidence", "status"))
             if abs((p1f if p1f is not None else 0.5) - 0.5) > 0.001:
@@ -299,6 +315,14 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
     emit("D8b", "unresolved rows are explicit unverified 50/50 (limitations published)",
          unresolved_unflagged, "every unresolved row is 0.50 and labelled unverified")
     emit("D9", "no duplicate fixtures", dup, "no duplicate (teams,start) rows")
+
+    emit("D16", "no single-game (Game 1/Map 1) market used as a series probability",
+         game1_as_series,
+         "no non-BO1 row cites a single-game market")
+    if generic_unresolved_link:
+        rep.add("D17", "unresolved rows point at a fixture/league source, not a generic wiki page",
+                WARN, f"{len(generic_unresolved_link)} unresolved row(s) cite the generic Leaguepedia "
+                      "main page — a per-league/fixture source is preferable", generic_unresolved_link[:10])
 
     banned = list(dict.fromkeys(banned_prob_source))
     emit("D12", "Hotspawn is never the probability source (fixture list only)", banned,
@@ -490,6 +514,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
         rep.add("S8", "root index.html sends visitors into the site", FAIL,
                 "root index.html missing")
 
+    EXTERNAL_LINKS.extend(sorted(set(external)))
     https_bad = [u for u in external if u.startswith("http://")]
     rep.add("S9", "all external links use https", PASS if not https_bad else WARN,
             f"{len(set(external))} external link(s) collected for manual review; "
@@ -599,6 +624,64 @@ def verify_workflows(rep: Report) -> None:
             else "crowd values appear in a probability expression", suspects[:8])
 
 
+# ------------------------------------------------------------------ optional live checks
+def http_status(url: str, timeout: float = 20.0) -> tuple[int, str]:
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.status, r.geturl()
+    except urllib.error.HTTPError as exc:
+        return exc.code, url
+    except Exception as exc:  # noqa: BLE001
+        return 0, repr(exc)[:90]
+
+
+def verify_external(rep: Report) -> None:
+    """Reachability of every external link on the site. Blocked-but-alive hosts
+    (401/403/405/429) are WARN, not FAIL: books and wikis block bots by design."""
+    links = sorted(set(EXTERNAL_LINKS))
+    if not links:
+        rep.add("X1", "external links reachable", SKIP, "no external links found")
+        return
+    results: dict[str, int] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+        for url, (code, _final) in zip(links, pool.map(http_status, links)):
+            results[url] = code
+    dead = [u for u, c in results.items() if c in (0, 404, 410, 500, 502, 503)]
+    blocked = [u for u, c in results.items() if c in (401, 403, 405, 429)]
+    ok = [u for u, c in results.items() if c and 200 <= c < 400]
+    status = PASS if not dead and not blocked else (FAIL if dead else WARN)
+    detail = (f"{len(ok)}/{len(links)} returned 2xx/3xx; {len(blocked)} blocked by the host; "
+              f"{len(dead)} unreachable")
+    rep.add("X1", "external links reachable (official-source links resolve)", status, detail,
+            [f"{u} -> {results[u]}" for u in (dead + blocked)][:14])
+
+
+def verify_live(rep: Report, live_url: str) -> None:
+    """Confirm the deployed Pages site serves the site and fresh data."""
+    base = live_url.rstrip("/") + "/"
+    code, final = http_status(base)
+    if code != 200:
+        rep.add("X2", "live Pages site responds 200", FAIL, f"{base} -> {code} {final}")
+        return
+    rep.add("X2", "live Pages site responds 200", PASS, f"{base} -> 200 (final {final})")
+    data_url = base + "docs/data/picks.json"
+    code, _ = http_status(data_url)
+    if code != 200:
+        rep.add("X3", "live site serves picks.json", FAIL, f"{data_url} -> {code}")
+        return
+    try:
+        with urllib.request.urlopen(urllib.request.Request(data_url, headers={"User-Agent": UA}),
+                                    timeout=25) as r:
+            live = json.loads(r.read().decode("utf-8"))
+        n = len(live.get("matches") or [])
+        gen = live.get("generated_at")
+        rep.add("X3", "live site serves picks.json", PASS,
+                f"{n} matches live, generated_at={gen}")
+    except Exception as exc:  # noqa: BLE001
+        rep.add("X3", "live site serves picks.json", FAIL, f"unreadable: {exc!r}")
+
+
 # --------------------------------------------------------------------------- main
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
@@ -607,6 +690,10 @@ def main() -> int:
     ap.add_argument("--json-out", default=os.path.join(OUT_DIR, "report.json"))
     ap.add_argument("--md-out", default=os.path.join(OUT_DIR, "last_report.md"))
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--check-external", action="store_true",
+                    help="HTTP-check every external link on the site (needs network)")
+    ap.add_argument("--live-url", default="",
+                    help="deployed Pages base URL to confirm serving (needs network)")
     args = ap.parse_args()
 
     rep = Report()
@@ -617,6 +704,10 @@ def main() -> int:
     verify_data_files(rep)
     verify_site(rep, rows)
     verify_workflows(rep)
+    if args.check_external:
+        verify_external(rep)
+    if args.live_url:
+        verify_live(rep, args.live_url)
 
     os.makedirs(os.path.dirname(args.json_out), exist_ok=True)
     out = {

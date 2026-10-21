@@ -1,6 +1,6 @@
-# Verification report — PASS
-_2026-10-21T20:30:01.829317+00:00_
-195 matches · MARKET_POLYMARKET: 8 · UNRESOLVED: 126 · MODEL_ELO: 61 · MARKET_BOOKS: 0
+# Verification report — FAIL
+_2026-10-21T20:30:36.402692+00:00_
+195 matches · MARKET_POLYMARKET: 8 · MODEL_ELO: 61 · MARKET_BOOKS: 0 · UNRESOLVED: 126
 
 | check | status | detail |
 |---|---|---|
@@ -15,6 +15,8 @@ _2026-10-21T20:30:01.829317+00:00_
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
 | D8b unresolved rows are explicit unverified 50/50 (limitations published) | PASS | every unresolved row is 0.50 and labelled unverified |
 | D9 no duplicate fixtures | PASS | no duplicate (teams,start) rows |
+| D16 no single-game (Game 1/Map 1) market used as a series probability | FAIL | 1 row(s) violate this rule |
+| D17 unresolved rows point at a fixture/league source, not a generic wiki page | WARN | 126 unresolved row(s) cite the generic Leaguepedia main page — a per-league/fixture source is preferable |
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 counts_by_method agrees with the rows | PASS | counts consistent |
 | D11 declared count equals number of rows | PASS | count=195, rows=195 |
@@ -48,6 +50,21 @@ _2026-10-21T20:30:01.829317+00:00_
 - Babos Gaming vs Hannover Esports e.V. -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
 - Reveal Multigaming vs AceGaming -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
 - Neko Elite Kittens vs spongecord prime -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
+
+**D16 items:**
+- Galions vs Solary — evidence is a single-game market: Polymarket: LoL: Galions vs Solary - Game 1 Winner
+
+**D17 items:**
+- Ascent Gaming vs NTNUI Kometkameratene -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Solid Gaming vs DMG Esports Norway -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Volda E-Sport vs CNG Royal -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Your Saviours vs Mixlag fra Trondheim -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Turbo Gaming vs Fritt Fall -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- BlackDivision vs Babos Gaming Academy -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Absolved vs The Bandits UK -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Brod n Friends vs Crownless -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- Good Chi vs Inari Esports -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
+- HL Tauri Esports vs Bulldog Esports -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki
 
 **S5b items:**
 - 4 Nations 2026 Halloween Heist

@@ -46,6 +46,19 @@ official PRM organizer. → Requests logged below.
 - **R4 (T8)** Label Pinnacle as "guest front-end feed (unofficial)" and degrade gracefully to Polymarket + model if it
   fails; note that no `ODDSPAPI_KEY` is configured (no bookmaker median is computed anywhere).
 
+### Irregularities found by T11 verification on the live data (2026-10-21, commit 9f8dccb)
+- **I1 (FAIL, D16): single-game market used as a series probability.** `Galions vs Solary` (EM 2026 Summer Main
+  Event) is priced from Polymarket *"LoL: Galions vs Solary - Game 1 Winner"* and that game-1 price is published as the
+  series probability. Game 1 ≠ series in a BO3/BO5; the row must either use a series-winner market or be converted with
+  a series model (and labelled as such). Source: https://polymarket.com/event/lol-gal-sly-2026-10-22 (row in live
+  `docs/data/picks.json`). → **R5 to T9 owner.**
+- **I2 (WARN, D17): 126 unresolved rows cite the generic Leaguepedia main page** as `source_url`
+  (`https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki`), which is not evidence for that fixture.
+  Replace with the league results page where one exists (`research/betting-sources.md` §3) or leave the link out and
+  mark "no source found" — per the brief, unconfirmed values must be blank + flagged, not dressed with a generic link.
+  → **R6 to T9 owner.**
+- **I3 (WARN, D7b): 61 model rows cite the Cargo API help page as `source_url`** (same root cause as R2 above).
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that

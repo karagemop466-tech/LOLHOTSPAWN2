@@ -1,18 +1,18 @@
 {
- "verified_at": "2026-10-21T20:30:01.829317+00:00",
- "status": "PASS",
+ "verified_at": "2026-10-21T20:30:36.402692+00:00",
+ "status": "FAIL",
  "counts": {
   "PASS": 27,
-  "FAIL": 0,
-  "WARN": 3,
+  "FAIL": 1,
+  "WARN": 4,
   "SKIP": 0
  },
  "data_matches": 195,
  "methods": {
   "MARKET_POLYMARKET": 8,
-  "UNRESOLVED": 126,
   "MODEL_ELO": 61,
-  "MARKET_BOOKS": 0
+  "MARKET_BOOKS": 0,
+  "UNRESOLVED": 126
  },
  "checks": [
   {
@@ -94,6 +94,33 @@
    "title": "no duplicate fixtures",
    "status": "PASS",
    "detail": "no duplicate (teams,start) rows"
+  },
+  {
+   "id": "D16",
+   "title": "no single-game (Game 1/Map 1) market used as a series probability",
+   "status": "FAIL",
+   "detail": "1 row(s) violate this rule",
+   "items": [
+    "Galions vs Solary — evidence is a single-game market: Polymarket: LoL: Galions vs Solary - Game 1 Winner"
+   ]
+  },
+  {
+   "id": "D17",
+   "title": "unresolved rows point at a fixture/league source, not a generic wiki page",
+   "status": "WARN",
+   "detail": "126 unresolved row(s) cite the generic Leaguepedia main page — a per-league/fixture source is preferable",
+   "items": [
+    "Ascent Gaming vs NTNUI Kometkameratene -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Solid Gaming vs DMG Esports Norway -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Volda E-Sport vs CNG Royal -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Your Saviours vs Mixlag fra Trondheim -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Turbo Gaming vs Fritt Fall -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "BlackDivision vs Babos Gaming Academy -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Absolved vs The Bandits UK -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Brod n Friends vs Crownless -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "Good Chi vs Inari Esports -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki",
+    "HL Tauri Esports vs Bulldog Esports -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki"
+   ]
   },
   {
    "id": "D12",
