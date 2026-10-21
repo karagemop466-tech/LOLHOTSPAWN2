@@ -81,8 +81,12 @@ def build_payload(fixtures, markets, leaguepedia, picks):
     for m in low_conf:
         if "ONE_TEAM_NO_HISTORY" in m["flags"]:
             reasons["One team has no recorded history (league prior used)"] += 1
+        elif "CROSS_LEAGUE_MODEL" in m["flags"]:
+            reasons["Cross-league comparison (confidence capped at Low)"] += 1
         elif "THIN_HISTORY" in m["flags"]:
             reasons["Thin history (<5 games in 365 days)"] += 1
+        else:
+            reasons["Other model uncertainty"] += 1
 
     next_24h = [m for m in matches if m["start_utc"] <= utc_iso(now + timedelta(hours=24))]
     tournaments = Counter(m["tournament"] for m in matches)

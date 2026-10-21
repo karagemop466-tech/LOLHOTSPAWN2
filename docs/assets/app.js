@@ -163,7 +163,7 @@
     const lims = (u.limitations || []).slice(0, 3).map((x) => `<li>${esc(x)}</li>`).join("");
     const ubox = $("#unresolved-summary");
     if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks — ${u.count ?? 0} match${(u.count ?? 0) === 1 ? "" : "es"}</h3>
-      <p>${u.count ?? 0} fixture${(u.count ?? 0) === 1 ? "" : "s"} have no external betting line and no usable team history, so the published pick is an explicit 50/50 placeholder — <b>not an edge</b>. ${u.low_confidence_count ?? 0} more use a low-confidence league prior. Hotspawn's crowd percentage is never used.</p>
+      <p>${u.count ?? 0} fixture${(u.count ?? 0) === 1 ? "" : "s"} have no external betting line and no usable team history, so the published pick is an explicit 50/50 placeholder — <b>not an edge</b>. ${u.low_confidence_count ?? 0} more rely on thin history or a league prior and are labelled low confidence. Hotspawn's crowd percentage is never used.</p>
       ${reasons ? `<p class="small"><b>Reasons</b></p><ul class="clean small">${reasons}</ul>` : ""}
       <p class="small"><b>Key limitations</b></p><ul class="clean small">${lims}</ul>
       <p><a class="btn warn" href="unresolved.html">See every unresolved pick and all limitations →</a></p></div>`;
