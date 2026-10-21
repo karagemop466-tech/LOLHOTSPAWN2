@@ -186,3 +186,30 @@ the brief asks for.
 
 Consequence: the only reliable programmatic results source for the amateur leagues is **Leaguepedia Cargo**
 (MatchSchedule + Standings + ScoreboardGames). Organizer sites are for human cross-checks only.
+
+---
+
+## 9. MatchSchedule carries completed series results (verified 2026-10-21)
+
+`action=cargofields&table=MatchSchedule` includes `Winner`, `Team1Score`, `Team2Score`, `BestOf`,
+`DateTime_UTC`, `OverviewPage`, `Team1/Team2`, `GroupName`, `Tab` — i.e. the table holds **results, not just
+fixtures**. A single CargoExport call for RIVALS Season 2 with `Winner IS NOT NULL` returned 30+ completed Bo3 series
+with scores and dates (e.g. *Lundqvist Darkside 2–1 Rich Gang Sweden, 2026-10-18*; *FlameHard 2–0 Northern Wolves*).
+
+Why this matters: it gives a **proper series-level results history for every league in the feed** (including PRM 3rd,
+Tunisian, Komplettligaen, 4 Nations, LigaGG, Arabian) in one request per league, without the ScoreboardGames rate-limit
+problem and without depending on blocked organizer sites. A recency-weighted Elo over these series is strictly better
+than standings-only, and standings (WinSeries/LossSeries) remain a fallback when a league has too few completed series.
+
+Suggested production order for no-market fixtures:
+1. series Elo over `MatchSchedule` results (last 12 months, per league page, `Winner IS NOT NULL`);
+2. standings win-rate (smoothed) when the league has too few results;
+3. explicit 50/50 with the league page link and a stated reason when neither exists.
+
+Query template:
+```
+https://lol.fandom.com/wiki/Special:CargoExport?tables=MatchSchedule
+  &fields=Team1,Team2,Winner,Team1Score,Team2Score,DateTime_UTC,BestOf,OverviewPage
+  &where=OverviewPage='<page>' AND Winner IS NOT NULL
+  &order_by=DateTime_UTC DESC&limit=200&format=json
+```
