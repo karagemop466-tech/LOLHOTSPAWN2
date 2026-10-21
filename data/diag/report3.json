@@ -1,0 +1,858 @@
+{
+ "generated_at": "2026-10-21T20:26:10.515915+00:00",
+ "fixtures_lol": {
+  "total": 1501,
+  "future": 208,
+  "past": 1293,
+  "comps_future": [
+   "4 Nations 2026 Halloween Heist",
+   "Arabian League 2nd Division 2026 Summer",
+   "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine",
+   "EM 2026 Summer Main Event",
+   "Komplettligaen 2026 Autumn",
+   "LCP 2027 Promotion",
+   "LGC Rising 2026 Playoffs",
+   "LigaGG CELOL B 2026 Split 2 Playoffs",
+   "PRM 2nd Division 26-27 Fall",
+   "PRM 3rd Division 26-27 Fall",
+   "RIVALS LEAGUE Season 2",
+   "Tunisian Super League 2026",
+   "Worlds 2026 Main Event"
+  ],
+  "earliest_future": "2026-10-22T12:00:00+00:00",
+  "latest_future": "2026-11-15T18:30:00+00:00",
+  "tiers_future": {
+   "a": 2,
+   "c": 52,
+   "d": 1,
+   "s": 9,
+   "waiting for information": 144
+  },
+  "lobby_rendered_cards": 195,
+  "permalinks": 195,
+  "future_with_permalink": 195
+ },
+ "pinnacle_leagues_12": [
+  {
+   "id": 235322,
+   "name": "CS2 - DACH CS Masters",
+   "n": 1
+  },
+  {
+   "id": 276139,
+   "name": "CS2 - DraculaN",
+   "n": 2
+  },
+  {
+   "id": 218605,
+   "name": "Mobile Legends - MPL Philippines",
+   "n": 1
+  },
+  {
+   "id": 271265,
+   "name": "Rainbow Six - Asia Pacific League - Asia",
+   "n": 1
+  },
+  {
+   "id": 258576,
+   "name": "CS2 - PGL Masters Bucharest",
+   "n": 8
+  },
+  {
+   "id": 9587,
+   "name": "League of Legends - World Championship",
+   "n": 10
+  },
+  {
+   "id": 280466,
+   "name": "CS2 - NODWIN Clutch Series",
+   "n": 1
+  },
+  {
+   "id": 295914,
+   "name": "Rainbow Six - Challenger League",
+   "n": 4
+  },
+  {
+   "id": 222848,
+   "name": "Valorant - Champions Tour: Game Changers Championship",
+   "n": 4
+  },
+  {
+   "id": 295831,
+   "name": "Dota 2 - P Universe",
+   "n": 5
+  },
+  {
+   "id": 225201,
+   "name": "League of Legends - EMEA Masters",
+   "n": 1
+  },
+  {
+   "id": 294867,
+   "name": "CS2 - Circuit X Curitiba",
+   "n": 2
+  }
+ ],
+ "pinnacle_lol": {
+  "9587": {
+   "league": "League of Legends - World Championship",
+   "status": 200,
+   "n": 10,
+   "sample": {
+    "ageLimit": 0,
+    "altTeaser": false,
+    "bestOfX": 1,
+    "featureOrder": 4,
+    "hasAltSpread": false,
+    "hasAltTotal": false,
+    "hasBetshare": false,
+    "hasLive": true,
+    "hasMarkets": true,
+    "id": 1638750815,
+    "isBetshareEnabled": false,
+    "isFeatured": true,
+    "isHighlighted": true,
+    "isLive": false,
+    "isPromoted": false,
+    "league": {
+     "ageLimit": 0,
+     "featureOrder": 0,
+     "group": "World",
+     "id": 9587,
+     "isFeatured": true,
+     "isHidden": false,
+     "isPromoted": false,
+     "isSticky": false,
+     "matchupCount": 10,
+     "matchupCountSE": 10,
+     "name": "League of Legends - World Championship",
+     "sequence": 301,
+     "sport": {
+      "featureOrder": 1,
+      "id": 12,
+      "isFeatured": true,
+      "isHidden": false,
+      "isSticky": false,
+      "matchupCount": 43,
+      "matchupCountSE": 39,
+      "name": "E Sports",
+      "primaryMarketType": "moneyline"
+     }
+    },
+    "liveMode": null,
+    "parent": null,
+    "parentId": null,
+    "parlayRestriction": "unique_matchups",
+    "participants": [
+     {
+      "alignment": "home",
+      "name": "G2",
+      "order": 0,
+      "stats": [
+       {
+        "period": 1
+       },
+       {
+        "period": 0
+       }
+      ]
+     },
+     {
+      "alignment": "away",
+      "name": "Dplus KIA",
+      "order": 1,
+      "stats": [
+       {
+        "period": 1
+       },
+       {
+        "period": 0
+       }
+      ]
+     }
+    ],
+    "periods": [
+     {
+      "cutoffAt": "2026-10-23T20:00:00Z",
+      "hasMoneyline": true,
+      "hasSpread": false,
+      "hasTeamTotal": false,
+      "hasTotal": false,
+      "period": 1,
+      "status": "open"
+     },
+     {
+      "cutoffAt": "2026-10-23T20:00:00Z",
+      "hasMoneyline": true,
+      "hasSpread": false,
+      "hasTeamTotal": false,
+      "hasTotal": false,
+      "period": 0,
+      "status": "open"
+     }
+    ],
+    "rotation": 58712,
+    "startTime": "2026-10-23T20:00:00Z",
+    "state": {},
+    "status": "pending",
+    "totalMarketCount": 2,
+    "type": "matchup",
+    "units": "Regular",
+    "version": 707546266,
+    "videoFeeds": [
+     "eng,https://www.twitch.tv/riotgames",
+     "spa,https://www.twitch.tv/lvpes",
+     "por,https://www.twitch.tv/cblol",
+     "chi,https://www.bilibili.com/8016907"
+    ]
+   },
+   "markets_status": 200,
+   "markets": [
+    {
+     "cutoffAt": "2026-10-23T20:00:00+00:00",
+     "isAlternate": false,
+     "key": "s;1;m",
+     "limits": [
+      {
+       "amount": 2500,
+       "type": "maxRiskStake"
+      }
+     ],
+     "matchupId": 1638750815,
+     "period": 1,
+     "prices": [
+      {
+       "designation": "home",
+       "price": 130
+      },
+      {
+       "designation": "away",
+       "price": -153
+      }
+     ],
+     "status": "open",
+     "type": "moneyline",
+     "version": 3774420730
+    },
+    {
+     "cutoffAt": "2026-10-23T20:00:00+00:00",
+     "isAlternate": false,
+     "key": "s;0;m",
+     "limits": [
+      {
+       "amount": 2500,
+       "type": "maxRiskStake"
+      }
+     ],
+     "matchupId": 1638750815,
+     "period": 0,
+     "prices": [
+      {
+       "designation": "home",
+       "price": 130
+      },
+      {
+       "designation": "away",
+       "price": -153
+      }
+     ],
+     "status": "open",
+     "type": "moneyline",
+     "version": 3774420730
+    }
+   ]
+  },
+  "225201": {
+   "league": "League of Legends - EMEA Masters",
+   "status": 200,
+   "n": 2,
+   "sample": {
+    "ageLimit": 0,
+    "altTeaser": false,
+    "featureOrder": -1,
+    "hasAltSpread": false,
+    "hasAltTotal": false,
+    "hasBetshare": false,
+    "hasLive": false,
+    "hasMarkets": true,
+    "id": 1638717698,
+    "isBetshareEnabled": false,
+    "isFeatured": false,
+    "isHighlighted": false,
+    "isLive": false,
+    "isPromoted": false,
+    "league": {
+     "ageLimit": 0,
+     "featureOrder": 2,
+     "group": "Europe",
+     "id": 225201,
+     "isFeatured": true,
+     "isHidden": false,
+     "isPromoted": false,
+     "isSticky": false,
+     "matchupCount": 1,
+     "matchupCountSE": 1,
+     "name": "League of Legends - EMEA Masters",
+     "sequence": 304,
+     "sport": {
+      "featureOrder": 1,
+      "id": 12,
+      "isFeatured": true,
+      "isHidden": false,
+      "isSticky": false,
+      "matchupCount": 43,
+      "matchupCountSE": 39,
+      "name": "E Sports",
+      "primaryMarketType": "moneyline"
+     }
+    },
+    "liveMode": null,
+    "parent": {
+     "hasMarkets": true,
+     "id": 1638709103,
+     "isLive": false,
+     "participants": [
+      {
+       "alignment": "home",
+       "name": "Solary",
+       "order": 0,
+       "stats": [
+        {
+         "period": 0
+        },
+        {
+         "period": 1
+        },
+        {
+         "period": 2
+        },
+        {
+         "period": 4
+        },
+        {
+         "period": 3
+        },
+        {
+         "period": 5
+        }
+       ]
+      },
+      {
+       "alignment": "away",
+       "name": "Galions",
+       "order": 1,
+       "stats": [
+        {
+         "period": 0
+        },
+        {
+         "period": 1
+        },
+        {
+         "period": 2
+        },
+        {
+         "period": 4
+        },
+        {
+         "period": 3
+        },
+        {
+         "period": 5
+        }
+       ]
+      }
+     ],
+     "startTime": "2026-10-22T16:00:00Z",
+     "state": {}
+    },
+    "parentId": 1638709103,
+    "parlayRestriction": null,
+    "participants": [
+     {
+      "alignment": "neutral",
+      "id": 1638717699,
+      "name": "Solary 0, Galions 3",
+      "order": 0,
+      "rotation": 47828
+     },
+     {
+      "alignment": "neutral",
+      "id": 1638717700,
+      "name": "Solary 1, Galions 3",
+      "order": 0,
+      "rotation": 47829
+     },
+     {
+      "alignment": "neutral",
+      "id": 1638717701,
+      "name": "Solary 2, Galions 3",
+      "order": 0,
+      "rotation": 47830
+     },
+     {
+      "alignment": "neutral",
+      "id": 1638717702,
+      "name": "Solary 3, Galions 0",
+      "order": 0,
+      "rotation": 47831
+     },
+     {
+      "alignment": "neutral",
+      "id": 1638717703,
+      "name": "Solary 3, Galions 1",
+      "order": 0,
+      "rotation": 47832
+     },
+     {
+      "alignment": "neutral",
+      "id": 1638717704,
+      "name": "Solary 3, Galions 2",
+      "order": 0,
+      "rotation": 47833
+     }
+    ],
+    "periods": [
+     {
+      "cutoffAt": "2026-10-22T16:00:00Z",
+      "period": 0,
+      "status": "open"
+     }
+    ],
+    "rotation": 47828,
+    "special": {
+     "category": "Teams",
+     "description": "Correct Score"
+    },
+    "startTime": "2026-10-22T16:00:00Z",
+    "state": {},
+    "status": "pending",
+    "totalMarketCount": 1,
+    "type": "special",
+    "units": "Maps",
+    "version": 654259459
+   },
+   "markets_status": 403,
+   "markets": "{\n  \"detail\": \"Access from United States is prohibited\",\n  \"reason\": \"location\",\n  \"status\": 403,\n  \"title\": \"BAD_LOCATION\",\n  \"type\": \"about:blank\"\n}\n"
+  }
+ },
+ "leaguepedia": {
+  "cargo_simple": {
+   "status": 200,
+   "bytes": 257,
+   "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
+  },
+  "cargo_teamredirects2": {
+   "status": 200,
+   "bytes": 257,
+   "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
+  },
+  "cargo_schedule": {
+   "status": 200,
+   "bytes": 257,
+   "head": "{\"error\":{\"code\":\"ratelimited\",\"info\":\"You've exceeded your rate limit. Please wait some time and try again.\",\"docref\":\"See https://lol.fandom.com/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/&gt; for notice of API deprecations and breaking changes.\"}}"
+  },
+  "cargo_export": {
+   "status": 200,
+   "bytes": 1663,
+   "head": "[\n    {\n        \"Team1\": \"100 Thieves\",\n        \"Team2\": \"Cloud9\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-05 21:53:00\",\n        \"OverviewPage\": \"LTA North\\/2025 Season\\/Split 3\",\n        \"DateTime UTC__precision\": 0\n    },\n    {\n        \"Team1\": \"100 Thieves\",\n        \"Team2\": \"Cloud9\",\n        \"Winner\": 1,\n        \"DateTime UTC\": \"2025-09-05 23:36:00\",\n        \"OverviewPage\": \"LTA North\\/2025 Season\\/Split 3\",\n        \"DateTime UTC__precision\": 0\n    },\n    {\n        \"Team1\": \"10"
+  }
+ },
+ "liquipedia": {
+  "Absolved": {
+   "status": 200,
+   "hits": [
+    [
+     "Absolved",
+     "Absolved Team Information Location: \u00a0United Kingdom Region: \u00a0Europe Coach: \u00a0boc \u00a0Spuds \u00a0Teatime Approx. Total "
+    ],
+    [
+     "TES/2021/Denmark/Summer",
+     "Final Final GF ABV Absolved Absolved 1 PG Protecting Guardians Protecting Guardians 3 July 7, 2021 - 18:00 CET"
+    ],
+    [
+     "TES/2021/Denmark/Spring",
+     "Grand Final Final GF ABV Absolved Absolved 3 ATL Atlando Esports Atlando Esports 1 February 10, 2021 - 18:00 C"
+    ]
+   ],
+   "head": null
+  },
+  "Good Chi": {
+   "status": 200,
+   "hits": [
+    [
+     "LOL DK Ligaen/Division 2/2026/Spring",
+     "Viper 2 0 GCG Good Chi Gang Good Chi Gang January 19, 2026 - 18:00 CET ABY Abyssal Viper Abyssal Viper 2:0(Bo3"
+    ],
+    [
+     "4 Nations/Division 2/2025/Summer",
+     "details GC.I Good Chi Infernus Good Chi Infernus 2 EVE Project EVERSIO Project EVERSIO 1 September 28, 2025 - "
+    ],
+    [
+     "4 Nations/2025/Summer",
+     "Academy UK Bulldog Academy UK 0 CHI Good Chi Good Chi 2 BDG.UK Bulldog Academy UK Bulldog Academy UK 0:2(Bo3) "
+    ]
+   ],
+   "head": null
+  },
+  "Galions": {
+   "status": 200,
+   "hits": [
+    [
+     "Galions",
+     "Galions Team Information Location: \u00a0France Region: \u00a0Europe Coach: \u00a0Karot \u00a0xani Manager: \u00a0Squalito Approx. Tota"
+    ],
+    [
+     "LFL/2026/Spring",
+     "Vitality.Bee Vitality.Bee 0 GL Galions Galions 2 May 7, 2026 - 18:00 CEST VITB Vitality.Bee Vitality.Bee 0:2(B"
+    ],
+    [
+     "EMEA Masters/2026/Winter",
+     "Final Grand Final Final GF GL Galions Galions 2 VTX Vantex Esports Vantex Esports 0 March 10, 2026 - 20:00 CET"
+    ]
+   ],
+   "head": null
+  },
+  "NTNUI Kometkameratene": {
+   "status": 200,
+   "hits": [
+    [
+     "Komplettligaen/Division 2/2026/Spring",
+     "FRAG NTNUI Fragglene NTNUI Fragglene April 28, 2026 - 19:00 CEST KOM NTNUI Kometkameratene NTNUI Kometkamerate"
+    ],
+    [
+     "Komplettligaen/2026/Autumn",
+     "Promotion IvanJK Mojie MentaltSky Certified Random Skog NTNUI Kometkameratene NTNUI Kometkameratene Qualified "
+    ],
+    [
+     "Komplettligaen/2026/Autumn/Promotion",
+     "1 10th StorDidi369 Neidan27 sakrisas TJ Candy yanako NTNUI Kometkameratene NTNUI Kometkameratene Qualified Div"
+    ]
+   ],
+   "head": null
+  },
+  "Team 300": {
+   "status": 200,
+   "hits": [
+    [
+     "D-Tier Tournaments",
+     "Jul 12, 2026 \u00a0Berlin\u00a0Switzerland\u00a0Austria 32 No Need Orga Team 300 Black 404 Multigaming Team 300 White Neko El"
+    ],
+    [
+     "Prime League/3. Liga/2025/Summer",
+     "Spades 4\u20131\u20132 9\u20135 3. 300 Team 300 Team 300 3\u20133\u20131 9\u20135 4. KJ.F Kanji Esports Feuer Kanji Esports Feuer 4\u20131\u20132 9\u20135 "
+    ],
+    [
+     "Prime League/3. Liga/2026/Winter",
+     "Eintracht Spandau Zwei Eintracht Spandau Zwei 5\u20132 11\u20137 +4 13p 4. 300.W Team 300 White Team 300 White 4\u20133 10\u20137 "
+    ]
+   ],
+   "head": null
+  },
+  "PRM 3rd Division 26-27 Fall": {
+   "status": 200,
+   "hits": [
+    [
+     "Twiizt",
+     " 2026 - 17:00 CEST USE 1:3(Bo5) KHK Prime League 2026 Summer - Playoffs View match details August 25, 2026 - 1"
+    ],
+    [
+     "Nilah/Matches",
+     "Qualifier PRM Finals LCQ 1\u00a0:\u00a00 34:20 + Details July 31, 2025 - 18:00 CEST D-Tier FCL Summer - Group Stage - Ro"
+    ]
+   ],
+   "head": null
+  },
+  "Absolved_page_status": 200,
+  "Absolved_page_len": 252243,
+  "Absolved_text_sample": " Absolved Absolved Winter Absolved Female Overview Results Played Matches Awards &#91; e &#93;&#91; h &#93; Absolved Team Information Location: &#160; United Kingdom Region: &#160;Europe Coach: &#160; boc &#160; Spuds &#160; Teatime Approx. Total Winnings : $8,190 Links History Created: 2019-12-23 Upcoming Tournaments No Upcoming Tournaments Absolved is a British esports team. Contents 1 Player Roster 1.1 Active 1.2 Timeline 1.3 Former 2 Organization 2.1 Active 2.2 Former 3 Results 4 Media 5 Data 6 References Player Roster [ edit ] Active [ edit ] ID Name Position Join Date &#160; SoimuMIC Top 2026-01-23 &#91; 1 &#93; &#160; Utky Jungle 2026-01-22 &#91; 2 &#93; &#160; Emil Mid 2025-06-30 &#91; 3 &#93; &#160; Rhythm Bot 2026-01-24 &#91; 4 &#93; &#160; Gible Support 2025-06-30 &#91; 3 &#93; &#160; Doddy Jungle (Substitute) 2026-01-25 &#91; 5 &#93; &#160; Early Bird Josh Patterson Mid (Substitute) 2026-01-25 &#91; 5 &#93; Timeline [ edit ] 2020 2021 2025 2026 Show All May 20th \u2013 Fiala , Sjakal , Cronan , LaggerN and Pehrson join. &#91; 6 &#93; May 22nd \u2013 Omena , HAHA XD , Milo and Toliam join. &#91; 7 &#93; October 12th \u2013 Fiala , Cronan , LaggerN , Mammal , Omena , HAHA XD and Milo leave. &#91; 8 &#93; Pehrson changes role from Player to Substitute. &#91; 8 &#93; Acidy , Eden Fox , TakeSet , Only35 , Kaiseki and tacocat join. &#91; 8 &#93; November 14th \u2013 Acidy , Sjakal and tacocat leave. &#91; 9 &#93; &#91; 10 &#93; &#91; 11 &#93; November 15th \u2013 TakeSet leaves. &#91; 12 &#93; November 16th \u2013 Only35 leaves. &#91; 13 &#93; November 20th \u2013 Eden Fox leaves. &#91; 14 &#93; January 9th \u2013 Kaiseki and Toliam leave. &#91; 15 &#93; Pehrson moves to the starting roster. &#91; 15 &#93; Champen , Energy , Reje , Softorious , Taremo and Skude join. &#91; 15 &#93; March 15th \u2013 Skude leaves. &#91; 16 &#93; April 1st \u2013 Energy , Reje and Softorious leave. &#91; 17 &#93; &#91; 18 &#93; &#91; 19 &#93; April 2nd \u2013 Pehrson leaves. &#91; 20 &#93; May 22nd \u2013 Champen leaves for Goskilla . &#91; 21 &#93; May 27th \u2013 Taremo leaves. &#91; 22 &#93; Quinncidence , Skude , Sahira , Reje , Pehrson , Spuds , coing and FireVortex join. &#91; 23 &#93; &#91; 22 &#93; August 22nd \u2013 coing leaves Substitute position. &#91; 24 &#93; September 1st \u2013 Pehrson leaves. &#91; 25 &#93; September 23rd \u2013 Quinncidence leaves for Vanir . &#91; 26 &#93; September 26th \u2013 Skude , FireVortex and Spuds leave. &#91; 27 &#93; &#91; 28 &#93; September 27th \u2013 Reje changes role from Player to Substitute. &#91; 29 &#93; Jaeger , Khantos , Nash , April , Apples , Dont Ban Nida and Rames join. &#91; 29 &#93; November 1st \u2013 Absolved disband, Jaeger , Rames , Sahira , Khantos , Nash , Reje , April , Apples and Dont Ban Nida leave the team. &#91; 30 &#93; June 30th \u2013 Absolved acquires the roster of DMG Esports United Kingdom , consisting of dognappy , Teatime , Emil , Muter , Gible , Cormac and Dakin . &#91; 3 &#93; January 22nd \u2013 Utky joins. &#91; 2 &#93; January 23rd \u2013 Dognappy leaves. &#91; 1 &#93; SoimuMIC joi"
+ },
+ "books": {
+  "bovada_lol_coupon": {
+   "status": 200,
+   "bytes": 14963,
+   "lol_mentions": 2,
+   "odds_mentions": 53,
+   "head": "[{\"path\":[{\"id\":\"9417391\",\"link\":\"/esports/league-of-legends/world-championship-26\",\"description\":\"World Championship '26\",\"type\":\"LEAGUE\",\"sportCode\":\"ESPT\",\"order\":9223372036854775807,\"leaf\":true,\"current\":false},{\"id\":\"117310\",\"link\":\"/esports/lea"
+  },
+  "bovada_lol_page": {
+   "status": 200,
+   "bytes": 2497944,
+   "lol_mentions": 36,
+   "odds_mentions": 114,
+   "head": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/assets/_next/static/chunks/"
+  },
+  "rivalry:api.rivalry.com/api/v1/sport/league-of-legend": {
+   "status": 502,
+   "bytes": 884,
+   "head": "{\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-502/\",\"title\":\"Error 502: Bad gateway\",\"status\":502,\"detail\":\"The origin web server ret"
+  },
+  "rivalry:api.rivalry.com/api/v1/matches?sport=league-o": {
+   "status": 502,
+   "bytes": 884,
+   "head": "{\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-502/\",\"title\":\"Error 502: Bad gateway\",\"status\":502,\"detail\":\"The origin web server ret"
+  },
+  "rivalry:www.rivalry.com/api/v1/sport/league-of-legend": {
+   "status": 502,
+   "bytes": 16,
+   "head": "error code: 502\n"
+  },
+  "bo3:filter%5Bdisciplines%5D=lol&page%5Blimit%5D=3": {
+   "status": 200,
+   "bytes": 2987,
+   "head": "{\"total\":{\"count\":82390,\"pages\":27464,\"offset\":0,\"limit\":3},\"results\":[{\"id\":1,\"slug\":\"vitality-cs-go-vs-mousesports-cs-go-08-12-2020\",\"round_id\":1,\"team1_id\":667,\"team2_id\":765,\"winner_team_id\":667,\"loser_team_id\":765,\"tournament_id\":9,\"team1_score\":2,\"team2_score\":0,\"status\":\"finished\",\"bo_type\":3,\"start_date\":\"2020-12-08T17:55:00.000+00:00\",\"end_date\":\"2020-12-08T20:15:44.000+00:00\",\"stage_id\":"
+  },
+  "bo3:filter%5Bgame%5D=league-of-legends&page%5Blim": {
+   "status": 200,
+   "bytes": 2987,
+   "head": "{\"total\":{\"count\":82390,\"pages\":27464,\"offset\":0,\"limit\":3},\"results\":[{\"id\":1,\"slug\":\"vitality-cs-go-vs-mousesports-cs-go-08-12-2020\",\"round_id\":1,\"team1_id\":667,\"team2_id\":765,\"winner_team_id\":667,\"loser_team_id\":765,\"tournament_id\":9,\"team1_score\":2,\"team2_score\":0,\"status\":\"finished\",\"bo_type\":3,\"start_date\":\"2020-12-08T17:55:00.000+00:00\",\"end_date\":\"2020-12-08T20:15:44.000+00:00\",\"stage_id\":"
+  },
+  "bo3:filter%5Bname%5D=Absolved": {
+   "status": 200,
+   "bytes": 19690,
+   "head": "{\"total\":{\"count\":8558,\"pages\":856,\"offset\":0,\"limit\":10},\"results\":[{\"id\":2,\"slug\":\"mens\",\"name\":\"mens\",\"image_url\":null,\"facebook\":null,\"twitter\":null,\"rank\":null,\"created_at\":\"2020-10-19T08:51:29.236+00:00\",\"updated_at\":\"2025-09-01T18:34:44.706+00:00\",\"country_id\":null,\"ps_id\":127460,\"image_data\":null,\"image_versions\":null,\"avg_views\":null,\"est_date\":null,\"tshirt_image_url\":null,\"tshirt_image_d"
+  },
+  "midnite": {
+   "status": 200,
+   "bytes": 33885,
+   "odds": 0,
+   "head": "<!DOCTYPE html><html><head><meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\" />\n<base href=\"/\" />\n<title>Sports Betting, Casino Games, &amp; Live Dealer - Midnite</title>\n<link rel=\"preconnect\" href=\"https://api.midnite.com\" "
+  }
+ },
+ "prediction": {
+  "polymarket_events": 59,
+  "polymarket_match_events": [
+   {
+    "title": "LoL: Caldya Esport vs Lausanne-Sport Esports (BO1) - Nexus League Regular Season",
+    "slug": "lol-cla-els-2026-08-01",
+    "n_markets": 7,
+    "end": "2026-08-09T03:59:00Z"
+   },
+   {
+    "title": "LoL: Lille Esport vs Galions Sharks (BO1) - Nexus League Regular Season",
+    "slug": "lol-lil-gls-2026-08-01",
+    "n_markets": 7,
+    "end": "2026-08-09T03:59:00Z"
+   },
+   {
+    "title": "LoL: Onion Team vs BRUTE (BO3) - Hitpoint Masters Regular Season",
+    "slug": "lol-ot-brt-2026-08-19",
+    "n_markets": 22,
+    "end": "2026-09-03T03:59:00Z"
+   },
+   {
+    "title": "LoL: Contingent Esports vs University of Mississippi (BO5) - North American Challengers League Playoffs",
+    "slug": "lol-cont-miss-2026-08-27",
+    "n_markets": 39,
+    "end": "2026-09-11T03:59:00Z"
+   },
+   {
+    "title": "LoL: The Bandits vs Dynasty (BO3) - Road Of Legends Regular Season",
+    "slug": "lol-ban2-dyn1-2026-08-25",
+    "n_markets": 23,
+    "end": "2026-09-09T03:59:00Z"
+   },
+   {
+    "title": "LoL: Onetricks vs The Secret Man (BO3) - FLASH Oceania Playoffs",
+    "slug": "lol-ot1-tsm1-2026-08-28",
+    "n_markets": 22,
+    "end": "2026-09-12T03:59:00Z"
+   },
+   {
+    "title": "LoL: Project Conquerors vs Galions Sharks (BO5) - Nexus League Playoffs",
+    "slug": "lol-pcs-gls-2026-09-05",
+    "n_markets": 37,
+    "end": "2026-09-05T16:00:00Z"
+   },
+   {
+    "title": "LoL: Karmine Corp Blue Stars vs Project Conquerors (BO5) - Nexus League Playoffs",
+    "slug": "lol-kcbs-pcs-2026-09-06",
+    "n_markets": 37,
+    "end": "2026-09-06T16:00:00Z"
+   },
+   {
+    "title": "Will any game at Worlds 2026 last 50 minutes or more?",
+    "slug": "will-any-game-at-worlds-2026-last-50-minutes-or-more",
+    "n_markets": 1,
+    "end": "2026-12-15T04:59:00Z"
+   },
+   {
+    "title": "LoL: Galions vs Solary (BO5) - EMEA Masters Playoffs",
+    "slug": "lol-gal-sly-2026-10-22",
+    "n_markets": 40,
+    "end": "2026-10-22T18:00:00Z"
+   },
+   {
+    "title": "LoL: Gen.G vs Invictus Gaming (BO1) - Worlds Group Stage",
+    "slug": "lol-gen-ig1-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-23T23:00:00Z"
+   },
+   {
+    "title": "LoL: Team Liquid vs CTBC Flying Oyster (BO1) - Worlds Group Stage",
+    "slug": "lol-tl2-cfo-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T00:00:00Z"
+   },
+   {
+    "title": "LoL: Anyone's Legend vs Karmine Corp (BO1) - Worlds Group Stage",
+    "slug": "lol-al-kc-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T01:00:00Z"
+   },
+   {
+    "title": "LoL: G2 Esports vs Dplus KIA (BO1) - Worlds Group Stage",
+    "slug": "lol-g2-dk-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T02:00:00Z"
+   },
+   {
+    "title": "LoL: Hanwha Life Esports vs Top Esports (BO1) - Worlds Group Stage",
+    "slug": "lol-hle1-tes-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T03:00:00Z"
+   },
+   {
+    "title": "LoL: LOS vs T1 (BO1) - Worlds Group Stage",
+    "slug": "lol-los-t1-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T04:00:00Z"
+   },
+   {
+    "title": "LoL: Team Secret Whales vs LYON (BO1) - Worlds Group Stage",
+    "slug": "lol-tsw-ly-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T05:00:00Z"
+   },
+   {
+    "title": "LoL: Bilibili Gaming vs Movistar KOI (BO1) - Worlds Group Stage",
+    "slug": "lol-blg-mkoi-2026-10-23",
+    "n_markets": 6,
+    "end": "2026-10-24T06:00:00Z"
+   }
+  ],
+  "manifold": [
+   {
+    "q": "Who will win the 2026 League of Legends World Championship?",
+    "prob": null,
+    "vol": 15765.458656934521,
+    "close": 1794787140000
+   },
+   {
+    "q": "NA vs EU - League of Legends Worlds 2026",
+    "prob": null,
+    "vol": 680,
+    "close": 1794787140000
+   },
+   {
+    "q": "League of Legends Worlds 2026 Matches Megamarket",
+    "prob": null,
+    "vol": 844.4655155758703,
+    "close": 1794787140000
+   },
+   {
+    "q": "League of Legends Worlds 2026 Prop Bets [Add answers!]",
+    "prob": null,
+    "vol": 1752.898414488749,
+    "close": 1794787140000
+   },
+   {
+    "q": "T1 wins League of Legends Worlds 2026?",
+    "prob": 0.1656392066777495,
+    "vol": 92619.09490108592,
+    "close": 1796083140000
+   },
+   {
+    "q": "Will Grok 5 beat the best human team at League of Legends in 2026?",
+    "prob": 0.04829878119271242,
+    "vol": 10400.994317108203,
+    "close": 1798847940000
+   },
+   {
+    "q": "Will Destiny play League of Legends on stream at least once in 2026?",
+    "prob": 0.05739280477010338,
+    "vol": 456.8941422289607,
+    "close": 1798761540000
+   },
+   {
+    "q": "When Will League of Legends Release its Next \"Creature\" Champion?",
+    "prob": null,
+    "vol": 858.513230946724,
+    "close": 1798901940000
+   },
+   {
+    "q": "Will I win my next League of Legends match as Riven?",
+    "prob": 0.44800860176515395,
+    "vol": 11,
+    "close": 1767721675222
+   },
+   {
+    "q": "Will I win my next League of Legends match as Shyvana?",
+    "prob": 0.44800860176515395,
+    "vol": 11,
+    "close": 1767993881960
+   },
+   {
+    "q": "Will I win my next League of Legends match as Riven?",
+    "prob": 0.44800860176515395,
+    "vol": 11,
+    "close": 1767812578447
+   },
+   {
+    "q": "Will I win my next League of Legends match as None?",
+    "prob": 0.44800860176515395,
+    "vol": 11,
+    "close": 1767823207525
+   },
+   {
+    "q": "Who will win the 2025 League of Legends World Championship?",
+    "prob": null,
+    "vol": 352601.4492445828,
+    "close": 1762748697439
+   },
+   {
+    "q": "Will League of Legends team T1 (who won Worlds in 2024) win Worlds in 2025?",
+    "prob": 0.9936595299067688,
+    "vol": 34510.97098744402,
+    "close": 1762729140000
+   },
+   {
+    "q": "Will I win my next League of Legends match as Shyvana?",
+    "prob": 0.4480086018165986,
+    "vol": 11,
+    "close": 1768242756857
+   },
+   {
+    "q": "League of Legends Worlds 2025 Prop Bets [Add answers!]",
+    "prob": null,
+    "vol": 46345.57034616174,
+    "close": 1762732740000
+   },
+   {
+    "q": "League of Legends Worlds 2025 Knockout Matches Market",
+    "prob": null,
+    "vol": 8057.784655466826,
+    "close": 1762080059643
+   },
+   {
+    "q": "League of Legends MSI 2026 winner",
+    "prob": null,
+    "vol": 2101.139647487908,
+    "close": 1783835940000
+   },
+   {
+    "q": "League of Legends Worlds 2026 Play-In Matches",
+    "prob": null,
+    "vol": 16556.73524061943,
+    "close": 1792367940000
+   },
+   {
+    "q": "Who will win the League of Legends Mid-Season Invitational 2025?",
+    "prob": null,
+    "vol": 7090.037756389462,
+    "close": 1752380135954
+   }
+  ]
+ }
+}
