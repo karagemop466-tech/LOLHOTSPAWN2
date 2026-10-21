@@ -167,6 +167,47 @@ def _poly_teams(title: str):
     return (m.group(1).strip(), m.group(2).strip()) if m else (None, None)
 
 
+def _select_poly_market(ev: dict, a: str, b: str, title: str):
+    """Pick the best market for a match.
+
+    Preference: event-level market > explicit series/match-winner > neutral >
+    single-game. Any Game-N/Map-N child market is tagged "game" and is only
+    usable for a fixture that is known to be a Bo1 (checked by the model).
+    """
+    chosen, chosen_rank, chosen_kind = None, 0, None
+    for mk in ev.get("markets") or []:
+        try:
+            outs = json.loads(mk.get("outcomes") or "[]")
+            prices = [float(x) for x in json.loads(mk.get("outcomePrices") or "[]")]
+        except Exception:
+            continue
+        if len(outs) != 2 or len(prices) != 2:
+            continue
+        if {str(outs[0]).strip().lower(), str(outs[1]).strip().lower()} != {a.lower(), b.lower()}:
+            continue
+        q = (mk.get("question") or "").lower()
+        label = (mk.get("groupItemTitle") or "").lower()
+        blob = f"{q} {label}"
+        is_single = bool(re.search(r"(game|map)\s*\d+", blob))
+        is_series = ("match winner" in blob) or ("series winner" in blob) or ("series" in label)
+        if is_single:
+            rank, kind = 1, "game"
+        elif is_series:
+            rank, kind = 3, "series"
+        else:
+            rank, kind = 2, "series"
+        if not is_single and q.strip() == title.strip().lower():
+            rank = 4
+        if rank > chosen_rank:
+            chosen, chosen_rank, chosen_kind = (outs, prices, mk), rank, kind
+        if rank == 4:
+            break
+    if not chosen:
+        return None
+    outs, prices, mk = chosen
+    return outs, prices, mk, chosen_kind
+
+
 def fetch_polymarket() -> dict:
     status = {"source": "Polymarket", "key": "polymarket", "url": POLY_API, "status": "error", "count": 0}
     events = []
@@ -193,28 +234,7 @@ def fetch_polymarket() -> dict:
             pass
         if end and (end < now - timedelta(days=2) or end > now + timedelta(days=21)):
             continue
-        chosen = None
-        fallback_single = None
-        for mk in ev.get("markets") or []:
-            try:
-                outs = json.loads(mk.get("outcomes") or "[]")
-                prices = [float(x) for x in json.loads(mk.get("outcomePrices") or "[]")]
-            except Exception:
-                continue
-            if len(outs) != 2 or len(prices) != 2:
-                continue
-            if {str(outs[0]).strip().lower(), str(outs[1]).strip().lower()} == {a.lower(), b.lower()}:
-                q = (mk.get("question") or "").lower()
-                game = bool(re.search(r"(game|map)\s*\d+", q))
-                # Prefer the series/match market; keep a game-level market only as a
-                # fallback and tag it so the model never mixes units on a Bo3/Bo5.
-                if not game:
-                    chosen = (outs, prices, mk, "series")
-                    break
-                if chosen is None:
-                    chosen = (outs, prices, mk, "game1")
-        if not chosen:
-            chosen = fallback_single
+        chosen = _select_poly_market(ev, a, b, title)
         if not chosen:
             continue
         outs, prices, mk, market_type = chosen
@@ -225,6 +245,7 @@ def fetch_polymarket() -> dict:
         rec = _record("Polymarket", "polymarket", "Polymarket: " + title, end, a, b, pa, pb,
                       POLY_PAGE + str(ev.get("slug") or ""), note=f"Polymarket: {mk.get('question')}",
                       raw={"event_slug": ev.get("slug"), "market": mk.get("question"),
+                           "group": mk.get("groupItemTitle"),
                            "market_type": market_type,
                            "volume": ev.get("volume"), "liquidity": ev.get("liquidity")})
         if rec:

@@ -1,11 +1,11 @@
 # LOLHOTSPAWN2 — Hotspawn LoL Pick'em, priced for every match
 
 Mobile-first dashboard published with GitHub Pages:
-**[Executive summary](https://karagemop466-tech.github.io/LOLHOTSPAWN2/)** ·
-[all picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/picks.html) ·
-[unresolved & low confidence](https://karagemop466-tech.github.io/LOLHOTSPAWN2/unresolved.html) ·
-[flagged for review](https://karagemop466-tech.github.io/LOLHOTSPAWN2/flagged.html) ·
-[methodology & sources](https://karagemop466-tech.github.io/LOLHOTSPAWN2/methodology.html).
+**[Executive summary](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/)** (the repo root redirects there) ·
+[all picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/picks.html) ·
+[unresolved & low confidence](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/unresolved.html) ·
+[flagged for review](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html) ·
+[methodology & sources](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/methodology.html).
 
 Every League of Legends fixture listed on
 [Hotspawn's Pick'em lobby](https://play.hotspawn.com/lol-pickems) gets a pick and a win
@@ -49,7 +49,7 @@ inspection.
 
 Providers that were checked and could not be used (403/404/502, paid key required, no
 per-match markets) are listed with their observed status on the
-[Flagged page](https://karagemop466-tech.github.io/LOLHOTSPAWN2/flagged.html).
+[Flagged page](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html).
 
 ## Local run
 
