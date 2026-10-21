@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-21T20:19:37.229331+00:00",
+ "generated_at": "2026-10-21T20:21:24.459212+00:00",
  "checks": [
   {
    "name": "hotspawn_lol_lobby",
@@ -71,7 +71,7 @@
    "name": "polymarket_gamma_tag",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=5",
    "status": 200,
-   "bytes": 81021,
+   "bytes": 81006,
    "ctype": "application/json",
    "note": ""
   },
@@ -123,7 +123,7 @@
    "name": "betfair",
    "url": "https://api.betfair.com/exchange/betting/rest/v1.0/listEventTypes/",
    "status": 403,
-   "bytes": 4548,
+   "bytes": 4549,
    "ctype": "text/html; charset=UTF-8",
    "note": "",
    "err": "HTTPError"
