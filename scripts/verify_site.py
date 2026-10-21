@@ -352,6 +352,20 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             PASS if int(declared or 0) == len(rows) else FAIL,
             f"count={declared}, rows={len(rows)}")
 
+    # D19: coverage against the feed's own advertised future-fixture count, when exposed
+    dbg = payload.get("debug") or {}
+    expected = None
+    for key in ("fixtures_future", "lobby_future", "hotspawn_future", "expected_matches",
+                "future_fixtures"):
+        if isinstance(dbg.get(key), (int, float)) and dbg.get(key):
+            expected = int(dbg[key])
+            break
+    if expected is not None:
+        missing = expected - len(rows)
+        rep.add("D19", "every future Hotspawn fixture is published", PASS if missing <= 0 else FAIL,
+                f"{len(rows)} published vs {expected} future fixtures advertised by the feed"
+                + (f" — {missing} missing" if missing > 0 else ""))
+
     unresolved = actual["UNRESOLVED"]
     share = unresolved / len(rows) if rows else 0
     rep.add("D13", "coverage: share of matches without an external market line",
