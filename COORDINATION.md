@@ -95,6 +95,19 @@ official PRM organizer. → Requests logged below.
   Hotspawn's *"waiting for information"* stage, not a tier (real tiers in the feed: S/A/C/D). The new fixtures API
   exposes `tier` and `stage` separately — display "Tier: waiting for information" (or omit the tier) instead of "W".
 
+- **R10 (compliance): do not scrape Liquipedia HTML.** Liquipedia's terms say "Automated access to non-API endpoints
+  (ie, generated HTML pages) is not permitted" (https://liquipedia.net/api-terms-of-use). `scripts/diag_lab5.py` fetches
+  page HTML for brackets; that is fine as a one-off diagnostic but **must not** ship in the production pipeline. Use the
+  MediaWiki API (`liquipedia.net/leagueoflegends/api.php`) only, with gzip, ≤1 req/2 s, a contact UA, and CC-BY-SA 3.0
+  attribution on the Method & Sources page.
+- **R11 (standings data, verified fields):** the Cargo `Standings` table exists (`action=cargotables`) with fields
+  `OverviewPage, Team, PageAndTeam, N, Place, WinSeries, LossSeries, TieSeries, WinGames, LossGames, Points,
+  PointsTiebreaker, Streak, StreakDirection` (`action=cargofields&table=Standings`, checked 2026-10-21). A query using
+  `Wins,Losses,WinLoss` will error; the PRM 2nd page is `Prime League 2nd Division/2027 Season/Fall Split`, **not** the
+  Hotspawn title. Ready-to-use model + script: `verification/standings_line.py` (smoothed series win-rate,
+  Bradley-Terry; tested: 5-1 vs 1-5 → 70%, 3-0 vs 3-0 → 50%). Use standings where Leaguepedia has no ScoreboardGames
+  for the current amateur season (RIVALS S2, PRM 3rd, etc.) instead of publishing 50/50.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
