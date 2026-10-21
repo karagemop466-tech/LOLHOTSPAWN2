@@ -82,8 +82,9 @@ jobs:
           git commit -m "picks: scheduled refresh [skip ci]"
           for attempt in 1 2 3; do
             git fetch origin "${GITHUB_REF_NAME}"
-            # generated payloads are the freshest copy: on any conflict keep ours
-            if ! git rebase -X ours "origin/${GITHUB_REF_NAME}"; then
+            # generated payloads are the freshest copy: during a rebase the bot's
+            # commit is "theirs", during the merge fallback the branch is "ours"
+            if ! git rebase -X theirs "origin/${GITHUB_REF_NAME}"; then
               git rebase --abort || true
               git merge -X ours --no-edit "origin/${GITHUB_REF_NAME}"
             fi
