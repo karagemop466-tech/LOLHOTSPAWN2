@@ -79,6 +79,35 @@ def main() -> int:
             by_page.setdefault(str(r["OverviewPage"]), {}).setdefault(norm(r["Team"]), []).append(r)
 
     sched_by_page: dict[str, list[tuple[str, str]]] = {}
+    if args.fetch and not (args.schedule and os.path.exists(args.schedule)):
+        import time as _time
+        import urllib.parse
+        import urllib.request
+        CARGO = "https://lol.fandom.com/wiki/Special:CargoExport"
+        UA_ = ("Mozilla/5.0 (compatible; LOLHOTSPAWN2-schedule/1.0; "
+               "+https://github.com/karagemop466-tech/LOLHOTSPAWN2)")
+        for page in pages_needed:
+            url = CARGO + "?" + urllib.parse.urlencode({
+                "tables": "MatchSchedule",
+                "fields": "Team1,Team2,DateTime_UTC,OverviewPage,BestOf",
+                "where": f"OverviewPage = '{page}'",
+                "order_by": "DateTime_UTC DESC", "limit": "200", "format": "json"})
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": UA_,
+                                                           "Accept": "application/json",
+                                                           "Accept-Encoding": "gzip"})
+                with urllib.request.urlopen(req, timeout=45) as r:
+                    raw = r.read()
+                if raw[:2] == b"\x1f\x8b":
+                    import gzip
+                    raw = gzip.decompress(raw)
+                for row in json.loads(raw.decode("utf-8", "replace")):
+                    if row.get("Team1") and row.get("Team2"):
+                        sched_by_page.setdefault(page, []).append(
+                            (str(row["Team1"]), str(row["Team2"])))
+            except Exception as exc:  # noqa: BLE001
+                print(f"schedule fetch failed for {page}: {exc!r}", file=sys.stderr)
+            _time.sleep(3.0)
     if args.schedule and os.path.exists(args.schedule):
         for r in load_rows(args.schedule):
             if isinstance(r, dict) and r.get("OverviewPage") and r.get("Team1") and r.get("Team2"):
@@ -120,8 +149,8 @@ def main() -> int:
     scored = updated = 0
     status_counts: dict[str, int] = {}
     for m in rows:
-        if m.get("method") not in ("UNRESOLVED", "MODEL_ELO"):
-            continue
+        if str(m.get("method") or "").startswith("MARKET"):
+            continue  # market rows keep their market price
         tour = (m.get("tournament") or "").strip()
         pages = LEAGUE_MAP.get(tour, [])
         page = next((p for p in pages if p in by_page), None)
