@@ -1,16 +1,16 @@
 # Verification report — FAIL
-_2026-10-21T20:40:31.994883+00:00_
-195 matches · MODEL_ELO: 61 · MODEL_STANDINGS: 0 · UNRESOLVED: 126 · MARKET_POLYMARKET: 8 · MARKET_BOOKS: 0
+_2026-10-21T20:54:58.854499+00:00_
+195 matches · MODEL_ELO: 61 · MODEL_LEAGUE_PRIOR: 0 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0 · MODEL_ELO_THIN: 0 · MARKET_SINGLE: 0 · UNRESOLVED: 126 · MARKET_CONSENSUS: 0 · MARKET_POLYMARKET: 8
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.4h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.6h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 195 rows have team1, team2 and a start time |
 | D2b every match has a machine-readable UTC start | WARN | 1 row(s) have a display time that did not parse to UTC (unverified start — flagged) |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
-| D6 method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
+| D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D7 every row links at least one official/trusted source | PASS | all 195 rows carry at least one source URL |
 | D7b source host recognised as official/trusted | WARN | 61 row(s) link a host not on the allowlist — manual review |
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
@@ -20,8 +20,8 @@ _2026-10-21T20:40:31.994883+00:00_
 | D17 unresolved rows point at a fixture/league source, not a generic wiki page | WARN | 126 unresolved row(s) cite the generic Leaguepedia main page — a per-league/fixture source is preferable |
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 counts_by_method agrees with the rows | PASS | counts consistent |
-| D11 declared count equals number of rows | PASS | count=195, rows=195 |
-| D13 coverage: share of matches without an external market line | WARN | 126/195 rows are UNRESOLVED 50/50 (64.6%). A non-zero share is allowed only when published as an unresolved section with limitations — see S4 and the site's Unresolved page. |
+| D11 declared count equals number of rows | PASS | declared=195, rows=195 |
+| D13 coverage: share of matches with a real (non-coin-flip) probability | WARN | 179/195 rows are 50/50 or within ±2 pts of it (91.8%); of those 126 are explicitly UNRESOLVED. A non-zero share is allowed only when published as an unresolved section with limitations — see S4/S5b. |
 | D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
 | D14 canonical data and site data are identical | PASS | identical |
 | S1 all required site files exist | PASS | 8 files present |
@@ -75,7 +75,7 @@ _2026-10-21T20:40:31.994883+00:00_
 - Neko Elite Kittens vs spongecord prime -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
 
 **D16 items:**
-- Galions vs Solary — evidence is a single-game market: Polymarket: LoL: Galions vs Solary - Game 1 Winner
+- Galions vs Solary — single-game market used for a series (best_of=None): game 1
 
 **D17 items:**
 - Ascent Gaming vs NTNUI Kometkameratene -> generic wiki link https://lol.fandom.com/wiki/Leaguepedia:League_of_Legends_Esports_Wiki

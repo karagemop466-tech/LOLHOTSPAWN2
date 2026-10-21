@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-21T20:40:31.994883+00:00",
+ "verified_at": "2026-10-21T20:54:58.854499+00:00",
  "status": "FAIL",
  "counts": {
   "PASS": 27,
@@ -10,17 +10,21 @@
  "data_matches": 195,
  "methods": {
   "MODEL_ELO": 61,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MARKET_BOOKS": 0,
   "MODEL_STANDINGS": 0,
+  "MODEL_ELO_THIN": 0,
+  "MARKET_SINGLE": 0,
   "UNRESOLVED": 126,
-  "MARKET_POLYMARKET": 8,
-  "MARKET_BOOKS": 0
+  "MARKET_CONSENSUS": 0,
+  "MARKET_POLYMARKET": 8
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.4h old)"
+   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.6h old)"
   },
   {
    "id": "D2",
@@ -57,7 +61,7 @@
   },
   {
    "id": "D6",
-   "title": "method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'MODEL_STANDINGS', 'UNRESOLVED']",
+   "title": "method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED']",
    "status": "PASS",
    "detail": "all methods documented"
   },
@@ -111,7 +115,7 @@
    "status": "FAIL",
    "detail": "1 row(s) violate this rule",
    "items": [
-    "Galions vs Solary — evidence is a single-game market: Polymarket: LoL: Galions vs Solary - Game 1 Winner"
+    "Galions vs Solary — single-game market used for a series (best_of=None): game 1"
    ]
   },
   {
@@ -148,13 +152,13 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "count=195, rows=195"
+   "detail": "declared=195, rows=195"
   },
   {
    "id": "D13",
-   "title": "coverage: share of matches without an external market line",
+   "title": "coverage: share of matches with a real (non-coin-flip) probability",
    "status": "WARN",
-   "detail": "126/195 rows are UNRESOLVED 50/50 (64.6%). A non-zero share is allowed only when published as an unresolved section with limitations — see S4 and the site's Unresolved page."
+   "detail": "179/195 rows are 50/50 or within ±2 pts of it (91.8%); of those 126 are explicitly UNRESOLVED. A non-zero share is allowed only when published as an unresolved section with limitations — see S4/S5b."
   },
   {
    "id": "D18",

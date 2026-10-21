@@ -52,8 +52,9 @@ DATA_PATHS = [os.path.join(ROOT, "data", "picks.json"),
               os.path.join(DOCS, "data", "picks.json")]
 OUT_DIR = os.path.join(ROOT, "verification")
 
-METHODS = {"MARKET_BOOKS", "MARKET_POLYMARKET", "MODEL_ELO", "MODEL_STANDINGS",
-           "UNRESOLVED"}
+MARKET_METHODS = {"MARKET_BOOKS", "MARKET_POLYMARKET", "MARKET_CONSENSUS", "MARKET_SINGLE"}
+MODEL_METHODS = {"MODEL_ELO", "MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR", "MODEL_STANDINGS"}
+METHODS = MARKET_METHODS | MODEL_METHODS | {"UNRESOLVED"}
 EXTERNAL_LINKS: list[str] = []
 UA = ("Mozilla/5.0 (compatible; LOLHOTSPAWN2-verify/1.0; "
       "+https://github.com/karagemop466-tech/LOLHOTSPAWN2)")
@@ -241,29 +242,32 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
 
         # ---- source links (requirement: every row links an official/trusted source)
         row_urls = []
-        for key in ("market_url", "source_url", "hotspawn_url", "source_lobby",
-                    "fixtures_url", "sources"):
+        prob_urls = []
+        for key in ("market_url", "source_url", "hotspawn_url", "source_lobby", "fixtures_url"):
             val = m.get(key)
             if isinstance(val, str):
                 row_urls += urls_in(val)
-            elif isinstance(val, list):
-                for v in val:
-                    row_urls += urls_in(v if isinstance(v, str) else json.dumps(v))
+        for src in (m.get("sources") or []):
+            if isinstance(src, dict):
+                u = src.get("url") or ""
+                row_urls += urls_in(u)
+                if "hotspawn" not in str(src.get("name", "")).lower():
+                    prob_urls += urls_in(u)
+            elif isinstance(src, str):
+                row_urls += urls_in(src)
         row_urls += urls_in(m.get("evidence") or "")
+        prob_urls += urls_in(m.get("market_url") or "") + urls_in(m.get("source_url") or "")
         row_urls = list(dict.fromkeys(row_urls))
         if not row_urls:
             no_source.append(label)
         elif not any(host_in(host_of(u), ALL_HOSTS) for u in row_urls):
             weak_source.append(f"{label} -> {', '.join(host_of(u) for u in row_urls[:2])}")
         if method.startswith("MARKET") and not any(
-                host_in(host_of(u), MARKET_HOSTS) for u in row_urls):
+                host_in(host_of(u), MARKET_HOSTS) for u in prob_urls):
             market_no_url.append(label)
-        if method in ("MODEL_ELO", "MODEL_STANDINGS", "MARKET_BOOKS", "MARKET_POLYMARKET"):
+        if method in MARKET_METHODS or method in MODEL_METHODS:
             # Only the probability-source fields count here. hotspawn_url is the
             # fixture link and is explicitly allowed to point at Hotspawn.
-            prob_urls = urls_in(m.get("market_url") or "") + \
-                urls_in(m.get("source_url") or "") + \
-                urls_in(m.get("evidence") or "")
             for u in prob_urls:
                 if host_in(host_of(u), FIXTURE_HOSTS):
                     banned_prob_source.append(f"{label} -> {u}")
@@ -273,20 +277,31 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             if method in ("MODEL_ELO", "MODEL_STANDINGS") and su and re.search(
                     r"action=help|/wiki/Leaguepedia:League_of_Legends_Esports_Wiki", su):
                 weak_source.append(f"{label} -> model evidence link is a docs page: {su}")
-        ev_low = (m.get("evidence") or "").lower()
-        if method == "MARKET_POLYMARKET" and re.search(
-                r"game\s*1|map\s*1|games?\s*one", ev_low) and "bo1" not in ev_low:
-            game1_as_series.append(
-                f"{label} — evidence is a single-game market: {m.get('evidence')}")
+        ev_low = " ".join(str(m.get(k) or "") for k in ("evidence", "note")).lower()
+        meta = json.dumps(m.get("market") or m.get("market_meta") or {}, ensure_ascii=False).lower()
+        blob = ev_low + " " + meta
+        bo = m.get("best_of")
+        try:
+            bo = int(bo) if bo is not None else None
+        except (TypeError, ValueError):
+            bo = None
+        single_game = re.search(r"game\s*[1-9]|map\s*[1-9]", blob)
+        if method.startswith("MARKET") and single_game and bo != 1:
+            if not (re.search(r"match winner|series winner|series price|match price", blob) and not single_game):
+                game1_as_series.append(
+                    f"{label} — single-game market used for a series "
+                    f"(best_of={bo}): {single_game.group(0)}")
         if method == "UNRESOLVED":
             su = (m.get("source_url") or "")
             if re.search(r"/wiki/Leaguepedia:League_of_Legends_Esports_Wiki$", su):
                 generic_unresolved_link.append(f"{label} -> generic wiki link {su}")
         if method == "UNRESOLVED":
-            flags = " ".join(str(m.get(k) or "") for k in ("confidence", "evidence", "status"))
+            flags = " ".join(str(m.get(k) or "") for k in ("confidence", "evidence", "status")) + \
+                " " + " ".join(str(x) for x in (m.get("flags") or []))
             if abs((p1f if p1f is not None else 0.5) - 0.5) > 0.001:
                 unresolved_unflagged.append(f"{label} unresolved but prob={p1f}")
-            elif not re.search(r"unresolved|unverified|no data|50/50|placeholder", flags, re.I):
+            elif not re.search(r"unresolved|unverified|no[_ ]verified|no team history|"
+                               r"no external market|no data|50/50|placeholder", flags, re.I):
                 unresolved_unflagged.append(f"{label} unresolved but not labelled unverified")
 
         key = (norm(t1), norm(t2), (m.get("start_utc") or m.get("start_raw") or ""))
@@ -341,16 +356,35 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
 
     expected = payload.get("counts_by_method") or {}
     actual = {k: sum(1 for r in rows if r.get("method") == k) for k in METHODS}
-    mismatch = {k: (expected.get(k), actual[k]) for k in set(expected) | set(actual)
-                if int(expected.get(k, 0) or 0) != actual[k]}
-    rep.add("D10", "counts_by_method agrees with the rows",
-            PASS if not mismatch else FAIL,
-            "counts consistent" if not mismatch else f"mismatch {mismatch}")
+    if expected:
+        mismatch = {k: (expected.get(k), actual[k]) for k in set(expected) | set(actual)
+                    if int(expected.get(k, 0) or 0) != actual[k]}
+        rep.add("D10", "counts_by_method agrees with the rows",
+                PASS if not mismatch else FAIL,
+                "counts consistent" if not mismatch else f"mismatch {mismatch}")
+    else:
+        counts = payload.get("counts") or {}
+        if isinstance(counts, dict) and ("resolved" in counts or "unresolved" in counts):
+            resolved = sum(1 for r in rows if r.get("method") != "UNRESOLVED")
+            unres = sum(1 for r in rows if r.get("method") == "UNRESOLVED")
+            bad = []
+            if "resolved" in counts and int(counts.get("resolved") or -1) != resolved:
+                bad.append(f"resolved {counts.get('resolved')} != {resolved}")
+            if "unresolved" in counts and int(counts.get("unresolved") or -1) != unres:
+                bad.append(f"unresolved {counts.get('unresolved')} != {unres}")
+            rep.add("D10", "declared counts agree with the rows", PASS if not bad else FAIL,
+                    "counts.resolved/unresolved consistent" if not bad else "; ".join(bad))
+        else:
+            rep.add("D10", "declared counts agree with the rows", SKIP,
+                    "payload exposes no method counts")
 
+    counts_obj = payload.get("counts") or {}
     declared = payload.get("count")
+    if declared is None and isinstance(counts_obj, dict):
+        declared = counts_obj.get("fixtures")
     rep.add("D11", "declared count equals number of rows",
             PASS if int(declared or 0) == len(rows) else FAIL,
-            f"count={declared}, rows={len(rows)}")
+            f"declared={declared}, rows={len(rows)}")
 
     # D19: coverage against the feed's own advertised future-fixture count, when exposed
     dbg = payload.get("debug") or {}
@@ -367,12 +401,13 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                 + (f" — {missing} missing" if missing > 0 else ""))
 
     unresolved = actual["UNRESOLVED"]
-    share = unresolved / len(rows) if rows else 0
-    rep.add("D13", "coverage: share of matches without an external market line",
-            PASS if share == 0 else WARN,
-            f"{unresolved}/{len(rows)} rows are UNRESOLVED 50/50 ({share:.1%}). "
-            "A non-zero share is allowed only when published as an unresolved section "
-            "with limitations — see S4 and the site's Unresolved page.")
+    no_signal = sum(1 for r in rows if abs(float(r.get("prob_team1") or 0.5) - 0.5) < 0.02)
+    share = no_signal / len(rows) if rows else 0
+    rep.add("D13", "coverage: share of matches with a real (non-coin-flip) probability",
+            PASS if share <= 0.05 else WARN,
+            f"{no_signal}/{len(rows)} rows are 50/50 or within ±2 pts of it ({share:.1%}); "
+            f"of those {unresolved} are explicitly UNRESOLVED. A non-zero share is allowed only "
+            "when published as an unresolved section with limitations — see S4/S5b.")
     return rows
 
 
