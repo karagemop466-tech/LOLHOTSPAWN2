@@ -22,6 +22,9 @@ stale (>60 min without commits). Nothing below overwrites their work; conflicts 
 - [ ] Root `index.html` → `docs/` works; exec summary links in-site to picks + unresolved; data age visible.
 - [ ] Mobile: viewport meta on every page, nav usable at 360 px, tables/cards readable, tap targets ≥40 px.
 - [ ] No broken internal links (S6); external links https (S9).
+- [ ] `python3 verification/check_dom_contract.py` → PASS (every id the shared JS uses exists in the HTML;
+      every dynamic page includes assets/app.js; every page includes the stylesheet). This caught the new
+      app.js referencing 28 ids while the old HTML only provided 8.
 - [ ] Unresolved page: per-league limitations + source links + why no book prices these leagues.
 
 ## 4. CI verification (added by integration, after T7–T10 files are free)
