@@ -1,25 +1,26 @@
 {
- "verified_at": "2026-10-21T20:33:02.240453+00:00",
+ "verified_at": "2026-10-21T20:40:24.698551+00:00",
  "status": "FAIL",
  "counts": {
-  "PASS": 28,
+  "PASS": 27,
   "FAIL": 1,
   "WARN": 5,
-  "SKIP": 0
+  "SKIP": 1
  },
  "data_matches": 195,
  "methods": {
-  "MARKET_BOOKS": 0,
+  "MODEL_STANDINGS": 0,
   "MODEL_ELO": 61,
-  "UNRESOLVED": 126,
-  "MARKET_POLYMARKET": 8
+  "MARKET_POLYMARKET": 8,
+  "MARKET_BOOKS": 0,
+  "UNRESOLVED": 126
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.3h old)"
+   "detail": "195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.4h old)"
   },
   {
    "id": "D2",
@@ -56,7 +57,7 @@
   },
   {
    "id": "D6",
-   "title": "method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'UNRESOLVED']",
+   "title": "method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'MODEL_STANDINGS', 'UNRESOLVED']",
    "status": "PASS",
    "detail": "all methods documented"
   },
@@ -158,8 +159,8 @@
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "PASS",
-   "detail": "172/172 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot"
+   "status": "SKIP",
+   "detail": "no --leaguepedia-schedule snapshot supplied"
   },
   {
    "id": "D14",

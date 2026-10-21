@@ -115,6 +115,13 @@ official PRM organizer. → Requests logged below.
   (32 teams) were also confirmed live, so the same treatment applies to its 52 fixtures. This is the evidence-based way
   to "resolve picks for matches we don't have picks for" without inventing numbers.
 
+- **R13 (integration-ready, validated): with only 3 leagues' standings, 48 rows become sourced picks.** Running
+  `verification/apply_standings.py` on the live payload with the verified RIVALS S2 + Komplettligaen + Tunisian
+  standings produces 48 `MODEL_STANDINGS` rows (UNRESOLVED 126 → 87), each with the Leaguepedia league page as
+  `source_url`, the exact series records in the evidence, and an honest confidence band. PRM 3rd (32 teams),
+  PRM 2nd and 4 Nations standings were also confirmed live; applying those should leave only a handful of truly
+  unresolvable rows. Division ambiguity (4 Nations duplicates) and 0-0 teams are explicitly not scored.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that

@@ -52,7 +52,8 @@ DATA_PATHS = [os.path.join(ROOT, "data", "picks.json"),
               os.path.join(DOCS, "data", "picks.json")]
 OUT_DIR = os.path.join(ROOT, "verification")
 
-METHODS = {"MARKET_BOOKS", "MARKET_POLYMARKET", "MODEL_ELO", "UNRESOLVED"}
+METHODS = {"MARKET_BOOKS", "MARKET_POLYMARKET", "MODEL_ELO", "MODEL_STANDINGS",
+           "UNRESOLVED"}
 EXTERNAL_LINKS: list[str] = []
 UA = ("Mozilla/5.0 (compatible; LOLHOTSPAWN2-verify/1.0; "
       "+https://github.com/karagemop466-tech/LOLHOTSPAWN2)")
@@ -257,7 +258,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         if method.startswith("MARKET") and not any(
                 host_in(host_of(u), MARKET_HOSTS) for u in row_urls):
             market_no_url.append(label)
-        if method in ("MODEL_ELO", "MARKET_BOOKS", "MARKET_POLYMARKET"):
+        if method in ("MODEL_ELO", "MODEL_STANDINGS", "MARKET_BOOKS", "MARKET_POLYMARKET"):
             # Only the probability-source fields count here. hotspawn_url is the
             # fixture link and is explicitly allowed to point at Hotspawn.
             prob_urls = urls_in(m.get("market_url") or "") + \
@@ -269,7 +270,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             # A model row whose only link is an API help page cannot be checked
             # line by line by a human; flag it for manual review (not a hard fail).
             su = m.get("source_url") or ""
-            if method == "MODEL_ELO" and su and re.search(
+            if method in ("MODEL_ELO", "MODEL_STANDINGS") and su and re.search(
                     r"action=help|/wiki/Leaguepedia:League_of_Legends_Esports_Wiki", su):
                 weak_source.append(f"{label} -> model evidence link is a docs page: {su}")
         ev_low = (m.get("evidence") or "").lower()

@@ -1,16 +1,16 @@
 # Verification report — FAIL
-_2026-10-21T20:33:02.240453+00:00_
-195 matches · MARKET_BOOKS: 0 · MODEL_ELO: 61 · UNRESOLVED: 126 · MARKET_POLYMARKET: 8
+_2026-10-21T20:40:24.698551+00:00_
+195 matches · MODEL_STANDINGS: 0 · MODEL_ELO: 61 · MARKET_POLYMARKET: 8 · MARKET_BOOKS: 0 · UNRESOLVED: 126
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.3h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 195 matches, generated_at=2026-10-21T20:16:23.617204+00:00 (0.4h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 195 rows have team1, team2 and a start time |
 | D2b every match has a machine-readable UTC start | WARN | 1 row(s) have a display time that did not parse to UTC (unverified start — flagged) |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
-| D6 method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'UNRESOLVED'] | PASS | all methods documented |
+| D6 method is one of ['MARKET_BOOKS', 'MARKET_POLYMARKET', 'MODEL_ELO', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D7 every row links at least one official/trusted source | PASS | all 195 rows carry at least one source URL |
 | D7b source host recognised as official/trusted | WARN | 61 row(s) link a host not on the allowlist — manual review |
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
@@ -22,7 +22,7 @@ _2026-10-21T20:33:02.240453+00:00_
 | D10 counts_by_method agrees with the rows | PASS | counts consistent |
 | D11 declared count equals number of rows | PASS | count=195, rows=195 |
 | D13 coverage: share of matches without an external market line | WARN | 126/195 rows are UNRESOLVED 50/50 (64.6%). A non-zero share is allowed only when published as an unresolved section with limitations — see S4 and the site's Unresolved page. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 172/172 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
 | D14 canonical data and site data are identical | PASS | identical |
 | S1 all required site files exist | PASS | 8 files present |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
