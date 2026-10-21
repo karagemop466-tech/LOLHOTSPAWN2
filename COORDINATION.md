@@ -253,3 +253,26 @@ coverage audit: 153 exact Leaguepedia fixtures / 26 league-page-only / 15 claime
 
 **T12 remaining:** open the verification follow-up PR to `main`, merge it, confirm the Pages deploy and record the PR
 link + build id here and in `verification/FINAL_REPORT.md` §8.
+
+## Reconciliation — v2 payload vs the T11 findings (session `arena/fa3f554c`, 21:20 UTC)
+
+The T11 log above was written against commit `9f8dccb` (v1 data). The v2 pipeline that followed changes the
+picture; each item is resolved or explicitly dispositioned below.
+
+| Finding | Status on v2 | Evidence |
+|---|---|---|
+| I1 single-game market used as a series price | **fixed** — selector prefers the event/series market (`groupItemTitle` + `question`), tags every Game-N/Map-N market, and the model refuses a game market unless `best_of == 1` | `scripts/fetch_markets.py::_select_poly_market`, `scripts/model.py`; verifier **D16 PASS**; unit test picks the BO5 series market |
+| I2/I3 generic source URL on model rows | **fixed** — every model row links its per-fixture Leaguepedia tournament page; the generic CargoExport table link remains only when no schedule row matched (and the row is Low confidence) | payload `leaguepedia_url`, `sources[]`; verifier D7/D8 PASS |
+| I4 126 unresolved rows resolvable to Leaguepedia pages | **obsolete** — v2 resolves all 208 fixtures (0 unresolved); the same MatchSchedule rows power the Elo ratings | `docs/data/picks.json` counts; `data/diag/verify.json` |
+| I8 model starved / 187 coin-flips | **obsolete** — league-anchored Elo: 92 `MODEL_ELO`, 72 `MODEL_ELO_THIN`, 35 `MODEL_LEAGUE_PRIOR`, 9 market rows; 30-day backtest log-loss 0.6266 vs 0.6931, Brier 0.2183 vs 0.25, accuracy 64.4% | `model.backtest` in the payload; methodology page |
+| I11 int/str crash in Resolver | **fixed** — all Leaguepedia names are string-coerced before sorting | `scripts/model.py`; live runs green |
+| I12 195 vs 208 fixture count | **resolved** — API fixtures (208) merged with lobby permalinks (195); the 13 without a match page are published and flagged `NO_HOTSPAWN_MATCH_PAGE` | `scripts/fetch_hotspawn.py`, `counts.hotspawn_without_match_page` |
+| P13 8.3 MB cache committed every run | **fixed** — `data/cache/` is git-ignored; only `docs/data/picks.json` + the pipeline log are committed | `.gitignore`, `.github/workflows/update-picks.yml` |
+| I5/I6 market or ambiguous start times | **handled** — Hotspawn epoch-ms is authoritative, bookmaker deltas are stored and flagged above 1.5 h, D18 checks Leaguepedia | `START_TIME_DISAGREES_WITH_BOOKS`, D18 WARN (4 fixtures, flagged) |
+| R1–R7 | superseded by v2 (league-anchored Elo + per-fixture sources); no 50/50 fallback remains except a genuinely unknown fixture, which would be `UNRESOLVED` | payload + verifier |
+
+**Verification after merging the harness (PR #7) into this branch:**
+`scripts/verify_site.py --leaguepedia-schedule data/diag` → **31 PASS · 0 FAIL · 1 WARN** (D18 start-time deltas),
+`verification/test_verifier.py` 27/27, `verification/check_dom_contract.py` PASS, jsdom smoke test on all six pages.
+
+**Integration PR for this follow-up:** #8 — merged after this log entry, with the post-merge verifier run recorded below.
