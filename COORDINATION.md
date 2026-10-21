@@ -83,6 +83,14 @@ official PRM organizer. → Requests logged below.
   series market (slug `lol-gal-sly-2026-10-22`, `groupItemTitle: Match Winner`) also shows 0.515/0.485 today, i.e. the
   published number is coincidentally right but the selector picked the **Game 1** child market — a latent bug. → R5.
 
+- **I8 (quality, measured): the model is starved — 187/195 rows are coin-flips.** All 61 MODEL_ELO rows fall between
+  0.455 and 0.545 (median 0.511, every row "Low — thin team history", 0–9 games per team), plus 126 explicit 50/50s.
+  Only the 8 market rows carry information. Root cause: the global 6,000-row `ScoreboardGames` pagination is crowded
+  out by major leagues, and a 180-day window misses prior splits. **Fix (R9): 16 targeted per-league Cargo queries**
+  (one per `MatchSchedule.OverviewPage` in the fixture list, paced ≥3 s), using MatchSchedule for fixtures/names and
+  2 splits of league results for ratings; expose `leaguepedia_ok`, `leagues_queried`, `teams_with_results`,
+  `games_used` in the payload. Details + exact query template: `research/betting-sources.md` §7.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
