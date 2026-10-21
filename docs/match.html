@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Match detail — Hotspawn LoL Picks</title>
+<meta name="description" content="Pick, win probability, external betting lines, model inputs, flags and source links for one League of Legends fixture.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="match">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+    </a>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    </div>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="error-box"></div>
+  <div id="freshness-warning" class="hidden"></div>
+
+  <div id="match-detail">
+    <div class="loading"><span class="spinner"></span>Loading match…</div>
+  </div>
+
+  <p class="small" style="margin-top:14px">
+    <a href="picks.html">← All picks</a> ·
+    <a href="unresolved.html">Unresolved &amp; low confidence</a> ·
+    <a href="flagged.html">Flagged for review</a> ·
+    <a href="methodology.html">How this number was produced</a>
+  </p>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <p class="small">Fixture data from Hotspawn's public lobby (never used as a probability). Prices from the linked bookmakers/prediction markets; otherwise our own Elo model.</p>
+    <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Mobile">
+  <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
+  <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
+  <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
+</nav>
+
+<script src="assets/app.js" defer></script>
+<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
+</body>
+</html>

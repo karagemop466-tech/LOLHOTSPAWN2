@@ -1,6 +1,118 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>All Picks — Hotspawn LoL</title><link rel="stylesheet" href="assets/style.css"></head><body>
-<header><h1>🎮 Hotspawn LoL Pick'em — Our Picks</h1><div class="sub" id="updated">Loading latest update…</div></header><nav><a href="index.html">🏠 Summary</a><a href="picks.html">✅ All Picks</a><a href="unresolved.html">⚠️ Unresolved</a><a href="flagged.html">🚩 Flagged</a><a href="methodology.html">📖 Method & Sources</a></nav>
-<main><h2>✅ All picks — every Hotspawn LoL match</h2><input id="q" type="search" placeholder="🔍 Search team or tournament…" aria-label="Search"><select id="f"><option value="">All methods</option><option value="MARKET">💰 Betting market</option><option value="MODEL_ELO">🧮 Our Elo model</option><option value="UNRESOLVED">⚠️ Unresolved</option></select><div id="list">Loading…</div></main>
-<footer>Hotspawn crowd % is never used as a probability. <a href="methodology.html">Method & sources</a></footer>
-<script src="assets/app.js"></script><script>let D;function render(){const q=document.getElementById('q').value.toLowerCase(),f=document.getElementById('f').value;document.getElementById('list').innerHTML=D.matches.filter(m=>(!f||m.method.startsWith(f))&&(!q||(m.team1+' '+m.team2+' '+m.tournament).toLowerCase().includes(q))).map(card).join('')||'<div class="card">No matches.</div>'}
-load().then(d=>{D=d;document.getElementById('updated').textContent='Last updated: '+new Date(d.generated_at).toLocaleString()+' · '+d.count+' matches';render()});document.addEventListener('input',render)</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All picks — Hotspawn LoL Picks</title>
+<meta name="description" content="Every League of Legends fixture on Hotspawn's Pick'em list with a pick, both teams' win probabilities, the method used and source links.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="picks">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+    </a>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    </div>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="error-box"></div>
+  <div id="freshness-warning" class="hidden"></div>
+
+  <h1>All picks</h1>
+  <p class="lede">One row per Hotspawn LoL fixture. Every row links to the Hotspawn fixture and to the evidence used — an external betting line, a Leaguepedia tournament page, or both. Rows with no verified signal are still published, flagged and linked to the <a href="unresolved.html">unresolved explanation</a>.</p>
+
+  <section class="filters" aria-label="Filter picks">
+    <div class="searchrow">
+      <label class="skip" for="q">Search teams or tournaments</label>
+      <input id="q" type="search" placeholder="Search team or tournament…" autocomplete="off" enterkeyhint="search">
+      <label class="skip" for="sort">Sort</label>
+      <select id="sort" aria-label="Sort matches">
+        <option value="time">Sort: start time</option>
+        <option value="pick">Sort: highest pick probability</option>
+        <option value="confidence">Sort: confidence</option>
+        <option value="tournament">Sort: tournament</option>
+      </select>
+    </div>
+    <div class="chips" role="group" aria-label="Quick filters">
+      <button class="chipbtn" type="button" data-filter="all" aria-pressed="true">All <span class="n"></span></button>
+      <button class="chipbtn" type="button" data-filter="next24" aria-pressed="false">Next 24h <span class="n"></span></button>
+      <button class="chipbtn" type="button" data-filter="market" aria-pressed="false">💰 Market <span class="n"></span></button>
+      <button class="chipbtn" type="button" data-filter="model" aria-pressed="false">🧮 Our model <span class="n"></span></button>
+      <button class="chipbtn" type="button" data-filter="low" aria-pressed="false">⚠️ Low confidence <span class="n"></span></button>
+      <button class="chipbtn" type="button" data-filter="unresolved" aria-pressed="false">❔ Unresolved <span class="n"></span></button>
+    </div>
+    <div class="searchrow" style="margin-top:8px">
+      <label class="skip" for="tournament">Tournament</label>
+      <select id="tournament" aria-label="Filter by tournament"><option value="">All tournaments</option></select>
+      <button class="chipbtn" type="button" id="reset">Reset</button>
+    </div>
+    <p class="countline" id="countline">Loading…</p>
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Start (UTC)</th>
+          <th scope="col">Match</th>
+          <th scope="col">Win probability</th>
+          <th scope="col">Pick</th>
+          <th scope="col">Method</th>
+          <th scope="col">Sources</th>
+        </tr>
+      </thead>
+      <tbody id="picks-body">
+        <tr><td colspan="6"><div class="loading"><span class="spinner"></span>Loading picks…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="small" style="margin-top:12px">
+    <b>Reading the table:</b> 💰 market = de-vigged consensus of external bookmakers/markets · 🧮 model = our Elo model ·
+    ⚠️ low confidence = thin history or league prior used · ❔ unresolved = explicit 50/50 placeholder, not an edge.
+    Flags are explained on the <a href="flagged.html">Flagged for review</a> page; the full method is on
+    <a href="methodology.html">Methodology &amp; sources</a>.
+  </p>
+
+  <div class="loading"><span class="spinner"></span>Loading picks data…</div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <p class="small">Fixture list from Hotspawn's public lobby. Probabilities from external bookmakers/prediction markets where available, otherwise our own Elo model built on recorded results. Hotspawn crowd percentages are never used as a probability.</p>
+    <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Mobile">
+  <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
+  <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
+  <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
+</nav>
+
+<script src="assets/app.js" defer></script>
+<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
+</body>
+</html>
