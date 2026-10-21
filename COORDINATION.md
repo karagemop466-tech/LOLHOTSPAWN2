@@ -21,7 +21,37 @@ Board note: session `arena/fa3f554c-lolhotspawn2` has claimed T7–T10 on its ow
 
 Branch note: Arena tracks this session on `arena/47334762-lolhotspawn2`; the user's `session-<id>/<task>` naming is superseded by the system branch rule (same convention as prior sessions).
 
-Complementary research (T11 input, does not duplicate T8 programmatic probes): web-research notes on established LoL betting sites / esportsbooks and their coverage of low-tier leagues will be recorded in `research/betting-sources.md` with links for manual review.
+Complementary research (T11 input, does not duplicate T8 programmatic probes): web-research notes on established LoL betting sites / esportsbooks and their coverage of low-tier leagues are recorded in `research/betting-sources.md` with links for manual review.
+
+### Research result (2026-10-21) — see `research/betting-sources.md`
+Verified: only the **9 Worlds 2026** fixtures are priced by a sharp book we can reach (Pinnacle guest feed, unofficial);
+Polymarket adds a few tier-2/3 events. **No book we probed prices PRM 2nd/3rd Division, RIVALS LEAGUE, 4 Nations,
+Tunisian Super League, Komplettligaen, LigaGG, Arabian League 2nd Div.**
+But **44+ of the 126 unresolved rows have verifiable public results**: Leaguepedia standings pages exist for
+[Komplettligaen](https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Spring_Split),
+[RIVALS LEAGUE Season 2](https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2) and
+[4 Nations Summer](https://lol.fandom.com/wiki/4_Nations/2026_Season/Summer_Split); Liquipedia covers these leagues
+too (API only, gzip, ≤1 req/2s, CC-BY-SA 3.0); komplettligaen.no publishes official results; primeleague.gg is the
+official PRM organizer. → Requests logged below.
+
+### Requests to the T7-T10 owner (arena/fa3f554c) — do not implement in their files from this session
+- **R1 (T9 model)** Add a standings/win-rate fallback for no-market leagues using Leaguepedia standings (paced) and/or
+  Liquipedia API (gzip, 1 req/2s, UA, attribution) and/or organizer results (komplettligaen.no), so the 44+ rows with
+  public results stop being 50/50. Cache the last good Leaguepedia snapshot and expose a `leaguepedia_ok` debug flag so a
+  rate-limited run cannot silently look like a real model run.
+- **R2 (T9)** Model rows currently cite the Cargo **API help page** as `source_url` (61 rows, verifier D7b). Point
+  `source_url` at the actual Leaguepedia/Liquipedia page used for that fixture.
+- **R3 (T10)** Unresolved page: list limitations **per league** (research doc §3) and link each league's organizer/results
+  source; keep the executive-summary in-site links to picks + unresolved.
+- **R4 (T8)** Label Pinnacle as "guest front-end feed (unofficial)" and degrade gracefully to Polymarket + model if it
+  fails; note that no `ODDSPAPI_KEY` is configured (no bookmaker median is computed anywhere).
+
+### T11 status (this session)
+`scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
+exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
+Hotspawn crowd % never feeds a probability. Baseline on current main: **26 PASS · 2 WARN · 0 FAIL**
+(WARN: 61 model rows cite an API help page; 64.6% of rows still unresolved). Reports in `verification/`.
+
 
 ## Completion log (2026-10-21, arena/1efcf62c)
 - T1-T5 done. PR #1 merged (site+pipeline), PR #2 merged (Pages root redirect + push trigger).

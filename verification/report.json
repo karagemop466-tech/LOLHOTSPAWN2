@@ -1,10 +1,10 @@
 {
- "verified_at": "2026-10-21T20:28:18.955100+00:00",
+ "verified_at": "2026-10-21T20:30:01.829317+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 26,
+  "PASS": 27,
   "FAIL": 0,
-  "WARN": 2,
+  "WARN": 3,
   "SKIP": 0
  },
  "data_matches": 195,
@@ -154,6 +154,30 @@
    "title": "separate unresolved section with limitations",
    "status": "PASS",
    "detail": "unresolved page states limitations"
+  },
+  {
+   "id": "S5b",
+   "title": "unresolved page names each unresolved league (per-league limits)",
+   "status": "WARN",
+   "detail": "0/10 unresolved tournaments named on the page",
+   "items": [
+    "4 Nations 2026 Halloween Heist",
+    "Arabian League 2nd Division 2026 Summer",
+    "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine",
+    "Komplettligaen 2026 Autumn",
+    "LGC Rising 2026 Playoffs",
+    "LigaGG CELOL B 2026 Split 2 Playoffs",
+    "PRM 2nd Division 26-27 Fall",
+    "PRM 3rd Division 26-27 Fall",
+    "RIVALS LEAGUE Season 2",
+    "Tunisian Super League 2026"
+   ]
+  },
+  {
+   "id": "S5c",
+   "title": "third-party data sources are attributed on Method & Sources",
+   "status": "PASS",
+   "detail": "attribution present"
   },
   {
    "id": "S6",

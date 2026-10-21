@@ -1,5 +1,5 @@
 # Verification report — PASS
-_2026-10-21T20:28:18.955100+00:00_
+_2026-10-21T20:30:01.829317+00:00_
 195 matches · MARKET_POLYMARKET: 8 · UNRESOLVED: 126 · MODEL_ELO: 61 · MARKET_BOOKS: 0
 
 | check | status | detail |
@@ -25,6 +25,8 @@ _2026-10-21T20:28:18.955100+00:00_
 | S3 every page links the shared picks navigation | PASS | navigation present |
 | S4 executive summary links in-site to picks + unresolved and states limitations | PASS | exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True} |
 | S5 separate unresolved section with limitations | PASS | unresolved page states limitations |
+| S5b unresolved page names each unresolved league (per-league limits) | WARN | 0/10 unresolved tournaments named on the page |
+| S5c third-party data sources are attributed on Method & Sources | PASS | attribution present |
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
@@ -46,3 +48,15 @@ _2026-10-21T20:28:18.955100+00:00_
 - Babos Gaming vs Hannover Esports e.V. -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
 - Reveal Multigaming vs AceGaming -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
 - Neko Elite Kittens vs spongecord prime -> model evidence link is a docs page: https://lol.fandom.com/api.php?action=help&modules=cargoquery
+
+**S5b items:**
+- 4 Nations 2026 Halloween Heist
+- Arabian League 2nd Division 2026 Summer
+- Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine
+- Komplettligaen 2026 Autumn
+- LGC Rising 2026 Playoffs
+- LigaGG CELOL B 2026 Split 2 Playoffs
+- PRM 2nd Division 26-27 Fall
+- PRM 3rd Division 26-27 Fall
+- RIVALS LEAGUE Season 2
+- Tunisian Super League 2026

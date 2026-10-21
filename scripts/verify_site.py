@@ -428,6 +428,38 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
         rep.add("S5", "separate unresolved section with limitations", FAIL,
                 "docs/unresolved.html missing")
 
+    # S5b: per-league limitations on the unresolved page
+    if os.path.exists(upath):
+        upage = parse_page(upath)
+        utext = " ".join(upage.text).lower()
+        unres_tournaments = sorted({(r.get("tournament") or "").strip()
+                                    for r in rows if r.get("method") == "UNRESOLVED"
+                                    and (r.get("tournament") or "").strip()})
+        named = [t for t in unres_tournaments if t.lower() in utext]
+        if unres_tournaments:
+            rep.add("S5b", "unresolved page names each unresolved league (per-league limits)",
+                    PASS if len(named) == len(unres_tournaments) else WARN,
+                    f"{len(named)}/{len(unres_tournaments)} unresolved tournaments named on the page",
+                    [t for t in unres_tournaments if t not in named])
+
+    # S5c: third-party attribution (Liquipedia is CC-BY-SA 3.0; Leaguepedia is a Fandom wiki)
+    method_page = os.path.join(DOCS, "methodology.html")
+    src_text = " ".join((r.get("evidence") or "") + " " + (r.get("source_url") or "")
+                        for r in rows).lower()
+    if method_page and any(k in src_text for k in ("liquipedia", "lol.fandom.com", "leaguepedia")):
+        mtext = " ".join(parse_page(method_page).text).lower()
+        need = []
+        if "liquipedia" in src_text and "liquipedia" not in mtext:
+            need.append("Liquipedia credit")
+        if "liquipedia" in src_text and "cc-by-sa" not in mtext and "cc by-sa" not in mtext:
+            need.append("Liquipedia CC-BY-SA 3.0 attribution")
+        if ("leaguepedia" in src_text or "lol.fandom.com" in src_text) and \
+                "leaguepedia" not in mtext and "fandom" not in mtext:
+            need.append("Leaguepedia credit")
+        rep.add("S5c", "third-party data sources are attributed on Method & Sources",
+                PASS if not need else WARN,
+                "attribution present" if not need else f"missing: {', '.join(need)}")
+
     rep.add("S6", "no broken internal links", PASS if not internal_broken else FAIL,
             "all internal href/src resolve" if not internal_broken
             else f"{len(internal_broken)} broken internal link(s)", internal_broken)
