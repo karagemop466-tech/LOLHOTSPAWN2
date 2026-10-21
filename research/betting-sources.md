@@ -36,9 +36,9 @@ still gets a pick therefore depends on **our own line**, which must be built fro
 |---|---|---|---|---|
 | **Leaguepedia** (`lol.fandom.com`, Cargo API) | Per-game scoreboards, match schedule, standings, team aliases | **Yes — verified standings pages exist today**: [Komplettligaen 2026 Spring](https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Spring_Split) (Playwell Rød Q 9–2, Ascent Gaming 6–5, DMG Esports Norway 7–4…), [RIVALS LEAGUE Season 2](https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2) (B2U 3–0, FlameHard 3–0, Lundqvist Darkside 2–1…), [4 Nations 2026 Summer](https://lol.fandom.com/wiki/4_Nations/2026_Season/Summer_Split) (Rich Gang UK 6–3–0, Inari 4–5–0, Brod n Friends 5–2–2…), [4 Nations 2026 Spring Playoffs](https://lol.fandom.com/wiki/4_Nations/2026_Season/Spring_Playoffs) | [api.php](https://lol.fandom.com/api.php?action=help&modules=cargoquery) | **Severe anonymous rate limiting** — our own Actions probes received `{"error":{"code":"ratelimited"}}` (`data/diag/report3.json` → `leaguepedia`). Community reports ~1 query/30–40 s without a bot flag ([Fandom thread](https://lists.wikimedia.org/hyperkitty/list/mediawiki-api@lists.wikimedia.org/thread/A6VWUYRHLGGJWZ3USGEBQJSDMX6A4YCM/), [ETL notes](https://github.com/fedeterpin/smurfeando)). Pipeline must pace requests + back off; a bot account raises limits. |
 | **Liquipedia** MediaWiki API | Match results + standings, C/D-tier amateur leagues | **Yes** — [Komplettligaen 2026 Autumn](https://liquipedia.net/leagueoflegends/Komplettligaen/2026/Autumn) (C-Tier, 8 teams), [Komplettligaen Division 2 2026 Autumn](https://liquipedia.net/leagueoflegends/Komplettligaen/Division_2/2026/Autumn), [4 Nations 2026 Summer](https://liquipedia.net/leagueoflegends/4_Nations/2026/Summer), [4 Nations Division 2 2026 Summer](https://liquipedia.net/leagueoflegends/4_Nations/Division_2/2026/Summer) (D-Tier, organizer UKEL), [RIVALS LEAGUE Season 2](https://liquipedia.net/leagueoflegends/RIVALS_LEAGUE/Season_2) (C-Tier, 16 teams, Swedish) | [API terms](https://liquipedia.net/api-terms-of-use) | **gzip required** (our probe got `406 Gzip encoding is required`), custom User-Agent with contact, **1 request / 2 s**, LiquipediaDB 60/h, **attribution CC-BY-SA 3.0 required**. HTML scraping is not permitted — API only. |
-| **Prime League** (organizer) | Official PRM divisions, match pages, results | **Partially verified** — [league list](https://www.primeleague.gg/en/leagues) shows [Fall Split 2026/27](https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627) running 2026-09-04 → 2026-12-13 with "Divisions & Playoffs"; participant/match pages exist per team | Public site | No public API documented; a scraper would be brittle. Use as the authoritative cross-check for PRM 2nd/3rd Division names and results. |
-| **Komplettligaen** (organizer) | Official Norwegian results by division | **Yes** — [komplettligaen.no/lol](https://www.komplettligaen.no/lol/) publishes recent results (e.g. *1. divisjon: DMG NO 0–2 Playwell Rød Q*, *Playwell Rød Q 2–1 Ascent Gaming*; *3. divisjon avd. A/B* results) | Public site | No documented API; scrape-friendly HTML but use politely and cache. |
-| **RIVALS LEAGUE** (organizer) | Official Swedish league | [rivalsleague.gg](https://www.rivalsleague.gg/) — Season 2 begins 21 Sept, 85,000 SEK across LoL/CS2/VALORANT | Public site | Schedule pages exist (`/cs2/matches` seen); LoL results page not verified for automated parsing. |
+| **Prime League** (organizer) | Official PRM divisions, match pages, results — **403 Bunny Shield from GitHub Actions (measured 2026-10-21)** | **Partially verified** — [league list](https://www.primeleague.gg/en/leagues) shows [Fall Split 2026/27](https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627) running 2026-09-04 → 2026-12-13 with "Divisions & Playoffs"; participant/match pages exist per team | Public site | Blocked to our runners (403, Bunny Shield) and no public API; **not usable programmatically** — use Leaguepedia standings/Liquipedia for PRM names and records, and keep primeleague.gg as a human cross-check link only. |
+| **Komplettligaen** (organizer) | Official Norwegian results by division (200 from Actions, HTML only) | **Yes** — [komplettligaen.no/lol](https://www.komplettligaen.no/lol/) publishes recent results (e.g. *1. divisjon: DMG NO 0–2 Playwell Rød Q*, *Playwell Rød Q 2–1 Ascent Gaming*; *3. divisjon avd. A/B* results) | Public site | No documented API; scrape-friendly HTML but use politely and cache. |
+| **RIVALS LEAGUE** (organizer) | Official Swedish league (200 from Actions, HTML only) | [rivalsleague.gg](https://www.rivalsleague.gg/) — Season 2 begins 21 Sept, 85,000 SEK across LoL/CS2/VALORANT | Public site | Reachable but HTML-only; Leaguepedia standings are the programmatic source. |
 | **gol.gg** | LoL stats site | Major leagues (per site structure) | Public site | **UNVERIFIED** for tier-3 amateur leagues; do not cite for unresolved fixtures. |
 | **bo3.gg** | Results database | Probe returned 200 with CS2 sample records | Public JSON | **UNVERIFIED** for LoL coverage of these leagues; not used. |
 
@@ -168,3 +168,21 @@ Root causes and the fix (verified against the Leaguepedia data captured in `data
 If the targeted queries still return no games for a league (possible for LigaGG/Arabian/Tunisian amateur events), the
 row stays 50/50 and the Unresolved page states exactly that, with the league page link — which is the honest outcome
 the brief asks for.
+
+---
+
+## 8. Measured reachability from GitHub Actions (2026-10-21, `data/diag/report6.json`)
+
+| host | status | note |
+|---|---|---|
+| `primeleague.gg`, `primeleague.gg/api/v1/leagues` | **403** | Bunny Shield anti-bot — not usable from CI |
+| `4nations.gg` | 0 | unreachable |
+| `ligagg.com` | 0 | unreachable |
+| `tunisiansuperleague.com`, `tunisiansuperleague.tn`, `lol.tn` | 0 | unreachable |
+| `rivalsleague.gg` | 200 | reachable, HTML only |
+| `komplettligaen.no` | 200 | reachable, HTML only |
+| `liquipedia.net` API (`allpages`) | 200 | API only, gzip, ≤1 req/2 s, CC-BY-SA 3.0 |
+| `lol.fandom.com` Cargo via `Special:CargoExport` | 200 | works for Standings/MatchSchedule; `api.php` is aggressively rate limited |
+
+Consequence: the only reliable programmatic results source for the amateur leagues is **Leaguepedia Cargo**
+(MatchSchedule + Standings + ScoreboardGames). Organizer sites are for human cross-checks only.

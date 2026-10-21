@@ -122,6 +122,12 @@ official PRM organizer. → Requests logged below.
   PRM 2nd and 4 Nations standings were also confirmed live; applying those should leave only a handful of truly
   unresolvable rows. Division ambiguity (4 Nations duplicates) and 0-0 teams are explicitly not scored.
 
+- **R14 (coordination channel): GitHub issue #4 opened** for the T7–T10 owner with the verified Standings field list,
+  the six league pages that have standings, the validated 48-row result, and the measured site reachability:
+  https://github.com/karagemop466-tech/LOLHOTSPAWN2/issues/4 . Also recorded: `primeleague.gg` returns **403 Bunny
+  Shield** from Actions and `4nations.gg`/`ligagg.com`/`tunisian*`/`lol.tn` are unreachable — organizer scraping is not a
+  viable production path; Leaguepedia Cargo is.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
