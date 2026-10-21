@@ -2,7 +2,7 @@ name: DIAG lab (temporary)
 on:
   push:
     branches: ["arena/**"]
-    paths: ["scripts/diag_lab.py", ".github/workflows/diag.yml"]
+    paths: ["scripts/diag_lab.py", "scripts/diag_lab2.py", ".github/workflows/diag.yml"]
   workflow_dispatch:
 permissions:
   contents: write
