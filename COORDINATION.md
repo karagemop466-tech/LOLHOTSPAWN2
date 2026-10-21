@@ -128,6 +128,9 @@ official PRM organizer. → Requests logged below.
   Shield** from Actions and `4nations.gg`/`ligagg.com`/`tunisian*`/`lol.tn` are unreachable — organizer scraping is not a
   viable production path; Leaguepedia Cargo is.
 
+- **P10/P11 (reliability):** the update workflow swallows git failures (`|| true`) and its inline check covers only two
+  invariants. Integration adds `scripts/verify_site.py` to CI and removes the silent-failure paths.
+
 ### T11 status (this session)
 `scripts/verify_site.py` written: 29 rule groups covering data schema, per-row source links, mobile viewport, in-site
 exec-summary links, separate unresolved section, internal-link integrity, 4-8h cron cadence, and a static scan that
