@@ -1,19 +1,19 @@
-[2026-10-21T21:19:15+00:00] hotspawn: 208 future LoL fixtures via fixtures-api+lobby-permalinks (13 without a published match page)
-[2026-10-21T21:19:18+00:00] markets: Pinnacle -> ok (9 records)
-[2026-10-21T21:19:20+00:00] markets: Bovada -> ok (9 records)
-[2026-10-21T21:19:21+00:00] markets: Polymarket -> ok (9 records)
-[2026-10-21T21:19:24+00:00] leaguepedia: 2024-10-21 -> 2025-01-04 got 1966 rows (total 1966)
-[2026-10-21T21:19:27+00:00] leaguepedia: 2025-01-04 -> 2025-03-20 got 3817 rows (total 5783)
-[2026-10-21T21:19:30+00:00] leaguepedia: window 2025-03-20->2025-06-03 hit 5000, splitting
-[2026-10-21T21:19:35+00:00] leaguepedia: 2025-03-20 -> 2025-06-03 got 5145 rows (total 10928)
-[2026-10-21T21:19:38+00:00] leaguepedia: 2025-06-03 -> 2025-08-17 got 4122 rows (total 15050)
-[2026-10-21T21:19:41+00:00] leaguepedia: 2025-08-17 -> 2025-10-31 got 2743 rows (total 17793)
-[2026-10-21T21:19:44+00:00] leaguepedia: 2025-10-31 -> 2026-01-14 got 1936 rows (total 19729)
-[2026-10-21T21:19:47+00:00] leaguepedia: 2026-01-14 -> 2026-03-30 got 4047 rows (total 23776)
-[2026-10-21T21:19:50+00:00] leaguepedia: 2026-03-30 -> 2026-06-13 got 3933 rows (total 27709)
-[2026-10-21T21:19:53+00:00] leaguepedia: 2026-06-13 -> 2026-08-27 got 3186 rows (total 30895)
-[2026-10-21T21:19:56+00:00] leaguepedia: 2026-08-27 -> 2026-11-10 got 1750 rows (total 32645)
-[2026-10-21T21:19:59+00:00] leaguepedia: 2026-11-10 -> 2026-12-20 got 41 rows (total 32686)
-[2026-10-21T21:20:02+00:00] leaguepedia: 31742 results, 215 schedule rows, 3574 teams
-[2026-10-21T21:20:05+00:00] model: {'fixtures': 208, 'resolved': 208, 'unresolved': 0, 'resolved_pct': 100.0, 'with_external_market': 9, 'with_model': 199, 'with_team_specific_model': 164, 'with_prior_only': 35, 'published_picks': 208, 'both_market_and_model': 9, 'counts_by_method': {'MARKET_CONSENSUS': 9, 'MODEL_ELO': 92, 'MODEL_ELO_THIN': 72, 'MODEL_LEAGUE_PRIOR': 35}}
-[2026-10-21T21:20:05+00:00] wrote docs/data/picks.json: {'fixtures': 208, 'next_24h': 28, 'market': 9, 'model': 199, 'resolved': 208, 'unresolved': 0, 'low_confidence': 111, 'hotspawn_without_match_page': 13}
+[2026-10-22T03:11:01+00:00] hotspawn: 208 future LoL fixtures via fixtures-api+lobby-permalinks (13 without a published match page)
+[2026-10-22T03:11:04+00:00] markets: Pinnacle -> ok (10 records)
+[2026-10-22T03:11:05+00:00] markets: Bovada -> ok (9 records)
+[2026-10-22T03:11:06+00:00] markets: Polymarket -> ok (9 records)
+[2026-10-22T03:11:09+00:00] leaguepedia: 2024-10-22 -> 2025-01-05 got 1962 rows (total 1962)
+[2026-10-22T03:11:12+00:00] leaguepedia: 2025-01-05 -> 2025-03-21 got 3818 rows (total 5780)
+[2026-10-22T03:11:15+00:00] leaguepedia: window 2025-03-21->2025-06-04 hit 5000, splitting
+[2026-10-22T03:11:21+00:00] leaguepedia: 2025-03-21 -> 2025-06-04 got 5155 rows (total 10935)
+[2026-10-22T03:11:24+00:00] leaguepedia: 2025-06-04 -> 2025-08-18 got 4116 rows (total 15051)
+[2026-10-22T03:11:27+00:00] leaguepedia: 2025-08-18 -> 2025-11-01 got 2738 rows (total 17789)
+[2026-10-22T03:11:30+00:00] leaguepedia: 2025-11-01 -> 2026-01-15 got 1936 rows (total 19725)
+[2026-10-22T03:11:33+00:00] leaguepedia: 2026-01-15 -> 2026-03-31 got 4054 rows (total 23779)
+[2026-10-22T03:11:36+00:00] leaguepedia: 2026-03-31 -> 2026-06-14 got 3926 rows (total 27705)
+[2026-10-22T03:11:38+00:00] leaguepedia: 2026-06-14 -> 2026-08-28 got 3186 rows (total 30891)
+[2026-10-22T03:11:41+00:00] leaguepedia: 2026-08-28 -> 2026-11-11 got 1750 rows (total 32641)
+[2026-10-22T03:11:44+00:00] leaguepedia: 2026-11-11 -> 2026-12-21 got 41 rows (total 32682)
+[2026-10-22T03:11:48+00:00] leaguepedia: 31739 results, 215 schedule rows, 3574 teams
+[2026-10-22T03:11:52+00:00] model: {'fixtures': 208, 'resolved': 208, 'unresolved': 0, 'resolved_pct': 100.0, 'with_external_market': 9, 'with_model': 199, 'with_team_specific_model': 164, 'with_prior_only': 35, 'published_picks': 208, 'both_market_and_model': 9, 'counts_by_method': {'MARKET_CONSENSUS': 9, 'MODEL_ELO': 92, 'MODEL_ELO_THIN': 72, 'MODEL_LEAGUE_PRIOR': 35}}
+[2026-10-22T03:11:52+00:00] wrote docs/data/picks.json: {'fixtures': 208, 'next_24h': 28, 'market': 9, 'model': 199, 'resolved': 208, 'unresolved': 0, 'low_confidence': 111, 'hotspawn_without_match_page': 13}
