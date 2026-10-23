@@ -227,3 +227,60 @@ https://lol.fandom.com/wiki/Special:CargoExport?tables=MatchSchedule
 
 Consequence: the Riot front-end API cannot be a production dependency here (and it never covered amateur leagues).
 Leaguepedia `MatchSchedule` remains the only reliable fixture/results feed for the low-tier leagues.
+
+---
+
+## 11. Refresh 2026-10-23 — established books → esportsbooks → community (session `arena/92bfcdd3`)
+
+Brief for this pass: *resolve picks for matches that cannot be resolved the same way as the featured picks*
+(low-tier matches, or matches not covered by e.g. Polymarket) — try established LoL betting sites first,
+then esportsbooks/esports lines, then community sources. Findings, in that order:
+
+### 11.1 Established books / aggregators (market lines)
+
+| Source | 2026-10-23 finding | Evidence |
+|---|---|---|
+| **OddsPapi** (350+ books incl. Pinnacle, bet365, Stake, 1xBet) | LoL board measured 2026-09-20: 133 bookmakers quoted G2 v Movistar KOI — but the documented LoL tournaments are still only Worlds, LEC, LCS, LCK, LPL, CBLOL, LJL and **Prime League Pro Division**. No PRM 2nd/3rd Division, RIVALS LEAGUE, 4 Nations, Tunisian Super League, Komplettligaen, LigaGG or Arabian 2nd Division. Requires an API key; **no key is configured in this repo**. | [oddspapi.io/sports/esports/lol](https://oddspapi.io/sports/esports/lol), [esports odds API guide](https://oddspapi.io/blog/esports-odds-api-guide-how-to-get-pinnacle-cs2-lol-data-for-free/) |
+| **Bovada** (already a production source) | Third-party coverage review (2026-09-24) lists LCK, LPL, LCP, LCS, LEC, LFL, Prime League (Pro), TCL — consistent with our feed: Worlds only in the current window. No tier-3 amateur leagues. | [esports.gg LoL betting sites](https://esports.gg/guides/betting/league-of-legends-betting-sites/) |
+| **eGamersWorld** odds board | Lists upcoming/live LoL matches with odds from multiple bookmakers per card. Useful as a **human cross-check**; programmatic use is **UNVERIFIED** until the Actions probe (`scripts/probe_sources.py` → `data/diag/source_probe.json`) shows structured per-match prices. | [egamersworld.com/lol/bets](https://egamersworld.com/lol/bets) |
+| **Pinnacle / Polymarket** (already production) | Unchanged: Pinnacle guest feed prices Worlds (+EMEA Masters when listed); Polymarket lists Worlds and a handful of tier-2/3 events with thin liquidity. In the 2026-10-23 live run they covered **9 of 188** fixtures. | `data/diag/pipeline.log` |
+
+### 11.2 Esportsbooks (GG.BET, Thunderpick, Rivalry, Midnite, Betway, Unibet, …)
+
+No new programmatic access found. Previous measured results stand (403/404/503 or JS-shell only from
+GitHub Actions — §8 and `checked_unavailable` in the payload). To keep this claim fresh rather than stale,
+`scripts/probe_sources.py` now re-probes these plus Kalshi, Smarkets API, Manifold, eGamersWorld,
+OddsPortal and BetExplorer on every branch pipeline run and commits the observed statuses to
+`data/diag/source_probe.json`. A source is promoted to production only if a probe shows structured
+per-match JSON **and** a sample row is human-verified. Until then, claiming their lines would be fabrication.
+
+### 11.3 Community/results sources — the resolution path that actually works for low-tier matches
+
+Implemented this session (T13), in priority order for any fixture without a market line:
+
+1. **Elo on Leaguepedia `MatchSchedule` results** (existing) — 31,732 results in the 2026-10-23 run.
+2. **NEW: Leaguepedia `Standings` fallback (`MODEL_STANDINGS`)** — when Elo cannot rate both sides
+   (<3 recorded games in 365 d for a team) but both teams have an official win–loss record in the
+   fixture's own competition: `wr=(W+2)/(W+L+4)`, `p₁=wr₁/(wr₁+wr₂)` (Bradley–Terry; games columns
+   with `a=4` when series columns are empty). First live run: **167 standings rows across 14
+   competitions** fetched; **4 PRM 3rd Division fixtures** upgraded from prior to a standings line
+   (e.g. REH Gaming 1–1 vs Cloud eSport 0–2 → 60.0%); prior-only rows fell 24 → 20. Records are never
+   mixed across leagues, 0–0 rows are not evidence, confidence capped at Medium.
+   Unit test: `verification/test_standings_model.py` (11 checks, all pass offline).
+3. **League prior** (existing) — one side still unknown after 1–2.
+4. **Explicit 50/50 `UNRESOLVED`** (existing) — currently 0 rows; listed separately with limitations.
+
+Remaining limits (published on the site, per league): PRM 2nd Division still has 15 prior-only rows —
+their Hotspawn team names (e.g. “Locked IN”, “ex-A41G”) have no standings/Elo identity we can verify
+against a Leaguepedia page, so the honest output stays a labelled prior, not an invented line.
+Standings ignore strength of schedule; Elo tiers across leagues are priors, not measurements.
+
+### 11.4 Verification log additions
+
+| Date | Source | What it verified | Link / evidence |
+|---|---|---|---|
+| 2026-10-23 | OddsPapi LoL page | 133 books on a tier-1 fixture; documented LoL tournaments exclude all our amateur leagues; key required | https://oddspapi.io/sports/esports/lol |
+| 2026-10-23 | esports.gg roundup | Bovada LoL coverage = majors + LFL/Prime Pro/TCL only | https://esports.gg/guides/betting/league-of-legends-betting-sites/ |
+| 2026-10-23 | eGamersWorld | Multi-book LoL odds board exists (human cross-check; API use unverified) | https://egamersworld.com/lol/bets |
+| 2026-10-23 | Live pipeline (Actions 39980317947) | Standings fetched: 167 rows / 14 competitions; 4 fixtures → `MODEL_STANDINGS`; 188/188 picks, 0 unresolved | `data/diag/pipeline.log`, `docs/data/picks.json` |
+| 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
