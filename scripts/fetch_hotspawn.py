@@ -61,6 +61,13 @@ def _from_api():
             "http": r["status"], "bytes": len(r.get("body") or b""), "via": "fixtures-api"}, None
 
 
+def _start_dt(raw: dict):
+    try:
+        return datetime.fromtimestamp(int(raw["scheduled_start_time"]) / 1000.0, timezone.utc)
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
 def normalise(raw: dict, permalinks: dict) -> dict | None:
     if str(raw.get("sport_alias") or "").lower() != "lol":
         return None
@@ -120,7 +127,17 @@ def main() -> int:
 
     now = now_utc()
     cutoff = now - timedelta(minutes=10)
-    rows = []
+
+    # The lobby is the list the user sees. When its state parsed, it is the
+    # authority for "listed on Hotspawn"; the API may still carry fixtures the lobby
+    # has withdrawn (e.g. status "cancelled"), which must not receive a pick.
+    lobby_ids = None
+    if lobby and lobby_fixtures:
+        lobby_ids = {str(x.get("id")) for x in lobby_fixtures
+                     if (lambda d: d is not None and d > now)(_start_dt(x))}
+
+    rows, excluded = [], []
+    api_upcoming = 0
     for raw in collected["fixtures"]:
         row = normalise(raw, collected.get("permalinks") or {})
         if not row:
@@ -128,11 +145,38 @@ def main() -> int:
         start = datetime.fromisoformat(row["start_utc"].replace("Z", "+00:00"))
         if start <= cutoff:
             continue  # pick'em locks 5 minutes before start
+        api_upcoming += 1
+        reason = None
+        if str(row.get("status") or "").lower() != "scheduled":
+            reason = f"Hotspawn status is '{row.get('status')}'; not priced"
+        elif lobby_ids is not None and row["id"] not in lobby_ids:
+            reason = "Not listed in the Hotspawn lobby; not priced"
+        if reason:
+            excluded.append({"id": row["id"], "team1": row["team1"], "team2": row["team2"],
+                             "tournament": row["tournament"], "start_utc": row["start_utc"],
+                             "status": row.get("status"), "reason": reason,
+                             "source": FIXTURES_API})
+            continue
         rows.append(row)
 
     rows.sort(key=lambda r: (r["start_utc"], r["tournament"], r["team1"]))
     if len(rows) < 50:
         raise SystemExit(f"Only {len(rows)} future LoL fixtures parsed - refusing to overwrite good data")
+
+    row_ids = {r["id"] for r in rows}
+    reconciliation = {
+        "lobby_lol_listed": len(lobby_fixtures) if lobby_fixtures else None,
+        "lobby_upcoming": len(lobby_ids) if lobby_ids is not None else None,
+        "lobby_past_not_priced": (len(lobby_fixtures) - len(lobby_ids)) if lobby_ids is not None else None,
+        "api_upcoming_lol": api_upcoming,
+        "api_excluded": len(excluded),
+        "priced": len(rows),
+        "lobby_upcoming_missing_from_priced": (sorted(lobby_ids - row_ids) if lobby_ids is not None else None),
+        "priced_not_in_lobby": (sorted(row_ids - lobby_ids) if lobby_ids is not None else None),
+        "rule": ("Priced = Hotspawn lobby upcoming LoL fixtures (status scheduled) that the fixtures API also lists."
+                 if lobby_ids is not None else
+                 "Lobby state unavailable: priced = API upcoming LoL fixtures with status scheduled."),
+    }
 
     without_link = sum(1 for r in rows if not r.get("hotspawn_url"))
     payload = {
@@ -146,6 +190,8 @@ def main() -> int:
         "week": collected.get("week") or {},
         "count": len(rows),
         "without_match_page": without_link,
+        "reconciliation": reconciliation,
+        "excluded": excluded,
         "sources": [
             source("Hotspawn LoL Pick'em lobby", LOBBY,
                    "Fixture list, tier/points, crowd % (display only) and match links."),

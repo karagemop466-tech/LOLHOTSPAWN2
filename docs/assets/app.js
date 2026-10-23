@@ -168,6 +168,25 @@
       <p class="small"><b>Key limitations</b></p><ul class="clean small">${lims}</ul>
       <p><a class="btn warn" href="unresolved.html">See every unresolved pick and all limitations →</a></p></div>`;
 
+    const rb = $("#recon-body");
+    if (rb) {
+      const r = d.coverage_reconciliation || {};
+      const ex = (d.excluded_fixtures || []).length;
+      if (r.lobby_upcoming == null) {
+        rb.innerHTML = `<p>The Hotspawn lobby could not be read in this run, so coverage is compared with the fixtures feed only: <b>${d.counts?.fixtures ?? 0}</b> upcoming fixtures priced.</p>`;
+      } else {
+        const missing = (r.lobby_upcoming_missing_from_priced || []).length;
+        rb.innerHTML = `<div class="stats-mini">
+          <div><b>${r.lobby_upcoming}</b><span>upcoming on the Hotspawn lobby</span></div>
+          <div><b>${r.priced}</b><span>with a pick</span></div>
+          <div class="${missing ? "bad" : "good"}"><b>${missing}</b><span>missing a pick</span></div>
+          <div><b>${ex}</b><span>cancelled, not priced</span></div></div>
+          <p>${missing === 0 ? "Every upcoming Hotspawn LoL fixture has a pick." : `${missing} fixture(s) still need a pick — see the flagged page.`}
+          Lobby rows that already started (${r.lobby_past_not_priced ?? 0}) are locked, so they are not priced. Rule: ${esc(r.rule || "")}</p>
+          <p><a href="flagged.html#excluded">See the ${ex} cancelled fixture(s) that were excluded →</a></p>`;
+      }
+    }
+
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
   }
@@ -282,6 +301,12 @@
     const order = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
     const gb = $("#flag-groups");
     if (gb) gb.innerHTML = order.length ? order.map((f) => `<tr><td><span class="flag">${esc(f)}</span><span class="sub">${esc(flagLabel(f))}</span></td><td><b>${groups[f].length}</b></td><td><a href="picks.html?filter=${f === "NO_EXTERNAL_MARKET" || f === "NO_VERIFIED_SIGNAL" ? "unresolved" : "all"}">view</a></td></tr>`).join("") : `<tr><td colspan="3">No flags.</td></tr>`;
+    const eb = $("#excluded-body");
+    if (eb) {
+      const ex = d.excluded_fixtures || [];
+      eb.innerHTML = ex.length ? ex.map((x) => `<tr><td data-label="Start"><b>${esc(whenLocal(x.start_utc).text)}</b></td><td class="teams-cell" data-label="Match">${esc(x.team1)} vs ${esc(x.team2)}<span class="sub">${esc(x.tournament || "")} · fixture ${esc(x.id)}</span></td><td data-label="Status"><span class="chip amber">${esc(x.status || "")}</span></td><td class="small" data-label="Why not priced">${esc(x.reason || "")}<span class="sub"><a href="${esc(x.source || "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures")}" target="_blank" rel="noopener">Hotspawn fixtures API ↗</a></span></td></tr>`).join("")
+        : `<tr><td colspan="4">No excluded fixtures in this run.</td></tr>`;
+    }
     const flagged = (d.matches || []).filter((m) => (m.flags || []).length).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const body = $("#flagged-body");
     if (body) body.innerHTML = flagged.map((m) => `<tr class="${matchClass(m)}"><td data-label="Start"><b>${esc(whenLocal(m.start_utc).text)}</b></td><td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)} vs ${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}</span></td><td data-label="Flags">${(m.flags || []).map((f) => `<span class="chip amber flag" title="${esc(flagLabel(f))}">${esc(f)}</span>`).join(" ")}</td><td data-label="Pick">${esc(m.pick)} <span class="sub">${pct1(m.pick_prob)}</span></td></tr>`).join("");
