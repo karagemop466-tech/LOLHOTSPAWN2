@@ -282,6 +282,51 @@ picture; each item is resolved or explicitly dispositioned below.
 - production refresh `28d9755` (208 fixtures, 9 market, 199 model, 0 unresolved) → Pages build **39677401560 success**.
 - live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
 - parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
+
+## Session `arena/cd27b02f-lolhotspawn2` — 2026-10-23 (final integration record)
+
+Branch `arena/cd27b02f-lolhotspawn2` == `main` == `origin/main` (commit 3addc56e6c58de9407d6f6d301cc8f0e3e075be5) at session start; all T1–T12 work from prior sessions is integrated and live. This session re-verified the combined state end to end and refreshed the verification artifacts (commit 39c36ff).
+
+### Verification performed this session
+
+| Check | Result | Evidence |
+|---|---|---|
+| `scripts/verify_site.py --leaguepedia-schedule data/diag` | 31 PASS · 0 FAIL · 1 WARN | WARN = D18: 10 of 137 matched fixtures have Hotspawn vs Leaguepedia start-time deltas (Hotspawn authoritative for pick locks; all flagged per-row), 52 fixtures absent from the amateur-league snapshot |
+| `verification/test_verifier.py` | 27/27 pass | verifier self-tests (each rule fails on bad data) |
+| `verification/check_dom_contract.py` | PASS | all JS-referenced ids exist on the six pages |
+| Published payload `docs/data/picks.json` | 189 fixtures, 100% resolved | 9 market-consensus rows (Pinnacle/Bovada/Polymarket), 180 model rows (82 MODEL_ELO, 74 MODEL_ELO_THIN, 24 MODEL_LEAGUE_PRIOR), 0 UNRESOLVED, 13 fixtures without a Hotspawn match page flagged `NO_HOTSPAWN_MATCH_PAGE` |
+| GitHub Pages | built, live | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ (source: main, path /; root index.html redirects to /docs/) |
+| "Verify picks and site" workflow on main | success every 6h | latest run 39949842068 (2026-10-23 11:58 UTC) |
+
+### Requirements traceability (all PASS)
+
+REQ1 pick for every match · REQ2 probabilities sum to 1 · REQ3 no Hotspawn probability input · REQ4 external lines where they exist · REQ5 documented method for every non-market match · REQ6 separate unresolved section with limitations linked from exec summary · REQ7 exec summary links to picks · REQ8 official/trusted source link on every row · REQ9 mobile-friendly · REQ10 automatic 4–8h refresh, no manual input · REQ11 no broken internal links, root entry works · REQ12 third-party attribution.
+
+### Irregularities / flagged items (non-blocking; published on Flagged for Review page)
+
+- D18: amateur-league fixtures (Komplettligaen, RIVALS, PRM, etc.) where Leaguepedia's recorded schedule disagrees with Hotspawn or lacks the row; Hotspawn epoch-ms governs pick lock times, per-row flags attached.
+- 13 fixtures have no published Hotspawn match page; listed as `fixtures_without_page` and flagged `NO_HOTSPAWN_MATCH_PAGE` rather than linked to a 404.
+- No bookmaker prices tier-3/amateur leagues; those rows are priced by the league-anchored Elo model from Leaguepedia results, labelled Low confidence where history is thin.
+- Pinnacle consumed via the public guest front-end feed (unofficial); Bovada returned degraded on some runs, consensus falls back to healthy sources; source status published per run.
+
+### Sources used (official / verified)
+
+- Hotspawn fixtures API + Pick'em lobby (fixture list only, never a probability): https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures, https://play.hotspawn.com/lol-pickems
+- Pinnacle guest JSON (two-way moneyline): https://guest.api.arcadia.pinnacle.com/0.1 (site: https://www.pinnacle.com/en/esports/league-of-legends)
+- Bovada coupon JSON (two-way moneyline): https://www.bovada.lv/services/sports/event/coupon/events/.../esports/league-of-legends (site: https://www.bovada.lv/sports/esports/league-of-legends)
+- Polymarket Gamma API (match/series prices): https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false (site: https://polymarket.com)
+- Leaguepedia Cargo MatchSchedule + Teams (results, schedule, canonical names): https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule
+- Provider availability checks (403/401/404/503 → not used): documented in scripts/update_picks.py CHECKED_UNAVAILABLE and research/betting-sources.md.
+
+### Next step
+
+Open a pull request from `arena/cd27b02f-lolhotspawn2` to `main`, merge without waiting for approval, confirm the Pages build/deploy, then record the PR link and merge result below.
+
+| Item | Value |
+|---|---|
+| PR number | pending |
+| Merge commit | pending |
+| Pages build/run id | pending |
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
 
 ---
