@@ -462,3 +462,13 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 - **Leaguepedia results & provenance (`166` model fixtures, `D8c`/`D8d` PASS):** `31,732` completed results, `203` dated + `8` unscheduled schedule rows, `2,880` `Standings` rows, `3,574` canonical teams. `175/175` (`100%`) matched an individual Leaguepedia pairing (`150 exact-pair + 18 alias-pair + 4 rescheduled-pair + 3 unscheduled-pair`, `0` `GENERIC_RESULTS_SOURCE` rows) and `175/175` carry verified `best_of` (`138` Bo3, `33` Bo1, `4` Bo5). `89 MODEL_ELO` + `77 MODEL_ELO_THIN`, `0` prior-only, `0` unresolved, `82` low-confidence.
 - **Flagged irregularities (non-blocking, published on `flagged.html` with source URLs):** `13` cancelled Hotspawn API fixtures excluded from active picks (`D21` PASS); `4` rescheduled `RIVALS LEAGUE/2026 Season/Season 2` fixtures (`START_TIME_MISMATCH`); `3` undated `PRM 3rd Division 26-27 Fall` fixtures (`LEAGUEPEDIA_TIME_TBD`); `2` `PRM 2nd Division 26-27 Fall` fixtures flagged `HOTSPAWN_NAME_COLLISION` (`Phong Vũ Buffalo` → `PvB (Swiss Team)`); `77` thin-history (`<5` games) model rows (`THIN_HISTORY`).
 - **Combined test & verifier suite:** `python3 verification/test_verifier.py` → `34/34` pass; `python3 verification/check_dom_contract.py` → `PASS`; `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` → `36 PASS · 0 FAIL · 1 WARN` (`D18` stale 2026-10-21 diagnostic snapshot).
+
+---
+
+## Session `arena/bdecdf49-lolhotspawn2` — 2026-10-23 (current)
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T13 Final integration audit and fixes: verify end-to-end Hotspawn LoL match coverage, outside-source probabilities, update cadence, executive summary/navigation, mobile accessibility, and explicit unresolved/limitations reporting | in progress | arena/bdecdf49 | `scripts/**`, `.github/workflows/**`, `docs/**`, `README.md`, `research/**`, `verification/**`, `COORDINATION.md` |
+
+**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. Prior task entries above are completed historical work; no active owner is listed for this scope. This task acts as final integration on the checked-out branch. Generated committed site data under `docs/data/` is in scope as a shared output for this final integration.
