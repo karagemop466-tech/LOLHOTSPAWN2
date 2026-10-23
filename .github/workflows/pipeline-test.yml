@@ -7,6 +7,8 @@ on:
     paths:
       - "scripts/**"
       - "docs/**"
+      - "verification/**"
+      - "data/aliases.json"
       - ".github/workflows/pipeline-test.yml"
 
 permissions:
@@ -46,18 +48,22 @@ jobs:
           print(json.dumps(d.get("coverage"), indent=1))
           print(json.dumps(d.get("unresolved"), indent=1)[:1200])
           print(json.dumps(d.get("sources_status"), indent=1)[:1600])
+          print("schedule_bridges:", json.dumps(d.get("model", {}).get("schedule_bridges"), indent=1))
           PY
 
-      - name: Verify the published site
-        if: always()
-        run: python3 scripts/verify_site.py
+      - name: Verify contracts, unit tests & published site (with live external check)
+        run: |
+          python3 verification/check_dom_contract.py
+          python3 verification/test_verifier.py
+          python3 verification/test_entity_and_books.py
+          python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
 
       - name: Commit outputs for review
         if: always()
         run: |
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          git add docs/data data/diag/pipeline.log data/diag/verify.json
+          git add docs/data data/diag/pipeline.log verification/report.json verification/last_report.md
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "pipeline: test run [skip ci]"
           git pull --rebase origin "${GITHUB_REF_NAME}" || true
