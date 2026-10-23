@@ -1,0 +1,36 @@
+name: Diagnostic - Hotspawn coverage audit (read-only)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/bd37dbe6-lolhotspawn2"]
+    paths:
+      - "scripts/diag_coverage.py"
+      - ".github/workflows/diag-coverage.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run coverage audit
+        run: |
+          mkdir -p data/diag
+          cd scripts && python3 diag_coverage.py
+          cd .. && python3 -c "import json;d=json.load(open('data/diag/coverage_audit.json'));print(json.dumps({k:v for k,v in d.items() if k not in ('ng_state_entries','api_future_sample_not_in_lobby','api_future_tournaments')},indent=1)[:6000])"
+      - name: Commit audit output
+        run: |
+          git config user.name "picks-bot"
+          git config user.email "actions@github.com"
+          git add data/diag/coverage_audit.json
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "diag: coverage audit [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
