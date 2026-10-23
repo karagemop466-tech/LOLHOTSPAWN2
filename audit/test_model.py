@@ -17,7 +17,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 from fetch_markets import _PROP_CRIT_RE, _dedup_key, _record, _select_unibet_offer  # noqa: E402
-from model import _standings_elo, blend_h2h  # noqa: E402
+from model import METHOD_LABELS, _standings_elo, blend_h2h  # noqa: E402
 
 PASSED: list[str] = []
 FAILED: list[str] = []
@@ -124,6 +124,21 @@ def test_payload_book_invariant() -> None:
             bad.append(f"{m.get('team1')} vs {m.get('team2')}")
     check("payload counts each book once", not bad,
           f"{rows} market row(s)" + (f", offenders: {bad[:3]}" if bad else ""))
+
+    unknown = sorted({m.get("method") for m in data.get("matches") or []}
+                     - set(METHOD_LABELS))
+    check("every row uses a documented method", not unknown, f"unknown={unknown}" if unknown else "methods all documented")
+
+    missing_src = [m.get("id") for m in data.get("matches") or []
+                   if not (m.get("sources") and all(
+                       str(s.get("url", "")).startswith("http") for s in m["sources"]))]
+    check("every row links an absolute source URL", not missing_src,
+          f"{len(data.get('matches') or [])} rows" + (f", offenders: {missing_src[:3]}" if missing_src else ""))
+
+    bad_pick = [m.get("id") for m in data.get("matches") or []
+                if m.get("pick") not in (m.get("team1"), m.get("team2"))]
+    check("every pick is one of the two teams", not bad_pick,
+          (f"offenders: {bad_pick[:3]}" if bad_pick else "all picks valid"))
 
 
 def main() -> int:
