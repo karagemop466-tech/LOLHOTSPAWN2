@@ -650,6 +650,10 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             flags.append("NO_HOTSPAWN_MATCH_PAGE")
         if str(f.get("tier", "")).startswith("WAITING"):
             flags.append("TIER_UNVERIFIED")
+        if model_method and row is None:
+            # The team ratings still come from Leaguepedia's recorded results,
+            # but no fixture-specific competition page was matched for this row.
+            flags.append("GENERIC_RESULTS_SOURCE")
         if row:
             try:
                 hs = datetime.fromisoformat(f["start_utc"].replace("Z", "+00:00"))

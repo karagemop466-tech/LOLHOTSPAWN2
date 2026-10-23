@@ -9,12 +9,16 @@ Checks the published data and site against the project requirements:
   D4  probabilities are in [0,1] and sum to 1 (tolerance 0.005)
   D5  pick_prob equals max(prob_team1, prob_team2)
   D6  method is one of the documented methods
-  D7  every row carries at least one official/trusted source link (url field or evidence URL)
+  D7  every row carries at least one source URL (url field or evidence URL)
   D8  market rows link a market/book URL; model rows link a results source;
-      unresolved rows are explicitly flagged as unverified 50/50
+      generic results-table evidence is explicitly flagged; unresolved rows are
+      explicitly flagged as unverified 50/50
+  Note: a trusted/community source is not equivalent to official organizer verification.
   D9  no duplicate fixtures (same normalised teams + same start)
   D10 counts_by_method in the payload agrees with the rows
   D11 data/picks.json and docs/data/picks.json are both present and identical
+  D20 reserved (unique source_key per fixture: requested by arena/0fb2d0c7 as R16)
+  D21 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
   S1  every page exists and has a mobile viewport meta
   S2  every page has the shared navigation with links to all site sections
   S3  executive summary (docs/index.html) links in-site to the picks list and the
@@ -205,6 +209,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
 
     bad_teams, bad_pick, bad_prob, bad_pickprob, bad_method = [], [], [], [], []
     no_source, weak_source, market_no_url, unresolved_unflagged, dup = [], [], [], [], []
+    model_no_result_source, generic_model_unflagged = [], []
     game1_as_series, generic_unresolved_link = [], []
     no_start_utc = []
     banned_prob_source = []
@@ -268,6 +273,12 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         if method.startswith("MARKET") and not any(
                 host_in(host_of(u), MARKET_HOSTS) for u in prob_urls):
             market_no_url.append(label)
+        if method in MODEL_METHODS:
+            if not any(host_in(host_of(u), RESULTS_HOSTS) for u in prob_urls):
+                model_no_result_source.append(label)
+            generic_results = any("/Special:CargoTables/" in u for u in prob_urls)
+            if generic_results and "GENERIC_RESULTS_SOURCE" not in (m.get("flags") or []):
+                generic_model_unflagged.append(label)
         if method in MARKET_METHODS or method in MODEL_METHODS:
             # Only the probability-source fields count here. hotspawn_url is the
             # fixture link and is explicitly allowed to point at Hotspawn.
@@ -351,14 +362,18 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             PASS if not bad_urls else FAIL,
             "all source URLs well formed" if not bad_urls else f"{len(bad_urls)} malformed",
             bad_urls[:10])
-    emit("D7", "every row links at least one official/trusted source", no_source,
+    emit("D7", "every row links at least one source URL", no_source,
          f"all {len(rows)} rows carry at least one source URL")
     if weak_source:
-        rep.add("D7b", "source host recognised as official/trusted", WARN,
+        rep.add("D7b", "source host is on the trusted-source allowlist (not proof of official verification)", WARN,
                 f"{len(weak_source)} row(s) link a host not on the allowlist — manual review",
                 weak_source[:12])
     emit("D8a", "market rows link a bookmaker/prediction-market URL", market_no_url,
          "every market row links its market")
+    emit("D8c", "model rows link a results-source URL", model_no_result_source,
+         "every model row links a results source")
+    emit("D8d", "model rows with generic results-table sources are flagged", generic_model_unflagged,
+         "generic Leaguepedia table links are explicitly flagged as less directly auditable")
     emit("D8b", "unresolved rows are explicit unverified 50/50 (limitations published)",
          unresolved_unflagged, "every unresolved row is 0.50 and labelled unverified")
     emit("D9", "no duplicate fixtures", dup, "no duplicate (teams,start) rows")
@@ -421,6 +436,23 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                 f"{len(rows)} published vs {expected} future fixtures advertised by the feed"
                 + (f" — {missing} missing" if missing > 0 else ""))
 
+    # D21: lobby reconciliation - every upcoming lobby fixture is priced, nothing extra is,
+    # and no excluded (cancelled / withdrawn) fixture appears among the picks.
+    rec = payload.get("coverage_reconciliation") or {}
+    if rec.get("lobby_upcoming") is not None:
+        miss = rec.get("lobby_upcoming_missing_from_priced") or []
+        extra = rec.get("priced_not_in_lobby") or []
+        excl_ids = {str(x.get("id")) for x in (payload.get("excluded_fixtures") or [])}
+        leaked = sorted({str(r.get("id")) for r in rows} & excl_ids)
+        ok = not miss and not extra and not leaked and rec.get("priced") == len(rows)
+        rep.add("D21", "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
+                PASS if ok else FAIL,
+                f"lobby upcoming={rec.get('lobby_upcoming')}, priced={len(rows)}, "
+                f"missing={len(miss)}, extra={len(extra)}, excluded={len(excl_ids)}, leaked={len(leaked)}")
+    else:
+        rep.add("D21", "every upcoming Hotspawn lobby fixture is priced", WARN,
+                "lobby state unavailable for this run; coverage compared with the fixtures API only")
+
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
     def lacks_evidence(r):
@@ -464,8 +496,26 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
                 f"snapshot not found: {path}")
         return
     sched = []
+    snapshot_generated = None
     try:
         if os.path.isdir(path):
+            # Diagnostic snapshots are committed artifacts and can outlive the
+            # live pipeline. Read their capture timestamp so stale deltas are
+            # not mistaken for a current schedule verification.
+            for fn in sorted(os.listdir(path)):
+                if not fn.startswith("report") or not fn.endswith(".json"):
+                    continue
+                try:
+                    meta = json.load(open(os.path.join(path, fn), encoding="utf-8"))
+                    stamp = meta.get("generated_at") if isinstance(meta, dict) else None
+                    if stamp:
+                        parsed = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+                        if parsed.tzinfo is None:
+                            parsed = parsed.replace(tzinfo=timezone.utc)
+                        if snapshot_generated is None or parsed > snapshot_generated:
+                            snapshot_generated = parsed
+                except Exception:  # noqa: BLE001
+                    continue
             for fn in sorted(os.listdir(path)):
                 if not fn.endswith(".json") or not fn.startswith("ms_"):
                     continue
@@ -533,11 +583,23 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
                 f"no fixture matched the snapshot ({len(unmatched)} unmatched)")
         return
+    snapshot_note = ""
+    stale_snapshot = False
+    if snapshot_generated is not None:
+        age_hours = (datetime.now(timezone.utc) - snapshot_generated).total_seconds() / 3600
+        snapshot_note = f" Snapshot captured {snapshot_generated.isoformat()} ({age_hours:.1f}h old)."
+        stale_snapshot = age_hours > 24
+        if stale_snapshot:
+            snapshot_note += " This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule."
+    elif os.path.isdir(path):
+        snapshot_note = " Snapshot capture time unavailable; currentness cannot be established."
+        stale_snapshot = True
     rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule",
-            PASS if not diff else WARN,
+            PASS if not diff and not stale_snapshot else WARN,
             f"{same}/{checked} matched fixture times agree with Leaguepedia; "
             f"{len(unmatched)} fixture(s) not in the snapshot; {len(diff)} differ "
-            "(Hotspawn is authoritative for pick lock times; differences are flagged for review)",
+            "(Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta)."
+            + snapshot_note,
             diff[:12])
 
 
@@ -623,6 +685,34 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             resolved = os.path.normpath(os.path.join(os.path.dirname(path), target))
             if not os.path.exists(resolved):
                 internal_broken.append(f"{rel} -> {url}")
+
+    # S10: the phone bottom nav must have one grid column per link (regression for a 4-column grid with 5 links)
+    css_text = ""
+    try:
+        with open(os.path.join(DOCS, "assets", "style.css"), encoding="utf-8") as fh:
+            css_text = fh.read()
+    except OSError:
+        pass
+    mcol = re.search(r"\.bottom-nav\s*\{[^}]*grid-template-columns:\s*repeat\((\d+)", css_text)
+    nav_bad = []
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep):
+            continue  # root index.html is a redirect shell, not a dashboard page
+        try:
+            with open(pg, encoding="utf-8") as fh:
+                html_text = fh.read()
+        except OSError:
+            continue
+        nav = re.search(r'<nav class="bottom-nav".*?</nav>', html_text, re.S)
+        if not nav:
+            nav_bad.append(f"{pg}: no bottom nav")
+            continue
+        links = len(re.findall(r"<a ", nav.group(0)))
+        if not mcol or int(mcol.group(1)) != links:
+            nav_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
+    rep.add("S10", "phone bottom nav has one grid column per link on every page",
+            PASS if not nav_bad else FAIL,
+            "; ".join(nav_bad[:5]) if nav_bad else "5 links, 5 columns on every page")
 
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
@@ -951,8 +1041,8 @@ def main() -> int:
          ["S4", "S5", "S5b"]),
         ("REQ7", "Executive summary links in-site to the updated picks list",
          ["S4"]),
-        ("REQ8", "Every table row carries an official/trusted source link (or is flagged unverified)",
-         ["D7", "D8a", "D8b", "D17"]),
+        ("REQ8", "Every row links its source; non-official or generic evidence is disclosed and flagged",
+         ["D7", "D7b", "D8a", "D8b", "D8c", "D8d", "D17"]),
         ("REQ9", "Mobile-friendly: responsive viewport + responsive CSS + readable cards",
          ["S2", "S7"]),
         ("REQ10", "Automatic refresh every 4-8 hours, no manual input",

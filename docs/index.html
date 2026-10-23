@@ -46,10 +46,14 @@
       (refreshed every 6 hours). Every match is priced: 💰 external bookmaker/market lines where they exist,
       otherwise 🧮 our Elo model or 📊 official standings records. Hotspawn crowd % is context only, <b>never</b> a probability.
     </p>
+    <div class="warnbox" role="note">
+      <b>Source limitation:</b> When there is no external market line, the probability is our model estimate from Leaguepedia's recorded results. Leaguepedia is a community-maintained results database, not an official tournament or Riot source; Hotspawn confirms the listed fixture, not its win probability. These estimates are not official lines. See <a href="flagged.html#source-limitations">source limitations and flagged items</a>.
+    </div>
     <div class="hero-actions">
       <a class="btn primary" href="picks.html">📋 All picks →</a>
       <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24h picks →</a>
-      <a class="btn warn" href="unresolved.html">⚠️ Unresolved &amp; limitations →</a>
+      <a class="btn warn" href="unresolved.html">⚠️ Picks without a book line &amp; limitations →</a>
+      <a class="btn" href="flagged.html">Flagged for review →</a>
     </div>
     <div class="chips" role="navigation" aria-label="Jump to picks on this page">
       <a class="chipbtn" href="#starting-soon">⏰ Starting soon ↓</a>
@@ -72,6 +76,11 @@
     <div class="stat green"><div class="n" id="stat-market">—</div><div class="l">With external betting lines</div></div>
     <div class="stat blue"><div class="n" id="stat-model">—</div><div class="l">Priced by our own model</div></div>
     <div class="stat amber"><div class="n" id="stat-unresolved">—</div><div class="l">Explicit 50/50 placeholders</div></div>
+  </section>
+
+  <section class="card" id="recon-card" aria-labelledby="recon-h">
+    <h3 id="recon-h">Coverage check against Hotspawn's lobby</h3>
+    <div id="recon-body" class="small">Loading…</div>
   </section>
 
   <section class="card">

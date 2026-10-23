@@ -1,36 +1,36 @@
 {
- "verified_at": "2026-10-21T21:13:06.097143+00:00",
+ "verified_at": "2026-10-23T15:59:00.619828+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 31,
+  "PASS": 35,
   "FAIL": 0,
   "WARN": 1,
   "SKIP": 0
  },
- "data_matches": 208,
+ "data_matches": 175,
  "methods": {
-  "MODEL_ELO": 92,
+  "MODEL_ELO": 78,
   "MARKET_POLYMARKET": 0,
-  "MARKET_CONSENSUS": 9,
+  "MODEL_ELO_THIN": 71,
+  "UNRESOLVED": 0,
   "MARKET_BOOKS": 0,
-  "MODEL_ELO_THIN": 72,
-  "MODEL_LEAGUE_PRIOR": 35,
+  "MODEL_LEAGUE_PRIOR": 17,
+  "MARKET_CONSENSUS": 8,
   "MODEL_STANDINGS": 0,
-  "MARKET_SINGLE": 0,
-  "UNRESOLVED": 0
+  "MARKET_SINGLE": 1
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "208 matches, generated_at=2026-10-21T21:12:59.142737Z (0.0h old)"
+   "detail": "175 matches, generated_at=2026-10-23T15:58:28.634505Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 208 rows have team1, team2 and a start time"
+   "detail": "all 175 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -70,15 +70,27 @@
   },
   {
    "id": "D7",
-   "title": "every row links at least one official/trusted source",
+   "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 208 rows carry at least one source URL"
+   "detail": "all 175 rows carry at least one source URL"
   },
   {
    "id": "D8a",
    "title": "market rows link a bookmaker/prediction-market URL",
    "status": "PASS",
    "detail": "every market row links its market"
+  },
+  {
+   "id": "D8c",
+   "title": "model rows link a results-source URL",
+   "status": "PASS",
+   "detail": "every model row links a results source"
+  },
+  {
+   "id": "D8d",
+   "title": "model rows with generic results-table sources are flagged",
+   "status": "PASS",
+   "detail": "generic Leaguepedia table links are explicitly flagged as less directly auditable"
   },
   {
    "id": "D8b",
@@ -114,24 +126,32 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=208, rows=208"
+   "detail": "declared=175, rows=175"
+  },
+  {
+   "id": "D21",
+   "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
+   "status": "PASS",
+   "detail": "lobby upcoming=175, priced=175, missing=0, extra=0, excluded=13, leaked=0"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 77 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 67 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "WARN",
-   "detail": "149/153 matched fixture times agree with Leaguepedia; 55 fixture(s) not in the snapshot; 4 differ (Hotspawn is authoritative for pick lock times; differences are flagged for review)",
+   "detail": "126/132 matched fixture times agree with Leaguepedia; 43 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.2h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
    "items": [
-    "DMG Esports Sweden vs Northern Wolves Esports: ours=2026-10-24 16:30 lp=2026-10-28 17:30",
-    "Lundqvist Darkside vs Mazepa: ours=2026-10-24 16:30 lp=2026-10-28 18:00",
-    "DMG Esports Sweden vs FlameHard: ours=2026-10-25 17:30 lp=2026-11-01 17:00",
-    "Hannover Esports e.V. vs Reveal Multigaming: ours=2026-11-03 17:00 lp=2026-10-23 16:00"
+    "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
+    "FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30",
+    "Babos Gaming Academy vs VfB x Engines Stuttgart: ours=2026-10-29 18:00 lp=2026-10-25 16:00",
+    "Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00",
+    "Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30",
+    "2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30"
    ]
   },
   {
@@ -145,6 +165,12 @@
    "title": "all required site files exist",
    "status": "PASS",
    "detail": "9 files present"
+  },
+  {
+   "id": "S10",
+   "title": "phone bottom nav has one grid column per link on every page",
+   "status": "PASS",
+   "detail": "5 links, 5 columns on every page"
   },
   {
    "id": "S2",
@@ -198,7 +224,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "1 external link(s) collected for manual review; 0 plain-http"
+   "detail": "3 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "W1",
@@ -231,7 +257,7 @@
     "REQ5: Every match without a market line still gets a pick + documented method -> PASS",
     "REQ6: Separate unresolved section, with limitations, linked from the exec summary -> PASS",
     "REQ7: Executive summary links in-site to the updated picks list -> PASS",
-    "REQ8: Every table row carries an official/trusted source link (or is flagged unverified) -> PASS",
+    "REQ8: Every row links its source; non-official or generic evidence is disclosed and flagged -> PASS",
     "REQ9: Mobile-friendly: responsive viewport + responsive CSS + readable cards -> PASS",
     "REQ10: Automatic refresh every 4-8 hours, no manual input -> PASS",
     "REQ11: Site integrity: no broken internal links, root entry point works -> PASS",
@@ -306,12 +332,15 @@
   },
   {
    "id": "REQ8",
-   "requirement": "Every table row carries an official/trusted source link (or is flagged unverified)",
+   "requirement": "Every row links its source; non-official or generic evidence is disclosed and flagged",
    "status": "PASS",
    "checks": [
     "D7",
+    "D7b",
     "D8a",
     "D8b",
+    "D8c",
+    "D8d",
     "D17"
    ]
   },
