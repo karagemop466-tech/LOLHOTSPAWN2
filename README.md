@@ -13,11 +13,11 @@ Every upcoming scheduled League of Legends fixture listed on
 probability (%) for both teams. Cancelled upstream fixtures are excluded and audited on Flagged.
 Rows are priced in a strict 5-tier cascade:
 
-1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada and Polymarket (median across ≥3 books, or quality-weighted mean across 2 books).
+1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada and Polymarket (median if ≥3 sources, otherwise a fixed-quality weighted mean).
 2. **Chronological Tier-Anchored Elo (`MODEL_ELO` / `MODEL_ELO_THIN`)** — computed from 24 months of completed series on Leaguepedia (`MatchSchedule`), anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting, head-to-head smoothing, competition-scoped disambiguation, and deterministic UTC schedule bridging.
-3. **Split Standings Fallback (`MODEL_STANDINGS`)** — when recent match history has <3 games on a side, split records from Leaguepedia's `Standings` Cargo table (`WinSeries`/`LossSeries`/`WinGames`/`LossGames`) provide an empirical-Bayes probability (0–0 records excluded).
-4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one debut side lacks both match history and split standings; priced against the verified competition median prior, shrunk toward 50/50 and capped at Low confidence.
-5. **Unresolved (`UNRESOLVED`)** — neither external lines nor recorded team/standings evidence exist: published strictly as an explicit `50.0% / 50.0%` placeholder on its dedicated Unresolved & Limitations page. Never an edge.
+3. **Standings model (`MODEL_STANDINGS` 📊)** — when there is no book line and a side has no Elo yet but has a current-split win-loss record on Leaguepedia *Standings*, the record becomes a smoothed Elo offset from the competition prior, capped at Low/Medium confidence because it ignores strength of schedule.
+4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one team lacks both match history and split standings; the competition median/tier prior is substituted, shrunk toward 50/50 and capped at Low confidence.
+5. **Unresolved (`UNRESOLVED`)** — neither external lines nor recorded team/standings evidence exist: published strictly as an explicit `50.0% / 50.0%` placeholder on its own Unresolved & Limitations page (including a per-league table of which signal prices each league). Never an edge.
 
 **Hotspawn is used for the fixture list only.** Its crowd percentages are displayed as
 context and are never an input to any probability. Every table row carries direct links to

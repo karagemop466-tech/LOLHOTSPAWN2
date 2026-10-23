@@ -58,6 +58,7 @@ LIMITATIONS = [
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
+    "The standings fallback (MODEL_STANDINGS) converts a team's current-split win-loss record in that competition into a smoothed Elo offset from the competition prior. It ignores strength of schedule inside the league, roster changes since those games, and any cross-league form, so it is capped at Low confidence and only used when there is no market line and Elo cannot rate that side.",
     "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
     "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
@@ -143,7 +144,9 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if "ONE_TEAM_NO_HISTORY" in m["flags"]:
+        if m["method"] == "MODEL_STANDINGS":
+            reasons["Standings-based line (few decided series)"] += 1
+        elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
             reasons["One team has no recorded history (league prior used)"] += 1
         elif "CROSS_LEAGUE_MODEL" in m["flags"]:
             reasons["Cross-league comparison (confidence capped at Low)"] += 1
@@ -154,6 +157,36 @@ def build_payload(fixtures, markets, leaguepedia, picks):
 
     next_24h = [m for m in matches if m["start_utc"] <= utc_iso(now + timedelta(hours=24))]
     tournaments = Counter(m["tournament"] for m in matches)
+
+    # Per-league resolution breakdown: which signal prices each league, so the
+    # Unresolved page (and the executive summary) can state limitations per
+    # league instead of one undifferentiated bucket.
+    by_league = {}
+    for m in matches:
+        b = by_league.setdefault(m["tournament"], {
+            "tournament": m["tournament"], "fixtures": 0, "market": 0, "elo": 0,
+            "standings": 0, "prior_only": 0, "unresolved": 0, "low_confidence": 0})
+        b["fixtures"] += 1
+        if m["market"]:
+            b["market"] += 1
+        elif m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN"):
+            b["elo"] += 1
+        elif m["method"] == "MODEL_STANDINGS":
+            b["standings"] += 1
+        elif m["method"] == "MODEL_LEAGUE_PRIOR":
+            b["prior_only"] += 1
+        elif m["method"] == "UNRESOLVED":
+            b["unresolved"] += 1
+        if m in low_conf:
+            b["low_confidence"] += 1
+    for b in by_league.values():
+        b["best_signal"] = ("External betting lines" if b["market"]
+                            else "Elo on recorded results" if b["elo"]
+                            else "Official standings record" if b["standings"]
+                            else "League prior only" if b["prior_only"]
+                            else "No verified signal")
+    by_league_list = sorted(by_league.values(),
+                             key=lambda b: (-b["unresolved"], -b["low_confidence"], -b["fixtures"]))
     source_status = []
     for s in markets.get("statuses", []):
         source_status.append({"name": s.get("source"), "url": s.get("url"), "status": s.get("status"),
@@ -164,7 +197,9 @@ def build_payload(fixtures, markets, leaguepedia, picks):
                           "status": "degraded" if lp_degraded else "ok",
                           "count": leaguepedia["counts"]["results"],
                           "note": (leaguepedia.get("degraded_reason")
-                                   or "Recorded results + schedules, exact UTC (CC BY-SA 3.0).")})
+                                   or ("Recorded results + schedules, exact UTC (CC BY-SA 3.0). "
+                                       f"Standings rows: {leaguepedia['counts'].get('standings', 0)} "
+                                       f"across {leaguepedia['counts'].get('standings_pages', 0)} competitions."))})
     st_count = leaguepedia["counts"].get("standings", len(leaguepedia.get("standings") or []))
     source_status.append({"name": "Leaguepedia Standings",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
@@ -216,6 +251,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
                                            "Thin history (<8 games in 365 days)"
                                            for m in low_conf).most_common()],
             "limitations": LIMITATIONS,
+            "by_league": by_league_list,
         },
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,

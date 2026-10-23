@@ -235,10 +235,18 @@
       </tr>`).join("");
     }
 
-    const byId = new Map((d.matches || []).map((m) => [m.id, m]));
-    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 6);
+    const nowMs = Date.now();
+    const next = (d.matches || [])
+      .filter((m) => new Date(m.start_utc).getTime() >= nowMs - 300000)
+      .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
+      .slice(0, 6);
     const nextBox = $("#next24");
     if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No matches locking in the next 24 hours. <a href="picks.html">Browse all upcoming picks →</a></div>`;
+    const soonCount = $("#soon-count");
+    if (soonCount) {
+      const n24 = (d.matches || []).filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; }).length;
+      soonCount.textContent = n24 ? `${n24} match${n24 === 1 ? "" : "es"} locking in the next 24 hours` : "Next scheduled matches on Hotspawn's list";
+    }
 
     const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 10);
     const featBox = $("#featured");
@@ -309,6 +317,7 @@
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
+    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS") return false;
     if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
@@ -348,6 +357,7 @@
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
       market: all.filter((m) => m.market).length,
       model: all.filter((m) => m.model && !m.market).length,
+      standings: all.filter((m) => m.method === "MODEL_STANDINGS").length,
       low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
     };
@@ -521,9 +531,9 @@
           <div class="card"><h3>Our model &amp; standings inputs</h3>
             ${m.model ? `<dl class="kv">
               <dt>Resolved teams</dt><dd>${esc(model.canonical_team1 || model.resolved_team1 || m.team1)} vs ${esc(model.canonical_team2 || model.resolved_team2 || m.team2)}</dd>
+              ${model.standings ? `<dt>Standings record</dt><dd>${esc(m.team1)} <b>${model.standings.team1_wins}–${model.standings.team1_losses}</b> · ${esc(m.team2)} <b>${model.standings.team2_wins}–${model.standings.team2_losses}</b> <span class="small">(${esc(model.standings.kind)} in ${esc(model.standings.page)})</span></dd>` : (model.standings_team1 || model.standings_team2) ? `<dt>Split standings</dt><dd>${typeof model.standings_team1 === "object" ? `${esc(m.team1)} <b>${model.standings_team1.win_series ?? "—"}–${model.standings_team1.loss_series ?? "—"}</b> series` : esc(model.standings_team1 || "—")} · ${typeof model.standings_team2 === "object" ? `${esc(m.team2)} <b>${model.standings_team2.win_series ?? "—"}–${model.standings_team2.loss_series ?? "—"}</b> series` : esc(model.standings_team2 || "—")}</dd>` : ""}
               <dt>Elo (team 1)</dt><dd>${model.elo_team1 ?? "—"} <span class="small">${model.games_team1_365d != null ? `(${model.games_team1_365d} games in 365d)` : ""}</span></dd>
               <dt>Elo (team 2)</dt><dd>${model.elo_team2 ?? "—"} <span class="small">${model.games_team2_365d != null ? `(${model.games_team2_365d} games in 365d)` : ""}</span></dd>
-              ${model.standings_team1 ? `<dt>Split standings</dt><dd>${esc(model.standings_team1)} vs ${esc(model.standings_team2)}</dd>` : ""}
               <dt>Prior used</dt><dd>${esc(model.prior_used || "—")}</dd>
               <dt>Head-to-head</dt><dd>${h2h}</dd>
               <dt>Tournament page</dt><dd>${m.leaguepedia_url ? `<a href="${esc(m.leaguepedia_url)}" target="_blank" rel="noopener">Leaguepedia ↗</a>` : "—"}</dd>
@@ -556,6 +566,7 @@
       <dt>Elo K</dt><dd>${d.model.k_base} (scaled by BestOf and score margin)</dd>
       <dt>Inactivity half-life</dt><dd>${d.model.half_life_days} days</dd>
       <dt>Competition priors</dt><dd>${d.model.competitions_with_prior} leagues mapped to strength tiers</dd>
+      ${d.model.standings_rows != null ? `<dt>Standings records</dt><dd>${d.model.standings_rows} team rows across ${d.model.standings_pages} competitions (fallback when Elo cannot rate a side)</dd>` : ""}
       <dt>Global prior</dt><dd>${d.model.global_prior}</dd>
     </dl>`;
     const g = $("#generated");
