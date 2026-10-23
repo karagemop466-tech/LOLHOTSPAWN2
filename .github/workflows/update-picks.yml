@@ -48,7 +48,7 @@ jobs:
           if len(ms) < 50:
               errs.append(f"only {len(ms)} fixtures")
           methods = {"MARKET_CONSENSUS", "MARKET_SINGLE", "MODEL_ELO", "MODEL_ELO_THIN",
-                     "MODEL_LEAGUE_PRIOR", "UNRESOLVED"}
+                     "MODEL_STANDINGS", "MODEL_LEAGUE_PRIOR", "UNRESOLVED"}
           for m in ms:
               if m["method"] not in methods:
                   errs.append(f"bad method {m['method']} for {m['team1']} vs {m['team2']}")
