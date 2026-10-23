@@ -462,3 +462,53 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 - **Leaguepedia results & provenance (`166` model fixtures, `D8c`/`D8d` PASS):** `31,732` completed results, `203` dated + `8` unscheduled schedule rows, `2,880` `Standings` rows, `3,574` canonical teams. `175/175` (`100%`) matched an individual Leaguepedia pairing (`150 exact-pair + 18 alias-pair + 4 rescheduled-pair + 3 unscheduled-pair`, `0` `GENERIC_RESULTS_SOURCE` rows) and `175/175` carry verified `best_of` (`138` Bo3, `33` Bo1, `4` Bo5). `89 MODEL_ELO` + `77 MODEL_ELO_THIN`, `0` prior-only, `0` unresolved, `82` low-confidence.
 - **Flagged irregularities (non-blocking, published on `flagged.html` with source URLs):** `13` cancelled Hotspawn API fixtures excluded from active picks (`D21` PASS); `4` rescheduled `RIVALS LEAGUE/2026 Season/Season 2` fixtures (`START_TIME_MISMATCH`); `3` undated `PRM 3rd Division 26-27 Fall` fixtures (`LEAGUEPEDIA_TIME_TBD`); `2` `PRM 2nd Division 26-27 Fall` fixtures flagged `HOTSPAWN_NAME_COLLISION` (`Phong Vũ Buffalo` → `PvB (Swiss Team)`); `77` thin-history (`<5` games) model rows (`THIN_HISTORY`).
 - **Combined test & verifier suite:** `python3 verification/test_verifier.py` → `34/34` pass; `python3 verification/check_dom_contract.py` → `PASS`; `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` → `36 PASS · 0 FAIL · 1 WARN` (`D18` stale 2026-10-21 diagnostic snapshot).
+
+---
+
+## Session `arena/b132c242-lolhotspawn2` — reconciliation + final integration (2026-10-23)
+
+This session started from `3addc56` and worked independently on T20–T24. While it ran, PR #17
+(session `arena/b252f309`) merged a different standings implementation into `main`. **Nothing was
+discarded:** the merge of `main` into this branch took the parallel session's model base
+(standings fetch, TeamRedirects, competition-scoped aliases, per-provider market dedup, Unibet
+adapter, cancelled-fixture exclusion) and re-applied this session's work on top of it.
+
+### What this session contributes on top of `main`
+
+| Item | Where | Status |
+|---|---|---|
+| `MULTI_DIVISION_STANDINGS` guard: a standings page that lists more than one first place halves the edge and caps confidence at Low | `scripts/model.py` | done |
+| Prior fallback chain: competition median → competition tier → **tournament tier** → team's competition → global median (last resort only) | `scripts/model.py` | done |
+| Conservative name variants (`X (Dutch Team)` → `X`, `ex-`, `e.V.`) as a last-resort resolver fallback; ambiguous matches refused | `scripts/model.py` | done |
+| Per-row `why` (plain-English reason), `standings` block with each team's own table link and sample, and a `source_url` that names the table actually used | `scripts/model.py`, `docs/assets/app.js`, `docs/match.html` render | done |
+| Executive summary "Where to find the picks" block + next-24h jump + mobile note | `docs/index.html` | done |
+| Per-league unresolved/low-confidence table with links into the filtered picks list | `docs/unresolved.html`, `docs/assets/app.js` | done |
+| 31-endpoint betting-source probe, published with measured status | `scripts/probe_markets.py`, `docs/flagged.html`, `data/diag/market_probe.json` | done |
+| Verifier rules `D21` (standings rows must link the exact table) and `S7b` (exec summary must link picks/next-24h/unresolved), with self-tests | `scripts/verify_site.py`, `verification/test_verifier.py` | done |
+| Offline model regression test (standings line, tier prior, 50/50 fallback, Elo path) | `verification/test_model_standings.py` | done |
+| `set -o pipefail` in both workflows so a failed pipeline fails the run instead of silently publishing nothing | `.github/workflows/*.yml` | done |
+| Standings snapshot for line-by-line review | `data/diag/standings.json` | done |
+
+### Verification (merged branch)
+
+| Check | Result |
+|---|---|
+| `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` | **37 PASS · 0 FAIL · 1 WARN** (D18 start-time deltas, pre-existing) |
+| `python3 verification/test_verifier.py` | **37/37** |
+| `python3 verification/test_model_standings.py` | **PASS** (14 assertions) |
+| `python3 verification/check_dom_contract.py` | PASS |
+| jsdom render, all six pages, live payload | picks 172 rows · next-24h cards · 80 low-confidence cards · 7 league rows · 31 probe rows · match page standings + "why" · **0 JS errors** |
+| Live pipeline on this branch | runs 39985557010, 39985879771 success |
+| Market probe | 31 endpoints, **0** usable price feeds (`data/diag/market_probe.json`) |
+
+### Irregularities / flagged (all published on the site)
+
+- 12 Hotspawn fixtures are `cancelled` in the feed and are therefore **not priced**; they are listed
+  with that status on the Flagged page (`excluded_fixtures`).
+- Standings pages that combine divisions cannot be split (the source has no division column): edge
+  halved, Low confidence, `MULTI_DIVISION_STANDINGS`.
+- Two teams' records can legitimately come from different split tables; every row now stores the
+  table **per team** (`standings.team1.url` / `standings.team2.url`, `shared_page`), so a record is
+  never implied to come from a table that does not contain it.
+- No additional priced source exists that we can reach: 31 endpoints probed, all blocked, unreachable
+  or without two-way prices.
