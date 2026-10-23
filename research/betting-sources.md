@@ -253,6 +253,10 @@ GitHub Actions — §8 and `checked_unavailable` in the payload). To keep this c
 OddsPortal and BetExplorer on every branch pipeline run and commits the observed statuses to
 `data/diag/source_probe.json`. A source is promoted to production only if a probe shows structured
 per-match JSON **and** a sample row is human-verified. Until then, claiming their lines would be fabrication.
+Observed 2026-10-23 (`data/diag/source_probe.json`): Kalshi esports-series API 200 JSON but **no LoL series**;
+Manifold 200 JSON but only futures/questions (“NA vs EU — Worlds 2026”, outright winners), no per-match fixtures;
+Smarkets API 404; eGamersWorld/GG.Bet/Thunderpick 403; Rivalry/Unibet 503; BetExplorer/Betway 404;
+OddsPortal/Midnite/OddsPapi pages 200 HTML only (no structured prices parsed).
 
 ### 11.3 Community/results sources — the resolution path that actually works for low-tier matches
 
