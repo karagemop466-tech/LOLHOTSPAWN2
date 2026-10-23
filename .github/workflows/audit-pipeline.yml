@@ -1,0 +1,192 @@
+name: Audit pipeline (strict, artifacts only)
+
+# Session arena/e76bc0ae / T17-T18.
+# Runs the full live pipeline with `set -euo pipefail` (the branch pipeline-test
+# masks failures with `| tee` and silently drops commits), verifies the payload,
+# and uploads the result as an artifact. It never commits, so it cannot race
+# another session's bot commit.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/e76bc0ae-lolhotspawn2"]
+    paths:
+      - "scripts/**"
+      - "audit/coverage_reconcile.py"
+      - "audit/test_model.py"
+      - ".github/workflows/audit-pipeline.yml"
+
+permissions:
+  contents: write   # commits audit/last_run.json for manual review
+
+concurrency:
+  group: audit-pipeline-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Offline regression tests for the market/standings logic
+        run: python3 audit/test_model.py
+
+      - name: Run the live pipeline (failures are fatal)
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          mkdir -p data/diag
+          python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
+          python3 scripts/verify_site.py --leaguepedia-schedule data/diag
+
+      - name: Summarise what the pipeline produced
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          p = "docs/data/picks.json"
+          if not os.path.exists(p):
+              print("NO PAYLOAD PRODUCED"); raise SystemExit(0)
+          d = json.load(open(p))
+          print("generated_at:", d.get("generated_at"))
+          print("counts:", json.dumps(d.get("counts")))
+          print("methods:", json.dumps((d.get("coverage") or {}).get("counts_by_method")))
+          print("statuses:", json.dumps([{k: s.get(k) for k in
+                ("name", "status", "count", "raw_count", "duplicates_collapsed")}
+                for s in d.get("sources_status") or []], indent=1))
+          st = [s for s in d.get("sources_status") or [] if s.get("name") == "Leaguepedia MatchSchedule"]
+          print("leaguepedia status:", json.dumps(st))
+          print("unresolved:", json.dumps({k: v for k, v in (d.get("unresolved") or {}).items()
+                                           if k in ("count", "low_confidence_count")}))
+          mm = [m for m in d.get("matches") or [] if m.get("market")]
+          for m in mm[:12]:
+              mk = m["market"]
+              print("market:", m["team1"], "vs", m["team2"], "| books:", mk.get("distinct_books"),
+                    "| rows:", mk.get("source_rows"), "|", m["method"], m["confidence"],
+                    "|", [(s.get("source"), s.get("prob_team1")) for s in mk.get("sources") or []])
+          print("standings rows:", sum(1 for m in d.get("matches") or []
+                                       if m.get("method") == "MODEL_STANDINGS"))
+          for m in [x for x in d.get("matches") or [] if x.get("method") == "MODEL_STANDINGS"][:12]:
+              print("standings:", m["team1"], "vs", m["team2"], m["confidence"], m["prob_team1"],
+                    "|", m.get("source_url"))
+          print("prior-only:", sum(1 for m in d.get("matches") or []
+                                   if m.get("method") == "MODEL_LEAGUE_PRIOR"))
+          PY
+
+      - name: Reconcile every Hotspawn fixture against the published payload
+        if: always()
+        run: python3 audit/coverage_reconcile.py
+
+      - name: Publish a compact run summary on the branch
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          d = json.load(open("docs/data/picks.json")) if os.path.exists("docs/data/picks.json") else {}
+          rec = {}
+          if os.path.exists("audit/coverage_reconcile.json"):
+              rec = json.load(open("audit/coverage_reconcile.json"))
+          rows = d.get("matches") or []
+          out = {
+              "run_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+              "payload_generated_at": d.get("generated_at"),
+              "counts": d.get("counts"),
+              "methods": (d.get("coverage") or {}).get("counts_by_method"),
+              "sources_status": [{k: s.get(k) for k in ("name", "status", "count", "raw_count", "duplicates_collapsed")}
+                                 for s in d.get("sources_status") or []],
+              "coverage_reconcile": {k: rec.get(k) for k in ("required_future_fixtures",
+                                    "missing_from_payload", "coverage_ok")},
+              "market_rows": [{"teams": [m["team1"], m["team2"]], "method": m["method"],
+                               "confidence": m["confidence"], "consensus": (m.get("market") or {}).get("consensus_team1"),
+                               "books": (m.get("market") or {}).get("distinct_books"),
+                               "raw_rows": (m.get("market") or {}).get("source_rows"),
+                               "sources": [(s.get("source"), s.get("prob_team1")) for s in (m.get("market") or {}).get("sources") or []]}
+                              for m in rows if m.get("market")],
+              "standings_rows": [{"teams": [m["team1"], m["team2"]], "confidence": m["confidence"],
+                                  "prob_team1": m["prob_team1"], "source_url": m.get("source_url"),
+                                  "evidence": m.get("evidence")}
+                                 for m in rows if m.get("method") == "MODEL_STANDINGS"],
+              "prior_only": sum(1 for m in rows if m.get("method") == "MODEL_LEAGUE_PRIOR"),
+              "low_confidence": sum(1 for m in rows if m.get("confidence") == "Low"),
+          }
+          os.makedirs("audit", exist_ok=True)
+          json.dump(out, open("audit/last_run.json", "w"), indent=1)
+          print(json.dumps({k: out[k] for k in ("counts", "methods", "coverage_reconcile", "prior_only")}, indent=1))
+          PY
+          git config user.name "audit-bot"
+          git config user.email "actions@github.com"
+          git add -A audit/
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "audit: strict run summary [skip ci]"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && \
+              git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          echo "summary commit could not be pushed (not fatal; the commit comment below is authoritative)"
+
+      - name: Post the run summary as a commit comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          d = json.load(open("docs/data/picks.json")) if os.path.exists("docs/data/picks.json") else {}
+          rec = json.load(open("audit/coverage_reconcile.json")) if os.path.exists("audit/coverage_reconcile.json") else {}
+          rows = d.get("matches") or []
+          st = [m for m in rows if m.get("method") == "MODEL_STANDINGS"]
+          mk = [m for m in rows if m.get("market")]
+          lines = ["### Strict pipeline run (T17/T18)", "",
+                   f"- payload generated_at: `{d.get('generated_at')}`",
+                   f"- counts: `{json.dumps(d.get('counts'))}`",
+                   f"- methods: `{json.dumps((d.get('coverage') or {}).get('counts_by_method'))}`",
+                   f"- coverage reconciliation: required={rec.get('required_future_fixtures')} "
+                   f"not_priced={len(rec.get('missing_from_payload') or [])} "
+                   f"excluded={len(rec.get('excluded_by_pipeline') or {})} "
+                   f"unexplained={rec.get('unexplained_missing')} ok={rec.get('coverage_ok')}", ""]
+          for fid, reason in list((rec.get("excluded_by_pipeline") or {}).items())[:12]:
+              lines.append(f"  - excluded {fid}: {reason}")
+          for s_ in d.get("sources_status") or []:
+              lines.append(f"- {s_.get('name')}: {s_.get('status')} count={s_.get('count')} "
+                           f"raw={s_.get('raw_count')} duplicates_collapsed={s_.get('duplicates_collapsed')}")
+          lines += ["", f"**Market rows ({len(mk)}):**", ""]
+          for m in mk:
+              mkt = m.get("market") or {}
+              lines.append(f"- {m['team1']} vs {m['team2']} — {m['method']} {m['confidence']} "
+                           f"consensus {mkt.get('consensus_team1')} books={mkt.get('distinct_books')} "
+                           f"rows={mkt.get('source_rows')} "
+                           f"sources={[(x.get('source'), x.get('prob_team1')) for x in mkt.get('sources') or []]}")
+          lines += ["", f"**MODEL_STANDINGS rows ({len(st)}):**", ""]
+          for m in st:
+              lines.append(f"- {m['team1']} vs {m['team2']} — {m['confidence']} "
+                           f"p1={m['prob_team1']} source={m.get('source_url')}")
+          lines.append("")
+          lines.append(f"prior-only rows: {sum(1 for m in rows if m.get('method') == 'MODEL_LEAGUE_PRIOR')} · "
+                       f"low-confidence rows: {sum(1 for m in rows if m.get('confidence') == 'Low')}")
+          open("/tmp/summary.md", "w").write("\n".join(lines))
+          print("\n".join(lines[:20]))
+          PY
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
+            -f body="$(cat /tmp/summary.md)" > /dev/null && echo "comment posted"
+
+      - name: Upload payload and log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict-pipeline-${{ github.run_id }}
+          path: |
+            docs/data/picks.json
+            data/diag/pipeline.log
+            data/diag/verify.json
+            audit/coverage_reconcile.json
+            audit/coverage_reconcile.md
+          retention-days: 14
+          if-no-files-found: warn

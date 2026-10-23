@@ -85,25 +85,29 @@ jobs:
 
       - name: Commit the refreshed data
         run: |
-          set -euxo pipefail
+          set -euo pipefail
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
           git add docs/data data/diag/pipeline.log
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
-          for attempt in 1 2 3; do
-            git fetch origin "${GITHUB_REF_NAME}"
-            # generated payloads are the freshest copy: during a rebase the bot's
-            # commit is "theirs", during the merge fallback the branch is "ours"
-            if ! git rebase -X theirs "origin/${GITHUB_REF_NAME}"; then
-              git rebase --abort || true
-              git merge -X ours --no-edit "origin/${GITHUB_REF_NAME}"
+          # Merge-based retry: a rebase here can strand the worktree mid-rebase
+          # and lose the refresh for a whole 6h cycle. Keep this run's payload.
+          for attempt in 1 2 3 4 5; do
+            if ! git fetch -q origin "${GITHUB_REF_NAME}"; then
+              echo "fetch failed on attempt ${attempt}" >&2; sleep 5; continue
             fi
-            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            if ! git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+              git merge --abort >/dev/null 2>&1 || true
+              echo "merge failed on attempt ${attempt}" >&2; sleep 5; continue
+            fi
+            if git push -q origin "HEAD:${GITHUB_REF_NAME}"; then
               echo "pushed on attempt ${attempt}"
               exit 0
             fi
+            git reset --hard HEAD~1 >/dev/null 2>&1 || true
+            echo "push rejected on attempt ${attempt}; retrying" >&2
             sleep 5
           done
-          echo "could not push the refreshed payload after 3 attempts" >&2
+          echo "could not push the refreshed payload after 5 attempts" >&2
           exit 1

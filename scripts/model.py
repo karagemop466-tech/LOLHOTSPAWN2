@@ -792,6 +792,10 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             market = {"sources": recs, "consensus_team1": round(cons, 4),
                       "weighted_mean_team1": round(wmean, 4),
                       "dispersion": round(dispersion, 4), "source_count": len(recs),
+                      # raw_rows counts every board the books returned before
+                      # de-duplication; distinct_books counts providers. They
+                      # differ when a book lists one match several times.
+                      "distinct_books": len(recs), "source_rows": len(raw_recs),
                       "time_spread_hours": round(max(spreads), 1) if spreads else None,
                       "cross_league": cross_league}
             if len(recs) >= 2 and dispersion <= 0.06:
