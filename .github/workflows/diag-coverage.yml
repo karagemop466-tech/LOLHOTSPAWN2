@@ -23,8 +23,8 @@ jobs:
       - name: Run coverage audit
         run: |
           mkdir -p data/diag
-          cd scripts && python3 diag_coverage.py
-          cd .. && python3 -c "import json;d=json.load(open('data/diag/coverage_audit.json'));print(json.dumps({k:v for k,v in d.items() if k not in ('ng_state_entries','api_future_sample_not_in_lobby','api_future_tournaments')},indent=1)[:6000])"
+          python3 scripts/diag_coverage.py
+          python3 -c "import json;d=json.load(open('data/diag/coverage_audit.json'));print(json.dumps({k:v for k,v in d.items() if k not in ('ng_state_entries','api_future_sample_not_in_lobby','api_future_tournaments')},indent=1)[:6000])"
       - name: Commit audit output
         run: |
           git config user.name "picks-bot"
