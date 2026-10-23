@@ -669,3 +669,23 @@ and itself, so documentation-only commits do not queue a 10-minute live run.
 **Note for the integration session:** `MODEL_STANDINGS` did not appear in the 16:29Z payload because every one of the 172 fixtures
 had at least one rated side (Elo or thin-Elo); the standings branch ran but had nothing to replace. The 12 cancelled fixtures are
 the only unpriced rows, and Hotspawn itself marks them cancelled. No fixture was dropped for lack of a source.
+
+### PR #24 merged — deployment confirmed (arena/e76bc0ae, 16:35Z)
+
+| Item | Value |
+|---|---|
+| Pull request | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/24 |
+| Merge method / result | `gh pr merge 24 --merge` → **MERGED** 2026-10-23T16:35:13Z |
+| Merge commit on `main` | `d01f9ca` |
+| Pages build for that commit | **success** (run 39988002313); `https://karagemop466-tech.github.io/LOLHOTSPAWN2/` serves the new `app.js` (MODEL_STANDINGS chip, "your local time", "book(s)") |
+| Post-merge verify workflow | **success** (run 39988004265) — 36 pass / 0 fail / 0 warn / 1 skip |
+| Post-merge scheduled publisher | **success** (run 39988004347) → `a5b9efe` "picks: scheduled refresh [skip ci]" |
+| Fresh payload on `main` | 172 fixtures · 172 priced · 0 unresolved · 80 Low · 9 market rows (3 books each) · 12 cancelled exclusions |
+| Pages build for `a5b9efe` | **success** (run 39988182115) |
+
+The publisher run is the first live exercise of the new merge-based retry: it committed and pushed on the first
+attempt, so the 6-hour refresh no longer depends on a rebase surviving a concurrent bot commit.
+
+`docs/methodology.html` now carries a **Manual verification log** with five checks (Polymarket price vs published
+consensus, full fixture coverage, per-book de-duplication, fixture/start-time match, 36-check payload pass), each with
+the exact source link so a human can repeat it.

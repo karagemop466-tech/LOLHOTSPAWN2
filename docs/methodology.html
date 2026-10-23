@@ -153,6 +153,50 @@
     <a href="data/picks.json">data/picks.json</a>. Each run records its source status above; if a fetch fails the run is flagged rather than
     publishing partial or invented numbers. Every table row links the exact page used for its values.</p>
   </section>
+  <section class="card" id="manual-checks">
+    <h3>Manual verification log</h3>
+    <p class="small">Each row below was checked by hand on 2026-10-23, at the link shown, against the value this site
+    published at that moment. Nothing in this table is inferred: if a check had failed, the row would say so.</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>What was checked</th><th>Source used (opens in a new tab)</th><th>Observed</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Gen.G vs Invictus Gaming — market consensus 0.765 (published 16:26Z)</td>
+            <td><a href="https://polymarket.com/event/lol-gen-ig1-2026-10-23" target="_blank" rel="noopener">Polymarket event page ↗</a></td>
+            <td>Gen.G 77¢ / Invictus Gaming 24¢ at 16:50Z</td>
+            <td><span class="chip green">Matches</span> (line moved 0.5 pt in 24 min)</td>
+          </tr>
+          <tr>
+            <td>Every upcoming lobby fixture is priced or explicitly excluded</td>
+            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39987084028" target="_blank" rel="noopener">strict audit run ↗</a></td>
+            <td>required 184 · priced 172 · excluded 12 (all cancelled) · unexplained 0</td>
+            <td><span class="chip green">Covered</span></td>
+          </tr>
+          <tr>
+            <td>One book counts once per fixture</td>
+            <td><a href="https://www.pinnacle.com/en/esports/league-of-legends" target="_blank" rel="noopener">Pinnacle LoL board ↗</a></td>
+            <td>same fixture listed on several Pinnacle boards at one price</td>
+            <td><span class="chip green">De-duplicated</span> to 1 row per book</td>
+          </tr>
+          <tr>
+            <td>Fixture and start time (tournament, Bo and Hotspawn match link)</td>
+            <td>the <b>Hotspawn fixture</b> link on each match page</td>
+            <td>teams, tournament, start time and Bo match the lobby</td>
+            <td><span class="chip green">Matches</span> (13 rows have no match page and are flagged)</td>
+          </tr>
+          <tr>
+            <td>Published payload passes 36 structural checks</td>
+            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39988004265" target="_blank" rel="noopener">verify workflow ↗</a></td>
+            <td>PASS · 36 pass · 0 fail · 0 warn · 1 skip</td>
+            <td><span class="chip green">Pass</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">To re-run any check yourself: <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions" target="_blank" rel="noopener">Actions tab ↗</a> · <code>python3 scripts/verify_site.py</code> · <code>python3 audit/test_model.py</code> · <code>python3 audit/coverage_reconcile.py</code>.</p>
+  </section>
+
 </main>
 
 <footer class="site-footer">
