@@ -1,0 +1,280 @@
+{
+ "generated_at": "2026-10-23T15:36:02.848817Z",
+ "lobby": "https://play.hotspawn.com/lol-pickems",
+ "fixtures_api": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
+ "lobby_http": 200,
+ "lobby_bytes": 1695320,
+ "lobby_ng_state_found": true,
+ "count_241": 3,
+ "count_139": 1,
+ "count_264": 93,
+ "count_195": 0,
+ "ng_state_entries": [
+  {
+   "key": "178365069",
+   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/tenants/slug/hotspawn",
+   "type": "dict",
+   "len": 5
+  },
+  {
+   "key": "1214417440",
+   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
+   "type": "list",
+   "len": 241
+  },
+  {
+   "key": "3317961506",
+   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/admin/gamification/fixtures/permalinks",
+   "type": "dict",
+   "len": 1
+  },
+  {
+   "key": "4181771103",
+   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/week-prizes/widget",
+   "type": "dict",
+   "len": 9
+  }
+ ],
+ "lobby_week": {
+  "weekId": 274,
+  "sportAlias": "lol",
+  "status": "OPEN",
+  "weekStartUtc": "2026-10-19T00:00:00.000Z",
+  "weekEndUtc": "2026-10-25T23:59:59.999Z",
+  "cutoffUtc": "2026-10-25T23:59:59.999Z",
+  "countdownTargetUtc": "2026-10-25T23:59:59.999Z",
+  "title": "Top prizes this week",
+  "prizes": [
+   {
+    "id": 145,
+    "title": "$300 Riot Gift Card",
+    "description": null,
+    "imageUrl": "https://phpstack-1372681-6459848.cloudwaysapps.com/uploads/week-prizes/week_274_1792403738952_0255889d-f9ef-4618-a9fe-c5eb61c5cf61.jpg",
+    "ruleType": "RANK",
+    "rank": {
+     "value": 1,
+     "label": "1st",
+     "title": "1st Place"
+    },
+    "minRank": 1,
+    "maxRank": 1,
+    "minPoints": null,
+    "quantityTotal": 1,
+    "quantityClaimed": 0,
+    "quantityRemaining": 1,
+    "countryMode": "ANY",
+    "countryList": []
+   },
+   {
+    "id": 146,
+    "title": "$200 Riot Gift Card",
+    "description": null,
+    "imageUrl": "https://phpstack-1372681-6459848.cloudwaysapps.com/uploads/week-prizes/week_274_1792403759893_706f052c-4afd-4c49-b330-274b98a7edc5.jpg",
+    "ruleType": "RANK",
+    "rank": {
+     "value": 2,
+     "label": "2nd",
+     "title": "2nd Place"
+    },
+    "minRank": 2,
+    "maxRank": 2,
+    "minPoints": null,
+    "quantityTotal": 1,
+    "quantityClaimed": 0,
+    "quantityRemaining": 1,
+    "countryMode": "ANY",
+    "countryList": []
+   },
+   {
+    "id": 147,
+    "title": "$100 Riot Gift Card",
+    "description": null,
+    "imageUrl": "https://phpstack-1372681-6459848.cloudwaysapps.com/uploads/week-prizes/week_274_1792403738952_0255889d-f9ef-4618-a9fe-c5eb61c5cf61.jpg",
+    "ruleType": "RANK",
+    "rank": {
+     "value": 3,
+     "label": "3rd",
+     "title": "3rd Place"
+    },
+    "minRank": 3,
+    "maxRank": 3,
+    "minPoints": null,
+    "quantityTotal": 1,
+    "quantityClaimed": 0,
+    "quantityRemaining": 1,
+    "countryMode": "ANY",
+    "countryList": []
+   },
+   {
+    "id": 148,
+    "title": "$50 Riot Gift Card",
+    "description": null,
+    "imageUrl": "https://phpstack-1372681-6459848.cloudwaysapps.com/uploads/week-prizes/week_274_1792403738952_0255889d-f9ef-4618-a9fe-c5eb61c5cf61.jpg",
+    "ruleType": "RANK",
+    "rank": {
+     "value": 4,
+     "label": "4th-11th",
+     "title": "Places 4-11"
+    },
+    "minRank": 4,
+    "maxRank": 11,
+    "minPoints": null,
+    "quantityTotal": 8,
+    "quantityClaimed": 0,
+    "quantityRemaining": 8,
+    "countryMode": "ANY",
+    "countryList": []
+   }
+  ]
+ },
+ "lobby_permalinks": 175,
+ "lobby_fixtures_total": 241,
+ "lobby_lol_total": 241,
+ "lobby_lol_future": 175,
+ "lobby_lol_status": {
+  "scheduled": 241
+ },
+ "lobby_lol_tier": {
+  "None": 171,
+  "c": 49,
+  "d": 9,
+  "s": 11,
+  "a": 1
+ },
+ "api_http": 200,
+ "api_total_rows": 12095,
+ "api_lol_rows": 1510,
+ "api_lol_future": 188,
+ "api_lol_future_status": {
+  "scheduled": 175,
+  "cancelled": 13
+ },
+ "api_lol_future_tier": {
+  "c": 46,
+  "d": 1,
+  "s": 11,
+  "None": 129,
+  "a": 1
+ },
+ "ids_in_lobby_not_api": [],
+ "ids_in_api_not_lobby": 13,
+ "api_future_sample_not_in_lobby": [
+  {
+   "id": "1079024",
+   "t1": "Phong Vũ Buffalo",
+   "t2": "404 Multigaming e.V.",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "status": "cancelled",
+   "start_utc": "2026-10-23T16:00:00Z"
+  },
+  {
+   "id": "1079140",
+   "t1": "Victorious Demons",
+   "t2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "status": "cancelled",
+   "start_utc": "2026-10-23T18:00:00Z"
+  },
+  {
+   "id": "1079026",
+   "t1": "Reveal Multigaming",
+   "t2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "status": "cancelled",
+   "start_utc": "2026-10-23T18:30:00Z"
+  },
+  {
+   "id": "1074653",
+   "t1": "DMG Esports Sweden",
+   "t2": "Northern Wolves Esports",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "status": "cancelled",
+   "start_utc": "2026-10-24T16:30:00Z"
+  },
+  {
+   "id": "1074656",
+   "t1": "Lundqvist Darkside",
+   "t2": "Mazepa",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "status": "cancelled",
+   "start_utc": "2026-10-24T16:30:00Z"
+  },
+  {
+   "id": "1082258",
+   "t1": "Mazepa",
+   "t2": "B2U",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "status": "cancelled",
+   "start_utc": "2026-10-24T17:00:00Z"
+  },
+  {
+   "id": "1074661",
+   "t1": "DMG Esports Sweden",
+   "t2": "FlameHard",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "status": "cancelled",
+   "start_utc": "2026-10-25T17:30:00Z"
+  },
+  {
+   "id": "1079143",
+   "t1": "Pegasus Esports",
+   "t2": "Team Reds",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "status": "cancelled",
+   "start_utc": "2026-10-25T19:00:00Z"
+  },
+  {
+   "id": "1079035",
+   "t1": "AceGaming",
+   "t2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "status": "cancelled",
+   "start_utc": "2026-10-30T17:00:00Z"
+  },
+  {
+   "id": "1079148",
+   "t1": "Void Walkers",
+   "t2": "Victorious Demons",
+   "tournament": "Arabian League 2nd Division 2026 Summer",
+   "status": "cancelled",
+   "start_utc": "2026-10-31T19:00:00Z"
+  },
+  {
+   "id": "1079044",
+   "t1": "Hannover Esports e.V.",
+   "t2": "Reveal Multigaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "status": "cancelled",
+   "start_utc": "2026-11-03T17:00:00Z"
+  },
+  {
+   "id": "1079052",
+   "t1": "ex-A41G",
+   "t2": "Babos Gaming",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "status": "cancelled",
+   "start_utc": "2026-11-08T16:00:00Z"
+  },
+  {
+   "id": "1079061",
+   "t1": "BvP",
+   "t2": "ex-A41G",
+   "tournament": "PRM 2nd Division 26-27 Fall",
+   "status": "cancelled",
+   "start_utc": "2026-11-15T18:30:00Z"
+  }
+ ],
+ "api_future_tournaments": {
+  "PRM 2nd Division 26-27 Fall": 46,
+  "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": 1,
+  "Worlds 2026 Main Event": 8,
+  "Arabian League 2nd Division 2026 Summer": 11,
+  "PRM 3rd Division 26-27 Fall": 62,
+  "LigaGG CELOL B 2026 Split 2 Playoffs": 4,
+  "Tunisian Super League 2026": 25,
+  "RIVALS LEAGUE Season 2": 25,
+  "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
+  "LGC Rising 2026 Playoffs": 1,
+  "LCP 2027 Promotion": 3
+ }
+}
