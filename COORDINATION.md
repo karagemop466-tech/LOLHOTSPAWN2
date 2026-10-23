@@ -341,3 +341,78 @@ Any session that needs a file in this scope must log a request here instead of e
 - **Q8 → `arena/bd37dbe6` (T14):** CSS currently defines `.bottom-nav { grid-template-columns: repeat(4, 1fr) }`, while every page has five bottom-nav links (Summary, Picks, Unresolved, Flagged, Method). Please make the mobile nav fit all five items and add a regression check. Files are within your claimed `docs/**` / `verification/**` scope; I have not edited them.
 - **Q9 → `arena/bd37dbe6` / `arena/e76bc0ae`:** `update_picks.py` labels OddsPapi as “Adapter retained but disabled,” but `scripts/fetch_markets.py` on `main` has no OddsPapi adapter. Provider docs say API requests require a key (https://oddspapi.io/us/docs); no key is configured here. Please correct the wording or implement an optional, key-gated adapter, and do not describe unconfigured odds as checked lines.
 - **Q10 → `arena/bd37dbe6` (T15):** Polymarket's official homepage currently states that trading is blocked in the US and provides a view-only option; please note this US-access limitation alongside the Gamma API source if retaining it as a market input. Source: https://polymarket.com/ .
+
+---
+
+## Session `arena/e76bc0ae-lolhotspawn2` — T17/T18 results (2026-10-23 16:15 UTC)
+
+**Status: T17 done · T18 done · T19 integration in progress.** Branches `arena/bd37dbe6-lolhotspawn2` and
+`arena/bdecdf49-lolhotspawn2` were merged into this branch (only `COORDINATION.md` conflicted; both blocks kept).
+No work from any session was discarded.
+
+| Task | Status | Evidence |
+|---|---|---|
+| T17 one book counts once; prop boards excluded; extra book probe | **done** | `scripts/fetch_markets.py` (`dedupe_records`, `is_prop_name`), `scripts/model.py` (one record per `source_key`), `audit/probe_sources.py`, `audit/source_probe.{json,md}` |
+| T18 standings line for matches the Elo cannot rate | **done** | `scripts/fetch_leaguepedia.py` (`fetch_standings`, bounded to current pages), `scripts/model.py` (`MODEL_STANDINGS`), `audit/test_model.py` |
+| T19 integration + PR + Pages confirmation | in progress | this branch |
+
+### Verification performed (strict run 39984642591, commit `509b262`, payload generated 2026-10-23T16:12:46Z)
+
+Runner: `.github/workflows/audit-pipeline.yml` — `set -euo pipefail`, offline tests, live pipeline, `verify_site.py`,
+coverage reconciliation. Summary published as a commit comment (artifact storage is not reachable from the sandbox).
+
+| Check | Result |
+|---|---|
+| Offline regression tests (`audit/test_model.py`) | 6/6 pass (de-duplication, prop rejection, standings, market precedence, prior fallback, unresolved) |
+| `scripts/verify_site.py` | PASS (run step 4, which includes the verifier) |
+| Fixtures required (lobby ∩ API, upcoming) | **184** |
+| Priced with a pick | **172** |
+| Documented exclusions | **12 — every one is `Hotspawn status is 'cancelled'`** |
+| Unexplained gaps | **0** (`coverage_ok: true`) |
+| Methods | MARKET_CONSENSUS 8 · MARKET_SINGLE 1 · MODEL_ELO 77 · MODEL_ELO_THIN 70 · MODEL_STANDINGS 4 · MODEL_LEAGUE_PRIOR 12 · UNRESOLVED 0 |
+| Low-confidence rows | 89 (was 101 before T17/T18; the fixture window also moved) |
+| Market source counts after de-duplication | 8 rows with **3 books / 3 rows each** (Pinnacle + Bovada + Polymarket), 1 Polymarket-only row. Before T17: `source_count: 9` with seven identical Pinnacle rows. |
+| Standings rows | 4, all sourced to https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split (p between 0.479 and 0.517 because the records are 1–1/0–0 and the sample-size shrink is applied) |
+
+Excluded (cancelled) fixture ids, all confirmed by the pipeline's own exclusion record:
+1074653, 1074656, 1074661, 1079026, 1079035, 1079044, 1079052, 1079061, 1079140, 1079143, 1079148, 1082258.
+
+### External sources tried for the matches without a book line
+
+`audit/source_probe.md` (36 endpoints, 2026-10-23T15:47:57Z, read-only). **No reachable book names any of our
+low-tier leagues** (Prime League, Tunisian Super League, RIVALS LEAGUE, Arabian League, Komplettligaen, LigaGG,
+Icelandic, Benelux, 4 Nations, Superstrike, Hitpoint). Observed: DraftKings 404 (was 200 on the first probe —
+bot-detection varies), FanDuel 200 but no LoL/teams, Betano 200 generic landing page, Betsson 202, Marathonbet 403,
+Unibet 503, BetMGM 403, Betway 404, 1xBet 203, BetOnline 200 no LoL, BetUS 403, Rivalry 503, Thunderpick 403,
+GG.Bet 403, Midnite 200 shell, LOOT.BET no response, EsportsBet.io 404, Betify 403, Oddspedia 410, Oddspedia API 404,
+BetExplorer 404, OddsPortal 200 with 1 current team, The Odds API 401, Kalshi no LoL, PandaScore 403, Abios no
+response. Only Polymarket (12 current teams) and Manifold (futures only) are machine-usable; neither prices the
+uncovered leagues. This confirms the 50/50/prior limitation is a market-coverage fact, not a pipeline defect.
+
+### Irregularities logged
+
+- **I13 (fixed):** Pinnacle listed each Worlds match on up to 7 boards with distinct matchup ids and an identical
+  price; the consensus counted them as independent sources (`source_count: 9`, dispersion 0.011 → High). Rows are now
+  de-duplicated per book + team pair + start hour and the per-source rows are kept in `market.sources`.
+- **I14 (fixed):** Pinnacle derivative boards (`X (Kills)`) were entering `market_unmatched`; they are now rejected by
+  `is_prop_name()` and never reach the matcher.
+- **I15 (open, documented):** `sources_status` in the payload does not expose `raw_count` / `duplicates_collapsed`
+  (they exist in `data/cache/markets.json`). Surfacing them needs `scripts/update_picks.py`, owned by bd37dbe6 — request
+  to that owner (or the integration session) to copy the two fields.
+- **I16 (open, documented):** 12 fixtures still use `MODEL_LEAGUE_PRIOR` (one side has no recorded series) and 70 use
+  `MODEL_ELO_THIN`; the standings table does not include those teams with a decided record. Published as Low confidence
+  on the Unresolved page — not hidden.
+- **I17:** Nine parallel sessions ran pipelines against Leaguepedia simultaneously at 15:42–16:00 UTC; one strict run took
+  25 minutes and two were cancelled. `fetch_standings` is now capped (24 pages, 120 s budget, 25 s timeout, 1 retry) so a
+  slow wiki can never block the refresh.
+- **I18:** `arena/b132c242` and `arena/92bfcdd3` independently implemented `MODEL_STANDINGS`. This branch's version is the
+  one merged here; their commits remain on their branches and are **not discarded**. If their implementations cover cases
+  this one misses (e.g. group-stage pages), reconcile in a follow-up rather than double-merging.
+- **I19:** Sandbox egress blocks `*.blob.core.windows.net`, so Actions artifacts and zip logs cannot be downloaded here.
+  Verification evidence is therefore published through commit comments (`/commits/<sha>/comments`) and `audit/last_run.json`.
+
+### Requests to other file owners
+- **Q3 → docs owner:** the picks table's method chip and the `low` filter now need `MODEL_STANDINGS`; both were added to
+  `docs/assets/app.js` in this integration (label “League standings”, rank 2) together with the visible “your local time”
+  label and the “N book(s)” wording.
+- **Q4 → update_picks.py owner:** copy `raw_count` and `duplicates_collapsed` from the market status into `sources_status`.
