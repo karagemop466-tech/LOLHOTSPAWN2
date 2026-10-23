@@ -283,3 +283,13 @@ picture; each item is resolved or explicitly dispositioned below.
 - live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
 - parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
+
+---
+
+## Session `arena/bdecdf49-lolhotspawn2` — 2026-10-23 (current)
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T13 Final integration audit and fixes: verify end-to-end Hotspawn LoL match coverage, outside-source probabilities, update cadence, executive summary/navigation, mobile accessibility, and explicit unresolved/limitations reporting | in progress | arena/bdecdf49 | `scripts/**`, `.github/workflows/**`, `docs/**`, `README.md`, `research/**`, `verification/**`, `COORDINATION.md` |
+
+**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. Prior task entries above are completed historical work; no active owner is listed for this scope. This task acts as final integration on the checked-out branch. Generated committed site data under `docs/data/` is in scope as a shared output for this final integration.
