@@ -689,3 +689,18 @@ attempt, so the 6-hour refresh no longer depends on a rebase surviving a concurr
 `docs/methodology.html` now carries a **Manual verification log** with five checks (Polymarket price vs published
 consensus, full fixture coverage, per-book de-duplication, fixture/start-time match, 36-check payload pass), each with
 the exact source link so a human can repeat it.
+
+### I20 — live-deployment check turned a deploy race into a red build (fixed)
+
+`verify.yml` runs immediately on every push to `main`. On `859d137` (PR #25 merge, 16:40:50Z) its
+"Verify external source links and the live Pages deployment" step failed while the Pages build for that same commit
+was still running (build run 39988787327 started at the same second). The script's `X2` check made a single request
+and treated one non-200 as FAIL, so a site that was mid-deploy looked broken.
+
+Fix in `scripts/verify_site.py`:
+- `wait_for_http()` retries the live page and `docs/data/picks.json` for ~96 s before failing, so a deploy in flight is
+  not reported as broken while a genuinely dead site still fails.
+- `http_status_retry()` retries timeouts/429/5xx for individual external links, and an upstream 5xx is now **WARN**
+  (`their server is down`) rather than FAIL. **404/410 still FAIL**, because that means a link we publish is wrong.
+
+Offline suite unchanged: `verify_site.py` PASS (36/0/0/1) and `test_verifier.py` 34/34 after the change.
