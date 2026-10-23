@@ -1,0 +1,87 @@
+name: Audit pipeline (strict, artifacts only)
+
+# Session arena/e76bc0ae / T17-T18.
+# Runs the full live pipeline with `set -euo pipefail` (the branch pipeline-test
+# masks failures with `| tee` and silently drops commits), verifies the payload,
+# and uploads the result as an artifact. It never commits, so it cannot race
+# another session's bot commit.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/e76bc0ae-lolhotspawn2"]
+    paths:
+      - "scripts/**"
+      - "audit/**"
+      - ".github/workflows/audit-pipeline.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-pipeline-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run the live pipeline (failures are fatal)
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          mkdir -p data/diag
+          python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
+          python3 scripts/verify_site.py --leaguepedia-schedule data/diag
+
+      - name: Summarise what the pipeline produced
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          p = "docs/data/picks.json"
+          if not os.path.exists(p):
+              print("NO PAYLOAD PRODUCED"); raise SystemExit(0)
+          d = json.load(open(p))
+          print("generated_at:", d.get("generated_at"))
+          print("counts:", json.dumps(d.get("counts")))
+          print("methods:", json.dumps((d.get("coverage") or {}).get("counts_by_method")))
+          print("statuses:", json.dumps([{k: s.get(k) for k in
+                ("name", "status", "count", "raw_count", "duplicates_collapsed")}
+                for s in d.get("sources_status") or []], indent=1))
+          st = [s for s in d.get("sources_status") or [] if s.get("name") == "Leaguepedia MatchSchedule"]
+          print("leaguepedia status:", json.dumps(st))
+          print("unresolved:", json.dumps({k: v for k, v in (d.get("unresolved") or {}).items()
+                                           if k in ("count", "low_confidence_count")}))
+          mm = [m for m in d.get("matches") or [] if m.get("market")]
+          for m in mm[:12]:
+              mk = m["market"]
+              print("market:", m["team1"], "vs", m["team2"], "| books:", mk.get("distinct_books"),
+                    "| rows:", mk.get("source_rows"), "|", m["method"], m["confidence"],
+                    "|", [(s.get("source"), s.get("prob_team1")) for s in mk.get("sources") or []])
+          print("standings rows:", sum(1 for m in d.get("matches") or []
+                                       if m.get("method") == "MODEL_STANDINGS"))
+          for m in [x for x in d.get("matches") or [] if x.get("method") == "MODEL_STANDINGS"][:12]:
+              print("standings:", m["team1"], "vs", m["team2"], m["confidence"], m["prob_team1"],
+                    "|", m.get("source_url"))
+          print("prior-only:", sum(1 for m in d.get("matches") or []
+                                   if m.get("method") == "MODEL_LEAGUE_PRIOR"))
+          PY
+
+      - name: Upload payload and log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict-pipeline-${{ github.run_id }}
+          path: |
+            docs/data/picks.json
+            data/diag/pipeline.log
+            data/diag/verify.json
+          retention-days: 14
+          if-no-files-found: warn

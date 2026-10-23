@@ -96,6 +96,10 @@ CANDIDATES = [
      "https://www.betexplorer.com/esports/"),
     ("odds aggregator", "OddsPortal LoL", "https://www.oddsportal.com/lol/",
      "https://www.oddsportal.com/lol/"),
+    ("odds aggregator", "OddsPortal esports", "https://www.oddsportal.com/esports/league-of-legends/",
+     "https://www.oddsportal.com/esports/league-of-legends/"),
+    ("odds aggregator", "Oddspedia LoL (short path)", "https://oddspedia.com/lol",
+     "https://oddspedia.com/lol"),
     ("odds aggregator", "The Odds API sports", "https://api.the-odds-api.com/v4/sports/?apiKey=",
      "https://the-odds-api.com/liveapi/guides/v4/"),
 
@@ -124,6 +128,23 @@ CANDIDATES = [
 ]
 
 
+def _tournament_tokens():
+    """Distinctive words from the low-tier tournaments we cannot price today.
+
+    Their presence on a betting page is the only useful test of whether that
+    book actually covers our uncovered fixtures (a majors-only page is not)."""
+    d = load_json("docs/data/picks.json", {}) or {}
+    toks = set()
+    for t in d.get("tournaments") or []:
+        name = str(t.get("name") or "")
+        for word in ("prime league", "prm", "tunisian", "rivals", "arabian",
+                     "komplettligaen", "ligagg", "icelandic", "benelux", "4 nations",
+                     "superstrike", "hitpoint"):
+            if word in name.lower() and word not in ("prm",):
+                toks.add(word)
+    return toks
+
+
 def _team_tokens():
     d = load_json("docs/data/picks.json", {}) or {}
     names = set()
@@ -150,6 +171,7 @@ def classify(status: int, text: str, ctype: str, teams: set[str]) -> dict:
         "matched_team_count": len(hits),
         "has_price_tokens": priced,
         "json": (text or "").lstrip()[:1] in ("{", "["),
+        "low_tier_tokens": sorted(t for t in _TOUR_TOKENS if t in low),
     }
 
 
@@ -170,13 +192,22 @@ def probe(url: str, teams: set[str]) -> dict:
     return info
 
 
+_TOUR_TOKENS: set[str] = set()
+
+
 def main() -> int:
+    global _TOUR_TOKENS
+    _TOUR_TOKENS = _tournament_tokens()
     teams = _team_tokens()
     log(f"audit: probing {len(CANDIDATES)} candidate sources against {len(teams)} current team names")
     rows = []
     for group, name, url, human in CANDIDATES:
         res = probe(url, teams)
-        usable = bool(res["http_ok"] and (res["json"] or res["matched_team_count"]) and
+        # Tightened: a page that merely mentions one team is not a usable feed.
+        # Require a price token and either machine-readable JSON or at least two
+        # current teams.
+        usable = bool(res["http_ok"] and res["has_price_tokens"] and
+                      (res["json"] or res["matched_team_count"] >= 2) and
                       (res["mentions_league_of_legends"] or res["matched_team_count"]))
         res.update({"group": group, "name": name, "human_url": human, "usable": usable})
         rows.append(res)
@@ -206,13 +237,15 @@ def main() -> int:
              "A source is marked **usable** only when it returns HTTP 200, is machine-readable or names a "
              "current Hotspawn team, and carries a League-of-Legends/price token. No probability is taken "
              "from any row here; this is an evidence log for manual review.", "",
-             "| Group | Source | HTTP | Bytes | LoL token | Current teams named | Price tokens | Usable | Link |",
-             "|---|---|---|---|---|---|---|---|---|"]
+             "| Group | Source | HTTP | Bytes | LoL token | Current teams named | Low-tier leagues named | Price tokens | Usable | Link |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
-        lines.append("| {group} | {name} | {status} | {bytes} | {lol} | {n} | {p} | {u} | {link} |".format(
+        lines.append("| {group} | {name} | {status} | {bytes} | {lol} | {n} | {lt} | {p} | {u} | {link} |".format(
             group=r["group"], name=r["name"], status=r["status"], bytes=r["bytes"],
             lol="yes" if r["mentions_league_of_legends"] else "no",
-            n=r["matched_team_count"], p="yes" if r["has_price_tokens"] else "no",
+            n=r["matched_team_count"],
+            lt=", ".join(r["low_tier_tokens"]) if r["low_tier_tokens"] else "no",
+            p="yes" if r["has_price_tokens"] else "no",
             u="**yes**" if r["usable"] else "no", link=r["human_url"]))
     lines += ["", "## Observed responses", ""]
     for r in rows:

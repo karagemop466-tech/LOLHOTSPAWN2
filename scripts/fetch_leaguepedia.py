@@ -26,6 +26,9 @@ API = "https://lol.fandom.com/api.php"
 FIELDS = "Team1,Team2,Team1Score,Team2Score,Winner,DateTime_UTC,OverviewPage,BestOf,Tab"
 TABLE_URL = "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule"
 TEAMS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Teams"
+STANDINGS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
+# Field names verified 2026-10-21 with api.php?action=cargofields&table=Standings
+STANDINGS_FIELDS = "OverviewPage,Team,Place,WinSeries,LossSeries,WinGames,LossGames,Points"
 SLEEP = 2.6
 
 
@@ -74,6 +77,30 @@ def fetch_window(a: datetime, b: datetime, depth: int = 0):
         right, e2 = fetch_window(mid, b, depth + 1)
         return left + right, e1 or e2
     return rows, None
+
+
+def fetch_standings(pages: list[str], limit_pages: int = 45) -> tuple[list, list]:
+    """Current-season series records from Leaguepedia's Standings table.
+
+    Used only where the Elo has no team-specific history at all (see model.py).
+    One request per competition page, paced like the other Cargo calls.
+    """
+    rows, errors = [], []
+    for page in sorted(set(p for p in pages if p))[:limit_pages]:
+        data, err = _rows({
+            "tables": "Standings", "fields": STANDINGS_FIELDS,
+            "where": "OverviewPage = '" + str(page).replace("'", "''") + "'",
+            "limit": "200", "format": "json",
+        })
+        time.sleep(SLEEP)
+        if err:
+            errors.append({"page": page, "error": err})
+            continue
+        for r in data or []:
+            if isinstance(r, dict):
+                r["_page"] = page
+                rows.append(r)
+    return rows, errors
 
 
 def _norm_row(x: dict) -> dict | None:
@@ -137,6 +164,15 @@ def main() -> int:
     results = [r for r in clean if r["winner"] and r["start_utc"] < utc_iso(cutoff)]
     schedule = [r for r in clean if r["start_utc"] >= utc_iso(now - timedelta(days=2))]
 
+    # Standings: only for competitions that are currently running (a schedule
+    # row in the last 2 days or the near future), which keeps the number of
+    # Cargo calls bounded. Older pages cannot inform a current fixture.
+    current_pages = sorted({r["overview"] for r in clean
+                            if r.get("overview") and
+                            r["start_utc"] >= utc_iso(now - timedelta(days=45))})
+    standings, standings_errors = fetch_standings(current_pages)
+    log(f"leaguepedia: standings {len(standings)} rows from {len(current_pages)} current pages")
+
     # canonical team spellings
     teams = []
     r, text = _get({"tables": "Teams", "fields": "Name,OverviewPage,Location,Region",
@@ -155,17 +191,21 @@ def main() -> int:
         "generated_at": utc_iso(now),
         "degraded": False,
         "counts": {"rows": len(clean), "results": len(results), "schedule": len(schedule),
-                   "teams": len(teams), "export_calls": calls},
-        "errors": errors,
+                   "teams": len(teams), "export_calls": calls,
+                   "standings": len(standings), "standings_pages": len(current_pages)},
+        "errors": errors + standings_errors,
         "tournaments": [{"page": k, "results": v} for k, v in tour_counts.most_common(120)],
         "sources": [
             source("Leaguepedia MatchSchedule (Cargo export)", TABLE_URL,
                    "Recorded match results and schedules with exact UTC time, BestOf and series score."),
             source("Leaguepedia Teams", TEAMS_URL, "Canonical team spellings and region."),
+            source("Leaguepedia Standings", STANDINGS_URL,
+                   "Current-season series win-loss records (WinSeries/LossSeries) per competition page."),
         ],
         "results": results,
         "schedule": schedule,
         "teams": teams,
+        "standings": standings,
     }
     if len(results) < 1000:
         # A rate-limited / broken run must not wipe good data. Fall back to the
