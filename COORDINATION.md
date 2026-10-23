@@ -313,3 +313,16 @@ remaining integration and records the handoff.
 Bovada 32451771 and Polymarket. The 7 Pinnacle entries carry the identical 0.764 price and are reported as
 `source_count: 9`, `dispersion 0.011` → `High` confidence. They are the same book repeating one market across
 several Pinnacle league boards, not nine independent lines.
+
+## Session `arena/bd37dbe6-lolhotspawn2` — 2026-10-23 (claim)
+
+No other session holds an open claim on `main` as of 2026-10-23 15:35 UTC (prior sessions are merged; `origin` has only `main`). This session claims the following scope and works only inside it.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T13 Coverage audit: reconcile the Hotspawn lobby tier-filter count with the pipeline fixture count and the fixtures API; close any gap | in progress | arena/bd37dbe6 | scripts/fetch_hotspawn.py, scripts/update_picks.py, data/diag/** |
+| T14 Executive summary, unresolved section and per-league limitations; in-site links to picks; mobile readability pass | in progress | arena/bd37dbe6 | docs/** (pages + assets), research/** |
+| T15 Betting-line and community-source refresh with link-verified research log | in progress | arena/bd37dbe6 | research/betting-sources.md, verification/** |
+| T16 Integration: rerun live pipeline on branch, re-verify line by line, PR to `main`, merge, confirm Pages deploy, record result here | pending | arena/bd37dbe6 | COORDINATION.md (board entries), docs/data/picks.json (generated) |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
