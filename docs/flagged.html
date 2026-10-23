@@ -116,6 +116,22 @@
     </div>
   </section>
 
+  <section>
+    <h2>Betting sources we probed, with the measured result</h2>
+    <p class="small">Established books and esportsbooks were requested once from the same runner the pipeline uses.
+    A source is marked <b>usable</b> only when the response contained two-way prices. <span id="probe-meta"></span></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Source</th><th scope="col">HTTP</th><th scope="col">Usable price feed</th><th scope="col">Notes</th></tr></thead>
+        <tbody id="market-probe">
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading probe results…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Method and raw results are committed at <code>data/diag/market_probe.json</code> in the repository.
+    A 200 response is not treated as coverage: only de-vigged two-way prices are ever used.</p>
+  </section>
+
   <div class="loading"><span class="spinner"></span>Loading flagged data…</div>
 </main>
 

@@ -327,6 +327,15 @@
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b>${s.url ? `<span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span>` : ""}</td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
     if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+    const probe = d.market_probe;
+    const pbody = $("#market-probe");
+    if (pbody) {
+      pbody.innerHTML = probe && (probe.results || []).length
+        ? probe.results.map((r) => `<tr><td><b>${esc(r.name)}</b><span class="sub"><a href="${esc(r.url)}" target="_blank" rel="noopener">link ↗</a></span></td><td><span class="chip ${r.status === 200 ? "green" : "amber"}">${esc(String(r.status))}</span></td><td>${r.usable ? '<span class="chip green">yes</span>' : '<span class="chip red">no</span>'}</td><td class="small">${r.status === 200 ? (r.lol_content ? "reachable; no two-way LoL prices in the response" : "reachable; no LoL content") : "blocked or unreachable from the runner"}</td></tr>`).join("")
+        : `<tr><td colspan="4" class="small">No probe has run yet — the next scheduled update will record one.</td></tr>`;
+      const meta = $("#probe-meta");
+      if (meta && probe) meta.textContent = `Probe run ${whenUTC(probe.generated_at)}; ${probe.usable_count} of ${probe.results.length} endpoints returned a usable price feed.`;
+    }
   }
 
   function renderMatch(d) {

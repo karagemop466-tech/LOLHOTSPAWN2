@@ -65,6 +65,27 @@ LIMITATIONS = [
 ]
 
 
+def _market_probe():
+    """Measured reachability of additional betting sources (scripts/probe_markets.py).
+
+    Only the last probe result is published, labelled with its own timestamp and the
+    exact method; it is evidence, not a claim that a source is licensed or complete.
+    """
+    data = load_json("data/diag/market_probe.json", {}) or {}
+    results = data.get("results") or []
+    if not results:
+        return None
+    return {
+        "generated_at": data.get("generated_at"),
+        "method": data.get("method"),
+        "results": [{"name": r.get("name"), "url": r.get("url"),
+                     "status": r.get("http_status"), "usable": bool(r.get("usable_as_feed")),
+                     "lol_content": bool(r.get("league_of_legends_content"))}
+                    for r in results],
+        "usable_count": sum(1 for r in results if r.get("usable_as_feed")),
+    }
+
+
 def build_payload(fixtures, markets, leaguepedia, picks):
     now = now_utc()
     matches = picks["matches"]
@@ -157,6 +178,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,
         "checked_unavailable": CHECKED_UNAVAILABLE,
+        "market_probe": _market_probe(),
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
         "next_24h": [m["id"] for m in next_24h[:8]],
