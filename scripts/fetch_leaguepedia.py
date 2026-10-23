@@ -135,31 +135,30 @@ def _standings_row(x: dict) -> dict | None:
 
 
 def schedule_pages(fixtures: list[dict], schedule_rows: list[dict]) -> dict[str, set[str]]:
-    """Tournament -> Leaguepedia pages whose schedule lists at least two of its teams.
+    """Tournament -> pages whose *upcoming* schedule contains the same team pair.
 
-    This is a purely observational bridge: it uses only rows already returned by the
-    MatchSchedule export, never a guessed competition name.
+    Only rows within a narrow window around the fixtures are used, and both teams of
+    a fixture must appear together on the page. Older seasons contain many of the
+    same team names, so any wider join would attach the wrong competition.
     """
-    team_pages: dict[str, set[str]] = {}
+    now = now_utc()
+    lo = utc_iso(now - timedelta(days=3))
+    hi = utc_iso(now + timedelta(days=90))
+    pair_pages: dict[tuple[str, str], set[str]] = {}
     for r in schedule_rows:
         page = str(r.get("overview") or "")
-        if not page:
+        when = str(r.get("start_utc") or "")
+        if not page or not (lo <= when <= hi):
             continue
-        for key in (norm(r.get("team1")), norm(r.get("team2"))):
-            if key:
-                team_pages.setdefault(key, set()).add(page)
+        a, b = norm(r.get("team1")), norm(r.get("team2"))
+        if a and b:
+            pair_pages.setdefault(tuple(sorted((a, b))), set()).add(page)
     out: dict[str, set[str]] = {}
-    by_tour: dict[str, set[str]] = {}
     for f in fixtures:
-        t = (f.get("tournament") or "").strip()
-        if t:
-            by_tour.setdefault(t, set()).update({norm(f.get("team1")), norm(f.get("team2"))})
-    for tour, teams in by_tour.items():
-        counts: dict[str, int] = {}
-        for team in teams:
-            for page in team_pages.get(team, ()):
-                counts[page] = counts.get(page, 0) + 1
-        out[tour] = {p for p, c in counts.items() if c >= 2}
+        tour = (f.get("tournament") or "").strip()
+        key = tuple(sorted((norm(f.get("team1")), norm(f.get("team2")))))
+        if tour and key in pair_pages:
+            out.setdefault(tour, set()).update(pair_pages[key])
     return out
 
 
@@ -224,23 +223,33 @@ def fetch_standings(hotspawn_fixtures: list[dict], hints: dict[str, set[str]] | 
         if clean:
             cache[page] = clean
 
-    # keep only pages whose team list matches the tournament's fixtures
+    # keep only pages that actually contain this tournament's fixtures
+    diag = {}
     for tour, scored in candidates.items():
-        teams = set()
+        teams, pairs = set(), []
         for f in hotspawn_fixtures:
             if (f.get("tournament") or "").strip() == tour:
-                teams.add(norm(f["team1"]))
-                teams.add(norm(f["team2"]))
+                a, b = norm(f["team1"]), norm(f["team2"])
+                teams.update({a, b})
+                pairs.append((a, b))
+        diag[tour] = {"candidates": [], "accepted": [], "fixtures": len(pairs)}
         accepted = []
         for sc, page in scored:
-            if page not in cache:
-                continue
-            listed = {norm(r["team"]) for r in cache[page]}
-            if len(teams & listed) >= 2:
-                accepted.append(page)
+            info = {"page": page, "name_score": round(sc, 2), "in_cache": page in cache}
+            if page in cache:
+                listed = {norm(r["team"]) for r in cache[page]}
+                covered = sum(1 for a, b in pairs if a in listed and b in listed)
+                coverage = len(teams & listed) / len(teams) if teams else 0.0
+                info.update({"teams_listed": len(listed), "pairs_covered": covered,
+                             "team_coverage": round(coverage, 2)})
+                if covered >= 1 and (covered >= 2 or coverage >= 0.4) and len(listed) >= 4:
+                    accepted.append(page)
+            diag[tour]["candidates"].append(info)
+        diag[tour]["accepted"] = accepted
         if accepted:
             out["tournaments"][tour] = accepted
             out["pages"] += [p for p in accepted if p not in out["pages"]]
+    out["diagnostics"] = {k: v for k, v in diag.items() if v["candidates"]}
 
     keep = set(out["pages"])
     out["rows"] = [r for p in keep for r in cache.get(p, [])]
@@ -356,6 +365,7 @@ def main() -> int:
         "standings": standings["rows"],
         "standings_pages": standings["pages"],
         "standings_by_tournament": standings["tournaments"],
+        "standings_diagnostics": standings.get("diagnostics") or {},
     }
     if len(results) < 1000:
         # A rate-limited / broken run must not wipe good data. Fall back to the

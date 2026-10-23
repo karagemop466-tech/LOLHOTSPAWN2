@@ -281,17 +281,18 @@ def standings_rating(row, base, shrink_games=STANDINGS_SHRINK_GAMES):
 def fixture_standings(fixture, by_page, multi, team_pages, allowed_pages):
     """Both teams' standings rows from ONE page, or None."""
     t1, t2 = fixture["team1"], fixture["team2"]
-    candidates = set(allowed_pages or ()) | (team_pages.get(norm(t1), set()) &
-                                              team_pages.get(norm(t2), set()))
+    if not allowed_pages:
+        return None  # no page verified for this competition: never guess one
+    candidates = set(allowed_pages)
     best = None
     for page in sorted(candidates):
         a = _resolve_in_page(by_page, page, t1)
         b = _resolve_in_page(by_page, page, t2)
         if not a or not b:
             continue
-        # a page that is explicitly linked to the tournament wins
-        in_scope = page in (allowed_pages or ())
-        score = (2 if in_scope else 1, len(by_page[page]))
+        # prefer the most recent season on the page name, then the fuller table
+        year = max((int(y) for y in re.findall(r"\b(20\d\d)\b", page)), default=0)
+        score = (year, len(by_page[page]))
         if best is None or score > best[0]:
             best = (score, page, a, b)
     if not best:
