@@ -16,10 +16,14 @@ probability for both teams. Rows are priced in this order:
 2. **Our own Elo model** — chronological ratings from Leaguepedia's recorded results,
    anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting,
    head-to-head smoothing and shrinkage for thin history.
-3. **League prior** — one team has no usable history; the competition median/tier prior is
+3. **Standings model** (`MODEL_STANDINGS` 📊) — a side has no Elo yet but has a current-split
+   win-loss record (Leaguepedia *Standings*): the record becomes a smoothed Elo offset from
+   the competition prior, blended with the other side's Elo, capped at Low confidence.
+4. **League prior** — one team has no usable history; the competition median/tier prior is
    substituted, shrunk toward 50/50 and labelled `MODEL_LEAGUE_PRIOR` (low confidence).
-4. **Unresolved** — no market and no history at all: published as an explicit 50/50
-   placeholder, listed on its own page with the written limitations. Never an edge.
+5. **Unresolved** — no market and no history at all: published as an explicit 50/50
+   placeholder, listed on its own page with the written limitations (including a
+   per-league table of which signal prices each league). Never an edge.
 
 **Hotspawn is used for the fixture list only.** Its crowd percentages are displayed as
 context and are never an input to any probability. Unverified or irregular rows are

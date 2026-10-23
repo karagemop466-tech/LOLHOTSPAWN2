@@ -42,21 +42,33 @@
     <p class="eyebrow">Executive summary</p>
     <h1>Every LoL match on Hotspawn's Pick'em list — with a pick and a win probability.</h1>
     <p class="lede">
-      This site mirrors the League of Legends fixtures on
-      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
-      and prices <b>every</b> one of them: matches covered by established bookmakers use the external market
-      consensus; everything else is priced by our own Elo model built from recorded match results, with Leaguepedia
-      current-season standings covering teams the Elo has no history for.
-      Hotspawn's crowd percentages are shown as context only and are <b>never</b> an input to a probability.
+      Fixtures mirror <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
+      (refreshed every 6 hours). Every match is priced: 💰 external bookmaker/market lines where they exist,
+      otherwise 🧮 our Elo model or 📊 official standings records. Hotspawn crowd % is context only, <b>never</b> a probability.
     </p>
     <div class="warnbox" role="note">
       <b>Source limitation:</b> When there is no external market line, the probability is our model estimate from Leaguepedia's recorded results. Leaguepedia is a community-maintained results database, not an official tournament or Riot source; Hotspawn confirms the listed fixture, not its win probability. These estimates are not official lines. See <a href="flagged.html#source-limitations">source limitations and flagged items</a>.
     </div>
     <div class="hero-actions">
-      <a class="btn primary" href="picks.html">See all picks →</a>
-      <a class="btn warn" href="unresolved.html">Picks without a book line &amp; limitations →</a>
+      <a class="btn primary" href="picks.html">📋 All picks →</a>
+      <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24h picks →</a>
+      <a class="btn warn" href="unresolved.html">⚠️ Picks without a book line &amp; limitations →</a>
       <a class="btn" href="flagged.html">Flagged for review →</a>
     </div>
+    <div class="chips" role="navigation" aria-label="Jump to picks on this page">
+      <a class="chipbtn" href="#starting-soon">⏰ Starting soon ↓</a>
+      <a class="chipbtn" href="#featured-heading">💰 Market picks ↓</a>
+      <a class="chipbtn" href="#unresolved-heading">⚠️ Unresolved ↓</a>
+      <a class="chipbtn" href="picks.html?filter=market">💰 Only market lines</a>
+      <a class="chipbtn" href="picks.html?filter=standings">📊 Standings picks</a>
+    </div>
+  </section>
+
+  <section id="starting-soon">
+    <h2>⏰ Starting soon — your next picks</h2>
+    <p class="small" id="soon-count">Next matches on Hotspawn's list</p>
+    <div id="next24"></div>
+    <p><a class="btn primary" href="picks.html?filter=next24">All picks for the next 24 hours →</a></p>
   </section>
 
   <section class="stats" aria-label="Coverage at a glance">
@@ -101,17 +113,15 @@
 
   <section>
     <h2 id="unresolved-heading">Unresolved picks &amp; limitations</h2>
-    <p class="small">Anything we cannot verify is published as an explicit placeholder and listed on its own page — never silently filled in.</p>
+    <p class="small">Anything we cannot verify is published as an explicit placeholder and listed on its own page — never silently filled in.
+    Matches with no bookmaker line are priced from recorded results first (Elo), then from the official standings record
+    in that league (📊), then from a league prior; the per-league table on the Unresolved page shows exactly which signal
+    prices each league and where its limits are.</p>
     <div id="unresolved-summary"></div>
   </section>
 
   <section>
-    <h2>Next 24 hours</h2>
-    <div id="next24"></div>
-  </section>
-
-  <section>
-    <h2>Featured — matches with external betting lines</h2>
+    <h2 id="featured-heading">Featured — matches with external betting lines</h2>
     <p class="small">These rows use the de-vigged consensus of the bookmakers and prediction markets listed on each card; the model is shown alongside as a cross-check.</p>
     <div id="featured"></div>
   </section>

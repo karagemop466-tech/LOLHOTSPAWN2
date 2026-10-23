@@ -1,5 +1,23 @@
 # Coordination Board
 
+## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (done, merged)
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| T13 Standings fallback for non-market fixtures (Leaguepedia `Standings`, Bradley–Terry, `MODEL_STANDINGS`) between Elo and league-prior | done | arena/92bfcdd3 | scripts/fetch_leaguepedia.py, scripts/model.py, scripts/update_picks.py, .github/workflows/update-picks.yml, verification/test_standings_model.py |
+| T14 Phone-first executive summary: starting-soon picks first, quick-jump links, per-league unresolved/limitations table; bottom-nav 5-col fix | done | arena/92bfcdd3 | docs/index.html, docs/unresolved.html, docs/picks.html, docs/methodology.html, docs/assets/app.js, docs/assets/style.css |
+| T15 Fresh source research (established books → esportsbooks → community) + Actions probe of new candidates; PR + merge + Pages check | done | arena/92bfcdd3 | research/betting-sources.md, scripts/probe_sources.py, .github/workflows/pipeline-test.yml, COORDINATION.md, README.md |
+
+Baseline at claim (main `3addc56`): 189 fixtures · 9 market · 82 MODEL_ELO · 74 MODEL_ELO_THIN · 24 MODEL_LEAGUE_PRIOR · 0 UNRESOLVED · 101 low-confidence; `scripts/verify_site.py` 31 PASS / 0 FAIL. No other session active on these files.
+
+**Results (2026-10-23):** live branch runs 39980317947 / 39981419030 / 39982897776 all **success**. Latest payload: 188 fixtures · 9 market · 81 MODEL_ELO · 74 MODEL_ELO_THIN · **4 MODEL_STANDINGS** (PRM 3rd Div, from 167 Leaguepedia standings rows / 14 competitions) · 20 MODEL_LEAGUE_PRIOR (was 24) · 0 UNRESOLVED. `verify_site.py` **31 PASS / 0 FAIL / 0 WARN**, verifier self-tests 27/27, standings unit test 11/11, jsdom DOM checks 14/14. Probe of 13 candidate books/aggregators: no new structured per-match LoL feed usable from CI (Kalshi: no LoL series; Manifold: futures only; esportsbooks 403/404/503) — `data/diag/source_probe.json`. Flagged (non-blocking, on Flagged page + `verification/flagged_items.md` S1–S3): 20 prior-only rows whose Hotspawn names match no verifiable Leaguepedia identity; 5 competitions with no standings table; probe candidates need human verification before any adapter.
+**Merge reconciliation (2026-10-23, arena/92bfcdd3):** main advanced via PRs #11–#15 (sessions bd37dbe6/cd27b02f/b252f309: lobby-authoritative fixture set — 13 cancelled fixtures excluded, verifier D21/D8d, coverage audit) while this branch was in flight. Merged `origin/main` (7d27d82) into this branch: generated files kept branch copy pending CI regeneration; style.css kept main's `minmax` nav columns; index hero actions combined; research sections kept both (main §11, this session renumbered §12). No other session's work discarded. Post-merge pipeline-test must regenerate the payload (175 lobby fixtures + standings) and pass D21/D8d before PR #16 merges.
+**Second reconciliation (2026-10-23):** session `arena/0fb2d0c7` (T17–T19, PRs #18/#19) independently implemented Standings + Unibet Kambi feed + verified aliases and merged first. This branch adopted their `fetch_leaguepedia.py`/`model.py` wholesale (standings→Elo blend supersedes this session's Bradley–Terry variant, live-verified on-branch), kept this session's site work (starting-soon exec summary, per-league unresolved table, standings filter), research §12 + source probe, and rewrote `verification/test_standings_model.py` against the merged semantics (10/10 pass). No work discarded silently; formula history in `research/betting-sources.md` §12.3.
+**PR & deploy record:** PR [#16](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/16) **merged** 2026-10-23T16:23:36Z (merge commit `43ebddd`). Post-merge on main: Verify 39986388519 success · Update picks 39986388688 success (fresh payload 16:24 UTC: 172 lobby fixtures, 172 priced, 9 market, 0 unresolved, 0 prior-only) · Pages builds 39986386708 + 39986551994 success, Pages status `built`. Live check 2026-10-23: executive summary renders Starting-soon picks + quick-jump links; `docs/data/picks.json` on Pages matches the 16:24 UTC payload. Site: https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/
+
+
+
+
+
 Shared task board. Rule: claim a task here (session ID + file scope) and push the claim before starting. A status of **needs review** means the item is published on the site's *Flagged for Review* page and does not block anything. Never mark a task verified without the official source link.
 
 > Branch note: Arena tracks this session by branch `arena/fa3f554c-lolhotspawn2` and the tooling does not permit creating other branches. That branch is the session branch required by the system, so it stands in for the `session-<id>/<task>` naming convention.
@@ -581,3 +599,40 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 - **Flagged irregularities (non-blocking, published on `flagged.html` with source URLs):** `13` cancelled Hotspawn API fixtures excluded from active picks (`D21` PASS); `4` rescheduled `RIVALS LEAGUE/2026 Season/Season 2` fixtures (`START_TIME_MISMATCH`); `3` undated `PRM 3rd Division 26-27 Fall` fixtures (`LEAGUEPEDIA_TIME_TBD`); `2` `PRM 2nd Division 26-27 Fall` fixtures flagged `HOTSPAWN_NAME_COLLISION` (`Phong Vũ Buffalo` → `PvB (Swiss Team)`); `77` thin-history (`<5` games) model rows (`THIN_HISTORY`).
 - **Combined test & verifier suite:** `python3 verification/test_verifier.py` → `34/34` pass; `python3 verification/check_dom_contract.py` → `PASS`; `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` → `36 PASS · 0 FAIL · 1 WARN` (`D18` stale 2026-10-21 diagnostic snapshot).
 
+
+---
+
+## Session `arena/bdecdf49-lolhotspawn2` — 2026-10-23 (current)
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | done | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
+
+**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), the code-change scope is limited to `.github/workflows/pipeline-test.yml`. `COORDINATION.md` is maintained as the shared log. No files in their site, source/model, or fixture scopes are edited; this is not the final integration claim.
+
+### Workflow reliability: diagnosis and verification
+
+- Actions run **39980957176** passed pipeline generation, summary, and site verification but failed in “Commit outputs for review” with `could not abort failed output rebase (128): fatal: no rebase in progress`. The Actions log archive could not be retrieved (GitHub returned EOF), so the annotation is the available failure evidence.
+- `verify_site.py` updates tracked `verification/report.json` and `verification/last_report.md`. The workflow had not staged those files, leaving the worktree dirty and preventing the output rebase from starting. Staging both reports with the payload and diagnostics fixed the issue: run **39981581552** succeeded end-to-end.
+- The `fail_publish` “Remote HEAD” line used valid Bash command substitution; its nested quoting was not a syntax/runtime defect. It was simplified to assign `remote_head` before writing the summary. `bash -n` and a local runtime check passed. The failure-only branch was not deliberately triggered.
+- After PR #18 merged the market-deduplication, Unibet, and D20 changes (`fcffaaa`) and PR #17's final report was merged (`3ad4f00`), this branch was rebased onto current main. Actions run **39985420241** tested that rebased tree and passed end-to-end in **1m8s**; all steps passed, including live generation, site verification, and “Commit outputs for review.” Generated artifact commit `25f017c` was pushed.
+- The 39985420241 payload (generated **2026-10-23T16:17:40Z**) contains **172** upcoming fixtures: **172 resolved**, **9 market-derived** (8 consensus, 1 single), **163 model-derived**, **0 unresolved**, **80 low-confidence**, **12 cancelled excluded**, **0** upcoming fixtures without a published match page, and **0** `GENERIC_RESULTS_SOURCE` rows. These are run-specific values.
+- Source status in that run: Pinnacle **ok** (8), Unibet **ok** (8), Polymarket **ok** (9), Leaguepedia MatchSchedule **ok** (31,728), and Hotspawn lobby **ok** (172); Bovada was **no_data** (0). Do not report Bovada lines as used. D20 passed: every market row has unique provider keys and matching `source_count`.
+- `verification/report.json` for run 39985420241: **36 PASS, 0 FAIL, 0 WARN, 1 SKIP**. D20 and D21 passed (172 upcoming and priced, missing 0, extra 0, excluded 12, leaked 0); D18 was skipped because no Leaguepedia schedule snapshot was supplied. The existing stale-snapshot caveat remains for independent current start-time checking.
+
+### Cross-session findings (resolved)
+
+- Q7–Q10 were addressed by `arena/bd37dbe6` (T13–T15), merged in PR **#12** at `c4619a7`. Their detailed source checks, coverage/mobile fixes, and remaining caveats are recorded in that session's results section above. This session did not edit their claimed files.
+
+
+### Consolidation note (arena/e76bc0ae, 16:30 UTC)
+
+`main` now carries the source probe as `scripts/probe_sources.py` (output `data/diag/source_probe.json`, run by
+`pipeline-test.yml`), so this branch **removed the duplicate** `audit/probe_sources.py`, `audit/source_probe.*` and the
+`Audit external sources` workflow. Two probes on the same branch were doubling Actions minutes and re-triggering each
+other. The `audit/` directory now holds only what `main` lacks: `test_model.py` (20 offline regression checks) and
+`coverage_reconcile.py` (lobby + fixtures API vs published payload), both run by the strict audit workflow, which also
+publishes `audit/last_run.json` for manual review.
+
+The strict workflow's `paths:` filter only fires on `scripts/**`, `audit/coverage_reconcile.py`, `audit/test_model.py`
+and itself, so documentation-only commits do not queue a 10-minute live run.

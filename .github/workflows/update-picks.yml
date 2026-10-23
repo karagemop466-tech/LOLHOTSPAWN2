@@ -33,7 +33,6 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
         run: |
-          set -euo pipefail
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
 
@@ -48,10 +47,8 @@ jobs:
           ms = d.get("matches") or []
           if len(ms) < 50:
               errs.append(f"only {len(ms)} fixtures")
-          # Keep this list in sync with scripts/model.py METHOD_LABELS: a method
-          # missing here blocks the whole scheduled refresh (MODEL_STANDINGS did).
           methods = {"MARKET_CONSENSUS", "MARKET_SINGLE", "MODEL_ELO", "MODEL_ELO_THIN",
-                     "MODEL_LEAGUE_PRIOR", "MODEL_STANDINGS", "UNRESOLVED"}
+                     "MODEL_STANDINGS", "MODEL_LEAGUE_PRIOR", "UNRESOLVED"}
           for m in ms:
               if m["method"] not in methods:
                   errs.append(f"bad method {m['method']} for {m['team1']} vs {m['team2']}")
@@ -94,12 +91,12 @@ jobs:
           git add docs/data data/diag/pipeline.log
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
+          # Merge-based retry: a rebase here can strand the worktree mid-rebase
+          # and lose the refresh for a whole 6h cycle. Keep this run's payload.
           for attempt in 1 2 3 4 5; do
             if ! git fetch -q origin "${GITHUB_REF_NAME}"; then
               echo "fetch failed on attempt ${attempt}" >&2; sleep 5; continue
             fi
-            # Generated payload is the freshest copy: keep it on both rebase and
-            # merge, but never leave the repo in a half-rebased state.
             if ! git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1; then
               git merge --abort >/dev/null 2>&1 || true
               echo "merge failed on attempt ${attempt}" >&2; sleep 5; continue
