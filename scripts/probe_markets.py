@@ -66,15 +66,16 @@ CANDIDATES = [
 ]
 
 # Two-way price shapes seen in bookmaker JSON: american (+150/-170) or decimal (1.6/2.4)
-AMERICAN = re.compile(r'"(?:price|odds|americanOdds|handicap)"\s*:\s*[+-]?\d{3,4}\b')
-DECIMAL = re.compile(r'"(?:decimalOdds|decimal|price|odds)"\s*:\s*(?:1\.\d{2,3}|[2-9]\.\d{2,3})\b')
-LOLISH = re.compile(r"league\s*of\s*legends|lol[\"'_/ -]|esports", re.I)
+PRICE_KEY = re.compile(
+    r'"(?:price|decimalOdds|decimal_price|americanOdds|odds|moneyline|'
+    r'homeTeamOdds|awayTeamOdds|handicap)"\s*:', re.I)
+TWO_WAY = re.compile(r'"(?:price|decimalOdds|decimal_price|americanOdds|odds)"\s*:\s*"?[+-]?\d')
 
 
 def classify(body: str, kind: str) -> dict:
     text = body[:400000]
     looks_lol = bool(LOLISH.search(text))
-    two_way = bool(AMERICAN.search(text) or DECIMAL.search(text)) if kind == "json" else False
+    two_way = bool(PRICE_KEY.search(text) and TWO_WAY.search(text)) if kind == "json" else False
     return {"league_of_legends_content": looks_lol, "two_way_prices_in_body": two_way}
 
 
