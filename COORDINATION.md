@@ -318,15 +318,21 @@ REQ1 pick for every match · REQ2 probabilities sum to 1 · REQ3 no Hotspawn pro
 - Leaguepedia Cargo MatchSchedule + Teams (results, schedule, canonical names): https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule
 - Provider availability checks (403/401/404/503 → not used): documented in scripts/update_picks.py CHECKED_UNAVAILABLE and research/betting-sources.md.
 
-### Next step
+### Integration result
 
-Open a pull request from `arena/cd27b02f-lolhotspawn2` to `main`, merge without waiting for approval, confirm the Pages build/deploy, then record the PR link and merge result below.
+Pull request #11 (`arena/cd27b02f-lolhotspawn2` → `main`) merged without waiting for approval.
 
 | Item | Value |
 |---|---|
-| PR number | pending |
-| Merge commit | pending |
-| Pages build/run id | pending |
+| PR number | 11 |
+| PR URL | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/11 |
+| Merge commit | 6feaaecd39cd646a42ce1abbd96453dde22f187e |
+| Pages build/run | "pages build and deployment" run 39981417237 — **success** (2026-10-23T15:48 UTC) |
+| Pages status | **built** — live at https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
+| Post-merge verification | "Verify picks and site" run 39981419222 — **success** on main |
+| Production refresh | "Update Hotspawn LoL picks (every 6h)" re-ran on the main push (automation confirmed live) |
+
+This session (arena/cd27b02f-lolhotspawn2) is complete: repo reviewed line by line, every table row carries an official/trusted source link or is flagged unverified, the executive summary links in-site to the picks list and the unresolved section with limitations, the site is mobile-friendly and live, picks cover 100% of Hotspawn's listed LoL fixtures (189/189, 0 unresolved), and the pipeline refreshes automatically every 6 hours with no manual input. Remaining COORDINATION.md commit for this session (this integration record) is a one-commit follow-up PR from this branch to main.
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
 
 ---
