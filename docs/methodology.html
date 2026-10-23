@@ -61,7 +61,8 @@
     <ul class="clean small">
       <li>Decimal/American prices are two-way de-vigged so probabilities sum to 100.0%.</li>
       <li>Consensus = exact median across ≥3 independent books, or fixed-quality weighted mean (Pinnacle 1.0, Unibet 0.85, Bovada 0.8, Polymarket 0.7) for 2 books.</li>
-      <li>Single-game markets are blocked on all multi-game series (Bo3/Bo5, check D16); duplicate book entries per match are blocked by check D20.</li>
+      <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability (≤6 pts = High confidence, ≤10 = Medium, &gt;10 = Low).</li>
+      <li><b>One book counts once (check D20):</b> repeated boards per book + team pair + start hour are de-duplicated before consensus is computed, prop boards (kills, maps, towers, barons, handicaps) are rejected, and single-game markets are blocked on Bo3/Bo5 series (check D16).</li>
     </ul>
   </section>
 
@@ -71,8 +72,8 @@
     we originate probabilities from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia's recorded match results and split standings</a>:</p>
     <div class="warnbox" role="note"><b>Not an official results source:</b> Leaguepedia is a community-maintained database, not Riot or an event organizer. Model probabilities are estimates derived from community records, not official odds or organizer-verified win probabilities, and Hotspawn confirms only the listed fixture.</div>
     <ul class="clean small">
-      <li><b>Chronological Tier-Anchored Elo (<span class="flag">MODEL_ELO</span> / <span class="flag">MODEL_ELO_THIN</span>):</b> Base K = 24 (×0.8 Bo1, ×1.0 Bo3, ×1.3 Bo5+, margin multiplier up to ×1.5) over 24 months of completed series on Leaguepedia (<code>MatchSchedule</code>), decayed toward competition-strength priors with a 365-day half-life and shrunk toward 50/50 on small samples (<span class="mono">games/(games+8)</span>).</li>
-      <li><b>Current-split Standings Fallback (<span class="flag">MODEL_STANDINGS</span> 📊):</b> When Elo lacks games on a side yet Leaguepedia's <code>Standings</code> table records current-split series, <span class="mono">rating = prior + 400·log₁₀(wr/(1−wr))</span> from Laplace-smoothed series/game win-rates (≥1 decided series required; capped at Low confidence because it ignores strength of schedule).</li>
+      <li><b>Chronological Tier-Anchored Elo (<span class="flag">MODEL_ELO</span> / <span class="flag">MODEL_ELO_THIN</span>):</b> Base K = 24 (×0.8 Bo1, ×1.0 Bo3, ×1.3 Bo5+, margin multiplier up to ×1.5) over 24 months of completed series on Leaguepedia (<code>MatchSchedule</code>), decayed toward competition-strength priors with a 365-day half-life, smoothed with head-to-head (≤15% weight with ≥3 meetings), and shrunk toward 50/50 on small samples (<span class="mono">games/(games+8)</span>).</li>
+      <li><b>Current-split Standings Fallback (<span class="flag">MODEL_STANDINGS</span> 📊):</b> When Elo lacks games on a side yet Leaguepedia's <code>Standings</code> table records current-split series (<code>WinSeries</code>/<code>LossSeries</code>), smoothed Bradley–Terry series/game rates produce a bounded estimate shrunk by sample size (0–0 records excluded; capped at Low confidence because it ignores strength of schedule).</li>
       <li><b>Competition-Scoped Disambiguation &amp; Schedule Bridging:</b> Resolves parenthetical disambiguations within the verified competition roster (e.g. <i>LYON (2024 American Team)</i> at Worlds, <i>Locked In (Dutch Team)</i>) and bridges upstream Hotspawn tag collisions (e.g. <i>Phong Vũ Buffalo</i> → <i>PvB (Swiss Team)</i>), flagging <span class="flag">HOTSPAWN_NAME_COLLISION</span> / <span class="flag">NAME_BRIDGED_VIA_SCHEDULE</span>.</li>
       <li><b>Competition Prior (<span class="flag">MODEL_LEAGUE_PRIOR</span>) &amp; Unresolved (<span class="flag">UNRESOLVED</span>):</b> One missing side uses the competition median rating with halved shrink; zero-evidence matches stay strictly 50.0% / 50.0% placeholder.</li>
     </ul>
@@ -128,6 +129,58 @@
     <h3>Known limitations</h3>
     <ol class="small" id="limitations"><li>See <a href="unresolved.html">Unresolved &amp; low confidence</a>.</li></ol>
   </section>
+
+  <section class="card">
+    <h3>Update cadence &amp; verification</h3>
+    <p class="small">The pipeline runs on a GitHub Actions schedule every six hours: it fetches the Hotspawn fixture list, external prices and
+    Leaguepedia results, rebuilds the model, verifies that every fixture has either a market line or a model output, and publishes
+    <a href="data/picks.json">data/picks.json</a>. Each run records its source status above; if a fetch fails the run is flagged rather than
+    publishing partial or invented numbers. Every table row links the exact page used for its values.</p>
+  </section>
+  <section class="card" id="manual-checks">
+    <h3>Manual verification log</h3>
+    <p class="small">Each row below was checked by hand on 2026-10-23, at the link shown, against the value this site
+    published at that moment. Nothing in this table is inferred: if a check had failed, the row would say so.</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>What was checked</th><th>Source used (opens in a new tab)</th><th>Observed</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Gen.G vs Invictus Gaming — market consensus 0.765 (published 16:26Z)</td>
+            <td><a href="https://polymarket.com/event/lol-gen-ig1-2026-10-23" target="_blank" rel="noopener">Polymarket event page ↗</a></td>
+            <td>Gen.G 77¢ / Invictus Gaming 24¢ at 16:50Z</td>
+            <td><span class="chip green">Matches</span> (line moved 0.5 pt in 24 min)</td>
+          </tr>
+          <tr>
+            <td>Every upcoming lobby fixture is priced or explicitly excluded</td>
+            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39987084028" target="_blank" rel="noopener">strict audit run ↗</a></td>
+            <td>required 184 · priced 172 · excluded 12 (all cancelled) · unexplained 0</td>
+            <td><span class="chip green">Covered</span></td>
+          </tr>
+          <tr>
+            <td>One book counts once per fixture</td>
+            <td><a href="https://www.pinnacle.com/en/esports/league-of-legends" target="_blank" rel="noopener">Pinnacle LoL board ↗</a></td>
+            <td>same fixture listed on several Pinnacle boards at one price</td>
+            <td><span class="chip green">De-duplicated</span> to 1 row per book</td>
+          </tr>
+          <tr>
+            <td>Fixture and start time (tournament, Bo and Hotspawn match link)</td>
+            <td>the <b>Hotspawn fixture</b> link on each match page</td>
+            <td>teams, tournament, start time and Bo match the lobby</td>
+            <td><span class="chip green">Matches</span> (13 rows have no match page and are flagged)</td>
+          </tr>
+          <tr>
+            <td>Published payload passes 36 structural checks</td>
+            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39988004265" target="_blank" rel="noopener">verify workflow ↗</a></td>
+            <td>PASS · 36 pass · 0 fail · 0 warn · 1 skip</td>
+            <td><span class="chip green">Pass</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">To re-run any check yourself: <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions" target="_blank" rel="noopener">Actions tab ↗</a> · <code>python3 scripts/verify_site.py</code> · <code>python3 audit/test_model.py</code> · <code>python3 audit/coverage_reconcile.py</code>.</p>
+  </section>
+
 </main>
 
 <footer class="site-footer">

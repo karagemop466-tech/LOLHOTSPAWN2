@@ -54,8 +54,10 @@ _LATIN_FOLD = str.maketrans({
     "ß": "ss", "Đ": "D", "đ": "d", "Ł": "L", "ł": "l",
 })
 _PROP_CRIT_RE = re.compile(
-    r"\b(map|game|kill|tower|turret|dragon|baron|inhibitor|handicap|total|"
-    r"over|under|first|blood|score|odd|even|duration|nashor)\b",
+    # Plural forms matter: books label these boards "Kills", "Maps", "Towers".
+    # Deliberately no plural on "odd", because "Match Odds" is the main market.
+    r"\b(maps?|games?|kills?|towers?|turrets?|dragons?|barons?|inhibitors?|handicaps?|"
+    r"totals?|over|under|first|blood|scores?|odd|even|duration|nashors?)\b",
     re.I,
 )
 

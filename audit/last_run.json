@@ -1,0 +1,306 @@
+{
+ "run_at": "2026-10-23T16:29:46.909480Z",
+ "payload_generated_at": "2026-10-23T16:29:40.425034Z",
+ "counts": {
+  "fixtures": 172,
+  "next_24h": 20,
+  "market": 9,
+  "model": 163,
+  "standings": 0,
+  "resolved": 172,
+  "unresolved": 0,
+  "low_confidence": 80,
+  "hotspawn_without_match_page": 0,
+  "excluded_not_priced": 12
+ },
+ "methods": {
+  "MARKET_CONSENSUS": 8,
+  "MODEL_ELO": 88,
+  "MODEL_ELO_THIN": 75,
+  "MARKET_SINGLE": 1
+ },
+ "sources_status": [
+  {
+   "name": "Pinnacle",
+   "status": "ok",
+   "count": 8,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  },
+  {
+   "name": "Unibet",
+   "status": "ok",
+   "count": 8,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  },
+  {
+   "name": "Bovada",
+   "status": "no_data",
+   "count": 0,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  },
+  {
+   "name": "Polymarket",
+   "status": "ok",
+   "count": 9,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  },
+  {
+   "name": "Leaguepedia MatchSchedule",
+   "status": "ok",
+   "count": 31728,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  },
+  {
+   "name": "Hotspawn LoL Pick'em lobby",
+   "status": "ok",
+   "count": 172,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  }
+ ],
+ "coverage_reconcile": {
+  "required_future_fixtures": 184,
+  "missing_from_payload": [
+   "1074653",
+   "1074656",
+   "1074661",
+   "1079026",
+   "1079035",
+   "1079044",
+   "1079052",
+   "1079061",
+   "1079140",
+   "1079143",
+   "1079148",
+   "1082258"
+  ],
+  "coverage_ok": true
+ },
+ "market_rows": [
+  {
+   "teams": [
+    "Gen.G",
+    "Invictus Gaming"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.765,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.7355
+    ],
+    [
+     "Unibet",
+     0.7899
+    ],
+    [
+     "Polymarket",
+     0.765
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "Hanwha Life Esports",
+    "Top Esports"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.765,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.7597
+    ],
+    [
+     "Unibet",
+     0.7736
+    ],
+    [
+     "Polymarket",
+     0.765
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "Bilibili Gaming",
+    "Movistar KOI"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.775,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.7628
+    ],
+    [
+     "Unibet",
+     0.775
+    ],
+    [
+     "Polymarket",
+     0.805
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "Anyone's Legend",
+    "Karmine Corp"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.645,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.6234
+    ],
+    [
+     "Unibet",
+     0.6553
+    ],
+    [
+     "Polymarket",
+     0.645
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "G2 Esports",
+    "Dplus KIA"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.4293,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.4293
+    ],
+    [
+     "Unibet",
+     0.4492
+    ],
+    [
+     "Polymarket",
+     0.395
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "Team Liquid",
+    "CTBC Flying Oyster"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.7143,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.7111
+    ],
+    [
+     "Unibet",
+     0.7143
+    ],
+    [
+     "Polymarket",
+     0.715
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "L\u00d8S",
+    "T1"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.1326,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.1607
+    ],
+    [
+     "Unibet",
+     0.1326
+    ],
+    [
+     "Polymarket",
+     0.125
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "Team Secret Whales",
+    "LYON"
+   ],
+   "method": "MARKET_CONSENSUS",
+   "confidence": "High",
+   "consensus": 0.4211,
+   "books": 3,
+   "raw_rows": 3,
+   "sources": [
+    [
+     "Pinnacle",
+     0.4311
+    ],
+    [
+     "Unibet",
+     0.4211
+    ],
+    [
+     "Polymarket",
+     0.415
+    ]
+   ]
+  },
+  {
+   "teams": [
+    "Mental Rush",
+    "Vitality Rising Bees"
+   ],
+   "method": "MARKET_SINGLE",
+   "confidence": "Medium",
+   "consensus": 0.33,
+   "books": 1,
+   "raw_rows": 1,
+   "sources": [
+    [
+     "Polymarket",
+     0.33
+    ]
+   ]
+  }
+ ],
+ "standings_rows": [],
+ "prior_only": 0,
+ "low_confidence": 80
+}
