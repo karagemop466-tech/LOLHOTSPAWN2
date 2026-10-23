@@ -488,8 +488,9 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 | Task | Status | Owner | Files (exclusive scope) |
 |---|---|---|---|
 | T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | done | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
+| T20 Post-merge verification & Pages deployment recovery: monitor PR #21 main Actions runs, recover/retry the Pages deploy if transient, verify live Pages content, and record evidence | done — latest Pages deployment `39986801808` and live payload verified; initial merge-run HTTP 500 recorded | arena/bdecdf49 | `COORDINATION.md` only |
 
-**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), the code-change scope is limited to `.github/workflows/pipeline-test.yml`. `COORDINATION.md` is maintained as the shared log. No files in their site, source/model, or fixture scopes are edited; this is not the final integration claim.
+**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), T19's code-change scope was limited to `.github/workflows/pipeline-test.yml`; T20's post-merge verification and logging are limited to `COORDINATION.md`. No files in other sessions' site, source/model, or fixture scopes were edited.
 
 ### Workflow reliability: diagnosis and verification
 
@@ -504,3 +505,19 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 ### Cross-session findings (resolved)
 
 - Q7–Q10 were addressed by `arena/bd37dbe6` (T13–T15), merged in PR **#12** at `c4619a7`. Their detailed source checks, coverage/mobile fixes, and remaining caveats are recorded in that session's results section above. This session did not edit their claimed files.
+
+### Post-merge verification & live Pages record (T20)
+
+| Item | Result | Evidence |
+|---|---|---|
+| PR #21 | `ci: make branch artifact publishing resilient` merged into `main` | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/21 |
+| Merge | `684d6b6433fcdb72187fa1dce56e3f3cb05c17ed`, 2026-10-23 16:19:44 UTC | GitHub PR #21 merge record |
+| Main verifier at PR #21 merge | **success**; all steps passed, including self-tests, offline verification, external source/live Pages checks, coverage audit, and DOM contract | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39985868839 |
+| Initial Pages Actions run for PR #21 | Jekyll build and artifact upload succeeded; `deploy` failed when GitHub's Pages API returned HTTP 500 (`Failed to create deployment`, request ID `EC10:37CAF:18AB01E:5029D9E:6ADB8942`; annotation advised retrying later) | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39985868427/job/120524954576 |
+| Follow-up main verifier | **success** after the subsequent main integration; all verifier steps passed on `43ebddd` | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39986388519 |
+| Six-hour refresh | **success** (run `39986631247`); the current payload was generated 2026-10-23 16:26:31.910454 UTC, with next refresh due 22:26:31.910454 UTC | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39986631247 |
+| Latest Pages Actions deployment | **success** on current main commit `aaaefeb`; build, deploy, and report-status jobs all passed | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39986801808 |
+| Pages build API | **`built`** for `aaaefeb0cee1a55ad7fc72ca9d622e4c2a4895c3`, created 16:26:35Z, updated 16:27:31Z (56.396 s) | https://api.github.com/repos/karagemop466-tech/LOLHOTSPAWN2/pages/builds/latest |
+| Live dashboard | Current live summary and cache-busted JSON match the 16:26:31Z main payload: 172 upcoming fixtures, 172 priced, 9 market-derived, 163 model-derived, 0 unresolved, 80 low-confidence, and 12 cancelled fixtures excluded | [Dashboard](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/index.html?v=aaaefeb) · [Live picks JSON](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json?v=aaaefeb) |
+
+**Deployment irregularity:** The first Pages deploy attempt for `684d6b6` failed with the transient HTTP 500 above; `gh run rerun 39985868427 --failed` was unavailable for GitHub's generated `pages-build-deployment` workflow, and a manual Pages-build API request was rejected with HTTP 403 (`Resource not accessible by integration`). A later automatic Pages deployment, run `39986801808`, succeeded and published current main; the first failure is retained here rather than presented as a green run. In the final live check, the normal dashboard page and cache-busted JSON showed the current 16:26:31Z payload; a direct unversioned JSON fetch returned the prior 16:24:46Z snapshot. `docs/assets/app.js` fetches `data/picks.json` with `cache: "no-store"`; this one-refresh discrepancy is recorded as a fetch/CDN-cache observation, not as proof of a stale browser view.
