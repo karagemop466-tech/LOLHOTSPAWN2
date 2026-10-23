@@ -369,6 +369,12 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
     for t in leaguepedia.get("teams") or []:
         if t.get("Name") not in (None, ""):
             lp_names.add(str(t["Name"]))
+    # Standings-only teams (new amateur rosters with a table record but no
+    # recorded series yet) must still resolve, or the standings fallback
+    # can never find them.
+    for s in leaguepedia.get("standings") or []:
+        if s.get("team"):
+            lp_names.add(str(s["team"]))
     resolver = Resolver(lp_names, aliases["hotspawn_to_leaguepedia"])
 
     # Standings index: overview page -> {normalised team name: row}. Only used

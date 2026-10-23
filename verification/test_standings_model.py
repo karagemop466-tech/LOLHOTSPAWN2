@@ -91,6 +91,14 @@ lp4 = dict(lp, results=results + played)
 out4 = M.build_matches(hotspawn, lp4, markets, ALIASES)["matches"][0]
 check("elo preferred over standings", out4["method"] in ("MODEL_ELO", "MODEL_ELO_THIN"), out4["method"])
 
+# 6) Teams that exist ONLY in the standings table still resolve (4-0 vs 0-4 -> 0.75)
+lp6 = {"results": results, "schedule": [], "teams": [],
+       "standings": [standings_row("Newcomers", 4, 0), standings_row("Strugglers", 0, 4)]}
+out6 = M.build_matches({"fixtures": [fixture("9", "Newcomers", "Strugglers", future)]},
+                       lp6, markets, ALIASES)["matches"][0]
+check("standings-only teams resolve", out6["method"] == "MODEL_STANDINGS"
+      and abs(out6["prob_team1"] - 0.75) < 1e-6, f"{out6['method']} {out6['prob_team1']}")
+
 # 5) Zero-decided standings rows are not evidence
 lp5 = dict(lp, standings=[standings_row("Alpha", 0, 0), standings_row("Beta", 0, 0)])
 out5 = M.build_matches(hotspawn, lp5, markets, ALIASES)["matches"][0]
