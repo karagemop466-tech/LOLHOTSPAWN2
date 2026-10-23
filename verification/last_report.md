@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-23T16:29:47.589072+00:00_
-172 matches · MARKET_BOOKS: 0 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0 · UNRESOLVED: 0 · MODEL_ELO: 88 · MARKET_CONSENSUS: 8 · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 75
+_2026-10-23T16:35:05.376745+00:00_
+172 matches · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 75 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · UNRESOLVED: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO: 88
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 172 matches, generated_at=2026-10-23T16:29:47.317500Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 172 matches, generated_at=2026-10-23T16:29:47.317500Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 172 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |

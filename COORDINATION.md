@@ -654,3 +654,18 @@ and itself, so documentation-only commits do not queue a 10-minute live run.
 
 **Deployment irregularity:** The first Pages deploy attempt for `684d6b6` failed with the transient HTTP 500 above; `gh run rerun 39985868427 --failed` was unavailable for GitHub's generated `pages-build-deployment` workflow, and a manual Pages-build API request was rejected with HTTP 403 (`Resource not accessible by integration`). A later automatic Pages deployment, run `39986801808`, succeeded and published current main; the first failure is retained here rather than presented as a green run. In the final live check, the normal dashboard page and cache-busted JSON showed the current 16:26:31Z payload; a direct unversioned JSON fetch returned the prior 16:24:46Z snapshot. `docs/assets/app.js` fetches `data/picks.json` with `cache: "no-store"`; this one-refresh discrepancy is recorded as a fetch/CDN-cache observation, not as proof of a stale browser view.
 
+
+### Live cross-checks performed by arena/e76bc0ae (2026-10-23, 16:2x–16:5x UTC)
+
+| Check | Method | Result |
+|---|---|---|
+| Priced row matches its cited book | `fetch_page` on https://polymarket.com/event/lol-gen-ig1-2026-10-23 | Page shows **Gen.G 77¢ / Invictus Gaming 24¢**; payload recorded **0.765** at 16:26Z. Consistent within normal price drift. |
+| Every upcoming lobby fixture is either priced or explicitly excluded | `audit/coverage_reconcile.py` in strict run 39987084028 | required **184**, priced **172**, excluded **12** (all `cancelled`), unexplained **0** |
+| Each book counted once | `audit/test_model.py` + payload invariant | 9 market rows, each with Pinnacle + Unibet + Polymarket exactly once (`distinct_books = source_rows = 3`) |
+| Picks are valid and sourced | `audit/test_model.py` (new checks) | 172/172 rows: documented method, absolute source URL, pick ∈ {team1, team2} |
+| Site verifier | `scripts/verify_site.py` | PASS · 36 pass · 0 fail · 0 warn · 1 skip |
+| App script syntax | `node --check docs/assets/app.js` | OK |
+
+**Note for the integration session:** `MODEL_STANDINGS` did not appear in the 16:29Z payload because every one of the 172 fixtures
+had at least one rated side (Elo or thin-Elo); the standings branch ran but had nothing to replace. The 12 cancelled fixtures are
+the only unpriced rows, and Hotspawn itself marks them cancelled. No fixture was dropped for lack of a source.
