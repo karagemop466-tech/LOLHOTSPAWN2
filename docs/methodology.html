@@ -61,6 +61,9 @@
       <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability. ≤6 points = High confidence, ≤10 = Medium, more = Low.</li>
       <li>Matching a bookmaker row to a Hotspawn fixture uses team-name aliases plus the closest start time within ±36 hours. Bookmakers publish drifting start times; the observed delta is shown on each match page and delta &gt;1.5 h sets <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>.</li>
       <li>Bookmaker prices are used as published; no line is invented, smoothed or extrapolated to another match.</li>
+      <li><b>One book counts once.</b> A book can publish the same match on several boards with different internal ids
+      (Pinnacle does). Rows are de-duplicated per book + team pair + start hour before the consensus is computed, so a repeated
+      board can never outvote a second book. Prop boards (kills, maps, totals) are excluded from match-winner prices.</li>
     </ul>
   </section>
 
@@ -75,7 +78,13 @@
       <li><b>Shrinkage</b>: with few games, the Elo probability is pulled toward 50/50 (shrink = games/(games+8)).</li>
       <li><b>Head-to-head</b>: a smoothed H2H term contributes at most 15% and only with at least three meetings.</li>
       <li><b>One missing side</b>: the competition median rating (or tier prior) is substituted and the shrink is halved; the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
-      <li><b>No history at all</b>: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
+      <li><b>No history at all</b>: before falling back to a 50/50 placeholder, we look at the competition's
+      current-season <span class="flag">Leaguepedia Standings</span> (<code>WinSeries</code>/<code>LossSeries</code>). When both teams
+      have a decided series record, the line comes from a Bradley–Terry comparison of the two smoothed win rates, shrunk by sample
+      size (min series ÷ (min series + 8)) and, for multi-division pages, an extra 50% toward 50/50. Those rows are labelled
+      <span class="flag">MODEL_STANDINGS</span> and link the exact Leaguepedia page. A record of 0–0 carries no information and is
+      not used.</li>
+      <li><b>No history at all</b>, and no standings either: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
     </ul>
   </section>
 

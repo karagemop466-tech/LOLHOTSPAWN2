@@ -74,6 +74,10 @@ jobs:
                                    if m.get("method") == "MODEL_LEAGUE_PRIOR"))
           PY
 
+      - name: Reconcile every Hotspawn fixture against the published payload
+        if: always()
+        run: python3 audit/coverage_reconcile.py
+
       - name: Upload payload and log
         if: always()
         uses: actions/upload-artifact@v4
@@ -83,5 +87,7 @@ jobs:
             docs/data/picks.json
             data/diag/pipeline.log
             data/diag/verify.json
+            audit/coverage_reconcile.json
+            audit/coverage_reconcile.md
           retention-days: 14
           if-no-files-found: warn

@@ -11,12 +11,13 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
+    MODEL_STANDINGS: { label: "League standings", cls: "blue", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved", cls: "red", ico: "⚠️" },
   };
   const CONF = { High: "green", Medium: "blue", Low: "amber", None: "red" };
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
-  const METHOD_RANK = { MARKET_CONSENSUS: 5, MARKET_SINGLE: 4, MODEL_ELO: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
+  const METHOD_RANK = { MARKET_CONSENSUS: 5, MARKET_SINGLE: 4, MODEL_ELO: 3, MODEL_ELO_THIN: 2, MODEL_STANDINGS: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
 
@@ -112,7 +113,7 @@
     const upd = $("#updated");
     const fresh = $("#freshness");
     const t = whenLocal(d.generated_at);
-    if (upd) upd.innerHTML = `<b>Updated</b> ${esc(t.text)}`;
+    if (upd) upd.innerHTML = `<b>Updated</b> ${esc(t.text)} <span class="small">your local time</span>`;
     const fu = $("#footer-updated");
     if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · every 6 hours.`;
     if (fresh) {
@@ -144,7 +145,7 @@
     set("#stat-unresolved", c.unresolved ?? "—");
     const cov = d.coverage || {};
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a published pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external market lines, <b>${cov.with_team_specific_model ?? 0}</b> from the Elo model, <b>${cov.with_prior_only ?? 0}</b> from a league prior, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. Low-confidence rows are labelled and explained on the <a href="unresolved.html">Unresolved page</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a published pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external market lines, <b>${cov.with_team_specific_model ?? 0}</b> from the Elo model, <b>${(cov.counts_by_method || {}).MODEL_STANDINGS ?? 0}</b> from Leaguepedia current-season standings, <b>${cov.with_prior_only ?? 0}</b> from a league prior, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. Low-confidence rows are labelled and explained on the <a href="unresolved.html">Unresolved page</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -318,7 +319,7 @@
       <div class="two-col">
         <div>
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
-            ${m.market ? `<p class="small">Consensus: <b>${pct1(m.market.consensus_team1)}</b> ${esc(m.team1)} · <b>${pct1(1 - m.market.consensus_team1)}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.source_count} source(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
+            ${m.market ? `<p class="small">Consensus: <b>${pct1(m.market.consensus_team1)}</b> ${esc(m.team1)} · <b>${pct1(1 - m.market.consensus_team1)}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
             <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th></th></tr></thead><tbody>${marketRows}</tbody></table></div>`
             : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? "our own Elo model" : "an explicit 50/50 placeholder"}.</p>`}
           </div>

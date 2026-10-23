@@ -137,10 +137,10 @@ def _tournament_tokens():
     toks = set()
     for t in d.get("tournaments") or []:
         name = str(t.get("name") or "")
-        for word in ("prime league", "prm", "tunisian", "rivals", "arabian",
-                     "komplettligaen", "ligagg", "icelandic", "benelux", "4 nations",
-                     "superstrike", "hitpoint"):
-            if word in name.lower() and word not in ("prm",):
+        for word in ("prime league", "tunisian super league", "rivals league",
+                     "arabian league", "komplettligaen", "ligagg", "icelandic esports",
+                     "benelux ascend", "4 nations", "superstrike", "hitpoint"):
+            if word in name.lower():
                 toks.add(word)
     return toks
 
@@ -219,7 +219,8 @@ def main() -> int:
     payload = {
         "generated_at": utc_iso(now_utc()),
         "method": ("GET with the project User-Agent; a source is usable only if it returns 200, "
-                   "is machine-readable or names a current Hotspawn team, and carries a LoL/price token."),
+                   "is machine-readable or names at least two current Hotspawn teams, and carries a "
+                   "LoL/price token. A page that only mentions one team once is not counted."),
         "teams_checked": len(teams),
         "counts": {
             "candidates": len(rows),

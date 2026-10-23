@@ -32,14 +32,14 @@ STANDINGS_FIELDS = "OverviewPage,Team,Place,WinSeries,LossSeries,WinGames,LossGa
 SLEEP = 2.6
 
 
-def _get(params: dict, timeout=90):
+def _get(params: dict, timeout=90, retries=3):
     url = EXPORT + urllib.parse.urlencode(params)
-    r = fetch(url, timeout=timeout, retries=3)
+    r = fetch(url, timeout=timeout, retries=retries)
     return r, r["text"]
 
 
-def _rows(params: dict):
-    r, text = _get(params)
+def _rows(params: dict, timeout=90, retries=3):
+    r, text = _get(params, timeout=timeout, retries=retries)
     if r["status"] != 200:
         return None, f"HTTP {r['status']}"
     try:
@@ -79,20 +79,26 @@ def fetch_window(a: datetime, b: datetime, depth: int = 0):
     return rows, None
 
 
-def fetch_standings(pages: list[str], limit_pages: int = 45) -> tuple[list, list]:
+def fetch_standings(pages: list[str], limit_pages: int = 24, budget_s: float = 120.0,
+                    timeout: int = 25, retries: int = 1) -> tuple[list, list]:
     """Current-season series records from Leaguepedia's Standings table.
 
     Used only where the Elo has no team-specific history at all (see model.py).
     One request per competition page, paced like the other Cargo calls.
     """
     rows, errors = [], []
+    started = time.monotonic()
     for page in sorted(set(p for p in pages if p))[:limit_pages]:
+        if time.monotonic() - started > budget_s:
+            errors.append({"error": "standings time budget exhausted",
+                           "pages_done": len({r["_page"] for r in rows})})
+            break
         data, err = _rows({
             "tables": "Standings", "fields": STANDINGS_FIELDS,
             "where": "OverviewPage = '" + str(page).replace("'", "''") + "'",
             "limit": "200", "format": "json",
-        })
-        time.sleep(SLEEP)
+        }, timeout=timeout, retries=retries)
+        time.sleep(1.2)
         if err:
             errors.append({"page": page, "error": err})
             continue
@@ -167,9 +173,11 @@ def main() -> int:
     # Standings: only for competitions that are currently running (a schedule
     # row in the last 2 days or the near future), which keeps the number of
     # Cargo calls bounded. Older pages cannot inform a current fixture.
-    current_pages = sorted({r["overview"] for r in clean
-                            if r.get("overview") and
-                            r["start_utc"] >= utc_iso(now - timedelta(days=45))})
+    # Only competitions with a fixture in the published window (schedule =
+    # start >= now-2d). That is exactly the set the model can price, keeps the
+    # request count bounded, and makes the pipeline resilient when Leaguepedia
+    # is slow or rate limited: standings are an enhancement, never a blocker.
+    current_pages = sorted({r["overview"] for r in schedule if r.get("overview")})
     standings, standings_errors = fetch_standings(current_pages)
     log(f"leaguepedia: standings {len(standings)} rows from {len(current_pages)} current pages")
 
