@@ -283,3 +283,16 @@ picture; each item is resolved or explicitly dispositioned below.
 - live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
 - parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
+
+---
+
+## Session `arena/fe2a3415-lolhotspawn2` — 2026-10-23 (current final integration)
+
+Arena fixes the session branch name; this task is claimed on `arena/fe2a3415-lolhotspawn2` as required by the system.
+The prior T7–T12 work is recorded complete above; no other active claim is listed on this board.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T13 Final audit of the current Hotspawn LoL data/site against the request: verify coverage, source provenance, confidence/unresolved disclosure, mobile usability and automated refresh; fix only evidence-backed gaps, then run offline verification and record results | in progress | arena/fe2a3415-lolhotspawn2 | `scripts/**`, `docs/**`, `verification/**`, `.github/workflows/verify.yml`, `README.md`, `research/**`, `COORDINATION.md` |
+
+**Claim note:** the initial audit found a fresh snapshot dated 2026-10-23T11:00Z with 189/189 published picks, 9 market-derived and 180 results-model-derived rows, and 101 Low-confidence rows. The existing verifier passed 31 checks with one skipped time-cross-check because no fresh Leaguepedia schedule artifact was supplied. These are preliminary observations, not a fresh live-source verification. The next steps are to inspect row-level evidence and match provenance, improve any demonstrable gaps without inventing values, and run the complete available verification suite.
