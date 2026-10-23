@@ -216,20 +216,29 @@ STANDINGS_SHRINK_GAMES = 8.0
 
 
 def standings_index(leaguepedia):
-    """(page -> norm(team) -> rows), (page -> multi-division?), (team -> pages)."""
+    """Indexes over the standings rows.
+
+    Returns (page -> norm(team) -> rows, page -> multi-division?, team -> pages,
+    page -> normalised name variant -> rows). The variant index lets the same team be
+    recognised when one source writes "Locked In (Dutch Team)" and the other
+    "Locked IN" — only spelling differences, never a different team.
+    """
     by_page = defaultdict(lambda: defaultdict(list))
+    by_var = defaultdict(lambda: defaultdict(list))
     team_pages = defaultdict(set)
     for r in leaguepedia.get("standings") or []:
         page, team = r.get("page"), r.get("team")
         if not page or not team:
             continue
         by_page[page][norm(team)].append(r)
+        for v in name_variants(team):
+            by_var[page][norm(v)].append(r)
         team_pages[norm(team)].add(page)
     multi = {}
     for page, teams in by_page.items():
         places = [x.get("place") for rows in teams.values() for x in rows]
         multi[page] = sum(1 for p in places if p == 1) > 1
-    return by_page, multi, team_pages
+    return by_page, multi, team_pages, by_var
 
 
 def name_variants(name):
@@ -237,22 +246,28 @@ def name_variants(name):
     and the usual prefixes/suffixes (ex-, e.V., Esports, Gaming, Team, The)."""
     raw = str(name or "").strip()
     variants = {raw}
-    for prefix in ("ex-", "ex ", "team ", "the "):
+    for prefix in ("ex-", "ex "):
         if raw.lower().startswith(prefix):
             variants.add(raw[len(prefix):].strip())
-    for suffix in (" e.v.", " e.v", " esports", " gaming", " esport", " academy",
-                   " multigaming", " team"):
+    for suffix in (" e.v.", " e.v", " multigaming", " academy"):
         if raw.lower().endswith(suffix):
             variants.add(raw[: -len(suffix)].strip())
+    # Leaguepedia disambiguates common names with a trailing bracket, e.g.
+    # "Locked In (Dutch Team)" or "Neon eSports (Brazilian Team)". The same team is
+    # written without the bracket on Hotspawn, so both spellings are accepted.
+    stripped = re.sub(r"\s*\([^)]*\)\s*$", "", raw).strip()
+    if stripped and stripped != raw:
+        variants.add(stripped)
     return {v for v in variants if v}
 
 
-def _resolve_in_page(by_page, page, name):
+def _resolve_in_page(by_page, page, name, by_var=None):
     """One standings row for a team name on a page, or None. Ambiguity is refused."""
     rows = by_page.get(page, {}).get(norm(name))
     if not rows:
         for variant in name_variants(name):
-            cand = by_page.get(page, {}).get(norm(variant))
+            key = norm(variant)
+            cand = (by_var or {}).get(page, {}).get(key) or by_page.get(page, {}).get(key)
             if cand:
                 rows = cand
                 break
@@ -299,7 +314,7 @@ def standings_rating(row, base, shrink_games=STANDINGS_SHRINK_GAMES):
     return base + offset * weight, n, kind
 
 
-def fixture_standings(fixture, by_page, multi, team_pages, allowed_pages):
+def fixture_standings(fixture, by_page, multi, team_pages, allowed_pages, by_var=None):
     """Both teams' standings rows from ONE page, or None."""
     t1, t2 = fixture["team1"], fixture["team2"]
     if not allowed_pages:
@@ -307,8 +322,8 @@ def fixture_standings(fixture, by_page, multi, team_pages, allowed_pages):
     candidates = set(allowed_pages)
     best = None
     for page in sorted(candidates):
-        a = _resolve_in_page(by_page, page, t1)
-        b = _resolve_in_page(by_page, page, t2)
+        a = _resolve_in_page(by_page, page, t1, by_var)
+        b = _resolve_in_page(by_page, page, t2, by_var)
         if not a or not b:
             continue
         # prefer the most recent season on the page name, then the fuller table
@@ -328,6 +343,11 @@ class Resolver:
         self.names = sorted({str(n).strip() for n in names if str(n or "").strip()})
         self.by_norm = {norm(n): n for n in self.names}
         self.aliases = {norm(k): v for k, v in (aliases or {}).items()}
+        # variant index: "Locked In" also finds "Locked In (Dutch Team)" and vice versa
+        self.by_var = defaultdict(set)
+        for n in self.names:
+            for v in name_variants(n):
+                self.by_var[norm(v)].add(n)
 
     def resolve(self, name):
         if not name:
@@ -337,6 +357,11 @@ class Resolver:
             return self.by_norm.get(norm(self.aliases[n]), self.aliases[n])
         if n in self.by_norm:
             return self.by_norm[n]
+        hits = set()
+        for v in name_variants(name):
+            hits |= self.by_var.get(norm(v), set())
+        if len(hits) == 1:
+            return next(iter(hits))
         # containment (short market names such as "Liquid" -> "Team Liquid")
         cands = [x for x in self.names if contains(name, x)]
         if len(cands) == 1:
@@ -448,7 +473,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
     ratings = rating_data["ratings"]
     recent = rating_data["recent_games"]
     schedule_rows = leaguepedia.get("schedule") or []
-    st_by_page, st_multi, st_team_pages = standings_index(leaguepedia)
+    st_by_page, st_multi, st_team_pages, st_by_var = standings_index(leaguepedia)
     st_tournament = leaguepedia.get("standings_by_tournament") or {}
 
     lp_names = set()
@@ -583,7 +608,8 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         flags = []
         model = model_prob = model_method = None
         st = fixture_standings(f, st_by_page, st_multi, st_team_pages,
-                               st_tournament.get((f.get("tournament") or "").strip(), []))
+                               st_tournament.get((f.get("tournament") or "").strip(), []),
+                               by_var=st_by_var)
         st1 = st2 = None
         st_info = None
         if st:
