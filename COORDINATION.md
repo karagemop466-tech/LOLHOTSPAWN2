@@ -283,3 +283,23 @@ picture; each item is resolved or explicitly dispositioned below.
 - live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
 - parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
+
+---
+
+## Session `arena/b132c242-lolhotspawn2` — claim (2026-10-23)
+
+Branch note: this session's branch is `arena/b132c242-lolhotspawn2` (Arena-fixed name, stands in for
+`session-<id>/<task>`). Base commit `3addc56` (main).
+
+No other session is running. If another session appears, it must not edit the paths claimed below without
+logging a request here.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T20 Resolve low-tier fixtures with an independent official source: Leaguepedia `Standings` (win–loss records) as a per-fixture line, incl. renamed/new teams the Elo cannot rate | in progress | arena/b132c242 | scripts/fetch_leaguepedia.py, scripts/model.py, scripts/lib_common.py |
+| T21 Competition-tier prior fix (no more single global median for an unrated side) + per-row "why this line" evidence | in progress | arena/b132c242 | scripts/model.py, scripts/update_picks.py |
+| T22 Mobile-first executive summary: explicit in-site links to the picks list, per-row reasons on the unresolved section, readable probability layout on phones | in progress | arena/b132c242 | docs/** |
+| T23 Verification: extend scripts/verify_site.py + verification/test_verifier.py for the new method and the exec-summary/index requirements; run live pipeline in Actions | in progress | arena/b132c242 | scripts/verify_site.py, verification/** |
+| T24 PR to main, merge without waiting, confirm Pages deploy, record result | pending | arena/b132c242 | COORDINATION.md |
+
+**Scope:** `scripts/**`, `docs/**`, `.github/workflows/**`, `verification/**`, `data/diag/**`, `COORDINATION.md`, `README.md`.
