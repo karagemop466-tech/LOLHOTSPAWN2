@@ -31,6 +31,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Offline regression tests for the market/standings logic
+        run: python3 audit/test_model.py
+
       - name: Run the live pipeline (failures are fatal)
         env:
           PYTHONUNBUFFERED: "1"
