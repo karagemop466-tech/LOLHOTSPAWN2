@@ -1,5 +1,21 @@
 # Coordination Board
 
+## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (in progress)
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| T13 Standings fallback for non-market fixtures (Leaguepedia `Standings`, Bradley–Terry, `MODEL_STANDINGS`) between Elo and league-prior | done | arena/92bfcdd3 | scripts/fetch_leaguepedia.py, scripts/model.py, scripts/update_picks.py, .github/workflows/update-picks.yml, verification/test_standings_model.py |
+| T14 Phone-first executive summary: starting-soon picks first, quick-jump links, per-league unresolved/limitations table; bottom-nav 5-col fix | done | arena/92bfcdd3 | docs/index.html, docs/unresolved.html, docs/picks.html, docs/methodology.html, docs/assets/app.js, docs/assets/style.css |
+| T15 Fresh source research (established books → esportsbooks → community) + Actions probe of new candidates; PR + merge + Pages check | done (PR below) | arena/92bfcdd3 | research/betting-sources.md, scripts/probe_sources.py, .github/workflows/pipeline-test.yml, COORDINATION.md, README.md |
+
+Baseline at claim (main `3addc56`): 189 fixtures · 9 market · 82 MODEL_ELO · 74 MODEL_ELO_THIN · 24 MODEL_LEAGUE_PRIOR · 0 UNRESOLVED · 101 low-confidence; `scripts/verify_site.py` 31 PASS / 0 FAIL. No other session active on these files.
+
+**Results (2026-10-23):** live branch runs 39980317947 / 39981419030 / 39982897776 all **success**. Latest payload: 188 fixtures · 9 market · 81 MODEL_ELO · 74 MODEL_ELO_THIN · **4 MODEL_STANDINGS** (PRM 3rd Div, from 167 Leaguepedia standings rows / 14 competitions) · 20 MODEL_LEAGUE_PRIOR (was 24) · 0 UNRESOLVED. `verify_site.py` **31 PASS / 0 FAIL / 0 WARN**, verifier self-tests 27/27, standings unit test 11/11, jsdom DOM checks 14/14. Probe of 13 candidate books/aggregators: no new structured per-match LoL feed usable from CI (Kalshi: no LoL series; Manifold: futures only; esportsbooks 403/404/503) — `data/diag/source_probe.json`. Flagged (non-blocking, on Flagged page + `verification/flagged_items.md` S1–S3): 20 prior-only rows whose Hotspawn names match no verifiable Leaguepedia identity; 5 competitions with no standings table; probe candidates need human verification before any adapter.
+**Merge reconciliation (2026-10-23, arena/92bfcdd3):** main advanced via PRs #11–#15 (sessions bd37dbe6/cd27b02f/b252f309: lobby-authoritative fixture set — 13 cancelled fixtures excluded, verifier D21/D8d, coverage audit) while this branch was in flight. Merged `origin/main` (7d27d82) into this branch: generated files kept branch copy pending CI regeneration; style.css kept main's `minmax` nav columns; index hero actions combined; research sections kept both (main §11, this session renumbered §12). No other session's work discarded. Post-merge pipeline-test must regenerate the payload (175 lobby fixtures + standings) and pass D21/D8d before PR #16 merges.
+**Second reconciliation (2026-10-23):** session `arena/0fb2d0c7` (T17–T19, PRs #18/#19) independently implemented Standings + Unibet Kambi feed + verified aliases and merged first. This branch adopted their `fetch_leaguepedia.py`/`model.py` wholesale (standings→Elo blend supersedes this session's Bradley–Terry variant, live-verified on-branch), kept this session's site work (starting-soon exec summary, per-league unresolved table, standings filter), research §12 + source probe, and rewrote `verification/test_standings_model.py` against the merged semantics (10/10 pass). No work discarded silently; formula history in `research/betting-sources.md` §12.3.
+
+
+
+
 Shared task board. Rule: claim a task here (session ID + file scope) and push the claim before starting. A status of **needs review** means the item is published on the site's *Flagged for Review* page and does not block anything. Never mark a task verified without the official source link.
 
 > Branch note: Arena tracks this session by branch `arena/fa3f554c-lolhotspawn2` and the tooling does not permit creating other branches. That branch is the session branch required by the system, so it stands in for the `session-<id>/<task>` naming convention.
@@ -534,3 +550,31 @@ adapter, cancelled-fixture exclusion) and re-applied this session's work on top 
 
 - Q7–Q10 were addressed by `arena/bd37dbe6` (T13–T15), merged in PR **#12** at `c4619a7`. Their detailed source checks, coverage/mobile fixes, and remaining caveats are recorded in that session's results section above. This session did not edit their claimed files.
 ##### the-other-side: origin/main
+
+---
+
+## Session `arena/b132c242-lolhotspawn2` — integration on top of `main` (2026-10-23, later pass)
+
+`main` moved twice while this branch was in review (PR #16, #17, #21). Rather than re-litigate the
+parallel standings implementation, the branch now **takes `main` as the base** and keeps only the
+additions that were still missing there.
+
+| Kept / added on top of `main` | File | Why |
+|---|---|---|
+| Standings lines are **always Low confidence** (was Medium for a large sample) | `scripts/model.py` | A split table has no strength-of-schedule control; matching `verification/test_standings_model.py` |
+| `MULTI_DIVISION_STANDINGS`: a table with more than one first place halves the edge | `scripts/model.py` | Prevents a mixed 2nd/3rd-division table from producing a false edge |
+| Per-team `standings` provenance (`team1.page`/`team1.url`, `shared_page`) + `source_url` naming the table used | `scripts/model.py` | A row must never imply a record came from a table that does not contain it |
+| Plain-English `why` per row | `scripts/model.py`, `docs/assets/app.js`, `docs/assets/style.css` | "What the pick is and why" on a phone |
+| `market_probe` block in the payload (31 probed endpoints, measured) + renderer for `#market-probe` | `scripts/update_picks.py`, `docs/assets/app.js` | The table existed on `flagged.html` but nothing filled it |
+| "Where to find the picks" card grid + in-page next-24h jump | `docs/index.html` | Executive summary must link the updated lists in-site (verifier `S7b`) |
+| Explicit Leaguepedia Standings source row; mixed-division limitation string | `scripts/update_picks.py` | Source attribution in `sources_status` |
+| `picks.html?tournament=…` / `?q=…` deep links | `docs/assets/app.js` | Links from the per-league tables must land on a filtered list |
+| Verifier id collision fixed: lobby reconciliation stays **D21**, the standings-link rule is **D22** | `scripts/verify_site.py`, `verification/test_verifier.py` | Both rules had been auto-merged under `D21` |
+| Workflow publish step stages `data/diag/market_probe.json` + `data/diag/standings.json` | `.github/workflows/pipeline-test.yml` | Snapshots were generated but never committed |
+| README: Unibet, Leaguepedia Standings/TeamRedirects sources; cancelled fixtures not priced | `README.md` | Documentation parity |
+
+**Verification on the merged branch:** verifier **37 PASS · 0 FAIL · 1 WARN** (`D18` stale snapshot);
+`test_verifier.py` 37/37; `test_standings_model.py` ALL PASS; `test_model_standings.py` PASS; DOM
+contract PASS; jsdom render of all seven page/query combinations with the live payload and an
+injected probe block → 0 JS errors, 172 pick rows, 20 next-24h rows, 80 unresolved cards,
+240 flagged rows, probe table filled.

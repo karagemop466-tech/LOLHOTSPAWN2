@@ -42,57 +42,68 @@
     <p class="eyebrow">Executive summary</p>
     <h1>Every LoL match on Hotspawn's Pick'em list — with a pick and a win probability.</h1>
     <p class="lede">
-      This site mirrors the League of Legends fixtures on
-      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
-      and prices <b>every</b> one of them: matches covered by established bookmakers use the external market
-      consensus; low-tier and amateur matches, which no book prices, are priced by our own model from
-      recorded results and the official Leaguepedia split standings.
-      Hotspawn's crowd percentages are shown as context only and are <b>never</b> an input to a probability.
+      Fixtures mirror <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
+      (refreshed every 6 hours). Every match is priced: 💰 external bookmaker/market lines where they exist,
+      otherwise 🧮 our Elo model or 📊 official standings records. Hotspawn crowd % is context only, <b>never</b> a probability.
     </p>
     <div class="warnbox" role="note">
       <b>Source limitation:</b> When there is no external market line, the probability is our model estimate from Leaguepedia's recorded results. Leaguepedia is a community-maintained results database, not an official tournament or Riot source; Hotspawn confirms the listed fixture, not its win probability. These estimates are not official lines. See <a href="flagged.html#source-limitations">source limitations and flagged items</a>.
     </div>
     <div class="hero-actions">
-      <a class="btn primary" href="picks.html">See all picks →</a>
-      <a class="btn" href="#next24">Picks for the next 24 h ↓</a>
-      <a class="btn warn" href="unresolved.html">Picks without a book line &amp; limitations →</a>
+      <a class="btn primary" href="picks.html">📋 All picks →</a>
+      <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24h picks →</a>
+      <a class="btn warn" href="unresolved.html">⚠️ Picks without a book line &amp; limitations →</a>
       <a class="btn" href="flagged.html">Flagged for review →</a>
     </div>
-    <p class="small">
-      <b>On a phone?</b> Use the bar at the bottom of the screen: <b>Picks</b> opens the full table,
-      the other tabs open the unresolved list, the flagged items and the method.
-    </p>
+    <div class="chips" role="navigation" aria-label="Jump to picks on this page">
+      <a class="chipbtn" href="#starting-soon">⏰ Starting soon ↓</a>
+      <a class="chipbtn" href="#featured-heading">💰 Market picks ↓</a>
+      <a class="chipbtn" href="#unresolved-heading">⚠️ Unresolved ↓</a>
+      <a class="chipbtn" href="picks.html?filter=market">💰 Only market lines</a>
+      <a class="chipbtn" href="picks.html?filter=standings">📊 Standings picks</a>
+    </div>
   </section>
 
-  <section class="card" id="where-picks">
-    <h3>Where to find the picks</h3>
+  <section class="card" id="where-picks" aria-labelledby="where-h">
+    <h3 id="where-h">Where to find the picks</h3>
+    <p class="small">Five places, all inside this site. Every list refreshes with the same 6-hourly build.
+      Jump straight to <a href="#next24">the picks for the next 24 hours ↓</a>,
+      <a href="picks.html">the full list</a> or
+      <a href="unresolved.html">the ones without a book line</a>.</p>
     <div class="linkgrid">
       <a class="linkcard" href="picks.html">
         <span class="ico" aria-hidden="true">📋</span>
-        <span><b>Full picks list — every match, one row each</b><span>Start time, both teams' win probability, the pick, the method and source links. Search, sort and filter.</span></span>
+        <span><b>All picks — one row per match</b><span>Start time, both win probabilities, the pick, the method and the source links.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="picks.html?filter=next24">
-        <span class="ico" aria-hidden="true">⏱️</span>
-        <span><b>Picks for the next 24 hours</b><span>The same table, filtered to the matches that lock soonest.</span></span>
+        <span class="ico" aria-hidden="true">⏰</span>
+        <span><b>Next 24 hours</b><span>The same table filtered to the fixtures that lock soonest.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="unresolved.html">
         <span class="ico" aria-hidden="true">⚠️</span>
-        <span><b>Unresolved / low-confidence picks</b><span>Which fixtures have no verified signal or only a weak one, league by league, with the written limitations.</span></span>
+        <span><b>Unresolved &amp; low confidence</b><span>What has no verified signal or only a weak one, league by league, with the written limitations.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="flagged.html">
         <span class="ico" aria-hidden="true">🚩</span>
-        <span><b>Flagged for review</b><span>Every irregularity with a source link, plus the measured result of probing 31 other betting sources.</span></span>
+        <span><b>Flagged for review</b><span>Every irregularity with a source link, plus the measured result of probing other betting sources.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="methodology.html">
         <span class="ico" aria-hidden="true">📐</span>
-        <span><b>Methodology, sources and verification</b><span>How each line is produced, which sources are used, which were checked and could not be used.</span></span>
+        <span><b>Methodology &amp; sources</b><span>How each line is produced, what is used, and what was checked and could not be used.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
     </div>
+  </section>
+
+  <section id="starting-soon">
+    <h2>⏰ Starting soon — your next picks</h2>
+    <p class="small" id="soon-count">Next matches on Hotspawn's list</p>
+    <div id="next24"></div>
+    <p><a class="btn primary" href="picks.html?filter=next24">All picks for the next 24 hours →</a></p>
   </section>
 
   <section class="stats" aria-label="Coverage at a glance">
@@ -111,22 +122,41 @@
     <h3>How complete is coverage?</h3>
     <div class="bar" id="coverage-bar" aria-hidden="true"></div>
     <p id="coverage-text" class="small">Loading coverage…</p>
-    <p class="small"><a href="#where-picks">Where to find each list on this site →</a></p>
+    <div class="linkgrid">
+      <a class="linkcard" href="picks.html">
+        <span class="ico" aria-hidden="true">📋</span>
+        <span><b>All picks, filters and per-team probabilities</b><span>Search, filter by market/model/low-confidence, sort by start time or confidence.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="unresolved.html">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span><b>Unresolved picks and the written limitations</b><span>Which fixtures have no verified signal, and exactly why.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="flagged.html">
+        <span class="ico" aria-hidden="true">🚩</span>
+        <span><b>Flagged for review</b><span>Thin history, name/tier/time irregularities and model–market disagreements with source links.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="methodology.html">
+        <span class="ico" aria-hidden="true">📐</span>
+        <span><b>Methodology, sources and verification</b><span>How lines are de-vigged, how the Elo model works, what was checked and what is unavailable.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
   </section>
 
   <section>
     <h2 id="unresolved-heading">Unresolved picks &amp; limitations</h2>
-    <p class="small">Anything we cannot verify is published as an explicit placeholder and listed on its own page — never silently filled in.</p>
+    <p class="small">Anything we cannot verify is published as an explicit placeholder and listed on its own page — never silently filled in.
+    Matches with no bookmaker line are priced from recorded results first (Elo), then from the official standings record
+    in that league (📊), then from a league prior; the per-league table on the Unresolved page shows exactly which signal
+    prices each league and where its limits are.</p>
     <div id="unresolved-summary"></div>
   </section>
 
   <section>
-    <h2>Next 24 hours</h2>
-    <div id="next24"></div>
-  </section>
-
-  <section>
-    <h2>Featured — matches with external betting lines</h2>
+    <h2 id="featured-heading">Featured — matches with external betting lines</h2>
     <p class="small">These rows use the de-vigged consensus of the bookmakers and prediction markets listed on each card; the model is shown alongside as a cross-check.</p>
     <div id="featured"></div>
   </section>

@@ -890,7 +890,10 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                     if st1 else g1,
                     int((st2 or {}).get("win_series") or 0) + int((st2 or {}).get("loss_series") or 0)
                     if st2 else g2)
-                confidence = "Low" if (_norm_team(eff_page) in multi_div or sample < 5) else "Medium"
+                # A split win-loss table has no strength of schedule and no roster
+                # continuity, so a standings-only line is never better than Low --
+                # not even for a large sample. Mixed-division pages are weaker still.
+                confidence = "Low"
             else:
                 confidence = "Low"
         else:

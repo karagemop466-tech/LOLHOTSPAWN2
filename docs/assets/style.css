@@ -196,6 +196,7 @@ input[type="search"]:focus, select:focus, a:focus-visible, button:focus-visible 
   background: var(--surface); color: var(--text); font-weight: 700; font-size: 13px; cursor: pointer;
 }
 .chipbtn[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+a.chipbtn { text-decoration: none; display: inline-flex; align-items: center; }
 .chipbtn .n { opacity: .8; font-weight: 600; margin-left: 4px; }
 .countline { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
 
@@ -276,3 +277,5 @@ footer.site-footer a { color: var(--brand); }
 
 /* long source URLs must wrap on phones instead of forcing sideways scroll */
 main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
+.why { font-size: 12.5px; color: var(--text); opacity: .85; margin-top: 6px; border-left: 2px solid var(--line); padding-left: 8px; }
+.why b { font-weight: 700; }

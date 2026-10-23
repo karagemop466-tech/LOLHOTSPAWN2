@@ -138,21 +138,21 @@ def main() -> int:
         ],
     }
     results.append(assert_status(run([r]), "D20", vs.FAIL, "duplicate bookmaker in market.sources"))
-    # standings line must link the exact league table it used (D21)
+    # standings line must link the exact league table it used (D22)
     r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_STANDINGS"
     r["source_url"] = "https://lol.fandom.com/wiki/Test_League"
     r["standings"] = {"page": "Test League/2026", "url": "https://lol.fandom.com/wiki/Test_League",
                       "team1": {"wins": 3, "losses": 1, "sample": 4},
                       "team2": {"wins": 2, "losses": 2, "sample": 4}}
-    results.append(assert_status(run([r]), "D21", vs.PASS, "standings line with league page"))
+    results.append(assert_status(run([r]), "D22", vs.PASS, "standings line with league page"))
     r = copy.deepcopy(r); r["standings"] = {}
-    results.append(assert_status(run([r]), "D21", vs.FAIL, "standings line without league page"))
+    results.append(assert_status(run([r]), "D22", vs.FAIL, "standings line without league page"))
     r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_STANDINGS"
     r["source_url"] = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
     r["standings"] = {"page": "Test League/2026",
                       "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
                       "team1": {"wins": 3, "losses": 1, "sample": 4}}
-    results.append(assert_status(run([r]), "D21", vs.FAIL, "standings line with a generic table link"))
+    results.append(assert_status(run([r]), "D22", vs.FAIL, "standings line with a generic table link"))
 
     # stale data
     old = "2020-01-01T00:00:00+00:00"

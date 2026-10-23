@@ -19,6 +19,7 @@ Checks the published data and site against the project requirements:
   D11 data/picks.json and docs/data/picks.json are both present and identical
   D20 reserved (unique source_key per fixture: requested by arena/0fb2d0c7 as R16)
   D21 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
+  D22 every standings-based line links the exact league table it used
   S1  every page exists and has a mobile viewport meta
   S2  every page has the shared navigation with links to all site sections
   S3  executive summary (docs/index.html) links in-site to the picks list and the
@@ -494,7 +495,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                if abs(float(r.get("prob_team1") or 0.5) - 0.5) < 0.02
                and not str(r.get("method", "")).startswith("MARKET"))
     status = PASS if not bad_no_ev and not unlab else WARN
-    # D21: a standings-based line must link the exact league table it used
+    # D22: a standings-based line must link the exact league table it used
     st_bad, st_ok = [], 0
     for r in rows:
         if r.get("method") != "MODEL_STANDINGS":
@@ -511,7 +512,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         else:
             st_ok += 1
     if any(r.get("method") == "MODEL_STANDINGS" for r in rows):
-        rep.add("D21", "every standings-based line links the league table it used",
+        rep.add("D22", "every standings-based line links the league table it used",
                 PASS if not st_bad else FAIL,
                 f"{st_ok} standings row(s) link a specific Leaguepedia standings page",
                 st_bad[:10])

@@ -54,6 +54,36 @@
     <p class="small" id="unresolved-counts">Loading…</p>
   </div>
 
+  <section class="card" id="by-league">
+    <h3>By league — what prices each league, and where its limit is</h3>
+    <p class="small">One row per tournament on Hotspawn's list. 💰 = external betting line · 🧮 = our Elo on recorded results ·
+    📊 = official standings record (used only when there is no line and Elo cannot rate both sides) · “prior only” = one side
+    has no history, so the league median stands in. Sort order: most unresolved / low-confidence first.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">League</th>
+            <th scope="col">Fixtures</th>
+            <th scope="col">💰 Market</th>
+            <th scope="col">🧮 Elo</th>
+            <th scope="col">📊 Standings</th>
+            <th scope="col">Prior only</th>
+            <th scope="col">Unresolved</th>
+            <th scope="col">Low conf.</th>
+          </tr>
+        </thead>
+        <tbody id="league-body">
+          <tr><td colspan="8"><div class="loading"><span class="spinner"></span>Loading leagues…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Established books and esportsbooks we can read programmatically (Pinnacle, Bovada, Polymarket) price the
+    World Championship / top tiers only; every other league above is priced from community-recorded results and standings
+    (Leaguepedia), because no verified book line exists for it. Sources that were checked and could not be used are listed on
+    <a href="flagged.html">Flagged for review</a> and <a href="methodology.html">Methodology &amp; sources</a>.</p>
+  </section>
+
   <div class="two-col">
     <section class="card">
       <h3>⚠️ Unresolved — explicit 50/50 placeholders</h3>
@@ -74,13 +104,6 @@
   </section>
 
   <section class="card">
-    <h3>Which leagues need review, and how many rows</h3>
-    <p class="small">Every competition with at least one unresolved or low-confidence row. Tap through to that
-    league's rows in the full table.</p>
-    <div id="unresolved-by-league"><div class="loading"><span class="spinner"></span>Loading…</div></div>
-  </section>
-
-  <section class="card">
     <h3>Written limitations</h3>
     <ol class="small" id="limitations"><li>Loading…</li></ol>
     <p class="small">Also see <a href="methodology.html">Methodology &amp; sources</a> for exactly how probabilities are produced and
@@ -91,7 +114,7 @@
     <h3>What we do instead of guessing</h3>
     <ul class="clean small">
       <li><b>No line, no problem — as long as there is history.</b> Our Elo model uses recorded results and is anchored to the strength tier of the competition each team plays in.</li>
-      <li><b>No book line — but an official league table?</b> We convert each team's official win-loss record into a rating, shrink it for small samples, and compare the two sides. Those rows are labelled <span class="flag">MODEL_STANDINGS</span> / <span class="flag">STANDINGS_LINE_USED</span> and link the exact Leaguepedia standings page.</li>
+      <li><b>No Elo for a side, but both teams are in the table?</b> We price from the official standings record in that competition (smoothed Bradley–Terry on series win-rates) and mark the row <span class="flag">MODEL_STANDINGS</span> 📊. It ignores strength of schedule, so it is always capped at <b>Low</b> confidence, and a table that mixes divisions halves the edge (<span class="flag">MULTI_DIVISION_STANDINGS</span>).</li>
       <li><b>One side unknown?</b> We use the competition's median rating (or its tier prior) for the missing side and mark the row <span class="flag">MODEL_LEAGUE_PRIOR</span> / <span class="flag">ONE_TEAM_NO_HISTORY</span>.</li>
       <li><b>Both sides unknown?</b> The row stays unresolved (50/50 placeholder) and appears above — it is never dressed up as a model output.</li>
       <li><b>Verification.</b> Every row links its Hotspawn fixture and either the bookmaker/market page or the Leaguepedia tournament page used. No value is inferred without a link.</li>

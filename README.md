@@ -11,22 +11,20 @@ Every League of Legends fixture listed on
 [Hotspawn's Pick'em lobby](https://play.hotspawn.com/lol-pickems) gets a pick and a win
 probability for both teams. Rows are priced in this order:
 
-1. **External market consensus** — de-vigged two-way lines from Pinnacle, Unibet, Bovada
-   and Polymarket, deduplicated to at most one main series line per provider (median if
-   ≥3 sources, otherwise a fixed-quality weighted mean).
+1. **External market consensus** — de-vigged two-way lines from Pinnacle, Unibet (Kambi),
+   Bovada and Polymarket, deduplicated to at most one main-series line per provider
+   (median if ≥3 sources, otherwise a fixed-quality weighted mean).
 2. **Our own Elo model** — chronological ratings from Leaguepedia's recorded results,
    anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting,
    head-to-head smoothing and shrinkage for thin history.
-3. **Official split standings** — no book prices the national/amateur leagues, but
-   Leaguepedia publishes their current-split win–loss tables. A record is converted to a
-   rating and shrunk for sample size; a table that mixes divisions halves the edge and is
-   capped at low confidence (`MULTI_DIVISION_STANDINGS`). Rows are labelled
-   `MODEL_STANDINGS` and link the exact table each team's record came from.
-4. **League prior** — one team has neither enough history nor a standings row: the
-   competition median / tournament tier prior is substituted, shrunk toward 50/50 and
-   labelled `MODEL_LEAGUE_PRIOR` (low confidence).
-5. **Unresolved** — no market, no history and no standings row: published as an explicit
-   50/50 placeholder, listed on its own page with the written limitations. Never an edge.
+3. **Standings model** (`MODEL_STANDINGS` 📊) — a side has no Elo yet but has a current-split
+   win-loss record (Leaguepedia *Standings*): the record becomes a smoothed Elo offset from
+   the competition prior, blended with the other side's Elo, capped at Low confidence.
+4. **League prior** — one team has no usable history; the competition median/tier prior is
+   substituted, shrunk toward 50/50 and labelled `MODEL_LEAGUE_PRIOR` (low confidence).
+5. **Unresolved** — no market and no history at all: published as an explicit 50/50
+   placeholder, listed on its own page with the written limitations (including a
+   per-league table of which signal prices each league). Never an edge.
 
 Fixture rows whose Hotspawn status is `cancelled` are not priced; they are listed with
 that status on the *Flagged for review* page instead of being silently dropped.
@@ -56,26 +54,20 @@ inspection.
 | Bovada coupon JSON | Two-way moneyline | https://www.bovada.lv/sports/esports/league-of-legends |
 | Unibet (public sportsbook JSON) | Two-way moneyline | https://www.unibet.com/betting/sports/filter/esports/league_of_legends |
 | Polymarket Gamma API | Match/series prices | https://gamma-api.polymarket.com |
-| Leaguepedia Standings | Current-split win–loss records | https://lol.fandom.com/wiki/Special:CargoTables/Standings |
-| Leaguepedia TeamRedirects | Official rename/alias list | https://lol.fandom.com/wiki/Special:CargoTables/TeamRedirects |
 | Leaguepedia CargoExport | Recorded results + schedule + canonical team names | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
-| Leaguepedia Standings | Official win–loss table per league (low-tier fixtures with no book) | https://lol.fandom.com/wiki/Special:CargoTables/Standings |
+| Leaguepedia Standings | Current-split win-loss records (standings fallback) | https://lol.fandom.com/wiki/Special:CargoTables/Standings |
+| Leaguepedia TeamRedirects | Official rename / alias list for name matching | https://lol.fandom.com/wiki/Special:CargoTables/TeamRedirects |
 
-`scripts/probe_markets.py` requests 31 additional books/exchanges/aggregators once per
-pipeline run and records the measured HTTP status and whether the body contained
-two-way prices (`data/diag/market_probe.json`). The results are published on the
-*Flagged for review* page. Providers that were checked and could not be used (403/404/502,
-paid key required, no per-match markets) are listed with their observed status on the
+Providers that were checked and could not be used (403/404/502, paid key required, no
+per-match markets) are listed with their observed status on the
 [Flagged page](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html).
 
 ## Local run
 
 ```bash
-python3 scripts/probe_markets.py           # measure candidate betting sources
 python3 scripts/update_picks.py            # live fetch + model + publish
 python3 scripts/update_picks.py --use-cache  # reuse data/cache/*.json
 python3 scripts/verify_site.py             # schema + link + page checks
-python3 verification/test_model_standings.py  # offline standings / tier-prior test
 ```
 
 Caches (`data/cache/`) are generated and git-ignored. Not betting advice; no affiliation
