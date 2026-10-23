@@ -90,7 +90,7 @@ img { max-width: 100%; }
 .bottom-nav {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--surface);
   border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
 }
 .bottom-nav a {
   min-height: var(--nav-h); display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -194,6 +194,7 @@ input[type="search"]:focus, select:focus, a:focus-visible, button:focus-visible 
   background: var(--surface); color: var(--text); font-weight: 700; font-size: 13px; cursor: pointer;
 }
 .chipbtn[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+a.chipbtn { text-decoration: none; display: inline-flex; align-items: center; }
 .chipbtn .n { opacity: .8; font-weight: 600; margin-left: 4px; }
 .countline { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
 
