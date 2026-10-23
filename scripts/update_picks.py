@@ -121,8 +121,11 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "unresolved": picks["coverage"]["unresolved"],
             "low_confidence": len(low_conf),
             "hotspawn_without_match_page": fixtures.get("without_match_page", 0),
+            "excluded_not_priced": len(fixtures.get("excluded") or []),
         },
         "coverage": picks["coverage"],
+        "coverage_reconciliation": fixtures.get("reconciliation") or {},
+        "excluded_fixtures": fixtures.get("excluded") or [],
         "model": picks["model"],
         "unresolved": {
             "count": len(unresolved),

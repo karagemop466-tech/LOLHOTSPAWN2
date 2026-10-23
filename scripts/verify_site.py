@@ -15,6 +15,7 @@ Checks the published data and site against the project requirements:
   D9  no duplicate fixtures (same normalised teams + same start)
   D10 counts_by_method in the payload agrees with the rows
   D11 data/picks.json and docs/data/picks.json are both present and identical
+  D20 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
   S1  every page exists and has a mobile viewport meta
   S2  every page has the shared navigation with links to all site sections
   S3  executive summary (docs/index.html) links in-site to the picks list and the
@@ -420,6 +421,23 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         rep.add("D19", "every future Hotspawn fixture is published", PASS if missing <= 0 else FAIL,
                 f"{len(rows)} published vs {expected} future fixtures advertised by the feed"
                 + (f" — {missing} missing" if missing > 0 else ""))
+
+    # D20: lobby reconciliation - every upcoming lobby fixture is priced, nothing extra is,
+    # and no excluded (cancelled / withdrawn) fixture appears among the picks.
+    rec = payload.get("coverage_reconciliation") or {}
+    if rec.get("lobby_upcoming") is not None:
+        miss = rec.get("lobby_upcoming_missing_from_priced") or []
+        extra = rec.get("priced_not_in_lobby") or []
+        excl_ids = {str(x.get("id")) for x in (payload.get("excluded_fixtures") or [])}
+        leaked = sorted({str(r.get("id")) for r in rows} & excl_ids)
+        ok = not miss and not extra and not leaked and rec.get("priced") == len(rows)
+        rep.add("D20", "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
+                PASS if ok else FAIL,
+                f"lobby upcoming={rec.get('lobby_upcoming')}, priced={len(rows)}, "
+                f"missing={len(miss)}, extra={len(extra)}, excluded={len(excl_ids)}, leaked={len(leaked)}")
+    else:
+        rep.add("D20", "every upcoming Hotspawn lobby fixture is priced", WARN,
+                "lobby state unavailable for this run; coverage compared with the fixtures API only")
 
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
