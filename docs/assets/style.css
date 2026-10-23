@@ -272,3 +272,6 @@ footer.site-footer a { color: var(--brand); }
 .stats-mini .bad { background: var(--red-soft); border-color: transparent; }
 .stats-mini .bad b { color: var(--red); }
 @media (min-width: 700px) { .stats-mini { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* long source URLs must wrap on phones instead of forcing sideways scroll */
+main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
