@@ -15,7 +15,7 @@ on:
       - ".github/workflows/audit-pipeline.yml"
 
 permissions:
-  contents: read
+  contents: write   # commits audit/last_run.json for manual review
 
 concurrency:
   group: audit-pipeline-${{ github.ref_name }}
