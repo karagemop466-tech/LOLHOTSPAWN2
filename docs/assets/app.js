@@ -309,6 +309,7 @@
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
       STANDINGS_LINE_USED: "Line built from the official league win-loss table",
       MULTI_DIVISION_STANDINGS: "Standings page mixes divisions (shrunk to 50%)",
+      STANDINGS_BLENDED: "Thin Elo blended 50/50 with the official league table",
     };
     return map[f] || f;
   }

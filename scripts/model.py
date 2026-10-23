@@ -232,9 +232,30 @@ def standings_index(leaguepedia):
     return by_page, multi, team_pages
 
 
+def name_variants(name):
+    """Conservative variants of a team name: never a different team, only punctuation
+    and the usual prefixes/suffixes (ex-, e.V., Esports, Gaming, Team, The)."""
+    raw = str(name or "").strip()
+    variants = {raw}
+    for prefix in ("ex-", "ex ", "team ", "the "):
+        if raw.lower().startswith(prefix):
+            variants.add(raw[len(prefix):].strip())
+    for suffix in (" e.v.", " e.v", " esports", " gaming", " esport", " academy",
+                   " multigaming", " team"):
+        if raw.lower().endswith(suffix):
+            variants.add(raw[: -len(suffix)].strip())
+    return {v for v in variants if v}
+
+
 def _resolve_in_page(by_page, page, name):
     """One standings row for a team name on a page, or None. Ambiguity is refused."""
     rows = by_page.get(page, {}).get(norm(name))
+    if not rows:
+        for variant in name_variants(name):
+            cand = by_page.get(page, {}).get(norm(variant))
+            if cand:
+                rows = cand
+                break
     if not rows:
         key = norm(name)
         close = [k for k in by_page.get(page, {}) if sim(key, k) >= 0.9]
@@ -591,9 +612,20 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                 first_is_k1 = tuple(sorted((norm(k1), norm(k2))))[0] == norm(k1)
                 wins_k1 = h2h[0] if first_is_k1 else h2h[1]
                 p, h2h_info = blend_h2h(p, sum(h2h), wins_k1)
+            # Thin history: the same records exist in the official league table, so a
+            # 50/50 blend of the two estimators reduces the noise of a 3-7 game sample.
+            st_blend = None
+            if st1 is not None and st2 is not None and min(g1, g2) < 8:
+                p_st = prob_from_elo(st1[0], st2[0])
+                if st["multi_division"]:
+                    p_st = 0.5 + (p_st - 0.5) * 0.5
+                p = 0.5 * (p + p_st)
+                st_blend = round(p_st, 4)
+                flags.append("STANDINGS_BLENDED")
             model_prob = p
             model_method = "MODEL_ELO" if min(g1, g2) >= 8 else "MODEL_ELO_THIN"
             model = {"elo_team1": round(r1), "elo_team2": round(r2),
+                     "standings_blend_team1": st_blend,
                      "games_team1_365d": g1, "games_team2_365d": g2,
                      "shrink": round(shrink, 3), "h2h": h2h_info, "prior_used": None,
                      "tournament_page": page,
@@ -791,6 +823,9 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         elif method == "MODEL_ELO_THIN":
             why = (f"No external line. Elo from recorded series, but the thinner side has only "
                    f"{min(g1, g2)} series in 365 days, so the edge is shrunk toward 50%.")
+            if "STANDINGS_BLENDED" in flags and st_info:
+                why += (" It is blended 50/50 with the rating implied by the official league "
+                        f"table ({st_info['page']}).")
         elif method == "MODEL_STANDINGS" and st_info:
             def _side(name, src, row_):
                 if src == "elo":

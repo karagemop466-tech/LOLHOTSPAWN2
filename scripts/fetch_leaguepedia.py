@@ -366,6 +366,8 @@ def main() -> int:
         "standings_pages": standings["pages"],
         "standings_by_tournament": standings["tournaments"],
         "standings_diagnostics": standings.get("diagnostics") or {},
+        "standings_teams": {page: sorted({r["team"] for r in standings["rows"] if r["page"] == page})
+                            for page in standings["pages"]},
     }
     if len(results) < 1000:
         # A rate-limited / broken run must not wipe good data. Fall back to the
@@ -383,6 +385,15 @@ def main() -> int:
             return 0
         raise SystemExit(f"Leaguepedia returned only {len(results)} results and no fallback snapshot exists")
     write_json(OUT, payload)
+    if standings["pages"]:
+        write_json("data/diag/standings.json", {
+            "generated_at": utc_iso(now),
+            "source": STANDINGS_URL,
+            "pages": standings["pages"],
+            "by_tournament": standings["tournaments"],
+            "teams": payload["standings_teams"],
+            "rows": standings["rows"],
+        })
     log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, {len(teams)} teams")
     return 0
 

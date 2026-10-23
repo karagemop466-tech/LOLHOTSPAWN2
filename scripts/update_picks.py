@@ -58,6 +58,7 @@ LIMITATIONS = [
     "Leaguepedia's MatchSchedule records results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
     "Where a team has no recorded games, we first use the official Leaguepedia win-loss table for its league (converted to a rating and shrunk for small samples). Only when there is no standings row either do we fall back to the competition median or tier prior. A prior is not evidence about the team.",
+    "Where the Elo sample is thin (under 8 recorded series) and both teams are listed in the official league table, the published probability is a 50/50 blend of the two estimators; the row is flagged STANDINGS_BLENDED so the blend is visible.",
     "Leaguepedia standings pages that combine several divisions do not say which division a team is in, so those rows are shrunk toward 50% and capped at low confidence (flag MULTI_DIVISION_STANDINGS). Records are also kept per series where the source provides series scores.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
