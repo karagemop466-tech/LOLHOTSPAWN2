@@ -253,7 +253,8 @@ Only the sources in the **verified** column were read directly. The others come 
 
 | Source | Type | Status | What the source says | Link |
 |---|---|---|---|---|
-| Pinnacle (guest front-end feed) | Sharp esportsbook | **Verified in production** (unofficial feed) | Prices the World Championship and EMEA Masters only; no amateur leagues | https://www.pinnacle.com/en/esports/league-of-legends |
+| Pinnacle (guest front-end feed) | Sharp esportsbook | **Verified in production** (parent Regular `period == 0` moneylines only; child Kills/Towers/Dragons prop matchups excluded) | Prices the World Championship and EMEA Masters only; no amateur leagues | https://www.pinnacle.com/en/esports/league-of-legends |
+| Unibet (Kambi JSON offering API) | Major EU/AU sportsbook network | **Verified in production** (`eu-offering-api.kambicdn.com` pre-match 2-way `Match Odds`, linked per event on `www.unibet.com.au`) | Prices the World Championship (8/8 Swiss matches verified) and major LoL events | https://www.unibet.com.au/betting/sports/filter/esports/league_of_legends/all/matches |
 | Bovada (coupon JSON) | US-facing esportsbook | **Verified in production** (unofficial JSON) | Prices the World Championship and a few other matches | https://www.bovada.lv/sports/esports/league-of-legends |
 | Polymarket (Gamma API, public) | Prediction market | **Verified in production** | Prices Worlds 2026 and some tier-2/3 events; thin volume | https://gamma-api.polymarket.com |
 | Polymarket homepage | Operator notice | **Verified 2026-10-23** — the homepage says *"Trading is blocked in the United States on polymarket.com"* and offers a view-only mode | https://polymarket.com/ |
@@ -278,6 +279,9 @@ Only the sources in the **verified** column were read directly. The others come 
 2. **Lobby header "139 matches this week" does not reconcile** with the fixture data (64 rows inside the week window). Flagged, unverified.
 3. **Polymarket US access**: trading is blocked for US users on polymarket.com (see §11.2). Its prices are reference data only.
 4. **OddsPapi wording** in the earlier payload described an adapter that does not exist. Corrected: no adapter, no key, no data read.
+5. **Pinnacle child prop-matchup duplication (`D20` fixed)**: Pinnacle's `/leagues/{id}/matchups` returns 5–7 child matchups (`parentId != null`, `units = Kills/Towers/Dragons/Barons/Inhibitors`) whose `/markets/related/straight` endpoint repeated the parent's `period == 0` moneyline. Fixed in `scripts/fetch_markets.py` (parent `Regular` matchups + `/leagues/{id}/markets/straight`) and enforced by verifier rule `D20`.
+6. **Hotspawn `PVB` tag collision in German PRM 2nd Division (`HOTSPAWN_NAME_COLLISION` flagged)**: Hotspawn expands `PVB` in `PRM 2nd Division 26-27 Fall` to defunct Vietnamese team `Phong Vũ Buffalo`; Leaguepedia's verified participant page (`https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split`) confirms the team is **`PvB (Swiss Team)`**. Mapped via competition-scoped alias and flagged on every affected row.
+7. **`LYON` homonym in Worlds 2026**: Hotspawn's `LYON` in `Worlds 2026 Main Event` is **`LYON (2024 American Team)`** on Leaguepedia (`https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event`), not the defunct 2013 LAN team `LYON`. Fixed in `data/aliases.json`.
 
 ---
 
@@ -298,7 +302,10 @@ then esportsbooks/esports lines, then community sources. Findings, in that order
 
 ### 12.2 Esportsbooks (GG.BET, Thunderpick, Rivalry, Midnite, Betway, Unibet, …)
 
-No new programmatic access found. Previous measured results stand (403/404/503 or JS-shell only from
+**Update after merge reconciliation:** session `arena/0fb2d0c7` (T17, PRs #18/#19) added a working
+**Unibet (Kambi) LoL feed** to production (`scripts/fetch_markets.py`) — the Kambi API is reachable
+even though the Unibet HTML page returns 503 to our probe. Production market sources are therefore
+Pinnacle, Unibet, Bovada, Polymarket. For the remaining esportsbooks no new programmatic access was found. Previous measured results stand (403/404/503 or JS-shell only from
 GitHub Actions — §8 and `checked_unavailable` in the payload). To keep this claim fresh rather than stale,
 `scripts/probe_sources.py` now re-probes these plus Kalshi, Smarkets API, Manifold, eGamersWorld,
 OddsPortal and BetExplorer on every branch pipeline run and commits the observed statuses to
@@ -314,20 +321,21 @@ OddsPortal/Midnite/OddsPapi pages 200 HTML only (no structured prices parsed).
 Implemented this session (T13), in priority order for any fixture without a market line:
 
 1. **Elo on Leaguepedia `MatchSchedule` results** (existing) — 31,732 results in the 2026-10-23 run.
-2. **NEW: Leaguepedia `Standings` fallback (`MODEL_STANDINGS`)** — when Elo cannot rate both sides
-   (<3 recorded games in 365 d for a team) but both teams have an official win–loss record in the
-   fixture's own competition: `wr=(W+2)/(W+L+4)`, `p₁=wr₁/(wr₁+wr₂)` (Bradley–Terry; games columns
-   with `a=4` when series columns are empty). First live run: **167 standings rows across 14
-   competitions** fetched; **4 PRM 3rd Division fixtures** upgraded from prior to a standings line
-   (e.g. REH Gaming 1–1 vs Cloud eSport 0–2 → 60.0%); prior-only rows fell 24 → 20. Records are never
-   mixed across leagues, 0–0 rows are not evidence, confidence capped at Medium.
-   Unit test: `verification/test_standings_model.py` (11 checks, all pass offline).
+2. **Leaguepedia `Standings` (`MODEL_STANDINGS`)** — two sessions implemented this independently on
+   2026-10-23; the merged production formula is session `arena/0fb2d0c7`'s (T18): a standings-derived
+   Elo offset `base + 400·log10(wr/(1−wr))` with `wr = clamp(0.65·wr_series + 0.35·wr_games, 0.15, 0.85)`
+   (Laplace-smoothed), blended with the real Elo for whichever side lacks one (requires ≥1 decided
+   series). This session's standalone Bradley–Terry variant (`wr=(W+2)/(W+L+4)`) was live-verified on
+   its branch (167 standings rows / 14 competitions; 4 PRM 3rd Division fixtures upgraded) and then
+   superseded at merge by the blended version — kept here for the record, not used in production.
+   Behavioural test: `verification/test_standings_model.py`.
 3. **League prior** (existing) — one side still unknown after 1–2.
 4. **Explicit 50/50 `UNRESOLVED`** (existing) — currently 0 rows; listed separately with limitations.
 
-Remaining limits (published on the site, per league): PRM 2nd Division still has 15 prior-only rows —
-their Hotspawn team names (e.g. “Locked IN”, “ex-A41G”) have no standings/Elo identity we can verify
-against a Leaguepedia page, so the honest output stays a labelled prior, not an invented line.
+Remaining limits (published on the site, per league): a few prior-only rows remain where a Hotspawn
+name matches no verifiable Leaguepedia identity. (Most of the PRM 2nd Division cases found by this
+session — “Locked IN”, “Phong Vũ Buffalo” — were resolved by session `arena/0fb2d0c7`'s verified
+aliases, see §11 items 6–7.)
 Standings ignore strength of schedule; Elo tiers across leagues are priors, not measurements.
 
 ### 12.4 Verification log additions

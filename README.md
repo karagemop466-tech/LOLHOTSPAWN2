@@ -16,9 +16,9 @@ probability for both teams. Rows are priced in this order:
 2. **Our own Elo model** — chronological ratings from Leaguepedia's recorded results,
    anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting,
    head-to-head smoothing and shrinkage for thin history.
-3. **Standings model** (`MODEL_STANDINGS` 📊) — Elo cannot rate both sides, but both teams
-   have an official win-loss record in that league (Leaguepedia *Standings*): smoothed
-   Bradley-Terry on series win-rates, capped at Medium confidence.
+3. **Standings model** (`MODEL_STANDINGS` 📊) — a side has no Elo yet but has a current-split
+   win-loss record (Leaguepedia *Standings*): the record becomes a smoothed Elo offset from
+   the competition prior, blended with the other side's Elo, capped at Low confidence.
 4. **League prior** — one team has no usable history; the competition median/tier prior is
    substituted, shrunk toward 50/50 and labelled `MODEL_LEAGUE_PRIOR` (low confidence).
 5. **Unresolved** — no market and no history at all: published as an explicit 50/50

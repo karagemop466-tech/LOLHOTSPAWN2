@@ -65,7 +65,7 @@ def main() -> int:
     # baseline: a clean row must pass every data check
     c = run([copy.deepcopy(BASE_ROW)])
     results += [assert_status(c, i, vs.PASS, "clean row passes")
-                for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D8c", "D8d", "D9", "D12")]
+                for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D8c", "D8d", "D9", "D12", "D20")]
 
     # pick not one of the teams
     r = copy.deepcopy(BASE_ROW); r["pick"] = "Team C"
@@ -125,6 +125,19 @@ def main() -> int:
     r = copy.deepcopy(BASE_ROW)
     r["evidence"] = "Polymarket: Team A vs Team B (BO1) - Worlds Group Stage"
     results.append(assert_status(run([r]), "D16", vs.PASS, "BO1 market ok"))
+    # duplicate bookmaker board rows inside market.sources must fail D20
+    r = copy.deepcopy(BASE_ROW)
+    r["method"] = "MARKET_CONSENSUS"
+    r["market"] = {
+        "source_count": 2,
+        "sources": [
+            {"source": "Pinnacle", "source_key": "pinnacle", "prob_team1": 0.6,
+             "url": "https://www.pinnacle.com/en/esports/league-of-legends"},
+            {"source": "Pinnacle", "source_key": "pinnacle", "prob_team1": 0.6,
+             "url": "https://www.pinnacle.com/en/esports/league-of-legends"},
+        ],
+    }
+    results.append(assert_status(run([r]), "D20", vs.FAIL, "duplicate bookmaker in market.sources"))
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],

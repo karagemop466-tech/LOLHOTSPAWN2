@@ -11,7 +11,7 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
-    MODEL_STANDINGS: { label: "Standings model", cls: "blue", ico: "📊" },
+    MODEL_STANDINGS: { label: "Split standings + Elo", cls: "amber", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved", cls: "red", ico: "⚠️" },
   };
@@ -333,7 +333,11 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
-      GENERIC_RESULTS_SOURCE: "No fixture-specific Leaguepedia page matched (generic results table cited)",
+      HOTSPAWN_NAME_COLLISION: "Hotspawn team-tag collision mapped to verified split participant",
+      LEAGUEPEDIA_TIME_TBD: "Leaguepedia lists pairing without a confirmed UTC timestamp",
+      FIXTURE_NOT_ON_LEAGUEPEDIA_SCHEDULE: "Tournament page verified; individual pairing not yet on Leaguepedia MatchSchedule",
+      FIXTURE_CANCELLED_ON_FEED: "Fixture marked cancelled/postponed on feed",
+      GENERIC_RESULTS_SOURCE: "Results model backed by generic Leaguepedia table (no tournament page matched)",
     };
     return map[f] || f;
   }
@@ -392,7 +396,7 @@
           </div>
           <div class="card"><h3>Our model</h3>
             ${m.model ? `<dl class="kv">
-              ${model.standings ? `<dt>Standings record</dt><dd>${esc(m.team1)} <b>${model.standings.team1_wins}–${model.standings.team1_losses}</b> · ${esc(m.team2)} <b>${model.standings.team2_wins}–${model.standings.team2_losses}</b> <span class="small">(${esc(model.standings.kind)} in ${esc(model.standings.page)})</span></dd>` : ""}
+              ${model.standings ? `<dt>Standings record</dt><dd>${esc(m.team1)} <b>${model.standings.team1_wins}–${model.standings.team1_losses}</b> · ${esc(m.team2)} <b>${model.standings.team2_wins}–${model.standings.team2_losses}</b> <span class="small">(${esc(model.standings.kind)} in ${esc(model.standings.page)})</span></dd>` : (model.standings_team1 || model.standings_team2) ? `<dt>Split standings</dt><dd>${model.standings_team1 ? `${esc(m.team1)} <b>${model.standings_team1.win_series ?? "—"}–${model.standings_team1.loss_series ?? "—"}</b> series` : `${esc(m.team1)} —`}${model.standings_team2 ? ` · ${esc(m.team2)} <b>${model.standings_team2.win_series ?? "—"}–${model.standings_team2.loss_series ?? "—"}</b> series` : ` · ${esc(m.team2)} —`} <span class="small">(Leaguepedia Standings, current split)</span></dd>` : ""}
               <dt>Elo (team 1)</dt><dd>${model.elo_team1 ?? "—"} <span class="small">${model.games_team1_365d != null ? `(${model.games_team1_365d} games in 365d)` : ""}</span></dd>
               <dt>Elo (team 2)</dt><dd>${model.elo_team2 ?? "—"} <span class="small">${model.games_team2_365d != null ? `(${model.games_team2_365d} games in 365d)` : ""}</span></dd>
               <dt>Prior used</dt><dd>${esc(model.prior_used || "—")}</dd>

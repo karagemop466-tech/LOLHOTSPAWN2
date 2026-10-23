@@ -55,8 +55,9 @@
     <h3>2. External market consensus</h3>
     <p class="small">For each fixture we look for two-way prices from established bookmakers and prediction markets.
     Decimal odds are converted to implied probabilities and then <b>de-vigged</b>: the two implied probabilities are normalised so they sum to 1,
-    removing the bookmaker margin. Multiple sources are combined by median when at least three agree, otherwise by a fixed-quality weighted mean
-    (Pinnacle 1.0, Bovada 0.8, Polymarket 0.7; other books 0.6).</p>
+    removing the bookmaker margin. Each provider is deduplicated to at most one main series moneyline per fixture (excluding Kills/Towers/Map prop
+    boards). Multiple independent sources are combined by median when at least three agree, otherwise by a fixed-quality weighted mean
+    (Pinnacle 1.0, Unibet 0.85, Bovada 0.8, Polymarket 0.7; other books 0.6).</p>
     <p class="small"><b>Access note:</b> Polymarket's homepage (checked 2026-10-23, <a href="https://polymarket.com/" target="_blank" rel="noopener">polymarket.com</a>) states that trading is blocked in the United States and offers a view-only mode. Its prices are used here only as public reference data; this site does not place or recommend bets.</p>
     <ul class="clean small">
       <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability. ≤6 points = High confidence, ≤10 = Medium, more = Low.</li>
@@ -75,8 +76,9 @@
       <li><b>Activity decay</b>: a team's rating drifts back toward its competition base with a 365-day half-life while inactive.</li>
       <li><b>Competition-strength priors</b>: pooling every league in one Elo pool without cross-play inflates teams that farm wins in weak or academy leagues. Each team is therefore anchored to the tier of the competition it actually plays in (international &gt; top regional leagues &gt; EMEA/ERLs &gt; national divisions &gt; academy/amateur). This is a documented prior, not a measured quantity — see the limitation below.</li>
       <li><b>Shrinkage</b>: with few games, the Elo probability is pulled toward 50/50 (shrink = games/(games+8)).</li>
+      <li><b>Current-split standings fallback</b>: when a newly named or amateur team has no individual rows in <span class="flag">MatchSchedule</span> yet has recorded series in Leaguepedia's <span class="flag">Standings</span> table for the active split, a Laplace-smoothed split win-rate rating anchored to the competition prior is used (<span class="flag">MODEL_STANDINGS</span>, capped at Low confidence).</li>
       <li><b>Head-to-head</b>: a smoothed H2H term contributes at most 15% and only with at least three meetings.</li>
-      <li><b>Standings fallback</b> (<span class="flag">MODEL_STANDINGS</span> 📊): if Elo cannot rate both sides (fewer than 3 recorded games in 365 days for a team) but <b>both</b> teams have an official win–loss record in the fixture's own competition on Leaguepedia's <i>Standings</i> table, the fixture is priced from those records: series win-rates are Laplace-smoothed, <span class="mono">wr = (W+2)/(W+L+4)</span> (game records use <span class="mono">a=4</span> when series columns are empty), and combined Bradley–Terry style, <span class="mono">p₁ = wr₁/(wr₁+wr₂)</span>. Example: 5–1 vs 1–5 → 70.0%. It is used <b>before</b> the league prior below, never overrides a rated Elo pair or a market line, requires both records on the same competition page (records are never mixed across leagues), ignores strength of schedule, and is capped at Medium confidence (both teams ≥5 decided series) — otherwise Low.</li>
+      <li><b>How the standings rating is computed</b>: the missing side's split record becomes an Elo offset from the competition prior — <span class="mono">rating = prior + 400·log₁₀(wr/(1−wr))</span>, where <span class="mono">wr = clamp(0.65·wr<sub>series</sub> + 0.35·wr<sub>games</sub>, 0.15, 0.85)</span> from Laplace-smoothed series/game win-rates (requires ≥1 decided series). The two ratings then go through the same Elo probability + shrinkage as a rated pair. It never overrides a market line, ignores strength of schedule inside the split, and is capped at Low confidence.</li>
       <li><b>One missing side</b>: the competition median rating (or tier prior) is substituted and the shrink is halved; the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
       <li><b>No history at all</b>: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
     </ul>

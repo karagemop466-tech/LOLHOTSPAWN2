@@ -436,6 +436,24 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                 f"{len(rows)} published vs {expected} future fixtures advertised by the feed"
                 + (f" — {missing} missing" if missing > 0 else ""))
 
+    # D20: each external market provider appears at most once per fixture,
+    # and source_count equals the number of distinct providers (no child-board inflation).
+    dup_market_sources = []
+    for r in rows:
+        mk = r.get("market") or {}
+        srcs = mk.get("sources") or []
+        if not srcs:
+            continue
+        keys = [str(s.get("source_key") or s.get("source") or "").strip().lower()
+                for s in srcs if isinstance(s, dict)]
+        if len(keys) != len(set(keys)):
+            dup_market_sources.append(f"{r.get('team1')} vs {r.get('team2')}: providers={keys}")
+        elif mk.get("source_count") is not None and int(mk.get("source_count")) != len(keys):
+            dup_market_sources.append(
+                f"{r.get('team1')} vs {r.get('team2')}: source_count={mk.get('source_count')} != {len(keys)}")
+    emit("D20", "each external market provider counted at most once per fixture",
+         dup_market_sources, "every market row has unique provider keys and matching source_count")
+
     # D21: lobby reconciliation - every upcoming lobby fixture is priced, nothing extra is,
     # and no excluded (cancelled / withdrawn) fixture appears among the picks.
     rec = payload.get("coverage_reconciliation") or {}
@@ -1034,7 +1052,7 @@ def main() -> int:
         ("REQ3", "Probabilities come from outside Hotspawn (books/markets/our results model)",
          ["D12", "W3"]),
         ("REQ4", "External betting lines used where they exist (markets first)",
-         ["D8a", "D6"]),
+         ["D8a", "D6", "D20"]),
         ("REQ5", "Every match without a market line still gets a pick + documented method",
          ["D8b", "D13"]),
         ("REQ6", "Separate unresolved section, with limitations, linked from the exec summary",
