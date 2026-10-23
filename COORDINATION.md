@@ -1,5 +1,15 @@
 # Coordination Board
 
+## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (in progress)
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| T13 Standings fallback for non-market fixtures (Leaguepedia `Standings`, Bradley–Terry, `MODEL_STANDINGS`) between Elo and league-prior | in progress | arena/92bfcdd3 | scripts/fetch_leaguepedia.py, scripts/model.py, scripts/update_picks.py, .github/workflows/update-picks.yml, verification/test_standings_model.py |
+| T14 Phone-first executive summary: starting-soon picks first, quick-jump links, per-league unresolved/limitations table; bottom-nav 5-col fix | in progress | arena/92bfcdd3 | docs/index.html, docs/unresolved.html, docs/picks.html, docs/methodology.html, docs/assets/app.js, docs/assets/style.css |
+| T15 Fresh source research (established books → esportsbooks → community) + Actions probe of new candidates; PR + merge + Pages check | in progress | arena/92bfcdd3 | research/betting-sources.md, scripts/probe_sources.py, .github/workflows/pipeline-test.yml, COORDINATION.md, README.md |
+
+Baseline at claim (main `3addc56`): 189 fixtures · 9 market · 82 MODEL_ELO · 74 MODEL_ELO_THIN · 24 MODEL_LEAGUE_PRIOR · 0 UNRESOLVED · 101 low-confidence; `scripts/verify_site.py` 31 PASS / 0 FAIL. No other session active on these files.
+
+
 Shared task board. Rule: claim a task here (session ID + file scope) and push the claim before starting. A status of **needs review** means the item is published on the site's *Flagged for Review* page and does not block anything. Never mark a task verified without the official source link.
 
 > Branch note: Arena tracks this session by branch `arena/fa3f554c-lolhotspawn2` and the tooling does not permit creating other branches. That branch is the session branch required by the system, so it stands in for the `session-<id>/<task>` naming convention.
