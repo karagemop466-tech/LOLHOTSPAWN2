@@ -496,8 +496,26 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
                 f"snapshot not found: {path}")
         return
     sched = []
+    snapshot_generated = None
     try:
         if os.path.isdir(path):
+            # Diagnostic snapshots are committed artifacts and can outlive the
+            # live pipeline. Read their capture timestamp so stale deltas are
+            # not mistaken for a current schedule verification.
+            for fn in sorted(os.listdir(path)):
+                if not fn.startswith("report") or not fn.endswith(".json"):
+                    continue
+                try:
+                    meta = json.load(open(os.path.join(path, fn), encoding="utf-8"))
+                    stamp = meta.get("generated_at") if isinstance(meta, dict) else None
+                    if stamp:
+                        parsed = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+                        if parsed.tzinfo is None:
+                            parsed = parsed.replace(tzinfo=timezone.utc)
+                        if snapshot_generated is None or parsed > snapshot_generated:
+                            snapshot_generated = parsed
+                except Exception:  # noqa: BLE001
+                    continue
             for fn in sorted(os.listdir(path)):
                 if not fn.endswith(".json") or not fn.startswith("ms_"):
                     continue
@@ -565,11 +583,23 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
                 f"no fixture matched the snapshot ({len(unmatched)} unmatched)")
         return
+    snapshot_note = ""
+    stale_snapshot = False
+    if snapshot_generated is not None:
+        age_hours = (datetime.now(timezone.utc) - snapshot_generated).total_seconds() / 3600
+        snapshot_note = f" Snapshot captured {snapshot_generated.isoformat()} ({age_hours:.1f}h old)."
+        stale_snapshot = age_hours > 24
+        if stale_snapshot:
+            snapshot_note += " This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule."
+    elif os.path.isdir(path):
+        snapshot_note = " Snapshot capture time unavailable; currentness cannot be established."
+        stale_snapshot = True
     rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule",
-            PASS if not diff else WARN,
+            PASS if not diff and not stale_snapshot else WARN,
             f"{same}/{checked} matched fixture times agree with Leaguepedia; "
             f"{len(unmatched)} fixture(s) not in the snapshot; {len(diff)} differ "
-            "(Hotspawn is authoritative for pick lock times; differences are flagged for review)",
+            "(Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta)."
+            + snapshot_note,
             diff[:12])
 
 

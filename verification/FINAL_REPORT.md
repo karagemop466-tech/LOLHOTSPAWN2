@@ -164,28 +164,34 @@ _Filled in after merging the verification PR._
 
 ## 9. Follow-up integration audit — 2026-10-23 (Arena session `arena/b252f309-lolhotspawn2`)
 
-This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. The current repository snapshot
-was generated at **2026-10-23 11:00:24 UTC** and was **4.7 hours old** at verification. It contains **189 fixtures**:
-9 with external market data, 180 Elo-model estimates, and 0 unresolved placeholders. The six-hour scheduled refresh is
-configured; the latest observed main-branch refresh (Actions run [39942806398](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39942806398))
-and Pages build ([39943048408](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39943048408)) succeeded. The latest scheduled
-verification run ([39949842068](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39949842068)) also succeeded.
+This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. The latest branch pipeline snapshot was generated at **2026-10-23 15:43:02 UTC** by successful Actions run
+[39980333700](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39980333700), and was **0.0 hours old** at local verification.
+It contains **188 fixtures**: 9 with external market data, 179 Elo-model estimates, and 0 unresolved placeholders. The
+scheduled six-hour refresh remains configured. The latest observed main-branch refresh (Actions run
+[39942806398](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39942806398)) and Pages build
+([39943048408](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39943048408)) succeeded. The latest scheduled
+verification run ([39949842068](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39949842068)) also succeeded;
+the new source-flagging and navigation changes are on the branch pending integration.
 
 The audit found and fixed two presentation/provenance issues:
 
 1. The mobile fixed navigation had **five destinations but only four CSS grid columns**, which could strand the last
    destination on an extra row on narrow screens. It now has five responsive columns; `verification/check_dom_contract.py`
    checks that every page's mobile-nav link count equals the stylesheet's column count.
-2. **38/180 model rows** linked only to a generic Leaguepedia Cargo table, not a fixture-specific competition page.
-   The model now adds `GENERIC_RESULTS_SOURCE` for this case; the 38 rows in the current payload carry the flag, and the
-   Flagged page explains it. The verifier now requires each model row to have a results-source URL and fails if a generic
-   Cargo table is not accompanied by the flag. The source is community-maintained, not official organizer verification;
-   that caveat is now explicit in the executive summary, Methodology, and Flagged for review pages.
+2. **37/179 model rows** linked only to a generic Leaguepedia Cargo table, not a fixture-specific competition page,
+   in the latest branch payload. The model now adds `GENERIC_RESULTS_SOURCE` for this case; all 37 such model rows carry
+   the flag, and the Flagged page explains it. A market row also links this generic table as a secondary Elo cross-check,
+   but is priced by bookmaker/market consensus. The verifier requires each model row to have a results-source URL and
+   fails if a generic Cargo table is not accompanied by the flag. The source is community-maintained, not official
+   organizer verification; that caveat is explicit in the Executive Summary, Methodology, and Flagged for review pages.
 
-Updated audit suite: **33 PASS, 0 FAIL, 1 WARN**; `verification/test_verifier.py` **32/32**; DOM contract PASS.
-The sole warning is **D18**: the captured Leaguepedia schedule snapshot covers 137 matched fixtures, of which 10 have
-start-time differences from Hotspawn; 52 additional fixtures are absent from the snapshot. Hotspawn remains the displayed
-pick-lock source. These mismatches and the uncertainty of missing snapshot rows are disclosed for review rather than
-silently resolved. The all-table mobile navigation and internal-link checks pass. No current-day market/source fetch was
-performed from the restricted local sandbox; the cited source verification artifacts and latest successful main workflow
-runs are the available evidence. Re-run the scheduled pipeline/verification workflow for fresh external-source checks.
+Updated audit suite on the refreshed branch payload: **33 PASS, 0 FAIL, 1 WARN**; `verification/test_verifier.py`
+**32/32**; DOM contract PASS. The sole warning is **D18**: the committed Leaguepedia schedule snapshot's newest diagnostic capture is
+2026-10-21T20:44:30Z, more than 24 hours old. It matches 137 fixtures, shows 10 timestamp differences, and omits 51
+fixtures. The warning is now explicitly labelled as stale/historical and is not represented as current reschedules. The
+fresh 2026-10-23 pipeline fetched 203 Leaguepedia schedule rows; the current payload has no `START_TIME_MISMATCH` flags,
+but those raw row-level results are not persisted, so an independent current timestamp audit remains limited. Hotspawn
+remains the displayed pick-lock source; confirm current times with an event organizer. The five-column mobile navigation
+and internal-link checks pass. GitHub Actions fetched the
+current Hotspawn lobby, Pinnacle, Bovada, Polymarket, and Leaguepedia data successfully in run 39980333700. The branch
+payload is not yet the production Pages payload until PR integration and deployment.
