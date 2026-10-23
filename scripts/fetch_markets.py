@@ -17,10 +17,17 @@ import time
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 
-from lib_common import (clamp, decimal_from_american, devig_two, fetch, get_json, log,
+from lib_common import (clamp, decimal_from_american, devig_two, fetch, get_json, log, norm,
                         now_utc, source, utc_iso, write_json)
 
 OUT = "data/cache/markets.json"
+# Pinnacle publishes the same physical match on several league boards (the main
+# league plus stage/specials boards), each with its own matchup id and an
+# identical price. Counting them as independent sources overstates consensus
+# confidence, so records are de-duplicated per book + team pair + start hour.
+DEDUPE_WINDOW_MINUTES = 60
+PROP_NAME = re.compile(r"\((?:kills|maps?|dragons?|barons?|turrets?|handicap|total|"
+                       r"first\s+blood|first\s+dragon|first\s+baron)\)", re.I)
 PIN_KEY = {"x-api-key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R", "Accept": "application/json"}
 PIN_BASE = "https://guest.api.arcadia.pinnacle.com/0.1"
 PIN_PAGE = "https://www.pinnacle.com/en/esports/league-of-legends"
@@ -60,6 +67,66 @@ def _record(source_name, source_key, competition, start, team_a, team_b, prob_a,
     }
 
 
+def is_prop_name(name) -> bool:
+    """True for derivative markets such as 'Gen.G (Kills)' - never a match winner."""
+    return bool(PROP_NAME.search(str(name or "")))
+
+
+def _start_bucket(start_utc: str, minutes: int = DEDUPE_WINDOW_MINUTES) -> str:
+    """Coarse start-time bucket used only for de-duplication."""
+    try:
+        dt = datetime.fromisoformat(str(start_utc).replace("Z", "+00:00"))
+    except Exception:
+        return str(start_utc)
+    epoch = int(dt.timestamp())
+    return str(epoch - epoch % (minutes * 60))
+
+
+def dedupe_records(records: list) -> tuple[list, list]:
+    """Collapse repeated listings of one physical match from the same book.
+
+    A book can list the same fixture on several boards with different ids but an
+    identical price. Independent *sources* are books, not board rows, so only one
+    record per (book, unordered team pair, start hour) is kept. The dropped ids
+    are returned for the audit trail and stored on the kept record.
+    """
+    kept, dropped = {}, []
+    for rec in records:
+        pair = tuple(sorted((norm(rec.get("team_a")), norm(rec.get("team_b")))))
+        key = (rec.get("source_key"), pair, _start_bucket(rec.get("start_utc")))
+        if key not in kept:
+            kept[key] = rec
+            rec.setdefault("raw", {})["duplicates_collapsed"] = []
+            continue
+        prev = kept[key]
+        # Keep the most specific listing deterministically: for Polymarket the
+        # deepest market (highest volume), otherwise the lowest id / first seen.
+        replace = False
+        if rec.get("source_key") == "polymarket":
+            try:
+                replace = float((rec.get("raw") or {}).get("volume") or 0) > \
+                          float((prev.get("raw") or {}).get("volume") or 0)
+            except (TypeError, ValueError):
+                replace = False
+        if replace:
+            rec.setdefault("raw", {})["duplicates_collapsed"] = \
+                list(prev.get("raw", {}).get("duplicates_collapsed") or []) + \
+                [{"id": (prev.get("raw") or {}).get("matchup_id") or (prev.get("raw") or {}).get("event_id"),
+                  "source": prev.get("source")}]
+            kept[key] = rec
+            dropped.append({"source": prev.get("source"), "teams": [prev.get("team_a"), prev.get("team_b")],
+                            "start_utc": prev.get("start_utc"),
+                            "id": (prev.get("raw") or {}).get("matchup_id") or (prev.get("raw") or {}).get("event_id")})
+        else:
+            prev.setdefault("raw", {}).setdefault("duplicates_collapsed", []).append(
+                {"id": (rec.get("raw") or {}).get("matchup_id") or (rec.get("raw") or {}).get("event_id"),
+                 "source": rec.get("source")})
+            dropped.append({"source": rec.get("source"), "teams": [rec.get("team_a"), rec.get("team_b")],
+                            "start_utc": rec.get("start_utc"),
+                            "id": (rec.get("raw") or {}).get("matchup_id") or (rec.get("raw") or {}).get("event_id")})
+    return list(kept.values()), dropped
+
+
 def fetch_pinnacle() -> dict:
     status = {"source": "Pinnacle", "key": "pinnacle", "url": PIN_PAGE, "status": "error", "count": 0}
     sports, r = get_json(f"{PIN_BASE}/sports", PIN_KEY)
@@ -85,6 +152,9 @@ def fetch_pinnacle() -> dict:
                 parts = m.get("participants") or []
                 if len(parts) != 2 or not m.get("hasMarkets"):
                     continue
+                # Derivative boards ("X (Kills)", "Y (Maps)") are not match winners.
+                if any(is_prop_name(x.get("name")) for x in parts):
+                    continue
                 start = m.get("startTime")
                 try:
                     start_dt = datetime.fromisoformat(str(start).replace("Z", "+00:00"))
@@ -107,6 +177,7 @@ def fetch_pinnacle() -> dict:
                               parts[0].get("name"), parts[1].get("name"), dv[0], dv[1],
                               PIN_PAGE, da, db, note=f"Pinnacle moneyline (matchup {m.get('id')})",
                               raw={"matchup_id": m.get("id"), "league_id": league.get("id"),
+                                   "league": name,
                                    "american_home": prices.get("home"), "american_away": prices.get("away"),
                                    "api": f"{PIN_BASE}/leagues/{league.get('id')}/matchups"})
                 if rec:
@@ -299,8 +370,20 @@ def main() -> int:
         results += out["records"]
         log(f"markets: {out['status'].get('source')} -> {out['status'].get('status')} "
             f"({out['status'].get('count', 0)} records)")
+    raw_count = len(results)
+    results, duplicates = dedupe_records(results)
+    by_source = {}
+    for d in duplicates:
+        by_source[d["source"]] = by_source.get(d["source"], 0) + 1
+    for s in statuses:
+        s["raw_count"] = s.get("count")
+        s["duplicates_collapsed"] = by_source.get(s.get("source"), 0)
+        # count is the number of *distinct* match lines actually used
+        s["count"] = sum(1 for r in results if r.get("source") == s.get("source"))
     payload = {"generated_at": utc_iso(now_utc()), "statuses": statuses,
-               "count": len(results), "records": results}
+               "raw_count": raw_count, "count": len(results),
+               "duplicates_collapsed": len(duplicates),
+               "duplicates": duplicates[:60], "records": results}
     write_json(OUT, payload)
     return 0
 

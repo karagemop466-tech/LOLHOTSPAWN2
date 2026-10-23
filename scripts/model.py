@@ -489,6 +489,15 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         mconf = None
         if recs:
             recs.sort(key=lambda r: WEIGHTS.get(r["source_key"], 0.6), reverse=True)
+            # Independent sources are *books*, not board rows. A book that lists
+            # the same fixture on several boards (Pinnacle does) must contribute
+            # exactly one price, otherwise a single book would dominate the
+            # median and inflate the stated confidence.
+            raw_rows = len(recs)
+            by_book = {}
+            for r in recs:
+                by_book.setdefault(r["source_key"], r)
+            recs = list(by_book.values())
             ps = [r["prob_team1"] for r in recs]
             w = [WEIGHTS.get(r["source_key"], 0.6) for r in recs]
             wmean = sum(pp * wi for pp, wi in zip(ps, w)) / sum(w)
@@ -499,6 +508,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             market = {"sources": recs, "consensus_team1": round(cons, 4),
                       "weighted_mean_team1": round(wmean, 4),
                       "dispersion": round(dispersion, 4), "source_count": len(recs),
+                      "distinct_books": len(recs), "source_rows": raw_rows,
                       "time_spread_hours": round(max(spreads), 1) if spreads else None,
                       "cross_league": cross_league}
             if len(recs) >= 2 and dispersion <= 0.06:
