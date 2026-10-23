@@ -69,7 +69,8 @@ jobs:
               echo
               echo "Branch: \`${GITHUB_REF_NAME}\` · local HEAD: \`$(git rev-parse --short HEAD)\`"
               if git rev-parse --verify "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1; then
-                echo "Remote HEAD: \`$(git rev-parse --short "origin/${GITHUB_REF_NAME}")\`"
+                remote_head="$(git rev-parse --short "origin/${GITHUB_REF_NAME}")"
+                echo "Remote HEAD: \`${remote_head}\`"
               fi
             } >> "$GITHUB_STEP_SUMMARY"
             exit 1
