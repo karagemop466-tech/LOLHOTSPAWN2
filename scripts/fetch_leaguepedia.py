@@ -26,6 +26,9 @@ API = "https://lol.fandom.com/api.php"
 FIELDS = "Team1,Team2,Team1Score,Team2Score,Winner,DateTime_UTC,OverviewPage,BestOf,Tab"
 TABLE_URL = "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule"
 TEAMS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Teams"
+STANDINGS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
+# Fields verified 2026-10-21 via api.php?action=cargofields&table=Standings
+STANDINGS_FIELDS = "OverviewPage,Team,Place,WinSeries,LossSeries,TieSeries,WinGames,LossGames"
 SLEEP = 2.6
 
 
@@ -108,6 +111,48 @@ def _norm_row(x: dict) -> dict | None:
             "tab": g("Tab") or ""}
 
 
+def _int_or_none(v):
+    try:
+        return int(v) if v not in (None, "") else None
+    except (TypeError, ValueError):
+        return None
+
+
+def fetch_standings(pages):
+    """Leaguepedia Standings rows for the given OverviewPages (one paced call each).
+
+    Used only for fixtures with no external market line and insufficient Elo
+    history: the official win-loss record still carries real information for
+    amateur leagues (PRM 2nd/3rd Division, RIVALS LEAGUE, 4 Nations,
+    Komplettligaen, Tunisian Super League, ...). Failures are non-fatal.
+    """
+    out, errors = [], []
+    for page in sorted(pages):
+        where = "OverviewPage = '%s'" % page.replace("'", "''")
+        rows, err = _rows({"tables": "Standings", "fields": STANDINGS_FIELDS,
+                           "where": where, "limit": "300", "format": "json"})
+        time.sleep(SLEEP)
+        if err:
+            errors.append({"table": "Standings", "page": page, "error": err})
+            continue
+        for x in rows or []:
+            team = x.get("Team")
+            if not team:
+                continue
+            out.append({
+                "overview": x.get("OverviewPage") or page,
+                "team": team,
+                "place": _int_or_none(x.get("Place")),
+                "win_series": _int_or_none(x.get("WinSeries")),
+                "loss_series": _int_or_none(x.get("LossSeries")),
+                "tie_series": _int_or_none(x.get("TieSeries")),
+                "win_games": _int_or_none(x.get("WinGames")),
+                "loss_games": _int_or_none(x.get("LossGames")),
+            })
+        log(f"leaguepedia standings: {page} -> {len(rows or [])} rows")
+    return out, errors
+
+
 def main() -> int:
     now = now_utc()
     start = now - timedelta(days=730)
@@ -149,23 +194,34 @@ def main() -> int:
         errors.append({"table": "Teams", "error": text[:120]})
     time.sleep(SLEEP)
 
+    # Standings for every competition that still has future fixtures: the
+    # fallback evidence for no-market fixtures whose teams Elo cannot rate.
+    future_pages = {r["overview"] for r in schedule if r["overview"]}
+    standings, st_errors = fetch_standings(future_pages)
+    calls += len(future_pages)
+    errors += st_errors
+
     from collections import Counter
     tour_counts = Counter(x["overview"] for x in results)
     payload = {
         "generated_at": utc_iso(now),
         "degraded": False,
         "counts": {"rows": len(clean), "results": len(results), "schedule": len(schedule),
-                   "teams": len(teams), "export_calls": calls},
+                   "teams": len(teams), "standings": len(standings),
+                   "standings_pages": len(future_pages), "export_calls": calls},
         "errors": errors,
         "tournaments": [{"page": k, "results": v} for k, v in tour_counts.most_common(120)],
         "sources": [
             source("Leaguepedia MatchSchedule (Cargo export)", TABLE_URL,
                    "Recorded match results and schedules with exact UTC time, BestOf and series score."),
             source("Leaguepedia Teams", TEAMS_URL, "Canonical team spellings and region."),
+            source("Leaguepedia Standings", STANDINGS_URL,
+                   "Official series/game win-loss records per competition; fallback line for no-market fixtures."),
         ],
         "results": results,
         "schedule": schedule,
         "teams": teams,
+        "standings": standings,
     }
     if len(results) < 1000:
         # A rate-limited / broken run must not wipe good data. Fall back to the
@@ -183,7 +239,8 @@ def main() -> int:
             return 0
         raise SystemExit(f"Leaguepedia returned only {len(results)} results and no fallback snapshot exists")
     write_json(OUT, payload)
-    log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, {len(teams)} teams")
+    log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, "
+        f"{len(teams)} teams, {len(standings)} standings rows")
     return 0
 
 

@@ -67,6 +67,7 @@ METHOD_LABELS = {
     "MARKET_SINGLE": "Single external market",
     "MODEL_ELO": "Own Elo model",
     "MODEL_ELO_THIN": "Own Elo model (thin history)",
+    "MODEL_STANDINGS": "Standings model (official win-loss record)",
     "MODEL_LEAGUE_PRIOR": "League/overall prior (no team history)",
     "UNRESOLVED": "Unresolved - no verified signal",
 }
@@ -262,6 +263,40 @@ def match_fixture_to_schedule(fixture, schedule_rows):
     return best, best_how
 
 
+def standings_record(row):
+    """(wins, losses, kind) from a Leaguepedia Standings row, or None.
+
+    Series columns win over game columns; a row whose columns are empty is
+    not evidence and returns None.
+    """
+    if not row:
+        return None
+    ws, ls = row.get("win_series"), row.get("loss_series")
+    if ws is not None and ls is not None and (ws + ls) > 0:
+        return int(ws), int(ls), "series"
+    wg, lg = row.get("win_games"), row.get("loss_games")
+    if wg is not None and lg is not None and (wg + lg) > 0:
+        return int(wg), int(lg), "games"
+    return None
+
+
+def standings_prob(rec1, rec2):
+    """Bradley-Terry on Laplace-smoothed win rates (standings fallback).
+
+    wr = (W + a) / (W + L + 2a), a = 2 for series / 4 for games;
+    p1 = wr1 / (wr1 + wr2). Returns (p_team1, min_decided) or None.
+    """
+    if not rec1 or not rec2:
+        return None
+    (w1, l1, kind1), (w2, l2, kind2) = rec1, rec2
+    if kind1 != kind2:
+        return None
+    a = 2.0 if kind1 == "series" else 4.0
+    wr1 = (w1 + a) / (w1 + l1 + 2 * a)
+    wr2 = (w2 + a) / (w2 + l2 + 2 * a)
+    return wr1 / (wr1 + wr2), min(w1 + l1, w2 + l2)
+
+
 def blend_h2h(p, h2h_n, h2h_wins, weight=0.15):
     if h2h_n < 3:
         return p, None
@@ -335,6 +370,34 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         if t.get("Name") not in (None, ""):
             lp_names.add(str(t["Name"]))
     resolver = Resolver(lp_names, aliases["hotspawn_to_leaguepedia"])
+
+    # Standings index: overview page -> {normalised team name: row}. Only used
+    # when a fixture has no market line and Elo cannot rate both sides.
+    standings_by_page = defaultdict(dict)
+    for s in leaguepedia.get("standings") or []:
+        page_s, team_s = s.get("overview") or "", s.get("team") or ""
+        if page_s and team_s:
+            standings_by_page[page_s][norm(team_s)] = s
+
+    def lookup_standings(page, k1, k2):
+        """Both teams' standings rows on one page, or None.
+
+        Tries the fixture's own page first; if the fixture did not match a
+        schedule row, accepts any single page where BOTH teams appear
+        (an unambiguous shared competition). Mixed pages are never combined.
+        """
+        if not k1 or not k2:
+            return None
+        pages = [page] if page else []
+        pages += [p for p in standings_by_page if p != page]
+        for p in pages:
+            table = standings_by_page.get(p) or {}
+            s1, s2 = table.get(norm(k1)), table.get(norm(k2))
+            if s1 and s2:
+                return p, s1, s2
+            if p == page and page:
+                return None  # fixture page known but a team is absent: no mixing
+        return None
 
     # competition prior: median rating of rated teams in the same tournament page
     comp_teams = defaultdict(set)
@@ -444,6 +507,11 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
 
         flags = []
         model = model_prob = model_method = None
+        st_found = lookup_standings(page, k1, k2)
+        st_prob = None
+        if st_found:
+            _sp, _s1, _s2 = st_found
+            st_prob = standings_prob(standings_record(_s1), standings_record(_s2))
         if r1 is not None and r2 is not None and g1 >= 3 and g2 >= 3:
             raw = prob_from_elo(r1, r2)
             shrink = min(g1, g2) / (min(g1, g2) + 8.0)
@@ -466,6 +534,25 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                      "team2_competition_base": round(priors.get(norm(k2), 1500))}
             if cross_league:
                 flags.append("CROSS_LEAGUE_MODEL")
+        elif st_prob is not None:
+            # No Elo for at least one side, but both teams have an official
+            # win-loss record in this competition: price from the standings.
+            st_page, s1_row, s2_row = st_found
+            rec1, rec2 = standings_record(s1_row), standings_record(s2_row)
+            model_prob, min_decided = st_prob
+            model_method = "MODEL_STANDINGS"
+            model = {"standings": {
+                         "page": st_page, "kind": rec1[2],
+                         "team1_wins": rec1[0], "team1_losses": rec1[1],
+                         "team2_wins": rec2[0], "team2_losses": rec2[1],
+                         "team1_place": s1_row.get("place"),
+                         "team2_place": s2_row.get("place"),
+                         "min_decided": min_decided},
+                     "prior_used": None, "tournament_page": st_page,
+                     "team1_recent_competition": comp1,
+                     "team2_recent_competition": comp2}
+            if not page:
+                page = st_page  # source link below points at the standings page
         elif (r1 is not None and g1 >= 3) or (r2 is not None and g2 >= 3):
             known_k1 = r1 is not None and g1 >= 3
             known_r = r1 if known_k1 else r2
@@ -527,6 +614,9 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             if model_method == "MODEL_ELO":
                 confidence = ("Low" if cross_league else
                               "High" if min(g1, g2) >= 15 and abs(r1 - r2) >= 60 else "Medium")
+            elif model_method == "MODEL_STANDINGS":
+                confidence = ("Medium" if (model.get("standings") or {}).get("min_decided", 0) >= 5
+                              else "Low")
             else:
                 confidence = "Low"
         else:
@@ -569,10 +659,19 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         for r in recs:
             sources.append({"name": r["source"], "url": r["url"],
                             "claim": f"Two-way de-vigged line: {r['prob_team1']*100:.1f}% {t1}."})
-        if row:
+        if model_method == "MODEL_STANDINGS" and model.get("tournament_page"):
+            stp = model["tournament_page"]
+            sources.append({"name": "Leaguepedia standings",
+                            "url": "https://lol.fandom.com/wiki/" + stp.replace(" ", "_"),
+                            "claim": f"Official win-loss records used for the standings line ({stp})."})
+        elif row:
             sources.append({"name": "Leaguepedia tournament",
                             "url": "https://lol.fandom.com/wiki/" + row["overview"].replace(" ", "_"),
                             "claim": f"Recorded results used for the Elo model ({row['overview']})."})
+        elif model_method and comp1:
+            sources.append({"name": "Leaguepedia competition",
+                            "url": "https://lol.fandom.com/wiki/" + comp1.replace(" ", "_"),
+                            "claim": f"Recorded results used for the Elo model ({comp1})."})
         elif model_method:
             sources.append({"name": "Leaguepedia results",
                             "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
@@ -588,6 +687,12 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                 evidence_bits.append(f"Elo {model['elo_team1']} vs {model['elo_team2']} "
                                      f"({g1} / {g2} games in 365d; competition bases "
                                      f"{model['team1_competition_base']} / {model['team2_competition_base']}).")
+            elif model.get("standings"):
+                st = model["standings"]
+                evidence_bits.append(
+                    f"Standings ({st['kind']} record): {t1} {st['team1_wins']}-{st['team1_losses']} vs "
+                    f"{t2} {st['team2_wins']}-{st['team2_losses']} in {st['page']} "
+                    f"(smoothed Bradley-Terry; no market line and insufficient Elo history).")
             elif model.get("elo_known") is not None:
                 evidence_bits.append(f"Only one side rated ({model['elo_known']}, {model['games_known_365d']} games); "
                                      f"other side uses {model['prior_used']} {model['elo_prior']}.")
@@ -629,6 +734,8 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             "half_life_days": 365, "k_base": 24,
             "competition_tier_priors": True,
             "competitions_with_prior": len(comp_prior),
+            "standings_rows": sum(len(v) for v in standings_by_page.values()),
+            "standings_pages": len(standings_by_page),
             "global_prior": round(global_prior, 1),
             "backtest": bt,
             "top_ratings": [{"team": k, "elo": round(v), "games_365d": recent.get(k, 0)}
@@ -642,7 +749,8 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             "resolved_pct": round(100 * resolved / len(out), 1) if out else 0,
             "with_external_market": sum(1 for m in out if m["market"]),
             "with_model": sum(1 for m in out if m["method"].startswith("MODEL")),
-            "with_team_specific_model": sum(1 for m in out if m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN")),
+            "with_team_specific_model": sum(1 for m in out if m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN", "MODEL_STANDINGS")),
+            "with_standings_model": counts.get("MODEL_STANDINGS", 0),
             "with_prior_only": counts.get("MODEL_LEAGUE_PRIOR", 0),
             "published_picks": len(out),
             "both_market_and_model": sum(1 for m in out if m["market"] and m["model"]),
