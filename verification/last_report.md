@@ -1,27 +1,28 @@
 # Verification report — PASS
-_2026-10-23T15:39:51.883927+00:00_
-189 matches · MODEL_STANDINGS: 0 · MARKET_CONSENSUS: 8 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 24 · MODEL_ELO: 82 · MODEL_ELO_THIN: 74 · MARKET_BOOKS: 0 · MARKET_POLYMARKET: 0 · UNRESOLVED: 0
+_2026-10-23T16:14:35.395321+00:00_
+184 matches · MARKET_POLYMARKET: 0 · MARKET_BOOKS: 0 · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 73 · MODEL_STANDINGS: 9 · MARKET_CONSENSUS: 8 · MODEL_LEAGUE_PRIOR: 12 · UNRESOLVED: 0 · MODEL_ELO: 81
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 189 matches, generated_at=2026-10-23T11:00:24.895236Z (4.7h old) |
-| D2 two distinct teams and a start time on every match | PASS | all 189 rows have team1, team2 and a start time |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 184 matches, generated_at=2026-10-23T16:14:13.518923Z (0.0h old) |
+| D2 two distinct teams and a start time on every match | PASS | all 184 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
 | D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D6b confidence labels are from the documented set | PASS | High/Medium/Low/None only |
 | D7c every source URL is absolute http(s) | PASS | all source URLs well formed |
-| D7 every row links at least one official/trusted source | PASS | all 189 rows carry at least one source URL |
+| D7 every row links at least one official/trusted source | PASS | all 184 rows carry at least one source URL |
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
 | D8b unresolved rows are explicit unverified 50/50 (limitations published) | PASS | every unresolved row is 0.50 and labelled unverified |
 | D9 no duplicate fixtures | PASS | no duplicate (teams,start) rows |
 | D16 no single-game (Game 1/Map 1) market used as a series probability | PASS | no non-BO1 row cites a single-game market |
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 declared counts agree with the rows | PASS | counts.resolved/unresolved consistent |
-| D11 declared count equals number of rows | PASS | declared=189, rows=189 |
-| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 72 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 127/137 matched fixture times agree with Leaguepedia; 52 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; differences are flagged for review) |
+| D11 declared count equals number of rows | PASS | declared=184, rows=184 |
+| D20 every standings-based line links the league table it used | PASS | 9 standings row(s) link a specific Leaguepedia standings page |
+| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 64 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 126/136 matched fixture times agree with Leaguepedia; 48 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; differences are flagged for review) |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 9 files present |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |

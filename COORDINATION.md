@@ -303,3 +303,54 @@ logging a request here.
 | T24 PR to main, merge without waiting, confirm Pages deploy, record result | pending | arena/b132c242 | COORDINATION.md |
 
 **Scope:** `scripts/**`, `docs/**`, `.github/workflows/**`, `verification/**`, `data/diag/**`, `COORDINATION.md`, `README.md`.
+
+### T20–T23 result (session `arena/b132c242`, 2026-10-23)
+
+| Task | Status | Evidence |
+|---|---|---|
+| T20 Standings line for unpriced leagues | **done** | `scripts/fetch_leaguepedia.py` (Standings fetch), `scripts/model.py` (`MODEL_STANDINGS`), live run 39984552233 |
+| T21 Tier-prior fix + per-row "why" | **done** | `scripts/model.py`, `scripts/update_picks.py`; regression test `verification/test_model_standings.py` |
+| T22 Mobile exec summary + per-league unresolved | **done** | `docs/index.html`, `docs/unresolved.html`, `docs/flagged.html`, `docs/assets/app.js` |
+| T23 Verification extensions | **done** | `D20` standings-link rule, `S7b` exec-summary findability rule, 29/29 verifier self-tests, JS DOM smoke test |
+
+**What changed in coverage** (same live payload, before → after this session):
+
+| Metric | Before | After |
+|---|---|---|
+| Fixtures published | 189 | 184 (matches lock through the day) |
+| External-market picks | 9 | 9 |
+| Picks from recorded series (Elo) | 156 | 154 |
+| Picks from official league standings | 0 | 9 |
+| Picks resting on a league prior only | 24 | 12 |
+| 50/50 placeholders | 0 | 0 |
+| Rows where thin Elo is blended with the official table | 0 | 70 |
+
+**Sources used and verified this session**
+
+| Source | Used for | Link | Verification |
+|---|---|---|---|
+| Leaguepedia `Standings` | Official win–loss table per league | https://lol.fandom.com/wiki/Special:CargoTables/Standings | 16 pages / 289 team rows fetched live; page-matched by fixture pair, snapshot committed at `data/diag/standings.json` |
+| Leaguepedia `MatchSchedule` | Results (Elo), schedule cross-check | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule | 31 732 result rows in the same run |
+| Hotspawn fixtures API + lobby | Fixture list only | https://play.hotspawn.com/lol-pickems | 184 future LoL fixtures, 12 without a published match page (flagged) |
+| Pinnacle guest JSON | Two-way moneyline | https://www.pinnacle.com/en/esports/league-of-legends | 61 records |
+| Bovada coupon JSON | Two-way moneyline | https://www.bovada.lv/sports/esports/league-of-legends | 8 records |
+| Polymarket Gamma | Match/series prices | https://gamma-api.polymarket.com | 9 records |
+
+**Verification performed**
+
+| Check | Result | Evidence |
+|---|---|---|
+| Full verifier (offline) | **33 PASS · 0 FAIL · 1 WARN** | `python3 scripts/verify_site.py --leaguepedia-schedule data/diag`; the WARN is `D18` (4 fixtures whose Leaguepedia start time differs, already flagged) |
+| Verifier self-tests | 29/29 | `verification/test_verifier.py` |
+| Model regression test | PASS (12 assertions) | `verification/test_model_standings.py` |
+| DOM contract | PASS | `verification/check_dom_contract.py` |
+| Rendered pages (jsdom, real payload) | picks 184 rows, next-24h 10 cards, unresolved page 97 low-confidence cards + 8 league rows, flagged page 31 probe rows, match page renders standings + "why" | local jsdom run; no JS errors |
+| CI pipeline on branch | success (run 39984552233) | `data/diag/pipeline.log`, `docs/data/picks.json` |
+| Source reachability probe | 31 endpoints tried, **0** returned a usable two-way price feed | `data/diag/market_probe.json` (published on the Flagged page) |
+
+**Irregularities / flagged for review**
+- **Hotspawn returned HTTP 403** on the first branch run (16:41 UTC) and 200 minutes later. The failure is now loud (`set -o pipefail` in both workflows) instead of silently committing a stale payload. A 403 run leaves the previous payload in place.
+- **Leaguepedia disambiguates common team names** with a bracket: `Locked In (Dutch Team)`, `Neon eSports (Brazilian Team)`, `Rich Gang (Norwegian Team)`. Conservative bracket/`ex-`/`e.V.` variants are generated; an ambiguous variant is refused. Abbreviations (`Phong Vũ Buffalo` = `PvB (Swiss Team)`) are **not** guessed, so those rows stay on a documented tier prior.
+- **12 rows still rely on a tier prior** (no series history and no standings row for one side). They are published with `MODEL_LEAGUE_PRIOR`, Low confidence and the substituted prior named in `model.prior_used`.
+- **PRM 3rd Division / LigaGG standings mix divisions**: more than one team is listed as place 1, so the line is shrunk halfway to 50%, capped at Low confidence and flagged `MULTI_DIVISION_STANDINGS`. No division column is exposed by the source, so this cannot be resolved from the table alone.
+- **No additional priced source was found.** 31 books/exchanges/aggregators were probed from the runner; every one was blocked (403/503/522), unreachable, or returned a page without two-way prices. Pinnacle, Bovada and Polymarket remain the only priced sources, and they cover the World Championship only.
