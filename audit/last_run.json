@@ -1,6 +1,6 @@
 {
- "run_at": "2026-10-23T16:12:52.599256Z",
- "payload_generated_at": "2026-10-23T16:12:46.218228Z",
+ "run_at": "2026-10-23T16:19:38.544799Z",
+ "payload_generated_at": "2026-10-23T16:19:31.841358Z",
  "counts": {
   "fixtures": 172,
   "next_24h": 20,
@@ -8,16 +8,14 @@
   "model": 163,
   "resolved": 172,
   "unresolved": 0,
-  "low_confidence": 89,
+  "low_confidence": 80,
   "hotspawn_without_match_page": 0,
   "excluded_not_priced": 12
  },
  "methods": {
   "MARKET_CONSENSUS": 8,
-  "MODEL_ELO": 77,
-  "MODEL_ELO_THIN": 70,
-  "MODEL_LEAGUE_PRIOR": 12,
-  "MODEL_STANDINGS": 4,
+  "MODEL_ELO": 88,
+  "MODEL_ELO_THIN": 75,
   "MARKET_SINGLE": 1
  },
  "sources_status": [
@@ -29,9 +27,16 @@
    "duplicates_collapsed": null
   },
   {
-   "name": "Bovada",
+   "name": "Unibet",
    "status": "ok",
    "count": 8,
+   "raw_count": null,
+   "duplicates_collapsed": null
+  },
+  {
+   "name": "Bovada",
+   "status": "no_data",
+   "count": 0,
    "raw_count": null,
    "duplicates_collapsed": null
   },
@@ -83,7 +88,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.7534,
+   "consensus": 0.765,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -92,8 +97,8 @@
      0.7355
     ],
     [
-     "Bovada",
-     0.7534
+     "Unibet",
+     0.7899
     ],
     [
      "Polymarket",
@@ -108,7 +113,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.7603,
+   "consensus": 0.765,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -117,8 +122,8 @@
      0.7597
     ],
     [
-     "Bovada",
-     0.7603
+     "Unibet",
+     0.7736
     ],
     [
      "Polymarket",
@@ -133,7 +138,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.805,
+   "consensus": 0.775,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -142,8 +147,8 @@
      0.7628
     ],
     [
-     "Bovada",
-     0.8125
+     "Unibet",
+     0.775
     ],
     [
      "Polymarket",
@@ -167,8 +172,8 @@
      0.6234
     ],
     [
-     "Bovada",
-     0.664
+     "Unibet",
+     0.6553
     ],
     [
      "Polymarket",
@@ -183,7 +188,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.4165,
+   "consensus": 0.4293,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -192,8 +197,8 @@
      0.4293
     ],
     [
-     "Bovada",
-     0.4165
+     "Unibet",
+     0.4492
     ],
     [
      "Polymarket",
@@ -208,7 +213,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.7111,
+   "consensus": 0.7143,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -217,8 +222,8 @@
      0.7111
     ],
     [
-     "Bovada",
-     0.7108
+     "Unibet",
+     0.7143
     ],
     [
      "Polymarket",
@@ -233,7 +238,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.125,
+   "consensus": 0.1326,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -242,8 +247,8 @@
      0.1607
     ],
     [
-     "Bovada",
-     0.1111
+     "Unibet",
+     0.1326
     ],
     [
      "Polymarket",
@@ -258,7 +263,7 @@
    ],
    "method": "MARKET_CONSENSUS",
    "confidence": "High",
-   "consensus": 0.4165,
+   "consensus": 0.4211,
    "books": 3,
    "raw_rows": 3,
    "sources": [
@@ -267,8 +272,8 @@
      0.4311
     ],
     [
-     "Bovada",
-     0.4165
+     "Unibet",
+     0.4211
     ],
     [
      "Polymarket",
@@ -294,48 +299,7 @@
    ]
   }
  ],
- "standings_rows": [
-  {
-   "teams": [
-    "Defiance eSports",
-    "REH Gaming"
-   ],
-   "confidence": "Low",
-   "prob_team1": 0.5056,
-   "source_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
-   "evidence": "Leaguepedia standings series records 1-0 vs 1-1 (series; smoothed 60.0% / 50.0%; multi-division page, shrunk toward 50/50; sample shrink 0.11)."
-  },
-  {
-   "teams": [
-    "REH Gaming",
-    "Kanji Esports AKA"
-   ],
-   "confidence": "Low",
-   "prob_team1": 0.4786,
-   "source_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
-   "evidence": "Leaguepedia standings series records 1-1 vs 3-0 (series; smoothed 50.0% / 71.4%; multi-division page, shrunk toward 50/50; sample shrink 0.20)."
-  },
-  {
-   "teams": [
-    "REH Gaming",
-    "Atruvia M\u00fcnster Esports"
-   ],
-   "confidence": "Low",
-   "prob_team1": 0.4833,
-   "source_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
-   "evidence": "Leaguepedia standings series records 1-1 vs 2-0 (series; smoothed 50.0% / 66.7%; multi-division page, shrunk toward 50/50; sample shrink 0.20)."
-  },
-  {
-   "teams": [
-    "REH Gaming",
-    "Cloud eSport"
-   ],
-   "confidence": "Low",
-   "prob_team1": 0.5167,
-   "source_url": "https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split",
-   "evidence": "Leaguepedia standings series records 1-1 vs 0-2 (series; smoothed 50.0% / 33.3%; multi-division page, shrunk toward 50/50; sample shrink 0.20)."
-  }
- ],
- "prior_only": 12,
- "low_confidence": 89
+ "standings_rows": [],
+ "prior_only": 0,
+ "low_confidence": 80
 }
