@@ -987,7 +987,8 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
 
         # ---- per-row record of the official table actually used -----------------
         standings_block = None
-        if st1 or st2:
+        pages_used = {str(x.get("overview")) for x in (st1, st2) if x and x.get("overview")}
+        if pages_used:
             def _st(s):
                 if not s:
                     return None
@@ -996,12 +997,20 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                         "win_games": s.get("win_games"), "loss_games": s.get("loss_games"),
                         "kind": "series" if (int(ws or 0) + int(ls or 0)) > 0 else "games",
                         "sample": int(ws or 0) + int(ls or 0) or int(s.get("win_games") or 0) + int(s.get("loss_games") or 0),
-                        "page": s.get("overview")}
-            page_name = (st1 or st2 or {}).get("overview") or eff_page
+                        "page": s.get("overview"),
+                        "url": ("https://lol.fandom.com/wiki/" + str(s.get("overview")).replace(" ", "_"))}
+            # the two records can come from different tables (a team's own split vs the
+            # fixture's split); name the fixture's table as the page, and keep each
+            # team's own table link so nothing is implied to come from one source
+            page_name = (eff_page if eff_page in pages_used else
+                         (next(iter(pages_used)) if len(pages_used) == 1 else
+                          (st1 or st2 or {}).get("overview")))
             standings_block = {
                 "page": page_name,
                 "url": "https://lol.fandom.com/wiki/" + page_name.replace(" ", "_") if page_name else None,
                 "team1": _st(st1), "team2": _st(st2),
+                "shared_page": bool(page_name and all(str(x.get("overview")) == page_name
+                                                     for x in (st1, st2) if x)),
                 "multi_division": bool(_norm_team(page_name) in multi_div) if page_name else False,
             }
 
@@ -1041,8 +1050,11 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                                      "hotspawn_url", "source_lobby", "crowd")},
             "standings": standings_block,
             "why": why,
-            "source_url": (standings_block or {}).get("url") or (
-                ("https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")) if eff_page else None),
+            # The probability source is the standings table only when the line rests on
+            # it; an Elo row keeps its tournament page as the source link.
+            "source_url": ((standings_block or {}).get("url") if method == "MODEL_STANDINGS" else None)
+                          or (("https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")) if eff_page else None)
+                          or (standings_block or {}).get("url"),
             "leaguepedia_page": eff_page or None,
             "leaguepedia_url": ("https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")) if eff_page else None,
             "fixture_match": how,

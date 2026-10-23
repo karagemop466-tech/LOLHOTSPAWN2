@@ -151,7 +151,7 @@
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
     const byId = new Map((d.matches || []).map((m) => [m.id, m]));
-    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 6);
+    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 10);
     const nextBox = $("#next24");
     if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 2 })).join("") : `<div class="card">No matches in the next 24 hours.</div>`;
 
@@ -400,6 +400,17 @@
           </div>
         </div>
         <div>
+          ${m.standings ? `<div class="card"><h3>Official split standings</h3>
+            <p class="small">Records used for this line. Each team links the table it was taken from.
+            ${m.standings.multi_division ? "This table combines several divisions, so the edge is halved and the row is capped at low confidence." : ""}</p>
+            <div class="table-wrap"><table><thead><tr><th>Team</th><th>Series W-L</th><th>Game W-L</th><th>Sample</th><th>Table</th></tr></thead><tbody>
+              ${[["team1", m.team1], ["team2", m.team2]].map(([k, name]) => {
+                const x = m.standings[k];
+                if (!x) return `<tr><td><b>${esc(name)}</b></td><td>—</td><td>—</td><td>—</td><td class="small">not listed</td></tr>`;
+                return `<tr><td><b>${esc(name)}</b></td><td>${x.wins ?? "—"}-${x.losses ?? "—"}</td><td>${x.win_games ?? "—"}-${x.loss_games ?? "—"}</td><td>${esc(x.kind)} ${x.sample ?? 0}</td><td class="small">${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">standings ↗</a>` : "—"}</td></tr>`;
+              }).join("")}
+            </tbody></table></div></div>` : ""}
+          <div class="card"><h3>Why this line</h3><p class="small">${esc(m.why || m.evidence || "")}</p></div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
           <div class="card"><h3>Sources & verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
           <p class="tiny">Crowd context (not used in the probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
