@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-23T16:28:12.746932Z",
+ "checked_at": "2026-10-23T16:29:32.592917Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -67,7 +67,7 @@
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 491898,
+   "bytes": 491984,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -77,12 +77,12 @@
    "name": "BetExplorer LoL",
    "url": "https://www.betexplorer.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 404,
+   "http_status": 429,
    "bytes": 0,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 404)"
+   "verdict": "not usable from CI (HTTP 429)"
   },
   {
    "name": "GG.Bet LoL",
