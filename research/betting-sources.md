@@ -227,3 +227,58 @@ https://lol.fandom.com/wiki/Special:CargoExport?tables=MatchSchedule
 
 Consequence: the Riot front-end API cannot be a production dependency here (and it never covered amateur leagues).
 Leaguepedia `MatchSchedule` remains the only reliable fixture/results feed for the low-tier leagues.
+
+---
+
+## 11. Refresh 2026-10-23 (session `arena/bd37dbe6`, task T15)
+
+Purpose: re-check the market and results inputs before the 2026-10-23 release, and separate what is **verified** from what is only **claimed by third parties**. Every item below has a link. Items marked *third-party claim* were not checked against the operator and must not be shown on the site as a verified line.
+
+### 11.1 Coverage of the Hotspawn lobby (verified against the live lobby and the fixtures feed)
+
+| Item | Value | Evidence |
+|---|---|---|
+| Lobby LoL entries (tier filter "All tiers") | **241** | Lobby state read in Actions, `data/diag/coverage_audit.json` (`lobby_fixtures_total`), and the lobby page itself https://play.hotspawn.com/lol-pickems |
+| Of those, already past start time (no match link, locked) | **66** | `lobby_past_rows` |
+| Of those, upcoming (start in the future, match link present) | **175** | `lobby_future_with_permalink` — every one is priced |
+| Upcoming fixtures in the fixtures feed | **188** = 175 `scheduled` + **13 `cancelled`** | `api_lol_future_status`, https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures (Hotspawn's own backend, the source the lobby renders) |
+| Cancelled fixtures listed in the lobby | **0** — none of the 13 cancelled fixtures is in the lobby | `ids_in_api_not_lobby` |
+| Lobby header "This week 139 matches this week" | **Unverified.** Lobby rows with start inside the lobby's own week window (2026-10-19 00:00 → 2026-10-25 23:59:59 UTC) number **64** (62 upcoming + 2 past). No definition of "139" is visible on the page, so it is flagged, not used. | `lobby_week`, `lobby_future_in_week` |
+
+**Decision (implemented 2026-10-23):** the lobby is the authority for "listed on Hotspawn". The pipeline prices exactly the 175 upcoming lobby fixtures that the fixtures feed also lists with status `scheduled`. The 13 `cancelled` fixtures are excluded from picks and shown on the Flagged page with their source link. Verifier rule D21 fails the build if any upcoming lobby fixture is unpriced or if an excluded fixture is priced.
+
+### 11.2 Betting-site survey (what established books say they cover)
+
+Only the sources in the **verified** column were read directly. The others come from search-result summaries of third-party guides; they are listed so that a human can check them, not as data.
+
+| Source | Type | Status | What the source says | Link |
+|---|---|---|---|---|
+| Pinnacle (guest front-end feed) | Sharp esportsbook | **Verified in production** (parent Regular `period == 0` moneylines only; child Kills/Towers/Dragons prop matchups excluded) | Prices the World Championship and EMEA Masters only; no amateur leagues | https://www.pinnacle.com/en/esports/league-of-legends |
+| Unibet (Kambi JSON offering API) | Major EU/AU sportsbook network | **Verified in production** (`eu-offering-api.kambicdn.com` pre-match 2-way `Match Odds`, linked per event on `www.unibet.com.au`) | Prices the World Championship (8/8 Swiss matches verified) and major LoL events | https://www.unibet.com.au/betting/sports/filter/esports/league_of_legends/all/matches |
+| Bovada (coupon JSON) | US-facing esportsbook | **Verified in production** (unofficial JSON) | Prices the World Championship and a few other matches | https://www.bovada.lv/sports/esports/league-of-legends |
+| Polymarket (Gamma API, public) | Prediction market | **Verified in production** | Prices Worlds 2026 and some tier-2/3 events; thin volume | https://gamma-api.polymarket.com |
+| Polymarket homepage | Operator notice | **Verified 2026-10-23** — the homepage says *"Trading is blocked in the United States on polymarket.com"* and offers a view-only mode | https://polymarket.com/ |
+| Kalshi | US prediction market | Not used — the probe found no LoL series (`CHECKED_UNAVAILABLE`) | https://kalshi.com/ |
+| bet365, Betway, GG.BET, Thunderpick, BetOnline, Rivalry, TonyBet | Established books | *Third-party claim only.* Guides list LoL coverage (e.g. "LCK, LPL, LEC, LCS, CBLOL, LFL, PRM" for Thunderpick; "LCK, LPL, LCK CL, TCL, LFL" for BetOnline). No per-match public odds feed was available to us, so none is used. | esports.gg guide https://esports.gg/guides/betting/league-of-legends-betting-sites/ · eGaming HQ https://www.egaminghq.com/guide/lol-betting-odds-2026-guide/ · ibebet https://ibebet.com/betting/esports/league-of-legends/ |
+| OddsPapi (aggregator) | Odds aggregator | *Third-party claim:* lists "Worlds, LEC, LCS, LCK, LPL, CBLOL, LJL, Prime League Pro Division" and requires an API key. No key is configured, so **no OddsPapi data is read**. | https://oddspapi.io/blog/esports-odds-api-guide-how-to-get-pinnacle-cs2-lol-data-for-free/ |
+| HLTV esports odds (US) | Odds comparison | *Third-party claim:* lists DraftKings, Kalshi and bet365 as US esports options. Not parsed. | https://www.hltv.org/en-us/betting/sites/esports |
+
+**Conclusion, unchanged from §1:** the only lines we can read programmatically are Pinnacle, Bovada and Polymarket, and they cover the top-tier and a few tier-2/3 events. Every amateur or regional fixture is priced by our Elo / standings model, not by a book. The third-party guides do not change that, because none of them exposes per-match prices that we can verify.
+
+### 11.3 Results sources (re-checked)
+
+| Source | Status on 2026-10-23 | Note |
+|---|---|---|
+| Leaguepedia `MatchSchedule` / `Standings` (Cargo) | Used in production (results + schedule) | Community wiki (Fandom); attribute, do not call it official |
+| Riot LoL Esports API (`esports-api.lolesports.com`) | Still blocked (HTTP 403) from GitHub Actions per the earlier probe `data/diag/report7.json` | Not used |
+| Liquipedia API | Terms: gzip, ≥2 s between requests, CC-BY-SA 3.0 attribution | Not wired in this release |
+
+### 11.4 Irregularities for review (added 2026-10-23)
+
+1. **13 cancelled fixtures were being priced** in the 2026-10-23 11:00 UTC payload (`status: cancelled`, no lobby entry). Fixed in this release; the Flagged page lists them with source links.
+2. **Lobby header "139 matches this week" does not reconcile** with the fixture data (64 rows inside the week window). Flagged, unverified.
+3. **Polymarket US access**: trading is blocked for US users on polymarket.com (see §11.2). Its prices are reference data only.
+4. **OddsPapi wording** in the earlier payload described an adapter that does not exist. Corrected: no adapter, no key, no data read.
+5. **Pinnacle child prop-matchup duplication (`D20` fixed)**: Pinnacle's `/leagues/{id}/matchups` returns 5–7 child matchups (`parentId != null`, `units = Kills/Towers/Dragons/Barons/Inhibitors`) whose `/markets/related/straight` endpoint repeated the parent's `period == 0` moneyline. Fixed in `scripts/fetch_markets.py` (parent `Regular` matchups + `/leagues/{id}/markets/straight`) and enforced by verifier rule `D20`.
+6. **Hotspawn `PVB` tag collision in German PRM 2nd Division (`HOTSPAWN_NAME_COLLISION` flagged)**: Hotspawn expands `PVB` in `PRM 2nd Division 26-27 Fall` to defunct Vietnamese team `Phong Vũ Buffalo`; Leaguepedia's verified participant page (`https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split`) confirms the team is **`PvB (Swiss Team)`**. Mapped via competition-scoped alias and flagged on every affected row.
+7. **`LYON` homonym in Worlds 2026**: Hotspawn's `LYON` in `Worlds 2026 Main Event` is **`LYON (2024 American Team)`** on Leaguepedia (`https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event`), not the defunct 2013 LAN team `LYON`. Fixed in `data/aliases.json`.

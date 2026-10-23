@@ -65,7 +65,7 @@ def main() -> int:
     # baseline: a clean row must pass every data check
     c = run([copy.deepcopy(BASE_ROW)])
     results += [assert_status(c, i, vs.PASS, "clean row passes")
-                for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D9", "D12")]
+                for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D8c", "D8d", "D9", "D12", "D20")]
 
     # pick not one of the teams
     r = copy.deepcopy(BASE_ROW); r["pick"] = "Team C"
@@ -89,6 +89,16 @@ def main() -> int:
     r = copy.deepcopy(BASE_ROW); r["market_url"] = ""
     r["source_url"] = "https://lol.fandom.com/wiki/Test"
     results.append(assert_status(run([r]), "D8a", vs.FAIL, "market row without market url"))
+    # model row missing a recorded-results source URL
+    r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_ELO"; r.pop("market_url", None)
+    r["sources"] = [{"name": "Hotspawn fixture", "url": r["hotspawn_url"]}]
+    results.append(assert_status(run([r]), "D8c", vs.FAIL, "model row without results source"))
+    # generic results table without the explicit provenance warning
+    r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_ELO"; r.pop("market_url", None)
+    r["source_url"] = "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule"
+    results.append(assert_status(run([r]), "D8d", vs.FAIL, "generic model source without flag"))
+    r["flags"] = ["GENERIC_RESULTS_SOURCE"]
+    results.append(assert_status(run([r]), "D8d", vs.PASS, "generic model source correctly flagged"))
     # unresolved row that is not 50/50
     r = copy.deepcopy(BASE_ROW); r["method"] = "UNRESOLVED"; r["prob_team1"] = 0.7
     r["prob_team2"] = 0.3; r["pick"] = "Team A"; r["pick_prob"] = 0.7
@@ -115,15 +125,35 @@ def main() -> int:
     r = copy.deepcopy(BASE_ROW)
     r["evidence"] = "Polymarket: Team A vs Team B (BO1) - Worlds Group Stage"
     results.append(assert_status(run([r]), "D16", vs.PASS, "BO1 market ok"))
-    # standings line with no league-table link
+    # duplicate bookmaker board rows inside market.sources must fail D20
+    r = copy.deepcopy(BASE_ROW)
+    r["method"] = "MARKET_CONSENSUS"
+    r["market"] = {
+        "source_count": 2,
+        "sources": [
+            {"source": "Pinnacle", "source_key": "pinnacle", "prob_team1": 0.6,
+             "url": "https://www.pinnacle.com/en/esports/league-of-legends"},
+            {"source": "Pinnacle", "source_key": "pinnacle", "prob_team1": 0.6,
+             "url": "https://www.pinnacle.com/en/esports/league-of-legends"},
+        ],
+    }
+    results.append(assert_status(run([r]), "D20", vs.FAIL, "duplicate bookmaker in market.sources"))
+    # standings line must link the exact league table it used (D21)
     r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_STANDINGS"
-    r["source_url"] = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
+    r["source_url"] = "https://lol.fandom.com/wiki/Test_League"
     r["standings"] = {"page": "Test League/2026", "url": "https://lol.fandom.com/wiki/Test_League",
                       "team1": {"wins": 3, "losses": 1, "sample": 4},
                       "team2": {"wins": 2, "losses": 2, "sample": 4}}
-    results.append(assert_status(run([r]), "D20", vs.PASS, "standings line with league page"))
+    results.append(assert_status(run([r]), "D21", vs.PASS, "standings line with league page"))
     r = copy.deepcopy(r); r["standings"] = {}
-    results.append(assert_status(run([r]), "D20", vs.FAIL, "standings line without league page"))
+    results.append(assert_status(run([r]), "D21", vs.FAIL, "standings line without league page"))
+    r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_STANDINGS"
+    r["source_url"] = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
+    r["standings"] = {"page": "Test League/2026",
+                      "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
+                      "team1": {"wins": 3, "losses": 1, "sample": 4}}
+    results.append(assert_status(run([r]), "D21", vs.FAIL, "standings line with a generic table link"))
+
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],

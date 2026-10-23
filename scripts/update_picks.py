@@ -25,7 +25,7 @@ CHECKED_UNAVAILABLE = [
     {"name": "Smarkets", "url": "https://smarkets.com/sport/esports/league-of-legends",
      "observed": "HTTP 403 (Cloudflare challenge)", "consequence": "No exchange prices used."},
     {"name": "Oddspapi", "url": "https://oddspapi.io/sports/esports/lol",
-     "observed": "HTTP 401 without a paid API key", "consequence": "Adapter retained but disabled; no key is stored."},
+     "observed": "HTTP 401 without a paid API key; no key is configured in this repository", "consequence": "No OddsPapi adapter exists in the pipeline; nothing is read from it, so no bookmaker line comes from OddsPapi."},
     {"name": "The Odds API", "url": "https://the-odds-api.com/liveapi/guides/v4/",
      "observed": "HTTP 401 without a paid API key", "consequence": "Not used."},
     {"name": "OddsPortal", "url": "https://www.oddsportal.com/lol/",
@@ -38,8 +38,8 @@ CHECKED_UNAVAILABLE = [
      "observed": "HTTP 403 (Cloudflare)", "consequence": "Not used."},
     {"name": "Betway Esports", "url": "https://www.betway.com/en/esports/league-of-legends",
      "observed": "HTTP 404 (LoL page unavailable)", "consequence": "Not used."},
-    {"name": "Unibet", "url": "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
-     "observed": "HTTP 503", "consequence": "Not used."},
+    {"name": "Unibet (www.unibet.com HTML shell)", "url": "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
+     "observed": "HTTP 503 on the generic HTML filter URL", "consequence": "HTML shell not used; Unibet prices are read via Kambi's public JSON feed and linked to www.unibet.com.au."},
     {"name": "Rivalry", "url": "https://www.rivalry.com/lol",
      "observed": "HTML shell only; API endpoints HTTP 502", "consequence": "No prices parsed."},
     {"name": "Midnite", "url": "https://www.midnite.com/esports/league-of-legends",
@@ -53,14 +53,15 @@ CHECKED_UNAVAILABLE = [
 ]
 
 LIMITATIONS = [
-    "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Bovada and Polymarket list the World Championship and EMEA Masters, not regional amateur leagues.",
+    "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
-    "Leaguepedia's MatchSchedule records results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new teams have no games at all.",
+    "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
-    "Where a team has no recorded games, we first use the official Leaguepedia win-loss table for its league (converted to a rating and shrunk for small samples). Only when there is no standings row either do we fall back to the competition median or tier prior. A prior is not evidence about the team.",
-    "Where the Elo sample is thin (under 8 recorded series) and both teams are listed in the official league table, the published probability is a 50/50 blend of the two estimators; the row is flagged STANDINGS_BLENDED so the blend is visible.",
-    "Leaguepedia standings pages that combine several divisions do not say which division a team is in, so those rows are shrunk toward 50% and capped at low confidence (flag MULTI_DIVISION_STANDINGS). Records are also kept per series where the source provides series scores.",
+    "Where a team has no recorded games, the model first uses the official Leaguepedia current-split standings for its competition (converted to a rating and shrunk for sample size). Only when that side has no standings row either does it fall back to the competition median / tournament tier prior. A prior is not evidence about the team.",
+    "Standings pages that combine several divisions do not say which division a team plays in. For those rows the edge is halved, the row is capped at low confidence and it is flagged MULTI_DIVISION_STANDINGS.",
+    "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
+    "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
 ]
 
@@ -68,8 +69,8 @@ LIMITATIONS = [
 def _market_probe():
     """Measured reachability of additional betting sources (scripts/probe_markets.py).
 
-    Only the last probe result is published, labelled with its own timestamp and the
-    exact method; it is evidence, not a claim that a source is licensed or complete.
+    Published with its own timestamp and method so the "we tried the books" claim is
+    evidence, not an assertion. A 200 response is never treated as coverage.
     """
     data = load_json("data/diag/market_probe.json", {}) or {}
     results = data.get("results") or []
@@ -93,7 +94,6 @@ def build_payload(fixtures, markets, leaguepedia, picks):
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
     market_matches = [m for m in matches if m["market"]]
-    standings_rows = [m for m in matches if (m.get("standings") or {}).get("page")]
     reasons = Counter()
     for m in unresolved:
         if "NO_TEAM_HISTORY" in m["flags"]:
@@ -103,8 +103,10 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if m["method"] == "MODEL_STANDINGS":
-            reasons["Official league record used, sample still small"] += 1
+        if m["method"] == "MODEL_STANDINGS" and "MULTI_DIVISION_STANDINGS" in m["flags"]:
+            reasons["Official table mixes divisions (edge halved, low confidence)"] += 1
+        elif m["method"] == "MODEL_STANDINGS":
+            reasons["Line rests on the official split standings (small sample)"] += 1
         elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
             reasons["One team has no recorded history (league prior used)"] += 1
         elif "CROSS_LEAGUE_MODEL" in m["flags"]:
@@ -121,17 +123,17 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         source_status.append({"name": s.get("source"), "url": s.get("url"), "status": s.get("status"),
                               "count": s.get("count"), "note": s.get("note") or s.get("error")})
     lp_degraded = bool(leaguepedia.get("degraded")) or leaguepedia["counts"]["results"] <= 1000
-    source_status.append({"name": "Leaguepedia Standings",
-                          "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
-                          "status": "ok" if (leaguepedia.get("counts", {}).get("standings_rows") or 0) > 0 else "degraded",
-                          "count": leaguepedia.get("counts", {}).get("standings_rows") or 0,
-                          "note": "Official win-loss tables for the leagues in the current fixture list."})
     source_status.append({"name": "Leaguepedia MatchSchedule",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
                           "status": "degraded" if lp_degraded else "ok",
                           "count": leaguepedia["counts"]["results"],
                           "note": (leaguepedia.get("degraded_reason")
                                    or "Recorded results + schedules, exact UTC.")})
+    source_status.append({"name": "Leaguepedia Standings (current split)",
+                          "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
+                          "status": "ok" if (leaguepedia.get("counts", {}).get("standings") or 0) > 0 else "degraded",
+                          "count": leaguepedia.get("counts", {}).get("standings") or 0,
+                          "note": "Official current-split win-loss table, used for teams without enough recorded series."})
     source_status.append({"name": "Hotspawn LoL Pick'em lobby", "url": fixtures["lobby"],
                           "status": "ok" if fixtures["count"] >= 50 else "degraded",
                           "count": fixtures["count"], "note": "Fixture list only."})
@@ -153,14 +155,18 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "unresolved": picks["coverage"]["unresolved"],
             "low_confidence": len(low_conf),
             "hotspawn_without_match_page": fixtures.get("without_match_page", 0),
+            "excluded_not_priced": len(fixtures.get("excluded") or []),
         },
         "coverage": picks["coverage"],
+        "market_probe": _market_probe(),
         "standings": {
-            "pages": leaguepedia.get("standings_pages") or [],
-            "by_tournament": leaguepedia.get("standings_by_tournament") or {},
-            "teams": sum(1 for m in standings_rows if m.get("standings")),
+            "pages": sorted({str(m["standings"].get("page")) for m in matches
+                             if (m.get("standings") or {}).get("page")}),
+            "rows_with_standings": sum(1 for m in matches if m.get("standings")),
             "rows_with_standings_line": sum(1 for m in matches if m["method"] == "MODEL_STANDINGS"),
         },
+        "coverage_reconciliation": fixtures.get("reconciliation") or {},
+        "excluded_fixtures": fixtures.get("excluded") or [],
         "model": picks["model"],
         "unresolved": {
             "count": len(unresolved),
@@ -178,7 +184,6 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,
         "checked_unavailable": CHECKED_UNAVAILABLE,
-        "market_probe": _market_probe(),
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
         "next_24h": [m["id"] for m in next_24h[:8]],

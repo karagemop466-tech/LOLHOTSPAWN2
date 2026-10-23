@@ -46,18 +46,21 @@
       <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
       and prices <b>every</b> one of them: matches covered by established bookmakers use the external market
       consensus; low-tier and amateur matches, which no book prices, are priced by our own model from
-      recorded match results and the official league win-loss table.
+      recorded results and the official Leaguepedia split standings.
       Hotspawn's crowd percentages are shown as context only and are <b>never</b> an input to a probability.
     </p>
+    <div class="warnbox" role="note">
+      <b>Source limitation:</b> When there is no external market line, the probability is our model estimate from Leaguepedia's recorded results. Leaguepedia is a community-maintained results database, not an official tournament or Riot source; Hotspawn confirms the listed fixture, not its win probability. These estimates are not official lines. See <a href="flagged.html#source-limitations">source limitations and flagged items</a>.
+    </div>
     <div class="hero-actions">
       <a class="btn primary" href="picks.html">See all picks →</a>
       <a class="btn" href="#next24">Picks for the next 24 h ↓</a>
-      <a class="btn warn" href="unresolved.html">Unresolved &amp; low-confidence picks →</a>
+      <a class="btn warn" href="unresolved.html">Picks without a book line &amp; limitations →</a>
       <a class="btn" href="flagged.html">Flagged for review →</a>
     </div>
-    <p class="small" id="where-line">
-      <b>On a phone?</b> Use the bar at the bottom of the screen: <b>Picks</b> opens the full table, the other
-      tabs open the unresolved list, the flagged items and the method. Everything below is also linked.
+    <p class="small">
+      <b>On a phone?</b> Use the bar at the bottom of the screen: <b>Picks</b> opens the full table,
+      the other tabs open the unresolved list, the flagged items and the method.
     </p>
   </section>
 
@@ -71,7 +74,7 @@
       </a>
       <a class="linkcard" href="picks.html?filter=next24">
         <span class="ico" aria-hidden="true">⏱️</span>
-        <span><b>Picks for the next 24 hours</b><span>The same table, filtered to matches that lock soonest.</span></span>
+        <span><b>Picks for the next 24 hours</b><span>The same table, filtered to the matches that lock soonest.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="unresolved.html">
@@ -81,7 +84,7 @@
       </a>
       <a class="linkcard" href="flagged.html">
         <span class="ico" aria-hidden="true">🚩</span>
-        <span><b>Flagged for review</b><span>Every irregularity with a source link: thin history, name or time mismatches, model–market disagreements.</span></span>
+        <span><b>Flagged for review</b><span>Every irregularity with a source link, plus the measured result of probing 31 other betting sources.</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="methodology.html">
@@ -99,10 +102,16 @@
     <div class="stat amber"><div class="n" id="stat-unresolved">—</div><div class="l">Explicit 50/50 placeholders</div></div>
   </section>
 
+  <section class="card" id="recon-card" aria-labelledby="recon-h">
+    <h3 id="recon-h">Coverage check against Hotspawn's lobby</h3>
+    <div id="recon-body" class="small">Loading…</div>
+  </section>
+
   <section class="card">
     <h3>How complete is coverage?</h3>
     <div class="bar" id="coverage-bar" aria-hidden="true"></div>
     <p id="coverage-text" class="small">Loading coverage…</p>
+    <p class="small"><a href="#where-picks">Where to find each list on this site →</a></p>
   </section>
 
   <section>
