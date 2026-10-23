@@ -149,7 +149,11 @@ jobs:
                    f"- counts: `{json.dumps(d.get('counts'))}`",
                    f"- methods: `{json.dumps((d.get('coverage') or {}).get('counts_by_method'))}`",
                    f"- coverage reconciliation: required={rec.get('required_future_fixtures')} "
-                   f"missing={rec.get('missing_from_payload')} ok={rec.get('coverage_ok')}", ""]
+                   f"not_priced={len(rec.get('missing_from_payload') or [])} "
+                   f"excluded={len(rec.get('excluded_by_pipeline') or {})} "
+                   f"unexplained={rec.get('unexplained_missing')} ok={rec.get('coverage_ok')}", ""]
+          for fid, reason in list((rec.get("excluded_by_pipeline") or {}).items())[:12]:
+              lines.append(f"  - excluded {fid}: {reason}")
           for s_ in d.get("sources_status") or []:
               lines.append(f"- {s_.get('name')}: {s_.get('status')} count={s_.get('count')} "
                            f"raw={s_.get('raw_count')} duplicates_collapsed={s_.get('duplicates_collapsed')}")

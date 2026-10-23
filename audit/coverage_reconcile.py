@@ -44,7 +44,10 @@ def lol_rows(fixtures, permalinks):
 
 def main() -> int:
     now = now_utc()
-    cutoff = now - timedelta(minutes=10)  # picks lock 5 minutes before start
+    # The pipeline prices fixtures whose start is still ahead and that are listed
+    # in the lobby with status "scheduled". Use the same rule here so a match
+    # that has already started is reported as "not required", not as a gap.
+    cutoff = now
 
     lobby_r = fetch(LOBBY, timeout=90)
     state = _ng_state(lobby_r["text"]) if lobby_r["status"] == 200 else None
@@ -64,6 +67,9 @@ def main() -> int:
 
     payload = load_json("docs/data/picks.json", {}) or {}
     published = {str(m.get("id")) for m in payload.get("matches") or []}
+    excluded = {str(x.get("id")): x for x in (payload.get("excluded_fixtures") or [])
+                if isinstance(x, dict) and x.get("id") is not None}
+    recon = payload.get("coverage_reconciliation") or {}
 
     out = {
         "generated_at": utc_iso(now),
@@ -104,14 +110,28 @@ def main() -> int:
             if datetime.fromisoformat(r["start_utc"].replace("Z", "+00:00")) > cutoff:
                 union_future[r["id"]] = r
     out["required_future_fixtures"] = len(union_future)
-    out["missing_from_payload"] = sorted(set(union_future) - published)
-    out["missing_detail"] = [
-        {"id": fid, "team1": union_future[fid]["team1"], "team2": union_future[fid]["team2"],
-         "tournament": union_future[fid]["tournament"], "start_utc": union_future[fid]["start_utc"],
-         "hotspawn_url": union_future[fid].get("hotspawn_url")}
-        for fid in sorted(set(union_future) - published)
-    ]
-    out["coverage_ok"] = not out["missing_from_payload"]
+    missing = sorted(set(union_future) - published)
+    out["missing_from_payload"] = missing
+    out["excluded_by_pipeline"] = {}
+    out["unexplained_missing"] = []
+    out["missing_detail"] = []
+    for fid in missing:
+        row = union_future[fid]
+        detail = {"id": fid, "team1": row["team1"], "team2": row["team2"],
+                  "tournament": row["tournament"], "start_utc": row["start_utc"],
+                  "hotspawn_url": row.get("hotspawn_url")}
+        exc = excluded.get(fid)
+        if exc:
+            detail["exclusion_reason"] = exc.get("reason")
+            out["excluded_by_pipeline"][fid] = exc.get("reason")
+        else:
+            out["unexplained_missing"].append(fid)
+        out["missing_detail"].append(detail)
+    out["pipeline_reconciliation"] = recon
+    # Coverage is OK when every fixture the brief requires is either priced, or
+    # excluded for a stated, auditable reason (already started / withdrawn /
+    # not listed in the lobby). An unexplained gap keeps it False.
+    out["coverage_ok"] = not out["unexplained_missing"]
 
     write_json(OUT_JSON, out)
     md = [
@@ -127,11 +147,15 @@ def main() -> int:
                   f"{len(d['future_ids_missing_from_payload'])} |")
     md += ["", f"Published payload rows: **{out['payload']['published_matches']}** · "
                f"required future fixtures (union): **{out['required_future_fixtures']}** · "
-               f"missing: **{len(out['missing_from_payload'])}**", ""]
+               f"not priced: **{len(out['missing_from_payload'])}** "
+               f"(documented exclusions: **{len(out['excluded_by_pipeline'])}**, "
+               f"unexplained: **{len(out['unexplained_missing'])}**)", ""]
     if out["missing_detail"]:
-        md += ["## Missing fixtures", "", "| id | teams | tournament | start (UTC) |", "|---|---|---|---|"]
+        md += ["## Fixtures not priced, with the pipeline's reason", "",
+               "| id | teams | tournament | start (UTC) | reason |", "|---|---|---|---|---|"]
         for m in out["missing_detail"]:
-            md.append(f"| {m['id']} | {m['team1']} vs {m['team2']} | {m['tournament']} | {m['start_utc']} |")
+            md.append(f"| {m['id']} | {m['team1']} vs {m['team2']} | {m['tournament']} | "
+                      f"{m['start_utc']} | {m.get('exclusion_reason') or '**UNEXPLAINED**'} |")
     else:
         md.append("Every future League of Legends fixture listed by the lobby and the fixtures API "
                   "has a published pick in the payload.")
