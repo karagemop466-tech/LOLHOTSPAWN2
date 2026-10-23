@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-23T16:41:33.061053Z",
+ "checked_at": "2026-10-23T16:42:53.399127Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -67,7 +67,7 @@
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 491941,
+   "bytes": 491898,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -100,7 +100,7 @@
    "url": "https://thunderpick.io/esports/league-of-legends",
    "kind": "esportsbook-page",
    "http_status": 403,
-   "bytes": 5789,
+   "bytes": 5767,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
