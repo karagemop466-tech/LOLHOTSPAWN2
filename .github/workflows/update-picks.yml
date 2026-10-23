@@ -48,8 +48,10 @@ jobs:
           ms = d.get("matches") or []
           if len(ms) < 50:
               errs.append(f"only {len(ms)} fixtures")
+          # Keep this list in sync with scripts/model.py METHOD_LABELS: a method
+          # missing here blocks the whole scheduled refresh (MODEL_STANDINGS did).
           methods = {"MARKET_CONSENSUS", "MARKET_SINGLE", "MODEL_ELO", "MODEL_ELO_THIN",
-                     "MODEL_LEAGUE_PRIOR", "UNRESOLVED"}
+                     "MODEL_LEAGUE_PRIOR", "MODEL_STANDINGS", "UNRESOLVED"}
           for m in ms:
               if m["method"] not in methods:
                   errs.append(f"bad method {m['method']} for {m['team1']} vs {m['team2']}")
@@ -86,25 +88,29 @@ jobs:
 
       - name: Commit the refreshed data
         run: |
-          set -euxo pipefail
+          set -euo pipefail
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
           git add docs/data data/diag/pipeline.log
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
-          for attempt in 1 2 3; do
-            git fetch origin "${GITHUB_REF_NAME}"
-            # generated payloads are the freshest copy: during a rebase the bot's
-            # commit is "theirs", during the merge fallback the branch is "ours"
-            if ! git rebase -X theirs "origin/${GITHUB_REF_NAME}"; then
-              git rebase --abort || true
-              git merge -X ours --no-edit "origin/${GITHUB_REF_NAME}"
+          for attempt in 1 2 3 4 5; do
+            if ! git fetch -q origin "${GITHUB_REF_NAME}"; then
+              echo "fetch failed on attempt ${attempt}" >&2; sleep 5; continue
             fi
-            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            # Generated payload is the freshest copy: keep it on both rebase and
+            # merge, but never leave the repo in a half-rebased state.
+            if ! git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+              git merge --abort >/dev/null 2>&1 || true
+              echo "merge failed on attempt ${attempt}" >&2; sleep 5; continue
+            fi
+            if git push -q origin "HEAD:${GITHUB_REF_NAME}"; then
               echo "pushed on attempt ${attempt}"
               exit 0
             fi
+            git reset --hard HEAD~1 >/dev/null 2>&1 || true
+            echo "push rejected on attempt ${attempt}; retrying" >&2
             sleep 5
           done
-          echo "could not push the refreshed payload after 3 attempts" >&2
+          echo "could not push the refreshed payload after 5 attempts" >&2
           exit 1
