@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-23T15:53:29.800924+00:00_
-175 matches · MODEL_ELO: 78 · MARKET_BOOKS: 0 · UNRESOLVED: 0 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 71 · MODEL_LEAGUE_PRIOR: 17
+_2026-10-23T15:59:00.619828+00:00_
+175 matches · MODEL_ELO: 78 · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 71 · UNRESOLVED: 0 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 17 · MARKET_CONSENSUS: 8 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 175 matches, generated_at=2026-10-23T15:52:07.123561Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 175 matches, generated_at=2026-10-23T15:58:28.634505Z (0.0h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 175 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -24,7 +24,7 @@ _2026-10-23T15:53:29.800924+00:00_
 | D11 declared count equals number of rows | PASS | declared=175, rows=175 |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=175, priced=175, missing=0, extra=0, excluded=13, leaked=0 |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 67 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 126/132 matched fixture times agree with Leaguepedia; 43 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.1h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 126/132 matched fixture times agree with Leaguepedia; 43 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.2h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 9 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 5 links, 5 columns on every page |
