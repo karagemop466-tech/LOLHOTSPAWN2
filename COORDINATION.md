@@ -488,6 +488,7 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 | Task | Status | Owner | Files (exclusive scope) |
 |---|---|---|---|
 | T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | done | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
+| T20 Post-merge verification & Pages deployment recovery: monitor PR #21 main Actions runs, recover/retry the Pages deploy if transient, verify live Pages content, and record evidence | in progress | arena/bdecdf49 | `COORDINATION.md` only |
 
 **Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), the code-change scope is limited to `.github/workflows/pipeline-test.yml`. `COORDINATION.md` is maintained as the shared log. No files in their site, source/model, or fixture scopes are edited; this is not the final integration claim.
 
