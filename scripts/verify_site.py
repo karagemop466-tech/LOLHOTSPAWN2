@@ -49,6 +49,7 @@ from urllib.parse import urlparse
 import urllib.request
 import urllib.error
 import concurrent.futures
+import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
@@ -965,37 +966,65 @@ def http_status(url: str, timeout: float = 20.0) -> tuple[int, str]:
         return 0, repr(exc)[:90]
 
 
+def http_status_retry(url: str, attempts: int = 3, delay: float = 4.0,
+                      timeout: float = 20.0) -> tuple[int, str]:
+    """Retry transient failures (0/timeout, 429, 5xx) without masking definitive 404/410s."""
+    code, final = 0, ""
+    for i in range(attempts):
+        code, final = http_status(url, timeout=timeout)
+        transient = code == 0 or code == 429 or 500 <= code < 600
+        if not transient:
+            return code, final
+        if i < attempts - 1:
+            time.sleep(delay)
+    return code, final
+
+
+def wait_for_http(url: str, attempts: int = 8, delay: float = 12.0,
+                  timeout: float = 20.0) -> tuple[int, str]:
+    """Wait for a freshly deployed GitHub Pages build (~45-75s after push to main)."""
+    code, final = 0, ""
+    for i in range(attempts):
+        code, final = http_status(url, timeout=timeout)
+        if code == 200:
+            return code, final
+        if i < attempts - 1:
+            time.sleep(delay)
+    return code, final
+
+
 def verify_external(rep: Report) -> None:
     """Reachability of every external link on the site. Blocked-but-alive hosts
-    (401/403/405/429) are WARN, not FAIL: books and wikis block bots by design."""
+    (401/403/405/429) and transient upstream 5xx/timeouts are WARN; 404/410 are FAIL."""
     links = sorted(set(EXTERNAL_LINKS))
     if not links:
         rep.add("X1", "external links reachable", SKIP, "no external links found")
         return
     results: dict[str, int] = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
-        for url, (code, _final) in zip(links, pool.map(http_status, links)):
+        for url, (code, _final) in zip(links, pool.map(lambda u: http_status_retry(u, attempts=2), links)):
             results[url] = code
-    dead = [u for u, c in results.items() if c in (0, 404, 410, 500, 502, 503)]
+    dead = [u for u, c in results.items() if c in (404, 410)]
+    flaky = [u for u, c in results.items() if c == 0 or 500 <= c < 600]
     blocked = [u for u, c in results.items() if c in (401, 403, 405, 429)]
     ok = [u for u, c in results.items() if c and 200 <= c < 400]
-    status = PASS if not dead and not blocked else (FAIL if dead else WARN)
+    status = FAIL if dead else (WARN if (blocked or flaky) else PASS)
     detail = (f"{len(ok)}/{len(links)} returned 2xx/3xx; {len(blocked)} blocked by the host; "
-              f"{len(dead)} unreachable")
+              f"{len(flaky)} transient/5xx; {len(dead)} dead (404/410)")
     rep.add("X1", "external links reachable (official-source links resolve)", status, detail,
-            [f"{u} -> {results[u]}" for u in (dead + blocked)][:14])
+            [f"{u} -> {results[u]}" for u in (dead + flaky + blocked)][:14])
 
 
 def verify_live(rep: Report, live_url: str) -> None:
     """Confirm the deployed Pages site serves the site and fresh data."""
     base = live_url.rstrip("/") + "/"
-    code, final = http_status(base)
+    code, final = wait_for_http(base)
     if code != 200:
         rep.add("X2", "live Pages site responds 200", FAIL, f"{base} -> {code} {final}")
         return
     rep.add("X2", "live Pages site responds 200", PASS, f"{base} -> 200 (final {final})")
     data_url = base + "docs/data/picks.json"
-    code, _ = http_status(data_url)
+    code, _ = wait_for_http(data_url)
     if code != 200:
         rep.add("X3", "live site serves picks.json", FAIL, f"{data_url} -> {code}")
         return
