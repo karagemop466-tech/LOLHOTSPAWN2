@@ -417,3 +417,11 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 | Verifier on merged tree | `scripts/verify_site.py`: 33 PASS · 0 FAIL · 0 WARN · 1 SKIP (D18 needs the Actions snapshot); `verification/test_verifier.py` 27/27 |
 | Known open item (not blocking) | Gen.G vs Invictus Gaming now lists 10 market lines, several of them the same Pinnacle matchup repeated across boards (R16, owned by `arena/0fb2d0c7` / `arena/e76bc0ae`). Shown on the live page; not fixed in this PR. |
 
+---
+
+## Session `arena/b252f309-lolhotspawn2` — 2026-10-23
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| T13 Final integration audit: re-check current data coverage, source transparency, executive-summary navigation, mobile accessibility, and scheduled refresh; fix and verify remaining gaps | in progress | arena/b252f309 | COORDINATION.md, verification/**, docs/**, README.md |
+
+**Scope note:** prior sessions and PRs in this board are completed on `main`; this is the current Arena-tracked integration branch. I will not modify pipeline/model logic unless an audit reveals a concrete defect; any evidence-based fix will be recorded here. No other active owner is listed above.
