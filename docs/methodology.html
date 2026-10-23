@@ -57,6 +57,7 @@
     Decimal odds are converted to implied probabilities and then <b>de-vigged</b>: the two implied probabilities are normalised so they sum to 1,
     removing the bookmaker margin. Multiple sources are combined by median when at least three agree, otherwise by a fixed-quality weighted mean
     (Pinnacle 1.0, Bovada 0.8, Polymarket 0.7; other books 0.6).</p>
+    <p class="small"><b>Access note:</b> Polymarket's homepage (checked 2026-10-23, <a href="https://polymarket.com/" target="_blank" rel="noopener">polymarket.com</a>) states that trading is blocked in the United States and offers a view-only mode. Its prices are used here only as public reference data; this site does not place or recommend bets.</p>
     <ul class="clean small">
       <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability. ≤6 points = High confidence, ≤10 = Medium, more = Low.</li>
       <li>Matching a bookmaker row to a Hotspawn fixture uses team-name aliases plus the closest start time within ±36 hours. Bookmakers publish drifting start times; the observed delta is shown on each match page and delta &gt;1.5 h sets <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>.</li>

@@ -25,7 +25,7 @@ CHECKED_UNAVAILABLE = [
     {"name": "Smarkets", "url": "https://smarkets.com/sport/esports/league-of-legends",
      "observed": "HTTP 403 (Cloudflare challenge)", "consequence": "No exchange prices used."},
     {"name": "Oddspapi", "url": "https://oddspapi.io/sports/esports/lol",
-     "observed": "HTTP 401 without a paid API key", "consequence": "Adapter retained but disabled; no key is stored."},
+     "observed": "HTTP 401 without a paid API key; no key is configured in this repository", "consequence": "No OddsPapi adapter exists in the pipeline; nothing is read from it, so no bookmaker line comes from OddsPapi."},
     {"name": "The Odds API", "url": "https://the-odds-api.com/liveapi/guides/v4/",
      "observed": "HTTP 401 without a paid API key", "consequence": "Not used."},
     {"name": "OddsPortal", "url": "https://www.oddsportal.com/lol/",
@@ -59,6 +59,7 @@ LIMITATIONS = [
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
     "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
+    "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
 ]
 

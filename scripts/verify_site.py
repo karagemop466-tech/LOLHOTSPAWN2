@@ -15,7 +15,8 @@ Checks the published data and site against the project requirements:
   D9  no duplicate fixtures (same normalised teams + same start)
   D10 counts_by_method in the payload agrees with the rows
   D11 data/picks.json and docs/data/picks.json are both present and identical
-  D20 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
+  D20 reserved (unique source_key per fixture: requested by arena/0fb2d0c7 as R16)
+  D21 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
   S1  every page exists and has a mobile viewport meta
   S2  every page has the shared navigation with links to all site sections
   S3  executive summary (docs/index.html) links in-site to the picks list and the
@@ -422,7 +423,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                 f"{len(rows)} published vs {expected} future fixtures advertised by the feed"
                 + (f" — {missing} missing" if missing > 0 else ""))
 
-    # D20: lobby reconciliation - every upcoming lobby fixture is priced, nothing extra is,
+    # D21: lobby reconciliation - every upcoming lobby fixture is priced, nothing extra is,
     # and no excluded (cancelled / withdrawn) fixture appears among the picks.
     rec = payload.get("coverage_reconciliation") or {}
     if rec.get("lobby_upcoming") is not None:
@@ -431,12 +432,12 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         excl_ids = {str(x.get("id")) for x in (payload.get("excluded_fixtures") or [])}
         leaked = sorted({str(r.get("id")) for r in rows} & excl_ids)
         ok = not miss and not extra and not leaked and rec.get("priced") == len(rows)
-        rep.add("D20", "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
+        rep.add("D21", "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
                 PASS if ok else FAIL,
                 f"lobby upcoming={rec.get('lobby_upcoming')}, priced={len(rows)}, "
                 f"missing={len(miss)}, extra={len(extra)}, excluded={len(excl_ids)}, leaked={len(leaked)}")
     else:
-        rep.add("D20", "every upcoming Hotspawn lobby fixture is priced", WARN,
+        rep.add("D21", "every upcoming Hotspawn lobby fixture is priced", WARN,
                 "lobby state unavailable for this run; coverage compared with the fixtures API only")
 
     unresolved = actual["UNRESOLVED"]
@@ -641,6 +642,34 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             resolved = os.path.normpath(os.path.join(os.path.dirname(path), target))
             if not os.path.exists(resolved):
                 internal_broken.append(f"{rel} -> {url}")
+
+    # S10: the phone bottom nav must have one grid column per link (regression for a 4-column grid with 5 links)
+    css_text = ""
+    try:
+        with open(os.path.join(DOCS, "assets", "style.css"), encoding="utf-8") as fh:
+            css_text = fh.read()
+    except OSError:
+        pass
+    mcol = re.search(r"\.bottom-nav\s*\{[^}]*grid-template-columns:\s*repeat\((\d+)", css_text)
+    nav_bad = []
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep):
+            continue  # root index.html is a redirect shell, not a dashboard page
+        try:
+            with open(pg, encoding="utf-8") as fh:
+                html_text = fh.read()
+        except OSError:
+            continue
+        nav = re.search(r'<nav class="bottom-nav".*?</nav>', html_text, re.S)
+        if not nav:
+            nav_bad.append(f"{pg}: no bottom nav")
+            continue
+        links = len(re.findall(r"<a ", nav.group(0)))
+        if not mcol or int(mcol.group(1)) != links:
+            nav_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
+    rep.add("S10", "phone bottom nav has one grid column per link on every page",
+            PASS if not nav_bad else FAIL,
+            "; ".join(nav_bad[:5]) if nav_bad else "5 links, 5 columns on every page")
 
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
