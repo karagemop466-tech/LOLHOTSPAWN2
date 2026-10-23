@@ -7,7 +7,7 @@ on:
   push:
     branches: ["arena/e76bc0ae-lolhotspawn2"]
     paths:
-      - "audit/**"
+      - "audit/probe_sources.py"
       - ".github/workflows/audit-sources.yml"
 
 permissions:

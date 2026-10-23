@@ -11,7 +11,8 @@ on:
     branches: ["arena/e76bc0ae-lolhotspawn2"]
     paths:
       - "scripts/**"
-      - "audit/**"
+      - "audit/coverage_reconcile.py"
+      - "audit/test_model.py"
       - ".github/workflows/audit-pipeline.yml"
 
 permissions:
