@@ -164,8 +164,8 @@ _Filled in after merging the verification PR._
 
 ## 9. Follow-up integration audit — 2026-10-23 (Arena session `arena/b252f309-lolhotspawn2`)
 
-This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. The latest branch pipeline snapshot was generated at **2026-10-23 15:43:02 UTC** by successful Actions run
-[39980333700](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39980333700), and was **0.0 hours old** at local verification.
+This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. The latest branch pipeline snapshot was generated at **2026-10-23 15:47:57 UTC** by successful Actions run
+[39981008309](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39981008309), and was **0.0 hours old** at local verification.
 It contains **188 fixtures**: 9 with external market data, 179 Elo-model estimates, and 0 unresolved placeholders. The
 scheduled six-hour refresh remains configured. The latest observed main-branch refresh (Actions run
 [39942806398](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39942806398)) and Pages build
@@ -192,6 +192,7 @@ fixtures. The warning is now explicitly labelled as stale/historical and is not 
 fresh 2026-10-23 pipeline fetched 203 Leaguepedia schedule rows; the current payload has no `START_TIME_MISMATCH` flags,
 but those raw row-level results are not persisted, so an independent current timestamp audit remains limited. Hotspawn
 remains the displayed pick-lock source; confirm current times with an event organizer. The five-column mobile navigation
-and internal-link checks pass. GitHub Actions fetched the
-current Hotspawn lobby, Pinnacle, Bovada, Polymarket, and Leaguepedia data successfully in run 39980333700. The branch
-payload is not yet the production Pages payload until PR integration and deployment.
+and internal-link checks pass. In run 39981008309, Hotspawn (188 fixtures), Pinnacle (62 records), Polymarket (9 records),
+and Leaguepedia (31,732 results) returned `ok`; Bovada returned `error` with 0 records. Bovada's degraded status is
+visible in the source-status tables, and the market prices use available healthy inputs. The branch payload is not yet
+the production Pages payload until PR integration and deployment.
