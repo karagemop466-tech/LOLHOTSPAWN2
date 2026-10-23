@@ -32,6 +32,9 @@ jobs:
       - name: Verifier self-tests (each rule must fail on bad data)
         run: python3 verification/test_verifier.py
 
+      - name: Model regression tests (standings line + tier prior)
+        run: python3 verification/test_model_standings.py
+
       - name: Verify data + site (offline)
         run: python3 scripts/verify_site.py --leaguepedia-schedule data/diag
 

@@ -760,7 +760,11 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             evidence_bits.append(f"Market consensus from {names} ({len(recs)} line(s), "
                                  f"dispersion {market['dispersion']*100:.1f} pts).")
         if model_method:
-            if model.get("elo_team1") is not None and model.get("elo_team2") is not None:
+            if model_method == "MODEL_STANDINGS":
+                evidence_bits.append(
+                    f"Rating used {model['elo_team1']} vs {model['elo_team2']} "
+                    f"({model['team1_source']} / {model['team2_source']}).")
+            elif model.get("elo_team1") is not None and model.get("elo_team2") is not None:
                 evidence_bits.append(f"Elo {model['elo_team1']} vs {model['elo_team2']} "
                                      f"({g1} / {g2} games in 365d; competition bases "
                                      f"{model['team1_competition_base']} / {model['team2_competition_base']}).")
