@@ -117,7 +117,7 @@ jobs:
           PY
           git config user.name "audit-bot"
           git config user.email "actions@github.com"
-          git add audit/last_run.json audit/coverage_reconcile.json audit/coverage_reconcile.md
+          git add -A audit/
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "audit: strict run summary [skip ci]"
           for attempt in 1 2 3; do

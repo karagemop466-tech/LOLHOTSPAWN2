@@ -71,6 +71,8 @@ def main() -> int:
                   "ng_state": bool(state), "raw_fixtures": len(lobby_fixtures)},
         "fixtures_api": {"url": FIXTURES_API, "http": api_r.get("status"),
                          "raw_fixtures": len(api_fixtures)},
+        "api": {"url": FIXTURES_API, "http": api_r.get("status"),
+                "raw_fixtures": len(api_fixtures)},
         "payload": {"generated_at": payload.get("generated_at"),
                     "published_matches": len(published)},
     }
