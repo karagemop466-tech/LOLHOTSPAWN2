@@ -65,9 +65,26 @@ def main() -> int:
         refs = " ".join(p.refs)
         if "assets/style.css" not in refs:
             problems.append(f"{name}: does not load assets/style.css")
-        dynamic = "load(" in open(os.path.join(docs, name), encoding="utf-8").read()
+        page_html = open(os.path.join(docs, name), encoding="utf-8").read()
+        dynamic = "load(" in page_html
         if dynamic and "assets/app.js" not in refs:
             problems.append(f"{name}: uses load() but does not include assets/app.js")
+
+    # The fixed mobile navigation must have one visible grid column per link.
+    # A mismatch silently pushes a navigation item onto a second row on phones.
+    css = open(os.path.join(docs, "assets", "style.css"), encoding="utf-8").read()
+    grid = re.search(r"\.bottom-nav\s*\{[^}]*grid-template-columns:\s*repeat\((\d+),", css, re.S)
+    if not grid:
+        problems.append("style.css: could not determine mobile bottom-nav column count")
+    else:
+        columns = int(grid.group(1))
+        for name, page in pages.items():
+            page_html = open(os.path.join(docs, name), encoding="utf-8").read()
+            nav = re.search(r'<nav[^>]*class="bottom-nav"[^>]*>(.*?)</nav>', page_html, re.S)
+            if nav:
+                links = len(re.findall(r"<a\b", nav.group(1)))
+                if links != columns:
+                    problems.append(f"{name}: mobile bottom nav has {links} links but {columns} grid columns")
 
     print(f"ids referenced by app.js: {len(used)} · ids present in pages: {len(all_ids)}")
     if missing:

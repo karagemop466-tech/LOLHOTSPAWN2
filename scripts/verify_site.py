@@ -9,9 +9,11 @@ Checks the published data and site against the project requirements:
   D4  probabilities are in [0,1] and sum to 1 (tolerance 0.005)
   D5  pick_prob equals max(prob_team1, prob_team2)
   D6  method is one of the documented methods
-  D7  every row carries at least one official/trusted source link (url field or evidence URL)
+  D7  every row carries at least one source URL (url field or evidence URL)
   D8  market rows link a market/book URL; model rows link a results source;
-      unresolved rows are explicitly flagged as unverified 50/50
+      generic results-table evidence is explicitly flagged; unresolved rows are
+      explicitly flagged as unverified 50/50
+  Note: a trusted/community source is not equivalent to official organizer verification.
   D9  no duplicate fixtures (same normalised teams + same start)
   D10 counts_by_method in the payload agrees with the rows
   D11 data/picks.json and docs/data/picks.json are both present and identical
@@ -207,6 +209,7 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
 
     bad_teams, bad_pick, bad_prob, bad_pickprob, bad_method = [], [], [], [], []
     no_source, weak_source, market_no_url, unresolved_unflagged, dup = [], [], [], [], []
+    model_no_result_source, generic_model_unflagged = [], []
     game1_as_series, generic_unresolved_link = [], []
     no_start_utc = []
     banned_prob_source = []
@@ -270,6 +273,12 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         if method.startswith("MARKET") and not any(
                 host_in(host_of(u), MARKET_HOSTS) for u in prob_urls):
             market_no_url.append(label)
+        if method in MODEL_METHODS:
+            if not any(host_in(host_of(u), RESULTS_HOSTS) for u in prob_urls):
+                model_no_result_source.append(label)
+            generic_results = any("/Special:CargoTables/" in u for u in prob_urls)
+            if generic_results and "GENERIC_RESULTS_SOURCE" not in (m.get("flags") or []):
+                generic_model_unflagged.append(label)
         if method in MARKET_METHODS or method in MODEL_METHODS:
             # Only the probability-source fields count here. hotspawn_url is the
             # fixture link and is explicitly allowed to point at Hotspawn.
@@ -353,14 +362,18 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             PASS if not bad_urls else FAIL,
             "all source URLs well formed" if not bad_urls else f"{len(bad_urls)} malformed",
             bad_urls[:10])
-    emit("D7", "every row links at least one official/trusted source", no_source,
+    emit("D7", "every row links at least one source URL", no_source,
          f"all {len(rows)} rows carry at least one source URL")
     if weak_source:
-        rep.add("D7b", "source host recognised as official/trusted", WARN,
+        rep.add("D7b", "source host is on the trusted-source allowlist (not proof of official verification)", WARN,
                 f"{len(weak_source)} row(s) link a host not on the allowlist — manual review",
                 weak_source[:12])
     emit("D8a", "market rows link a bookmaker/prediction-market URL", market_no_url,
          "every market row links its market")
+    emit("D8c", "model rows link a results-source URL", model_no_result_source,
+         "every model row links a results source")
+    emit("D8d", "model rows with generic results-table sources are flagged", generic_model_unflagged,
+         "generic Leaguepedia table links are explicitly flagged as less directly auditable")
     emit("D8b", "unresolved rows are explicit unverified 50/50 (limitations published)",
          unresolved_unflagged, "every unresolved row is 0.50 and labelled unverified")
     emit("D9", "no duplicate fixtures", dup, "no duplicate (teams,start) rows")
@@ -483,8 +496,26 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
                 f"snapshot not found: {path}")
         return
     sched = []
+    snapshot_generated = None
     try:
         if os.path.isdir(path):
+            # Diagnostic snapshots are committed artifacts and can outlive the
+            # live pipeline. Read their capture timestamp so stale deltas are
+            # not mistaken for a current schedule verification.
+            for fn in sorted(os.listdir(path)):
+                if not fn.startswith("report") or not fn.endswith(".json"):
+                    continue
+                try:
+                    meta = json.load(open(os.path.join(path, fn), encoding="utf-8"))
+                    stamp = meta.get("generated_at") if isinstance(meta, dict) else None
+                    if stamp:
+                        parsed = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+                        if parsed.tzinfo is None:
+                            parsed = parsed.replace(tzinfo=timezone.utc)
+                        if snapshot_generated is None or parsed > snapshot_generated:
+                            snapshot_generated = parsed
+                except Exception:  # noqa: BLE001
+                    continue
             for fn in sorted(os.listdir(path)):
                 if not fn.endswith(".json") or not fn.startswith("ms_"):
                     continue
@@ -552,11 +583,23 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", SKIP,
                 f"no fixture matched the snapshot ({len(unmatched)} unmatched)")
         return
+    snapshot_note = ""
+    stale_snapshot = False
+    if snapshot_generated is not None:
+        age_hours = (datetime.now(timezone.utc) - snapshot_generated).total_seconds() / 3600
+        snapshot_note = f" Snapshot captured {snapshot_generated.isoformat()} ({age_hours:.1f}h old)."
+        stale_snapshot = age_hours > 24
+        if stale_snapshot:
+            snapshot_note += " This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule."
+    elif os.path.isdir(path):
+        snapshot_note = " Snapshot capture time unavailable; currentness cannot be established."
+        stale_snapshot = True
     rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule",
-            PASS if not diff else WARN,
+            PASS if not diff and not stale_snapshot else WARN,
             f"{same}/{checked} matched fixture times agree with Leaguepedia; "
             f"{len(unmatched)} fixture(s) not in the snapshot; {len(diff)} differ "
-            "(Hotspawn is authoritative for pick lock times; differences are flagged for review)",
+            "(Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta)."
+            + snapshot_note,
             diff[:12])
 
 
@@ -998,8 +1041,8 @@ def main() -> int:
          ["S4", "S5", "S5b"]),
         ("REQ7", "Executive summary links in-site to the updated picks list",
          ["S4"]),
-        ("REQ8", "Every table row carries an official/trusted source link (or is flagged unverified)",
-         ["D7", "D8a", "D8b", "D17"]),
+        ("REQ8", "Every row links its source; non-official or generic evidence is disclosed and flagged",
+         ["D7", "D7b", "D8a", "D8b", "D8c", "D8d", "D17"]),
         ("REQ9", "Mobile-friendly: responsive viewport + responsive CSS + readable cards",
          ["S2", "S7"]),
         ("REQ10", "Automatic refresh every 4-8 hours, no manual input",

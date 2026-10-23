@@ -81,6 +81,13 @@
     </div>
   </section>
 
+  <section id="source-limitations" class="warnbox">
+    <h2>Source limitations: official vs. community data</h2>
+    <p class="small">External market probabilities link to the named bookmaker or prediction market. For fixtures without a market line, our own Elo estimate uses recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer source. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing, not the model probability. Therefore model outputs are research estimates, not official lines; the linked community data does not independently verify every historical result on each match row. Review linked organizer sources where available and treat those estimates accordingly.</p>
+    <p class="small">Current model-only picks are visibly marked <span class="flag">NO_EXTERNAL_MARKET</span>. Unverified tiers, missing Hotspawn match pages, thin history, and schedule differences have separate row-level flags below.</p>
+  </section>
+  </section>
+
   <section>
     <h2>What each flag means</h2>
     <div class="card">
@@ -97,6 +104,7 @@
         <dt><span class="flag">START_TIME_MISMATCH</span></dt><dd>Hotspawn and Leaguepedia disagree on the start time by more than 30 minutes.</dd>
         <dt><span class="flag">NO_HOTSPAWN_MATCH_PAGE</span></dt><dd>Hotspawn lists the fixture but has not published a match page, so the row links the lobby instead of a dead match URL.</dd>
         <dt><span class="flag">TIER_UNVERIFIED</span></dt><dd>Hotspawn has not assigned a tier badge yet (the fixture is still waiting for information).</dd>
+        <dt><span class="flag">GENERIC_RESULTS_SOURCE</span></dt><dd>No fixture-specific Leaguepedia competition page was matched for this model row; its recorded-results source link is a general Leaguepedia table. This is community data, not official organizer verification. Treat the model estimate as less directly auditable.</dd>
         <dt><span class="flag">NO_VERIFIED_SIGNAL</span></dt><dd>No external market and no model output — unresolved placeholder.</dd>
       </dl>
     </div>
