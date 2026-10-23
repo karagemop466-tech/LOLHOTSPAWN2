@@ -58,34 +58,85 @@ jobs:
         if: always()
         run: |
           set -euo pipefail
+          fail_publish() {
+            local message
+            message="$(printf '%s' "$1" | tr '\r\n' '  ')"
+            echo "::error title=Pipeline artifact publish::${message}"
+            {
+              echo "## Pipeline artifact publish failed"
+              echo
+              echo "${message}"
+              echo
+              echo "Branch: \`${GITHUB_REF_NAME}\` · local HEAD: \`$(git rev-parse --short HEAD)\`"
+              if git rev-parse --verify "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+                echo "Remote HEAD: \`$(git rev-parse --short "origin/${GITHUB_REF_NAME}")\`"
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          git add docs/data data/diag/pipeline.log data/diag/verify.json
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/verify.json 2>&1); then
+            :
+          else
+            rc=$?
+            fail_publish "git add failed (${rc}): ${out}"
+          fi
           if git diff --cached --quiet; then
             echo "no changes"
             exit 0
           fi
-          git commit -m "pipeline: test run [skip ci]"
+          if out=$(git commit -m "pipeline: test run [skip ci]" 2>&1); then
+            echo "$out"
+          else
+            rc=$?
+            fail_publish "git commit failed (${rc}): ${out}"
+          fi
+          last_push_error="no push attempt"
           for attempt in 1 2 3; do
-            git fetch origin "${GITHUB_REF_NAME}"
+            if out=$(git fetch origin "+refs/heads/${GITHUB_REF_NAME}:refs/remotes/origin/${GITHUB_REF_NAME}" 2>&1); then
+              echo "$out"
+            else
+              rc=$?
+              fail_publish "git fetch failed on attempt ${attempt} (${rc}): ${out}"
+            fi
             # During rebase, the generated-output commit is "theirs", so keep
             # its fresh payload on conflicts. If rebase cannot complete, merge
             # the remote branch and prefer this workflow's generated artifacts.
-            if ! git rebase -X theirs "origin/${GITHUB_REF_NAME}"; then
-              if ! git rebase --abort; then
-                echo "could not abort failed output rebase" >&2
-                exit 1
+            if out=$(git rebase -X theirs "origin/${GITHUB_REF_NAME}" 2>&1); then
+              echo "$out"
+            else
+              rc=$?
+              echo "rebase needs fallback merge: ${out}" >&2
+              if abort_out=$(git rebase --abort 2>&1); then
+                echo "$abort_out"
+              else
+                abort_rc=$?
+                fail_publish "could not abort failed output rebase (${abort_rc}): ${abort_out}"
               fi
-              git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}"
+              if merge_out=$(git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" 2>&1); then
+                echo "$merge_out"
+              else
+                merge_rc=$?
+                fail_publish "fallback merge failed (${merge_rc}): ${merge_out}"
+              fi
             fi
-            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            if out=$(git push origin "HEAD:${GITHUB_REF_NAME}" 2>&1); then
+              echo "$out"
               echo "pushed outputs on attempt ${attempt}"
               exit 0
+            else
+              rc=$?
+              last_push_error="attempt ${attempt} (${rc}): ${out}"
+              echo "push failed on ${last_push_error}" >&2
             fi
             if [ "${attempt}" -lt 3 ]; then
-              echo "push failed on attempt ${attempt}; fetching latest branch and retrying" >&2
+              echo "fetching latest branch and retrying" >&2
               sleep 5
             fi
           done
-          echo "could not publish pipeline outputs after 3 attempts" >&2
-          exit 1
+          remote_head="unknown"
+          if git rev-parse --verify "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            remote_head="$(git rev-parse --short "origin/${GITHUB_REF_NAME}")"
+          fi
+          fail_publish "git push failed after 3 attempts; branch=${GITHUB_REF_NAME}, remote=${remote_head}, last_error=${last_push_error}"
