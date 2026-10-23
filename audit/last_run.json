@@ -1,9 +1,9 @@
 {
- "run_at": "2026-10-23T16:29:46.909480Z",
- "payload_generated_at": "2026-10-23T16:29:40.425034Z",
+ "run_at": "2026-10-23T16:43:49.003126Z",
+ "payload_generated_at": "2026-10-23T16:43:42.242285Z",
  "counts": {
   "fixtures": 172,
-  "next_24h": 20,
+  "next_24h": 26,
   "market": 9,
   "model": 163,
   "standings": 0,
@@ -51,7 +51,7 @@
   {
    "name": "Leaguepedia MatchSchedule",
    "status": "ok",
-   "count": 31728,
+   "count": 31729,
    "raw_count": null,
    "duplicates_collapsed": null
   },
@@ -95,7 +95,7 @@
    "sources": [
     [
      "Pinnacle",
-     0.7355
+     0.7469
     ],
     [
      "Unibet",
@@ -120,7 +120,7 @@
    "sources": [
     [
      "Pinnacle",
-     0.7597
+     0.7622
     ],
     [
      "Unibet",
@@ -170,7 +170,7 @@
    "sources": [
     [
      "Pinnacle",
-     0.6234
+     0.6407
     ],
     [
      "Unibet",
