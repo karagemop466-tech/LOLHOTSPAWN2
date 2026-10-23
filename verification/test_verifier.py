@@ -115,6 +115,15 @@ def main() -> int:
     r = copy.deepcopy(BASE_ROW)
     r["evidence"] = "Polymarket: Team A vs Team B (BO1) - Worlds Group Stage"
     results.append(assert_status(run([r]), "D16", vs.PASS, "BO1 market ok"))
+    # standings line with no league-table link
+    r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_STANDINGS"
+    r["source_url"] = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
+    r["standings"] = {"page": "Test League/2026", "url": "https://lol.fandom.com/wiki/Test_League",
+                      "team1": {"wins": 3, "losses": 1, "sample": 4},
+                      "team2": {"wins": 2, "losses": 2, "sample": 4}}
+    results.append(assert_status(run([r]), "D20", vs.PASS, "standings line with league page"))
+    r = copy.deepcopy(r); r["standings"] = {}
+    results.append(assert_status(run([r]), "D20", vs.FAIL, "standings line without league page"))
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],

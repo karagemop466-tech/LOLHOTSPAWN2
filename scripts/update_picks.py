@@ -57,7 +57,8 @@ LIMITATIONS = [
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule records results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
-    "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
+    "Where a team has no recorded games, we first use the official Leaguepedia win-loss table for its league (converted to a rating and shrunk for small samples). Only when there is no standings row either do we fall back to the competition median or tier prior. A prior is not evidence about the team.",
+    "Leaguepedia standings pages that combine several divisions do not say which division a team is in, so those rows are shrunk toward 50% and capped at low confidence (flag MULTI_DIVISION_STANDINGS). Records are also kept per series where the source provides series scores.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
 ]
@@ -70,6 +71,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
     market_matches = [m for m in matches if m["market"]]
+    standings_rows = [m for m in matches if (m.get("standings") or {}).get("page")]
     reasons = Counter()
     for m in unresolved:
         if "NO_TEAM_HISTORY" in m["flags"]:
@@ -79,7 +81,9 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if "ONE_TEAM_NO_HISTORY" in m["flags"]:
+        if m["method"] == "MODEL_STANDINGS":
+            reasons["Official league record used, sample still small"] += 1
+        elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
             reasons["One team has no recorded history (league prior used)"] += 1
         elif "CROSS_LEAGUE_MODEL" in m["flags"]:
             reasons["Cross-league comparison (confidence capped at Low)"] += 1
@@ -95,6 +99,11 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         source_status.append({"name": s.get("source"), "url": s.get("url"), "status": s.get("status"),
                               "count": s.get("count"), "note": s.get("note") or s.get("error")})
     lp_degraded = bool(leaguepedia.get("degraded")) or leaguepedia["counts"]["results"] <= 1000
+    source_status.append({"name": "Leaguepedia Standings",
+                          "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
+                          "status": "ok" if (leaguepedia.get("counts", {}).get("standings_rows") or 0) > 0 else "degraded",
+                          "count": leaguepedia.get("counts", {}).get("standings_rows") or 0,
+                          "note": "Official win-loss tables for the leagues in the current fixture list."})
     source_status.append({"name": "Leaguepedia MatchSchedule",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
                           "status": "degraded" if lp_degraded else "ok",
@@ -117,12 +126,19 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "next_24h": len(next_24h),
             "market": len(market_matches),
             "model": sum(1 for m in matches if m["method"].startswith("MODEL")),
+            "standings": sum(1 for m in matches if m["method"] == "MODEL_STANDINGS"),
             "resolved": picks["coverage"]["resolved"],
             "unresolved": picks["coverage"]["unresolved"],
             "low_confidence": len(low_conf),
             "hotspawn_without_match_page": fixtures.get("without_match_page", 0),
         },
         "coverage": picks["coverage"],
+        "standings": {
+            "pages": leaguepedia.get("standings_pages") or [],
+            "by_tournament": leaguepedia.get("standings_by_tournament") or {},
+            "teams": sum(1 for m in standings_rows if m.get("standings")),
+            "rows_with_standings_line": sum(1 for m in matches if m["method"] == "MODEL_STANDINGS"),
+        },
         "model": picks["model"],
         "unresolved": {
             "count": len(unresolved),

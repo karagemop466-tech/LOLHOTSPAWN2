@@ -11,12 +11,13 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
+    MODEL_STANDINGS: { label: "League standings line", cls: "amber", ico: "🏆" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved", cls: "red", ico: "⚠️" },
   };
   const CONF = { High: "green", Medium: "blue", Low: "amber", None: "red" };
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
-  const METHOD_RANK = { MARKET_CONSENSUS: 5, MARKET_SINGLE: 4, MODEL_ELO: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
+  const METHOD_RANK = { MARKET_CONSENSUS: 6, MARKET_SINGLE: 5, MODEL_ELO: 4, MODEL_ELO_THIN: 3, MODEL_STANDINGS: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
 
@@ -67,7 +68,7 @@
   function matchClass(m) {
     if (m.method === "UNRESOLVED") return "unres";
     if (m.market) return "market";
-    if (m.method === "MODEL_LEAGUE_PRIOR" || m.method === "MODEL_ELO_THIN" || m.confidence === "Low") return "partial";
+    if (m.method === "MODEL_LEAGUE_PRIOR" || m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_THIN" || m.confidence === "Low") return "partial";
     return "model";
   }
   function sourcesInline(m, max = 4) {
@@ -86,6 +87,7 @@
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
       <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
       <div class="pickline"><span class="pick">✅ ${esc(m.pick)} <span class="p">${pct1(m.pick_prob)}</span></span><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
+      ${m.why ? `<div class="why">${esc(m.why)}</div>` : ""}
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
     </article>`;
@@ -149,9 +151,18 @@
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
     const byId = new Map((d.matches || []).map((m) => [m.id, m]));
-    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 6);
+    const upcoming = (d.matches || []).slice()
+      .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
+      .filter((m) => {
+        const t = new Date(m.start_utc).getTime();
+        return t >= Date.now() - 300000 && t <= Date.now() + 86400000;
+      });
+    const next = (upcoming.length ? upcoming : (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean)).slice(0, 10);
     const nextBox = $("#next24");
-    if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 2 })).join("") : `<div class="card">No matches in the next 24 hours.</div>`;
+    if (nextBox) nextBox.innerHTML = next.length
+      ? next.map((m) => matchCard(m, { sources: 2 })).join("") +
+        `<p class="small"><a href="picks.html?filter=next24">See all ${upcoming.length || next.length} matches in the next 24 hours on the picks page →</a></p>`
+      : `<div class="card">No matches in the next 24 hours. <a href="picks.html">See the full list of ${(d.matches || []).length} fixtures →</a></div>`;
 
     const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 8);
     const featBox = $("#featured");
@@ -180,7 +191,7 @@
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
-    if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
+    if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_STANDINGS" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
     if (state.q) {
@@ -219,7 +230,7 @@
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
       market: all.filter((m) => m.market).length,
       model: all.filter((m) => m.model && !m.market).length,
-      low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
+      low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_STANDINGS" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
     };
     $$("[data-filter]").forEach((b) => {
@@ -243,7 +254,7 @@
   function renderUnresolved(d) {
     const all = (d.matches || []).slice().sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const un = all.filter((m) => m.method === "UNRESOLVED");
-    const low = all.filter((m) => m.method !== "UNRESOLVED" && (m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low"));
+    const low = all.filter((m) => m.method !== "UNRESOLVED" && (m.method === "MODEL_ELO_THIN" || m.method === "MODEL_STANDINGS" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low"));
     const ub = $("#unresolved-body");
     if (ub) ub.innerHTML = un.length ? un.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="okbox">None right now — every fixture has either an external market line or usable team history.</div>`;
     const lb = $("#lowconf-body");
@@ -251,6 +262,30 @@
     const reasons = (d.unresolved?.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const rbox = $("#reasons");
     if (rbox) rbox.innerHTML = reasons || "<li>None.</li>";
+    // per-league breakdown: which competitions need manual review, and how many
+    const byLeague = new Map();
+    [...un, ...low].forEach((m) => {
+      const key = m.tournament || "Tournament TBC";
+      const rec = byLeague.get(key) || { total: 0, unresolved: 0, low: 0, market: 0 };
+      rec.total += 1;
+      if (m.method === "UNRESOLVED") rec.unresolved += 1;
+      else rec.low += 1;
+      if (m.market) rec.market += 1;
+      byLeague.set(key, rec);
+    });
+    const leagueBox = $("#unresolved-by-league");
+    if (leagueBox) {
+      const sorted = [...byLeague.entries()].sort((a, b) => b[1].total - a[1].total);
+      leagueBox.innerHTML = sorted.length ? `<div class="table-wrap"><table>
+        <thead><tr><th scope="col">League / tournament</th><th scope="col">Needs review</th><th scope="col">50/50</th><th scope="col">Low conf.</th><th scope="col"></th></tr></thead>
+        <tbody>${sorted.map(([name, r]) => `<tr>
+          <td data-label="League" class="teams-cell">${esc(name)}</td>
+          <td data-label="Needs review"><b>${r.total}</b></td>
+          <td data-label="50/50">${r.unresolved}</td>
+          <td data-label="Low confidence">${r.low}</td>
+          <td data-label="Open"><a href="picks.html?tournament=${encodeURIComponent(name)}">view picks →</a></td>
+        </tr>`).join("")}</tbody></table></div>` : `<p class="small">Nothing to review right now.</p>`;
+    }
     const lim = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const lbox = $("#limitations");
     if (lbox) lbox.innerHTML = lim;
@@ -272,6 +307,8 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
+      STANDINGS_LINE_USED: "Line built from the official league win-loss table",
+      MULTI_DIVISION_STANDINGS: "Standings page mixes divisions (shrunk to 50%)",
     };
     return map[f] || f;
   }
@@ -333,6 +370,13 @@
           </div>
         </div>
         <div>
+          ${m.standings ? `<div class="card"><h3>🏆 Official league standings</h3>
+            <p class="small">Source table: <a href="${esc(m.standings.url)}" target="_blank" rel="noopener">${esc(m.standings.page)} ↗</a>${m.standings.multi_division ? " — this page combines several divisions, so the line is shrunk toward 50% and capped at low confidence." : ""}</p>
+            <div class="table-wrap"><table><thead><tr><th>Team</th><th>Series W-L</th><th>Game W-L</th><th>Sample</th></tr></thead><tbody>
+              <tr><td><b>${esc(m.team1)}</b></td><td>${m.standings.team1.wins ?? "—"}-${m.standings.team1.losses ?? "—"}</td><td>${m.standings.team1.win_games ?? "—"}-${m.standings.team1.loss_games ?? "—"}</td><td>${esc(m.standings.team1.kind)} ${m.standings.team1.sample ?? 0}</td></tr>
+              <tr><td><b>${esc(m.team2)}</b></td><td>${m.standings.team2.wins ?? "—"}-${m.standings.team2.losses ?? "—"}</td><td>${m.standings.team2.win_games ?? "—"}-${m.standings.team2.loss_games ?? "—"}</td><td>${esc(m.standings.team2.kind)} ${m.standings.team2.sample ?? 0}</td></tr>
+            </tbody></table></div></div>` : ""}
+          <div class="card"><h3>Why this line</h3><p class="small">${esc(m.why || m.evidence || "")}</p></div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
           <div class="card"><h3>Sources & verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
           <p class="tiny">Crowd context (not used in the probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
@@ -385,6 +429,11 @@
     $$("[data-filter]").forEach((b) => b.addEventListener("click", () => { state.filter = b.dataset.filter; renderPicks(DATA); }));
     const params = new URLSearchParams(location.search);
     if (params.get("filter")) state.filter = params.get("filter");
+    if (params.get("tournament")) state.tournament = params.get("tournament");
+    if (params.get("q")) {
+      state.q = params.get("q").trim().toLowerCase();
+      if (q) q.value = params.get("q");
+    }
   }
 
   async function main() {

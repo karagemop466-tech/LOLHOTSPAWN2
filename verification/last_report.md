@@ -1,38 +1,39 @@
 # Verification report — PASS
-_2026-10-21T21:13:06.097143+00:00_
-208 matches · MODEL_ELO: 92 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 9 · MARKET_BOOKS: 0 · MODEL_ELO_THIN: 72 · MODEL_LEAGUE_PRIOR: 35 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 0 · UNRESOLVED: 0
+_2026-10-23T15:39:51.883927+00:00_
+189 matches · MODEL_STANDINGS: 0 · MARKET_CONSENSUS: 8 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 24 · MODEL_ELO: 82 · MODEL_ELO_THIN: 74 · MARKET_BOOKS: 0 · MARKET_POLYMARKET: 0 · UNRESOLVED: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 208 matches, generated_at=2026-10-21T21:12:59.142737Z (0.0h old) |
-| D2 two distinct teams and a start time on every match | PASS | all 208 rows have team1, team2 and a start time |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 189 matches, generated_at=2026-10-23T11:00:24.895236Z (4.7h old) |
+| D2 two distinct teams and a start time on every match | PASS | all 189 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
 | D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D6b confidence labels are from the documented set | PASS | High/Medium/Low/None only |
 | D7c every source URL is absolute http(s) | PASS | all source URLs well formed |
-| D7 every row links at least one official/trusted source | PASS | all 208 rows carry at least one source URL |
+| D7 every row links at least one official/trusted source | PASS | all 189 rows carry at least one source URL |
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
 | D8b unresolved rows are explicit unverified 50/50 (limitations published) | PASS | every unresolved row is 0.50 and labelled unverified |
 | D9 no duplicate fixtures | PASS | no duplicate (teams,start) rows |
 | D16 no single-game (Game 1/Map 1) market used as a series probability | PASS | no non-BO1 row cites a single-game market |
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 declared counts agree with the rows | PASS | counts.resolved/unresolved consistent |
-| D11 declared count equals number of rows | PASS | declared=208, rows=208 |
-| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 77 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 149/153 matched fixture times agree with Leaguepedia; 55 fixture(s) not in the snapshot; 4 differ (Hotspawn is authoritative for pick lock times; differences are flagged for review) |
+| D11 declared count equals number of rows | PASS | declared=189, rows=189 |
+| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 72 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 127/137 matched fixture times agree with Leaguepedia; 52 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; differences are flagged for review) |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 9 files present |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
 | S3 every page links the shared picks navigation | PASS | navigation present |
 | S4 executive summary links in-site to picks + unresolved and states limitations | PASS | exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True} |
+| S7b executive summary links in-site to the picks list, the next 24h and the unresolved page | PASS | summary has a findability block with in-site links |
 | S5 separate unresolved section with limitations | PASS | unresolved page states limitations |
 | S5c third-party data sources are attributed on Method & Sources | PASS | attribution present |
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 1 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 2 external link(s) collected for manual review; 0 plain-http |
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | update-picks.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
@@ -59,7 +60,13 @@ _2026-10-21T21:13:06.097143+00:00_
 - DMG Esports Sweden vs Northern Wolves Esports: ours=2026-10-24 16:30 lp=2026-10-28 17:30
 - Lundqvist Darkside vs Mazepa: ours=2026-10-24 16:30 lp=2026-10-28 18:00
 - DMG Esports Sweden vs FlameHard: ours=2026-10-25 17:30 lp=2026-11-01 17:00
+- Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00
+- FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30
+- Babos Gaming Academy vs VfB x Engines Stuttgart: ours=2026-10-29 18:00 lp=2026-10-25 16:00
+- Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00
+- Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30
 - Hannover Esports e.V. vs Reveal Multigaming: ours=2026-11-03 17:00 lp=2026-10-23 16:00
+- 2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
