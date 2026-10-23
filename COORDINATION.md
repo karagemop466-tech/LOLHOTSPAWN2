@@ -283,3 +283,33 @@ picture; each item is resolved or explicitly dispositioned below.
 - live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
 - parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
+
+---
+
+## Session `arena/e76bc0ae-lolhotspawn2` — 2026-10-23 (claim)
+
+Two sessions hold live claims on `main` (bd37dbe6: T13/T14/T15, bdecdf49: T13 full-scope). To avoid duplicate
+work and conflicts this session claims **only files not owned by either claim** and logs requests for the rest.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T17 External-line integrity + coverage: de-duplicate repeated bookmaker matchups so one book is never counted as several sources; exclude prop markets; add an auditable probe of additional established/esports books for the low-tier fixtures | in progress | arena/e76bc0ae | `scripts/fetch_markets.py`, `scripts/model.py`, `audit/**`, `.github/workflows/audit-sources.yml` (new file only) |
+| T18 Own-line resolution for matches without a book line: blend the current-season series record (Leaguepedia `Standings`) with Elo for thin-history rows, with the league page as the per-row source; publish limitations | in progress | arena/e76bc0ae | `scripts/model.py`, `scripts/fetch_leaguepedia.py`, `audit/**` |
+
+**Not touched by this session:** `scripts/fetch_hotspawn.py`, `scripts/update_picks.py` (bd37dbe6 T13);
+`docs/**`, `research/**`, `verification/**`, `README.md` (bd37dbe6 T14/T15, bdecdf49). Requests for those files are
+logged below instead of edited. If a claim goes stale (>60 min without a commit) this session takes over the
+remaining integration and records the handoff.
+
+**Requests logged (not implemented here):**
+- **Q1 → docs owner:** the All-picks table should show `market.source_count` as *distinct books*, not raw records;
+  after T17 the payload field `sources` will be de-duplicated and `source_count` will equal the number of distinct
+  books. No page change is required if the page renders that field verbatim.
+- **Q2 → docs owner:** add a "Picks for matches without a book line" row to the executive summary that links to
+  `unresolved.html`, and state that model-only rows are our own line, not a book price.
+
+**Evidence for the integrity defect (T17):** `docs/data/picks.json` at `3addc56`, e.g. Gen.G–Invictus Gaming has
+9 `Pinnacle` records with ids 1638918251/1638918161/1638748200/1638918344/1638918267/1638918312/1638918285 plus
+Bovada 32451771 and Polymarket. The 7 Pinnacle entries carry the identical 0.764 price and are reported as
+`source_count: 9`, `dispersion 0.011` → `High` confidence. They are the same book repeating one market across
+several Pinnacle league boards, not nine independent lines.
