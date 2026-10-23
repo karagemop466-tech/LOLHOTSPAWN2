@@ -1,32 +1,20 @@
-[2026-10-23T15:47:08+00:00] hotspawn: 188 future LoL fixtures via fixtures-api+lobby-permalinks (13 without a published match page)
-[2026-10-23T15:47:40+00:00] markets: Pinnacle -> ok (135 records)
-[2026-10-23T15:47:40+00:00] markets: Bovada -> ok (8 records)
-[2026-10-23T15:47:41+00:00] markets: Polymarket -> ok (9 records)
-[2026-10-23T15:47:45+00:00] leaguepedia: 2024-10-23 -> 2025-01-06 got 1936 rows (total 1936)
-[2026-10-23T15:47:48+00:00] leaguepedia: 2025-01-06 -> 2025-03-22 got 3853 rows (total 5789)
-[2026-10-23T15:47:51+00:00] leaguepedia: window 2025-03-22->2025-06-05 hit 5000, splitting
-[2026-10-23T15:47:58+00:00] leaguepedia: 2025-03-22 -> 2025-06-05 got 5160 rows (total 10949)
-[2026-10-23T15:48:01+00:00] leaguepedia: 2025-06-05 -> 2025-08-19 got 4117 rows (total 15066)
-[2026-10-23T15:48:04+00:00] leaguepedia: 2025-08-19 -> 2025-11-02 got 2724 rows (total 17790)
-[2026-10-23T15:48:07+00:00] leaguepedia: 2025-11-02 -> 2026-01-16 got 1946 rows (total 19736)
-[2026-10-23T15:48:10+00:00] leaguepedia: 2026-01-16 -> 2026-04-01 got 4037 rows (total 23773)
-[2026-10-23T15:48:13+00:00] leaguepedia: 2026-04-01 -> 2026-06-15 got 3948 rows (total 27721)
-[2026-10-23T15:48:16+00:00] leaguepedia: 2026-06-15 -> 2026-08-29 got 3157 rows (total 30878)
-[2026-10-23T15:48:19+00:00] leaguepedia: 2026-08-29 -> 2026-11-12 got 1737 rows (total 32615)
-[2026-10-23T15:48:22+00:00] leaguepedia: 2026-11-12 -> 2026-12-22 got 41 rows (total 32656)
-[2026-10-23T15:49:46+00:00] leaguepedia: standings for 16 page(s), 289 team rows
-[2026-10-23T15:49:46+00:00] leaguepedia: 31732 results, 203 schedule rows, 3574 teams
-Traceback (most recent call last):
-  File "/home/runner/work/LOLHOTSPAWN2/LOLHOTSPAWN2/scripts/update_picks.py", line 192, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "/home/runner/work/LOLHOTSPAWN2/LOLHOTSPAWN2/scripts/update_picks.py", line 184, in main
-    picks = model.run(fixtures, leaguepedia, markets)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/LOLHOTSPAWN2/LOLHOTSPAWN2/scripts/model.py", line 874, in run
-    payload = build_matches(hotspawn, leaguepedia, markets, load_aliases(alias_path))
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/LOLHOTSPAWN2/LOLHOTSPAWN2/scripts/model.py", line 766, in build_matches
-    f"{model['team1_competition_base']} / {model['team2_competition_base']}).")
-       ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
-KeyError: 'team1_competition_base'
+[2026-10-23T15:52:49+00:00] hotspawn: 188 future LoL fixtures via fixtures-api+lobby-permalinks (13 without a published match page)
+[2026-10-23T15:53:25+00:00] markets: Pinnacle -> ok (133 records)
+[2026-10-23T15:53:26+00:00] markets: Bovada -> ok (8 records)
+[2026-10-23T15:53:28+00:00] markets: Polymarket -> ok (9 records)
+[2026-10-23T15:53:31+00:00] leaguepedia: 2024-10-23 -> 2025-01-06 got 1936 rows (total 1936)
+[2026-10-23T15:53:33+00:00] leaguepedia: 2025-01-06 -> 2025-03-22 got 3853 rows (total 5789)
+[2026-10-23T15:53:36+00:00] leaguepedia: window 2025-03-22->2025-06-05 hit 5000, splitting
+[2026-10-23T15:53:43+00:00] leaguepedia: 2025-03-22 -> 2025-06-05 got 5160 rows (total 10949)
+[2026-10-23T15:53:46+00:00] leaguepedia: 2025-06-05 -> 2025-08-19 got 4117 rows (total 15066)
+[2026-10-23T15:53:48+00:00] leaguepedia: 2025-08-19 -> 2025-11-02 got 2724 rows (total 17790)
+[2026-10-23T15:53:52+00:00] leaguepedia: 2025-11-02 -> 2026-01-16 got 1946 rows (total 19736)
+[2026-10-23T15:53:55+00:00] leaguepedia: 2026-01-16 -> 2026-04-01 got 4037 rows (total 23773)
+[2026-10-23T15:53:58+00:00] leaguepedia: 2026-04-01 -> 2026-06-15 got 3948 rows (total 27721)
+[2026-10-23T15:54:01+00:00] leaguepedia: 2026-06-15 -> 2026-08-29 got 3157 rows (total 30878)
+[2026-10-23T15:54:04+00:00] leaguepedia: 2026-08-29 -> 2026-11-12 got 1737 rows (total 32615)
+[2026-10-23T15:54:06+00:00] leaguepedia: 2026-11-12 -> 2026-12-22 got 41 rows (total 32656)
+[2026-10-23T15:55:32+00:00] leaguepedia: standings for 16 page(s), 289 team rows
+[2026-10-23T15:55:32+00:00] leaguepedia: 31732 results, 203 schedule rows, 3574 teams
+[2026-10-23T15:58:06+00:00] model: {'fixtures': 188, 'resolved': 188, 'unresolved': 0, 'resolved_pct': 100.0, 'with_external_market': 9, 'with_model': 179, 'with_team_specific_model': 155, 'with_prior_only': 20, 'with_standings_line': 4, 'teams_from_standings': 4, 'published_picks': 188, 'both_market_and_model': 9, 'counts_by_method': {'MODEL_ELO_THIN': 74, 'MODEL_LEAGUE_PRIOR': 20, 'MODEL_ELO': 81, 'MARKET_CONSENSUS': 8, 'MODEL_STANDINGS': 4, 'MARKET_SINGLE': 1}}
+[2026-10-23T15:58:06+00:00] wrote docs/data/picks.json: {'fixtures': 188, 'next_24h': 21, 'market': 9, 'model': 179, 'standings': 4, 'resolved': 188, 'unresolved': 0, 'low_confidence': 101, 'hotspawn_without_match_page': 13}
