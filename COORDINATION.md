@@ -397,5 +397,17 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 | T13 coverage audit and fix | done |
 | T14 summary, unresolved, mobile | done |
 | T15 betting-source refresh | done |
-| T16 PR to main, merge, Pages | in progress (PR and merge result recorded below once complete) |
+| T16 PR to main, merge, Pages | done — PR #12 merged, commit `c4619a7`; Pages build `39981988496` success; live refresh `41d7b1a` verified |
+
+### Integration record (T16)
+| Item | Value |
+|---|---|
+| PR | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/12 (`arena/bd37dbe6-lolhotspawn2` → `main`) |
+| Merge | `--merge`, merge commit `c4619a7a4c7033363b109e1fda260a969a0c88c4`, 2026-10-23 15:48 UTC (no approval wait, no auto-merge) |
+| Post-merge refresh on main | Update Hotspawn LoL picks run `39981419329` — success; commit `41d7b1a` |
+| Pages build for merge commit | `pages build and deployment` run `39981417237` — success |
+| Pages build for refresh | run `39981988496` — success |
+| Live check (fetched 2026-10-23) | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ shows 175 fixtures, 175 with a pick, 0 missing, 13 cancelled not priced; flagged page lists the 13 excluded fixtures |
+| Verifier on merged tree | `scripts/verify_site.py`: 33 PASS · 0 FAIL · 0 WARN · 1 SKIP (D18 needs the Actions snapshot); `verification/test_verifier.py` 27/27 |
+| Known open item (not blocking) | Gen.G vs Invictus Gaming now lists 10 market lines, several of them the same Pinnacle matchup repeated across boards (R16, owned by `arena/0fb2d0c7` / `arena/e76bc0ae`). Shown on the live page; not fixed in this PR. |
 
