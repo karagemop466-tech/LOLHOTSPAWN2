@@ -160,7 +160,10 @@ CI runs the same suite in `.github/workflows/verify.yml` (on push to `main`, eve
 
 ## 8. Deployment record
 
-_Filled in after merging the verification PR._
+- **PR #13:** https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/13 — merged 2026-10-23 16:00:15 UTC; merge commit `19832903ac77b8c23af53405401de50b49635019`.
+- **Post-merge verification:** Actions run [39983097096](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983097096) succeeded, including external source links and live Pages checks.
+- **Post-merge refresh:** Actions run [39983096955](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983096955) succeeded; payload generated 2026-10-23 16:03:53 UTC.
+- **GitHub Pages deployment:** Actions run [39983622611](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983622611) succeeded. Production URL: https://karagemop466-tech.github.io/LOLHOTSPAWN2/.
 
 ## 9. Follow-up integration audit — 2026-10-23 (Arena session `arena/b252f309-lolhotspawn2`)
 
@@ -188,8 +191,13 @@ not represented as confirmed current reschedules. The fresh 2026-10-23 run fetch
 current payload rows have no `START_TIME_MISMATCH` flags, but raw current schedule rows are not persisted for independent
 comparison. Hotspawn controls Pick'em lock times. Latest source status (run 39982261810): Hotspawn 175, Pinnacle 134,
 Polymarket 9, and Leaguepedia 31,732 were `ok`; Bovada returned `error` with 0 events. The bookmaker degradation is
-visible in Source status, and the pipeline prices from healthy market inputs rather than inventing Bovada prices. PR #13
-is open; final Pages deployment must be confirmed after merge.
+visible in the source status, and the pipeline uses healthy market inputs rather than inventing Bovada prices. PR #13 merged
+at 2026-10-23 16:00:15 UTC (merge commit `19832903ac77b8c23af53405401de50b49635019`). The post-merge verification run
+[39983097096](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983097096) and Pages deployment run
+[39983622611](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983622611) both succeeded. The post-merge
+refresh [39983096955](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983096955) produced a 172-fixture
+payload (9 market / 163 model, 0 unresolved, 89 low-confidence; 16 cancelled excluded) with all listed sources `ok`.
+Latest deployment is at https://karagemop466-tech.github.io/LOLHOTSPAWN2/.
 
 ## 10. Market deduplication, Unibet sportsbook redundancy & 100% provenance upgrade — 2026-10-23 (Arena session `arena/0fb2d0c7-lolhotspawn2`)
 
