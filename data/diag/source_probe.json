@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-23T16:42:53.399127Z",
+ "checked_at": "2026-10-23T16:44:14.869844Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -56,7 +56,7 @@
    "url": "https://egamersworld.com/lol/bets",
    "kind": "odds-comparison-page",
    "http_status": 403,
-   "bytes": 5740,
+   "bytes": 5718,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
