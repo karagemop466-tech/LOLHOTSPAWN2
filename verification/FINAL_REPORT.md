@@ -161,3 +161,31 @@ CI runs the same suite in `.github/workflows/verify.yml` (on push to `main`, eve
 ## 8. Deployment record
 
 _Filled in after merging the verification PR._
+
+## 9. Follow-up integration audit — 2026-10-23 (Arena session `arena/b252f309-lolhotspawn2`)
+
+This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. The current repository snapshot
+was generated at **2026-10-23 11:00:24 UTC** and was **4.7 hours old** at verification. It contains **189 fixtures**:
+9 with external market data, 180 Elo-model estimates, and 0 unresolved placeholders. The six-hour scheduled refresh is
+configured; the latest observed main-branch refresh (Actions run [39942806398](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39942806398))
+and Pages build ([39943048408](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39943048408)) succeeded. The latest scheduled
+verification run ([39949842068](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39949842068)) also succeeded.
+
+The audit found and fixed two presentation/provenance issues:
+
+1. The mobile fixed navigation had **five destinations but only four CSS grid columns**, which could strand the last
+   destination on an extra row on narrow screens. It now has five responsive columns; `verification/check_dom_contract.py`
+   checks that every page's mobile-nav link count equals the stylesheet's column count.
+2. **38/180 model rows** linked only to a generic Leaguepedia Cargo table, not a fixture-specific competition page.
+   The model now adds `GENERIC_RESULTS_SOURCE` for this case; the 38 rows in the current payload carry the flag, and the
+   Flagged page explains it. The verifier now requires each model row to have a results-source URL and fails if a generic
+   Cargo table is not accompanied by the flag. The source is community-maintained, not official organizer verification;
+   that caveat is now explicit in the executive summary, Methodology, and Flagged for review pages.
+
+Updated audit suite: **33 PASS, 0 FAIL, 1 WARN**; `verification/test_verifier.py` **32/32**; DOM contract PASS.
+The sole warning is **D18**: the captured Leaguepedia schedule snapshot covers 137 matched fixtures, of which 10 have
+start-time differences from Hotspawn; 52 additional fixtures are absent from the snapshot. Hotspawn remains the displayed
+pick-lock source. These mismatches and the uncertainty of missing snapshot rows are disclosed for review rather than
+silently resolved. The all-table mobile navigation and internal-link checks pass. No current-day market/source fetch was
+performed from the restricted local sandbox; the cited source verification artifacts and latest successful main workflow
+runs are the available evidence. Re-run the scheduled pipeline/verification workflow for fresh external-source checks.

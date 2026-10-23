@@ -65,7 +65,7 @@ def main() -> int:
     # baseline: a clean row must pass every data check
     c = run([copy.deepcopy(BASE_ROW)])
     results += [assert_status(c, i, vs.PASS, "clean row passes")
-                for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D9", "D12")]
+                for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D8c", "D8d", "D9", "D12")]
 
     # pick not one of the teams
     r = copy.deepcopy(BASE_ROW); r["pick"] = "Team C"
@@ -89,6 +89,16 @@ def main() -> int:
     r = copy.deepcopy(BASE_ROW); r["market_url"] = ""
     r["source_url"] = "https://lol.fandom.com/wiki/Test"
     results.append(assert_status(run([r]), "D8a", vs.FAIL, "market row without market url"))
+    # model row missing a recorded-results source URL
+    r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_ELO"; r.pop("market_url", None)
+    r["sources"] = [{"name": "Hotspawn fixture", "url": r["hotspawn_url"]}]
+    results.append(assert_status(run([r]), "D8c", vs.FAIL, "model row without results source"))
+    # generic results table without the explicit provenance warning
+    r = copy.deepcopy(BASE_ROW); r["method"] = "MODEL_ELO"; r.pop("market_url", None)
+    r["source_url"] = "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule"
+    results.append(assert_status(run([r]), "D8d", vs.FAIL, "generic model source without flag"))
+    r["flags"] = ["GENERIC_RESULTS_SOURCE"]
+    results.append(assert_status(run([r]), "D8d", vs.PASS, "generic model source correctly flagged"))
     # unresolved row that is not 50/50
     r = copy.deepcopy(BASE_ROW); r["method"] = "UNRESOLVED"; r["prob_team1"] = 0.7
     r["prob_team2"] = 0.3; r["pick"] = "Team A"; r["pick_prob"] = 0.7
