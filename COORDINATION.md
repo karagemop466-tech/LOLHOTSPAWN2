@@ -283,3 +283,18 @@ picture; each item is resolved or explicitly dispositioned below.
 - live site re-checked: summary and picks render; Galions–Solary now uses the BO5 **series** market (Pinnacle 53.4 / Polymarket 55.5), not a Game-3 price.
 - parallel session PR #9 (`ci: keep the bot's fresh payload on rebase conflicts`) merged on top; no conflict with this branch.
 - Bovada returned HTTP 200 without an event list on the 21:16 run (`status: error`, count 0) while Pinnacle/Polymarket stayed ok; the source status is published as degraded and the consensus fell back to the two healthy sources. A follow-up hardens the feed parser with alternate coupon URLs.
+
+---
+
+## Session `arena/bd37dbe6-lolhotspawn2` — 2026-10-23 (claim)
+
+No other session holds an open claim on `main` as of 2026-10-23 15:35 UTC (prior sessions are merged; `origin` has only `main`). This session claims the following scope and works only inside it.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T13 Coverage audit: reconcile the Hotspawn lobby tier-filter count with the pipeline fixture count and the fixtures API; close any gap | in progress | arena/bd37dbe6 | scripts/fetch_hotspawn.py, scripts/update_picks.py, data/diag/** |
+| T14 Executive summary, unresolved section and per-league limitations; in-site links to picks; mobile readability pass | in progress | arena/bd37dbe6 | docs/** (pages + assets), research/** |
+| T15 Betting-line and community-source refresh with link-verified research log | in progress | arena/bd37dbe6 | research/betting-sources.md, verification/** |
+| T16 Integration: rerun live pipeline on branch, re-verify line by line, PR to `main`, merge, confirm Pages deploy, record result here | pending | arena/bd37dbe6 | COORDINATION.md (board entries), docs/data/picks.json (generated) |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
