@@ -57,11 +57,34 @@ LIMITATIONS = [
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
+    "Where a team has no recorded games, the model first uses the official Leaguepedia current-split standings for its competition (converted to a rating and shrunk for sample size). Only when that side has no standings row either does it fall back to the competition median / tournament tier prior. A prior is not evidence about the team.",
+    "Standings pages that combine several divisions do not say which division a team plays in. For those rows the edge is halved, the row is capped at low confidence and it is flagged MULTI_DIVISION_STANDINGS.",
     "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
     "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
 ]
+
+
+def _market_probe():
+    """Measured reachability of additional betting sources (scripts/probe_markets.py).
+
+    Published with its own timestamp and method so the "we tried the books" claim is
+    evidence, not an assertion. A 200 response is never treated as coverage.
+    """
+    data = load_json("data/diag/market_probe.json", {}) or {}
+    results = data.get("results") or []
+    if not results:
+        return None
+    return {
+        "generated_at": data.get("generated_at"),
+        "method": data.get("method"),
+        "results": [{"name": r.get("name"), "url": r.get("url"),
+                     "status": r.get("http_status"), "usable": bool(r.get("usable_as_feed")),
+                     "lol_content": bool(r.get("league_of_legends_content"))}
+                    for r in results],
+        "usable_count": sum(1 for r in results if r.get("usable_as_feed")),
+    }
 
 
 def build_payload(fixtures, markets, leaguepedia, picks):
@@ -80,7 +103,11 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if "ONE_TEAM_NO_HISTORY" in m["flags"]:
+        if m["method"] == "MODEL_STANDINGS" and "MULTI_DIVISION_STANDINGS" in m["flags"]:
+            reasons["Official table mixes divisions (edge halved, low confidence)"] += 1
+        elif m["method"] == "MODEL_STANDINGS":
+            reasons["Line rests on the official split standings (small sample)"] += 1
+        elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
             reasons["One team has no recorded history (league prior used)"] += 1
         elif "CROSS_LEAGUE_MODEL" in m["flags"]:
             reasons["Cross-league comparison (confidence capped at Low)"] += 1
@@ -102,6 +129,11 @@ def build_payload(fixtures, markets, leaguepedia, picks):
                           "count": leaguepedia["counts"]["results"],
                           "note": (leaguepedia.get("degraded_reason")
                                    or "Recorded results + schedules, exact UTC.")})
+    source_status.append({"name": "Leaguepedia Standings (current split)",
+                          "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
+                          "status": "ok" if (leaguepedia.get("counts", {}).get("standings") or 0) > 0 else "degraded",
+                          "count": leaguepedia.get("counts", {}).get("standings") or 0,
+                          "note": "Official current-split win-loss table, used for teams without enough recorded series."})
     source_status.append({"name": "Hotspawn LoL Pick'em lobby", "url": fixtures["lobby"],
                           "status": "ok" if fixtures["count"] >= 50 else "degraded",
                           "count": fixtures["count"], "note": "Fixture list only."})
@@ -118,6 +150,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "next_24h": len(next_24h),
             "market": len(market_matches),
             "model": sum(1 for m in matches if m["method"].startswith("MODEL")),
+            "standings": sum(1 for m in matches if m["method"] == "MODEL_STANDINGS"),
             "resolved": picks["coverage"]["resolved"],
             "unresolved": picks["coverage"]["unresolved"],
             "low_confidence": len(low_conf),
@@ -125,6 +158,13 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "excluded_not_priced": len(fixtures.get("excluded") or []),
         },
         "coverage": picks["coverage"],
+        "market_probe": _market_probe(),
+        "standings": {
+            "pages": sorted({str(m["standings"].get("page")) for m in matches
+                             if (m.get("standings") or {}).get("page")}),
+            "rows_with_standings": sum(1 for m in matches if m.get("standings")),
+            "rows_with_standings_line": sum(1 for m in matches if m["method"] == "MODEL_STANDINGS"),
+        },
         "coverage_reconciliation": fixtures.get("reconciliation") or {},
         "excluded_fixtures": fixtures.get("excluded") or [],
         "model": picks["model"],

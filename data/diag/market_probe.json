@@ -1,0 +1,310 @@
+{
+ "schema": "market-probe/1",
+ "generated_at": "2026-10-23T15:41:16.803194Z",
+ "method": "One unauthenticated GET per endpoint from the GitHub Actions runner with a normal browser user-agent. 'two_way_prices_in_body' only records that a JSON body contains decimal/american price fields; it does not claim the endpoint is licensed, stable or complete.",
+ "results": [
+  {
+   "name": "Pinnacle",
+   "url": "https://www.pinnacle.com/en/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 404,
+   "error": "HTTP 404",
+   "bytes": 307,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Pinnacle guest API",
+   "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
+   "expected": "json",
+   "http_status": 200,
+   "error": null,
+   "bytes": 8390,
+   "league_of_legends_content": true,
+   "two_way_prices_in_body": false,
+   "preview": "[   {     \"ageLimit\": 0,     \"featureOrder\": -1,     \"group\": \"Brazil\",     \"id\": 295914,     \"isFeatured\": false,     \"isHidden\": false,     \"isPromoted\": false,     \"isSticky\": false,     \"matchupCount\": 3,     \"matchu",
+   "usable_as_feed": false
+  },
+  {
+   "name": "Bovada",
+   "url": "https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en",
+   "expected": "json",
+   "http_status": 200,
+   "error": null,
+   "bytes": 11748,
+   "league_of_legends_content": true,
+   "two_way_prices_in_body": false,
+   "preview": "[{\"path\":[{\"id\":\"9417391\",\"link\":\"/esports/league-of-legends/world-championship-26\",\"description\":\"World Championship '26\",\"type\":\"LEAGUE\",\"sportCode\":\"ESPT\",\"order\":9223372036854775807,\"leaf\":true,\"current\":false},{\"id\"",
+   "usable_as_feed": false
+  },
+  {
+   "name": "DraftKings",
+   "url": "https://sportsbook.draftkings.com/leagues/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 404,
+   "error": "HTTP 404",
+   "bytes": 257742,
+   "usable_as_feed": false
+  },
+  {
+   "name": "FanDuel",
+   "url": "https://sportsbook.fanduel.com/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 200,
+   "error": null,
+   "bytes": 11177,
+   "league_of_legends_content": true,
+   "two_way_prices_in_body": false,
+   "preview": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"><title>FanDuel Sportsbook</title><link rel=\"icon shortcut\" href=\"https://spor",
+   "usable_as_feed": false
+  },
+  {
+   "name": "BetMGM",
+   "url": "https://sports.betmgm.com/en/sports/esports-8/betting/usa-9/league-of-legends-14571",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 9887,
+   "usable_as_feed": false
+  },
+  {
+   "name": "bet365",
+   "url": "https://www.bet365.com/#/AC/B151/C1/D50/E2/F163/",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 5671,
+   "usable_as_feed": false
+  },
+  {
+   "name": "William Hill",
+   "url": "https://sports.williamhill.com/betting/en-gb/esports",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 3525,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Unibet",
+   "url": "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
+   "expected": "html",
+   "http_status": 503,
+   "error": "HTTP 503",
+   "bytes": 190,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Marathonbet",
+   "url": "https://www.marathonbet.com/en/betting/Esports/",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 5850,
+   "usable_as_feed": false
+  },
+  {
+   "name": "1xBet",
+   "url": "https://1xbet.com/en/line/esports/",
+   "expected": "html",
+   "http_status": 203,
+   "error": null,
+   "bytes": 2646,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Betway",
+   "url": "https://www.betway.com/en/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 404,
+   "error": "HTTP 404",
+   "bytes": 9,
+   "usable_as_feed": false
+  },
+  {
+   "name": "GG.Bet",
+   "url": "https://gg.bet/en/esports/lol",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 126,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Thunderpick",
+   "url": "https://thunderpick.io/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 5789,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Rivalry",
+   "url": "https://www.rivalry.com/lol",
+   "expected": "html",
+   "http_status": 503,
+   "error": "HTTP 503",
+   "bytes": 1591,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Midnite",
+   "url": "https://www.midnite.com/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 200,
+   "error": null,
+   "bytes": 33885,
+   "league_of_legends_content": true,
+   "two_way_prices_in_body": false,
+   "preview": "<!DOCTYPE html><html><head><meta charset=\"utf-8\" /> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\" /> <base href=\"/\" /> <title>Sports Betting, Casino Games, &amp; Live",
+   "usable_as_feed": false
+  },
+  {
+   "name": "Loot.bet",
+   "url": "https://www.loot.bet/sportsbook/league-of-legends",
+   "expected": "html",
+   "http_status": 0,
+   "error": "URLError(gaierror(-2, 'Name or service not known'))",
+   "bytes": 0,
+   "usable_as_feed": false
+  },
+  {
+   "name": "BUFF.bet",
+   "url": "https://www.buff.bet/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 200,
+   "error": null,
+   "bytes": 114,
+   "league_of_legends_content": false,
+   "two_way_prices_in_body": false,
+   "preview": "<!DOCTYPE html><html><head><script>window.onload=function(){window.location.href=\"/lander\"}</script></head></html>",
+   "usable_as_feed": false
+  },
+  {
+   "name": "BetOnline",
+   "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 200,
+   "error": null,
+   "bytes": 366099,
+   "league_of_legends_content": true,
+   "two_way_prices_in_body": false,
+   "preview": "<!DOCTYPE html><script>(function(){const webAppConfig = {\"FEATURE_HUB_OUTRIGHTS_ALL_TAB\":\"true\",\"FEATURE_STRAPI_PROMO_BANNERS\":\"true\",\"CHASHOUT_API_URL\":\"https://cashoutapi.betonline.ag/api/v1.0/CashoutExternal\",\"FEATURE",
+   "usable_as_feed": false
+  },
+  {
+   "name": "SportsBetting.ag",
+   "url": "https://www.sportsbetting.ag/sportsbook/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 5870,
+   "usable_as_feed": false
+  },
+  {
+   "name": "BetUS",
+   "url": "https://www.betus.com.pa/sportsbook/esports/league-of-legends/",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 5848,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Bodog",
+   "url": "https://www.bodog.eu/sportsbook/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 522,
+   "error": "HTTP 522",
+   "bytes": 969,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Betfair Exchange",
+   "url": "https://www.betfair.com/exchange/plus/esports",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 3646,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Smarkets",
+   "url": "https://smarkets.com/sport/esports/league-of-legends",
+   "expected": "html",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 5486,
+   "usable_as_feed": false
+  },
+  {
+   "name": "OddsPortal",
+   "url": "https://www.oddsportal.com/lol/",
+   "expected": "html",
+   "http_status": 503,
+   "error": "HTTP 503",
+   "bytes": 0,
+   "usable_as_feed": false
+  },
+  {
+   "name": "BetExplorer",
+   "url": "https://www.betexplorer.com/lol/",
+   "expected": "html",
+   "http_status": 404,
+   "error": "HTTP 404",
+   "bytes": 0,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Polymarket Gamma",
+   "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=20",
+   "expected": "json",
+   "http_status": 200,
+   "error": null,
+   "bytes": 1382657,
+   "league_of_legends_content": true,
+   "two_way_prices_in_body": false,
+   "preview": "[{\"id\":\"131447\",\"ticker\":\"lol-worlds-2026-winning-region-226\",\"slug\":\"lol-worlds-2026-winning-region-226\",\"title\":\"Worlds 2026 Winning Region\",\"description\":\"This market will resolve according to the region or country of",
+   "usable_as_feed": false
+  },
+  {
+   "name": "Kalshi",
+   "url": "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
+   "expected": "json",
+   "http_status": 200,
+   "error": null,
+   "bytes": 16,
+   "league_of_legends_content": false,
+   "two_way_prices_in_body": false,
+   "preview": "{\"series\":null} ",
+   "usable_as_feed": false
+  },
+  {
+   "name": "OddsPapi",
+   "url": "https://api.oddspapi.io/v1/sports",
+   "expected": "json",
+   "http_status": 404,
+   "error": "HTTP 404",
+   "bytes": 103,
+   "usable_as_feed": false
+  },
+  {
+   "name": "The Odds API",
+   "url": "https://api.the-odds-api.com/v4/sports/esports_league_of_legends/odds/",
+   "expected": "json",
+   "http_status": 401,
+   "error": "HTTP 401",
+   "bytes": 152,
+   "usable_as_feed": false
+  },
+  {
+   "name": "Riot LoLESports (unofficial)",
+   "url": "https://esports-api.lolesports.com/persisted/gw/getLeagues?hl=en-US",
+   "expected": "json",
+   "http_status": 403,
+   "error": "HTTP 403",
+   "bytes": 23,
+   "usable_as_feed": false
+  }
+ ]
+}

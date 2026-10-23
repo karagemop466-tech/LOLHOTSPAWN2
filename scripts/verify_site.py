@@ -494,6 +494,28 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
                if abs(float(r.get("prob_team1") or 0.5) - 0.5) < 0.02
                and not str(r.get("method", "")).startswith("MARKET"))
     status = PASS if not bad_no_ev and not unlab else WARN
+    # D21: a standings-based line must link the exact league table it used
+    st_bad, st_ok = [], 0
+    for r in rows:
+        if r.get("method") != "MODEL_STANDINGS":
+            continue
+        st = r.get("standings") or {}
+        page = str(st.get("page") or "")
+        url = str(st.get("url") or r.get("source_url") or "")
+        if not page or not url.startswith("https://lol.fandom.com/wiki/"):
+            st_bad.append(f"{r.get('team1')} vs {r.get('team2')} — no standings page link")
+        elif "Special:CargoTables" in url or "action=help" in url:
+            st_bad.append(f"{r.get('team1')} vs {r.get('team2')} — generic table link, not the league page")
+        elif not (st.get("team1") or {}).get("sample") and not (st.get("team2") or {}).get("sample"):
+            st_bad.append(f"{r.get('team1')} vs {r.get('team2')} — no record/sample attached")
+        else:
+            st_ok += 1
+    if any(r.get("method") == "MODEL_STANDINGS" for r in rows):
+        rep.add("D21", "every standings-based line links the league table it used",
+                PASS if not st_bad else FAIL,
+                f"{st_ok} standings row(s) link a specific Leaguepedia standings page",
+                st_bad[:10])
+
     rep.add("D13", "rows without team evidence are 50/50 and explicitly labelled",
             status,
             f"{len(no_ev)} row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); "
@@ -749,6 +771,24 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     else:
         rep.add("S4", "executive summary links in-site to picks + unresolved and "
                       "states limitations", FAIL, "docs/index.html not found")
+
+    # S7: the executive summary must say where the picks live, with in-site links
+    ipath = os.path.join(DOCS, "index.html")
+    if os.path.exists(ipath):
+        raw = open(ipath, encoding="utf-8").read()
+        lower = raw.lower()
+        has_picks = 'href="picks.html"' in lower
+        has_unres = 'href="unresolved.html"' in lower
+        has_anchor = 'href="#next24"' in lower
+        has_where = ("where to find the picks" in lower or "where to find" in lower)
+        missing = [n for n, ok in (("link to picks.html", has_picks),
+                                   ("link to unresolved.html", has_unres),
+                                   ("in-page next-24h anchor", has_anchor),
+                                   ("'where to find the picks' block", has_where)) if not ok]
+        rep.add("S7b", "executive summary links in-site to the picks list, the next 24h and the unresolved page",
+                PASS if not missing else FAIL,
+                "summary has a findability block with in-site links" if not missing
+                else f"missing: {', '.join(missing)}")
 
     # S4b unresolved page
     upath = os.path.join(DOCS, "unresolved.html")

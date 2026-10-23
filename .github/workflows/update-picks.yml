@@ -29,10 +29,17 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Probe candidate betting sources (measured evidence)
+        continue-on-error: true
+        run: |
+          mkdir -p data/diag
+          python3 scripts/probe_markets.py 2>&1 | tee -a data/diag/pipeline.log
+
       - name: Fetch fixtures, external lines and results; build picks
         env:
           PYTHONUNBUFFERED: "1"
         run: |
+          set -euo pipefail
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
 
@@ -88,7 +95,7 @@ jobs:
           set -euxo pipefail
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          git add docs/data data/diag/pipeline.log
+          git add docs/data data/diag/pipeline.log data/diag/market_probe.json
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
           for attempt in 1 2 3; do

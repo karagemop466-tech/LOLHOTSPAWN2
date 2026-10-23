@@ -277,11 +277,37 @@ def build_ratings(results, now, priors=None, half_life_days=365.0, k_base=24.0):
             "last_seen": last_seen, "h2h": dict(h2h), "matches_used": used}
 
 
+def name_variants(name: str) -> set[str]:
+    """Spelling-only variants of a team name (never a different team).
+
+    Leaguepedia disambiguates common names in brackets ("Locked In (Dutch Team)",
+    "Neon eSports (Brazilian Team)") while Hotspawn writes the short form. Prefixes
+    and suffixes below are the only transformations applied; an ambiguous match is
+    still refused by the caller.
+    """
+    raw = str(name or "").strip()
+    variants = {raw}
+    for prefix in ("ex-", "ex "):
+        if raw.lower().startswith(prefix):
+            variants.add(raw[len(prefix):].strip())
+    for suffix in (" e.v.", " e.v", " multigaming", " academy"):
+        if raw.lower().endswith(suffix):
+            variants.add(raw[: -len(suffix)].strip())
+    stripped = re.sub(r"\s*\([^)]*\)\s*$", "", raw).strip()
+    if stripped and stripped != raw:
+        variants.add(stripped)
+    return {v for v in variants if v}
+
+
 class Resolver:
     def __init__(self, names, aliases, scoped_aliases=None):
         self.names = sorted({str(n).strip() for n in names if str(n or "").strip()})
         self.by_norm = {_norm_team(n): n for n in self.names}
         self.aliases = {_norm_team(k): v for k, v in (aliases or {}).items()}
+        self.by_var = defaultdict(set)
+        for n in self.names:
+            for v in name_variants(n):
+                self.by_var[_norm_team(v)].add(n)
         self.scoped = {}
         for comp, entries in (scoped_aliases or {}).items():
             c_map = {}
@@ -307,6 +333,11 @@ class Resolver:
             return self.by_norm.get(_norm_team(target), target), None
         if n in self.by_norm:
             return self.by_norm[n], None
+        variant_hits = set()
+        for v in name_variants(name):
+            variant_hits |= self.by_var.get(_norm_team(v), set())
+        if len(variant_hits) == 1:
+            return next(iter(variant_hits)), None
         cands = [x for x in self.names if contains(name, x)]
         if len(cands) == 1:
             return cands[0], None
@@ -445,6 +476,20 @@ def _standings_elo(st: dict, base_elo: float) -> float:
     return base_elo + 400.0 * math.log10(wr / (1.0 - wr))
 
 
+def multi_division_pages(standings_rows) -> set[str]:
+    """Pages that list more than one first place: several divisions/sections share
+    one table, and the source has no column saying which team belongs to which."""
+    places = defaultdict(int)
+    for st in standings_rows or []:
+        page = _norm_team(st.get("overview") or "")
+        try:
+            if int(str(st.get("place") or "").strip() or 0) == 1:
+                places[page] += 1
+        except (TypeError, ValueError):
+            continue
+    return {p for p, n in places.items() if n > 1}
+
+
 def blend_h2h(p, h2h_n, h2h_wins, weight=0.15):
     if h2h_n < 3:
         return p, None
@@ -525,6 +570,8 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         prev = standings_by_team.get(_norm_team(tm))
         if prev is None or played >= (int(prev.get("win_series") or 0) + int(prev.get("loss_series") or 0) + int(prev.get("win_games") or 0) + int(prev.get("loss_games") or 0)):
             standings_by_team[_norm_team(tm)] = st
+
+    multi_div = multi_division_pages(standings_rows)
 
     lp_names = set()
     for r in leaguepedia["results"] + schedule_rows + unscheduled_rows:
@@ -684,9 +731,21 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         cross_league = bool(base1 and base2 and abs(base1 - base2) >= 60 and
                             team_comps[n_k1].get(comp1, 0) >= 5 and
                             team_comps[n_k2].get(comp2, 0) >= 5)
-        prior = comp_prior.get(eff_page) or competition_base(eff_page) or global_prior
-        prior_source = ("competition median" if eff_page in comp_prior and comp_prior.get(eff_page) != competition_base(eff_page)
-                        else "competition tier prior" if eff_page else "global median")
+        # The unrated side must be compared with a prior for ITS competition, not with
+        # one median pooled across Worlds and third divisions.
+        prior = (comp_prior.get(eff_page) or competition_base(eff_page)
+                 or competition_base(f.get("tournament")) or competition_base(comp1)
+                 or competition_base(comp2) or global_prior)
+        if eff_page in comp_prior and comp_prior.get(eff_page) != competition_base(eff_page):
+            prior_source = "competition median"
+        elif competition_base(eff_page):
+            prior_source = "competition tier prior"
+        elif competition_base(f.get("tournament")):
+            prior_source = "tournament tier prior"
+        elif competition_base(comp1) or competition_base(comp2):
+            prior_source = "team's competition tier prior"
+        else:
+            prior_source = "global median"
 
         flags = []
         for side_label, meta in ((t1, meta1), (t2, meta2)):
@@ -742,6 +801,11 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             raw = prob_from_elo(eff_r1, eff_r2)
             shrink = min(eff_g1, eff_g2) / (min(eff_g1, eff_g2) + 8.0)
             model_prob = 0.5 + (raw - 0.5) * shrink
+            if _norm_team(eff_page) in multi_div:
+                # the page mixes divisions and does not say which team plays where:
+                # the records are only weak evidence, so halve the edge
+                model_prob = 0.5 + (model_prob - 0.5) * 0.5
+                flags.append("MULTI_DIVISION_STANDINGS")
             model_method = "MODEL_STANDINGS"
             model = {
                 "elo_team1": round(eff_r1), "elo_team2": round(eff_r2),
@@ -820,6 +884,13 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             if model_method == "MODEL_ELO":
                 confidence = ("Low" if cross_league else
                               "High" if min(g1, g2) >= 15 and abs(r1 - r2) >= 60 else "Medium")
+            elif model_method == "MODEL_STANDINGS":
+                sample = min(
+                    int((st1 or {}).get("win_series") or 0) + int((st1 or {}).get("loss_series") or 0)
+                    if st1 else g1,
+                    int((st2 or {}).get("win_series") or 0) + int((st2 or {}).get("loss_series") or 0)
+                    if st2 else g2)
+                confidence = "Low" if (_norm_team(eff_page) in multi_div or sample < 5) else "Medium"
             else:
                 confidence = "Low"
         else:
@@ -914,10 +985,76 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         if not evidence_bits:
             evidence_bits.append("No external market and no recorded history for either team.")
 
+        # ---- per-row record of the official table actually used -----------------
+        standings_block = None
+        pages_used = {str(x.get("overview")) for x in (st1, st2) if x and x.get("overview")}
+        if pages_used:
+            def _st(s):
+                if not s:
+                    return None
+                ws, ls = s.get("win_series"), s.get("loss_series")
+                return {"wins": ws, "losses": ls,
+                        "win_games": s.get("win_games"), "loss_games": s.get("loss_games"),
+                        "kind": "series" if (int(ws or 0) + int(ls or 0)) > 0 else "games",
+                        "sample": int(ws or 0) + int(ls or 0) or int(s.get("win_games") or 0) + int(s.get("loss_games") or 0),
+                        "page": s.get("overview"),
+                        "url": ("https://lol.fandom.com/wiki/" + str(s.get("overview")).replace(" ", "_"))}
+            # the two records can come from different tables (a team's own split vs the
+            # fixture's split); name the fixture's table as the page, and keep each
+            # team's own table link so nothing is implied to come from one source
+            page_name = (eff_page if eff_page in pages_used else
+                         (next(iter(pages_used)) if len(pages_used) == 1 else
+                          (st1 or st2 or {}).get("overview")))
+            standings_block = {
+                "page": page_name,
+                "url": "https://lol.fandom.com/wiki/" + page_name.replace(" ", "_") if page_name else None,
+                "team1": _st(st1), "team2": _st(st2),
+                "shared_page": bool(page_name and all(str(x.get("overview")) == page_name
+                                                     for x in (st1, st2) if x)),
+                "multi_division": bool(_norm_team(page_name) in multi_div) if page_name else False,
+            }
+
+        if method.startswith("MARKET"):
+            why = f"Priced from {len(recs)} independent external line(s); the pick follows the market consensus."
+        elif method == "MODEL_ELO":
+            why = f"No external line. Elo from {g1}/{g2} recorded series in the last 365 days."
+        elif method == "MODEL_ELO_THIN":
+            why = (f"No external line. Elo from recorded series, but the thinner side has only "
+                   f"{min(g1, g2)} series in 365 days, so the edge is shrunk toward 50%.")
+        elif method == "MODEL_STANDINGS":
+            bits = []
+            for label, st, g in ((t1, st1, g1), (t2, st2, g2)):
+                if st and (int(st.get("win_series") or 0) + int(st.get("loss_series") or 0)) > 0:
+                    bits.append(f"{label} from its official {st.get('win_series')}-{st.get('loss_series')} record")
+                elif st:
+                    bits.append(f"{label} from its official game record {st.get('win_games')}-{st.get('loss_games')}")
+                else:
+                    bits.append(f"{label} from {g} recorded series")
+            why = ("No external line. Line built from the official Leaguepedia standings "
+                   f"({(st1 or st2 or {}).get('overview') or eff_page}): " + "; ".join(bits) + ".")
+            if "MULTI_DIVISION_STANDINGS" in flags:
+                why += (" That table combines several divisions, so the edge is halved and the row "
+                        "is capped at low confidence.")
+        elif method == "MODEL_LEAGUE_PRIOR":
+            known_side = (model or {}).get("known_side")
+            unknown = t2 if known_side == "team1" else t1
+            why = (f"No external line and no series history or standings row for {unknown}. The "
+                   f"{prior_source} ({round(prior)}) is substituted for that side and the edge is shrunk.")
+        else:
+            why = ("No external betting line, no recorded series and no standings row for either team. "
+                   "The 50/50 is a labelled placeholder, not a pick.")
+
         out.append({
             **{k: f.get(k) for k in ("id", "team1", "team2", "tournament", "competition_id", "tier",
                                      "stage", "points", "best_of", "start_utc", "status",
                                      "hotspawn_url", "source_lobby", "crowd")},
+            "standings": standings_block,
+            "why": why,
+            # The probability source is the standings table only when the line rests on
+            # it; an Elo row keeps its tournament page as the source link.
+            "source_url": ((standings_block or {}).get("url") if method == "MODEL_STANDINGS" else None)
+                          or (("https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")) if eff_page else None)
+                          or (standings_block or {}).get("url"),
             "leaguepedia_page": eff_page or None,
             "leaguepedia_url": ("https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")) if eff_page else None,
             "fixture_match": how,
@@ -966,6 +1103,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                 1 for m in out if m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN", "MODEL_STANDINGS")
             ),
             "with_prior_only": counts.get("MODEL_LEAGUE_PRIOR", 0),
+            "with_standings_line": counts.get("MODEL_STANDINGS", 0),
             "published_picks": len(out),
             "both_market_and_model": sum(1 for m in out if m["market"] and m["model"]),
             "counts_by_method": dict(counts),

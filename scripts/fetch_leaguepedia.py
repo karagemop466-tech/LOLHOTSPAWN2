@@ -357,6 +357,14 @@ def main() -> int:
             log("leaguepedia: " + prev["degraded_reason"])
             return 0
         raise SystemExit(f"Leaguepedia returned only {len(results)} results and no fallback snapshot exists")
+    if standings:
+        write_json("data/diag/standings.json", {
+            "generated_at": utc_iso(now),
+            "source": STANDINGS_URL,
+            "rows": len(standings),
+            "pages": sorted({str(r.get("overview")) for r in standings if r.get("overview")}),
+            "standings": standings,
+        })
     write_json(OUT, payload)
     log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, "
         f"{len(unscheduled)} unscheduled, {len(standings)} standings, {len(teams)} teams")

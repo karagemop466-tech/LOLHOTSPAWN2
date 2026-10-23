@@ -78,13 +78,27 @@
       <li><b>Shrinkage</b>: with few games, the Elo probability is pulled toward 50/50 (shrink = games/(games+8)).</li>
       <li><b>Current-split standings fallback</b>: when a newly named or amateur team has no individual rows in <span class="flag">MatchSchedule</span> yet has recorded series in Leaguepedia's <span class="flag">Standings</span> table for the active split, a Laplace-smoothed split win-rate rating anchored to the competition prior is used (<span class="flag">MODEL_STANDINGS</span>, capped at Low confidence).</li>
       <li><b>Head-to-head</b>: a smoothed H2H term contributes at most 15% and only with at least three meetings.</li>
-      <li><b>One missing side</b>: the competition median rating (or tier prior) is substituted and the shrink is halved; the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
+      <li><b>One missing side</b>: first the official league table is used (see step 4); only when that side has no standings record either is the competition median/tier prior substituted, and the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
       <li><b>No history at all</b>: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
     </ul>
   </section>
 
   <section class="card">
-    <h3>4. Out-of-sample validation</h3>
+    <h3>4. Official standings line (low-tier leagues no book prices)</h3>
+    <p class="small">Bookmakers do not price national leagues, second/third divisions or amateur cups. Leaguepedia publishes
+    the official win-loss table for many of them, including teams that were renamed or are new to our results history.
+    When a fixture has no external line and at least one side cannot be rated from results, we use those records.</p>
+    <ul class="clean small">
+      <li><b>Source</b>: the <a href="https://lol.fandom.com/wiki/Special:CargoTables/Standings" target="_blank" rel="noopener">Leaguepedia Standings</a> table, read through the wiki's own Cargo export. Only rows that actually list the team are used — no value is inferred.</li>
+      <li><b>Page matching</b>: the standings page is selected from (a) pages already attached to that tournament by the MatchSchedule join and (b) a token match on the tournament name, and it is kept only when both teams of the fixture are listed on it. If two teams appear on different pages, no standings line is produced.</li>
+      <li><b>Conversion</b>: smoothed win rate (series first, then games), mapped to an Elo-equivalent offset against the competition base and shrunk by sample size (n/(n+8)). A 2-0 record cannot become a large favourite.</li>
+      <li><b>Division ambiguity</b>: a page that contains more than one first place combines divisions. Those rows are shrunk halfway to 50%, capped at low confidence and flagged <span class="flag">MULTI_DIVISION_STANDINGS</span>.</li>
+      <li><b>Labels</b>: <span class="flag">MODEL_STANDINGS</span> (line rests on the standings record) and <span class="flag">STANDINGS_LINE_USED</span>. Every such row links the exact standings page.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h3>5. Out-of-sample validation</h3>
     <p class="small">To show how the model actually performs, ratings are fitted on data before the last 30 days, frozen, and then scored on the
     matches played in those 30 days (only matches where both teams already had a rating). Log-loss and Brier score are compared with a coin-flip
     baseline; accuracy is the share of matches where the higher-probability side won.</p>
@@ -92,7 +106,7 @@
   </section>
 
   <section class="card">
-    <h3>5. What we refuse to do</h3>
+    <h3>6. What we refuse to do</h3>
     <ul class="clean small">
       <li><b>Hotspawn's crowd percentage is never an input.</b> It is crowd behaviour, not a probability, and is displayed only as context.</li>
       <li><b>No inferred values.</b> If a price, result or time cannot be read from a linked source, it stays blank or the row is flagged — never filled from memory or pattern-matching.</li>

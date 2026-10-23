@@ -45,7 +45,8 @@
       This site mirrors the League of Legends fixtures on
       <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
       and prices <b>every</b> one of them: matches covered by established bookmakers use the external market
-      consensus, everything else is priced by our own Elo model built from recorded match results.
+      consensus; low-tier and amateur matches, which no book prices, are priced by our own model from
+      recorded results and the official Leaguepedia split standings.
       Hotspawn's crowd percentages are shown as context only and are <b>never</b> an input to a probability.
     </p>
     <div class="warnbox" role="note">
@@ -53,8 +54,44 @@
     </div>
     <div class="hero-actions">
       <a class="btn primary" href="picks.html">See all picks →</a>
+      <a class="btn" href="#next24">Picks for the next 24 h ↓</a>
       <a class="btn warn" href="unresolved.html">Picks without a book line &amp; limitations →</a>
       <a class="btn" href="flagged.html">Flagged for review →</a>
+    </div>
+    <p class="small">
+      <b>On a phone?</b> Use the bar at the bottom of the screen: <b>Picks</b> opens the full table,
+      the other tabs open the unresolved list, the flagged items and the method.
+    </p>
+  </section>
+
+  <section class="card" id="where-picks">
+    <h3>Where to find the picks</h3>
+    <div class="linkgrid">
+      <a class="linkcard" href="picks.html">
+        <span class="ico" aria-hidden="true">📋</span>
+        <span><b>Full picks list — every match, one row each</b><span>Start time, both teams' win probability, the pick, the method and source links. Search, sort and filter.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="picks.html?filter=next24">
+        <span class="ico" aria-hidden="true">⏱️</span>
+        <span><b>Picks for the next 24 hours</b><span>The same table, filtered to the matches that lock soonest.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="unresolved.html">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span><b>Unresolved / low-confidence picks</b><span>Which fixtures have no verified signal or only a weak one, league by league, with the written limitations.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="flagged.html">
+        <span class="ico" aria-hidden="true">🚩</span>
+        <span><b>Flagged for review</b><span>Every irregularity with a source link, plus the measured result of probing 31 other betting sources.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="methodology.html">
+        <span class="ico" aria-hidden="true">📐</span>
+        <span><b>Methodology, sources and verification</b><span>How each line is produced, which sources are used, which were checked and could not be used.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
@@ -74,28 +111,7 @@
     <h3>How complete is coverage?</h3>
     <div class="bar" id="coverage-bar" aria-hidden="true"></div>
     <p id="coverage-text" class="small">Loading coverage…</p>
-    <div class="linkgrid">
-      <a class="linkcard" href="picks.html">
-        <span class="ico" aria-hidden="true">📋</span>
-        <span><b>All picks, filters and per-team probabilities</b><span>Search, filter by market/model/low-confidence, sort by start time or confidence.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="linkcard" href="unresolved.html">
-        <span class="ico" aria-hidden="true">⚠️</span>
-        <span><b>Unresolved picks and the written limitations</b><span>Which fixtures have no verified signal, and exactly why.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="linkcard" href="flagged.html">
-        <span class="ico" aria-hidden="true">🚩</span>
-        <span><b>Flagged for review</b><span>Thin history, name/tier/time irregularities and model–market disagreements with source links.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="linkcard" href="methodology.html">
-        <span class="ico" aria-hidden="true">📐</span>
-        <span><b>Methodology, sources and verification</b><span>How lines are de-vigged, how the Elo model works, what was checked and what is unavailable.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
+    <p class="small"><a href="#where-picks">Where to find each list on this site →</a></p>
   </section>
 
   <section>

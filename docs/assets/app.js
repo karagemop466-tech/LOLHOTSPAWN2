@@ -87,6 +87,7 @@
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
       <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
       <div class="pickline"><span class="pick">✅ ${esc(m.pick)} <span class="p">${pct1(m.pick_prob)}</span></span><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
+      ${m.why ? `<div class="why">${esc(m.why)}</div>` : ""}
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
     </article>`;
@@ -150,7 +151,7 @@
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
     const byId = new Map((d.matches || []).map((m) => [m.id, m]));
-    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 6);
+    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 10);
     const nextBox = $("#next24");
     if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 2 })).join("") : `<div class="card">No matches in the next 24 hours.</div>`;
 
@@ -276,6 +277,29 @@
     if (lbox) lbox.innerHTML = lim;
     const stat = $("#unresolved-counts");
     if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved · <b>${low.length}</b> low-confidence · <b>${(d.counts?.market ?? 0)}</b> with external market lines`;
+
+    // per-league breakdown so a phone user can jump straight to the rows that need review
+    const byLeague = new Map();
+    [...un, ...low].forEach((m) => {
+      const key = m.tournament || "Tournament TBC";
+      const rec = byLeague.get(key) || { total: 0, unresolved: 0, low: 0 };
+      rec.total += 1;
+      if (m.method === "UNRESOLVED") rec.unresolved += 1; else rec.low += 1;
+      byLeague.set(key, rec);
+    });
+    const leagueBox = $("#unresolved-by-league");
+    if (leagueBox) {
+      const sorted = [...byLeague.entries()].sort((a, b) => b[1].total - a[1].total);
+      leagueBox.innerHTML = sorted.length ? `<div class="table-wrap"><table>
+        <thead><tr><th scope="col">League / tournament</th><th scope="col">Needs review</th><th scope="col">50/50</th><th scope="col">Low conf.</th><th scope="col"></th></tr></thead>
+        <tbody>${sorted.map(([name, r]) => `<tr>
+          <td data-label="League" class="teams-cell">${esc(name)}</td>
+          <td data-label="Needs review"><b>${r.total}</b></td>
+          <td data-label="50/50">${r.unresolved}</td>
+          <td data-label="Low confidence">${r.low}</td>
+          <td data-label="Open"><a href="picks.html?tournament=${encodeURIComponent(name)}">view picks →</a></td>
+        </tr>`).join("")}</tbody></table></div>` : `<p class="small">Nothing to review right now.</p>`;
+    }
   }
 
   function flagLabel(f) {
@@ -291,6 +315,8 @@
       TIER_UNVERIFIED: "Hotspawn tier unverified",
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
+      MULTI_DIVISION_STANDINGS: "Standings page mixes divisions (edge halved, low confidence)",
+      STANDINGS_LINE_USED: "Line built from the official league win-loss table",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
       HOTSPAWN_NAME_COLLISION: "Hotspawn team-tag collision mapped to verified split participant",
       LEAGUEPEDIA_TIME_TBD: "Leaguepedia lists pairing without a confirmed UTC timestamp",
@@ -320,6 +346,16 @@
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b>${s.url ? `<span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span>` : ""}</td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
     if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+
+    const probe = d.market_probe;
+    const pbody = $("#market-probe");
+    if (pbody) {
+      pbody.innerHTML = probe && (probe.results || []).length
+        ? probe.results.map((r) => `<tr><td><b>${esc(r.name)}</b><span class="sub"><a href="${esc(r.url)}" target="_blank" rel="noopener">link ↗</a></span></td><td><span class="chip ${r.status === 200 ? "green" : "amber"}">${esc(String(r.status))}</span></td><td>${r.usable ? '<span class="chip green">yes</span>' : '<span class="chip red">no</span>'}</td><td class="small">${r.status === 200 ? (r.lol_content ? "reachable; no two-way LoL prices in the response" : "reachable; no LoL content") : "blocked or unreachable from the runner"}</td></tr>`).join("")
+        : `<tr><td colspan="4" class="small">No probe has run yet — the next scheduled update will record one.</td></tr>`;
+      const meta = $("#probe-meta");
+      if (meta && probe) meta.textContent = `Probe run ${whenUTC(probe.generated_at)}; ${probe.usable_count} of ${probe.results.length} endpoints returned a usable price feed.`;
+    }
   }
 
   function renderMatch(d) {
@@ -364,6 +400,17 @@
           </div>
         </div>
         <div>
+          ${m.standings ? `<div class="card"><h3>Official split standings</h3>
+            <p class="small">Records used for this line. Each team links the table it was taken from.
+            ${m.standings.multi_division ? "This table combines several divisions, so the edge is halved and the row is capped at low confidence." : ""}</p>
+            <div class="table-wrap"><table><thead><tr><th>Team</th><th>Series W-L</th><th>Game W-L</th><th>Sample</th><th>Table</th></tr></thead><tbody>
+              ${[["team1", m.team1], ["team2", m.team2]].map(([k, name]) => {
+                const x = m.standings[k];
+                if (!x) return `<tr><td><b>${esc(name)}</b></td><td>—</td><td>—</td><td>—</td><td class="small">not listed</td></tr>`;
+                return `<tr><td><b>${esc(name)}</b></td><td>${x.wins ?? "—"}-${x.losses ?? "—"}</td><td>${x.win_games ?? "—"}-${x.loss_games ?? "—"}</td><td>${esc(x.kind)} ${x.sample ?? 0}</td><td class="small">${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">standings ↗</a>` : "—"}</td></tr>`;
+              }).join("")}
+            </tbody></table></div></div>` : ""}
+          <div class="card"><h3>Why this line</h3><p class="small">${esc(m.why || m.evidence || "")}</p></div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
           <div class="card"><h3>Sources & verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
           <p class="tiny">Crowd context (not used in the probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
@@ -416,6 +463,11 @@
     $$("[data-filter]").forEach((b) => b.addEventListener("click", () => { state.filter = b.dataset.filter; renderPicks(DATA); }));
     const params = new URLSearchParams(location.search);
     if (params.get("filter")) state.filter = params.get("filter");
+    if (params.get("tournament")) state.tournament = params.get("tournament");
+    if (params.get("q")) {
+      state.q = params.get("q").trim().toLowerCase();
+      if (q) q.value = params.get("q");
+    }
   }
 
   async function main() {

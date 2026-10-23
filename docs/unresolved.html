@@ -74,6 +74,13 @@
   </section>
 
   <section class="card">
+    <h3>Which leagues need review, and how many rows</h3>
+    <p class="small">Every competition with at least one unresolved or low-confidence row. Tap through to that
+    league's rows in the full table.</p>
+    <div id="unresolved-by-league"><div class="loading"><span class="spinner"></span>Loading…</div></div>
+  </section>
+
+  <section class="card">
     <h3>Written limitations</h3>
     <ol class="small" id="limitations"><li>Loading…</li></ol>
     <p class="small">Also see <a href="methodology.html">Methodology &amp; sources</a> for exactly how probabilities are produced and
@@ -84,6 +91,7 @@
     <h3>What we do instead of guessing</h3>
     <ul class="clean small">
       <li><b>No line, no problem — as long as there is history.</b> Our Elo model uses recorded results and is anchored to the strength tier of the competition each team plays in.</li>
+      <li><b>No book line — but an official league table?</b> We convert each team's official win-loss record into a rating, shrink it for small samples, and compare the two sides. Those rows are labelled <span class="flag">MODEL_STANDINGS</span> / <span class="flag">STANDINGS_LINE_USED</span> and link the exact Leaguepedia standings page.</li>
       <li><b>One side unknown?</b> We use the competition's median rating (or its tier prior) for the missing side and mark the row <span class="flag">MODEL_LEAGUE_PRIOR</span> / <span class="flag">ONE_TEAM_NO_HISTORY</span>.</li>
       <li><b>Both sides unknown?</b> The row stays unresolved (50/50 placeholder) and appears above — it is never dressed up as a model output.</li>
       <li><b>Verification.</b> Every row links its Hotspawn fixture and either the bookmaker/market page or the Leaguepedia tournament page used. No value is inferred without a link.</li>
