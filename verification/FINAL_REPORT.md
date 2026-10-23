@@ -161,3 +161,59 @@ CI runs the same suite in `.github/workflows/verify.yml` (on push to `main`, eve
 ## 8. Deployment record
 
 _Filled in after merging the verification PR._
+
+---
+
+# Session `arena/b132c242-lolhotspawn2` — standings line, tier-prior fix, mobile findability (2026-10-23)
+
+## 9. What this session changed
+
+| Area | Change | Files |
+|---|---|---|
+| Data | Official Leaguepedia **Standings** are fetched for every league in the fixture list; a page is accepted only when it contains the fixture pair. Pages, teams and every row are committed at `data/diag/standings.json` for review | `scripts/fetch_leaguepedia.py` |
+| Model | New `MODEL_STANDINGS` line: smoothed win–loss record → Elo-equivalent rating, shrunk by sample size, capped at 50% for multi-division tables. Thin Elo (under 8 series) is blended 50/50 with it (`STANDINGS_BLENDED`) | `scripts/model.py` |
+| Model | The unrated side is no longer priced off one pooled global median: competition median → competition tier → **tournament tier** → other team's competition → global median (last resort) | `scripts/model.py` |
+| Model | Conservative name variants (`Locked In (Dutch Team)`, `ex-`, `e.V.`) are recognised; ambiguous variants are refused | `scripts/model.py` |
+| Evidence | Every row carries `why` (plain-English reason for its probability), a `standings` block with both records and a `source_url` pointing at the exact league page | `scripts/model.py`, `scripts/update_picks.py` |
+| Site | Executive summary has a "Where to find the picks" block with in-site links (full list, next 24 h, unresolved, flagged, method); next-24 h cards increased to 10 with a link to the filtered table; unresolved page lists every affected league with counts and links; match page shows the standings table, the "why" and the flags | `docs/index.html`, `docs/picks.html`, `docs/unresolved.html`, `docs/flagged.html`, `docs/match.html`, `docs/assets/app.js`, `docs/assets/style.css` |
+| Evidence | 31 betting endpoints are probed each run and published with their measured HTTP status (`data/diag/market_probe.json`); **0** are usable | `scripts/probe_markets.py`, `docs/flagged.html` |
+| Verification | `D20` (standings rows must link the exact league table), `S7b` (exec summary must link picks + next-24 h + unresolved), 2 new self-tests, offline model regression test | `scripts/verify_site.py`, `verification/test_verifier.py`, `verification/test_model_standings.py` |
+| CI | `set -o pipefail` so a failed pipeline fails the run instead of silently publishing nothing; probe step added to both workflows | `.github/workflows/*.yml` |
+
+## 10. Coverage after the change (live payload, 2026-10-23 16:14 UTC, 184 fixtures)
+
+| Method | Rows |
+|---|---|
+| `MARKET_CONSENSUS` | 8 |
+| `MARKET_SINGLE` | 1 |
+| `MODEL_ELO` | 81 |
+| `MODEL_ELO_THIN` | 73 |
+| `MODEL_STANDINGS` | 9 |
+| `MODEL_LEAGUE_PRIOR` | 12 |
+| `UNRESOLVED` | 0 |
+
+- 70 rows have their thin Elo blended with the official table (`STANDINGS_BLENDED`).
+- 9 rows are new picks that would previously have been a league prior or a coin flip.
+- Out-of-sample backtest in the same run: 653 matches, log-loss **0.6236** (baseline 0.6931), Brier **0.2169**
+  (baseline 0.25), accuracy **65.2 %**.
+
+## 11. Verification performed
+
+| Check | Result |
+|---|---|
+| `scripts/verify_site.py --leaguepedia-schedule data/diag` | **33 PASS · 0 FAIL · 1 WARN** (D18 start-time deltas, pre-existing and flagged) |
+| `verification/test_verifier.py` | **29/29** |
+| `verification/test_model_standings.py` | **PASS** (12 assertions: standings line, tier prior, 50/50 fallback, Elo path) |
+| `verification/check_dom_contract.py` | PASS |
+| jsdom render of all six pages with the live payload | picks 184 rows · next-24 h 10 cards · unresolved 97 low-confidence cards + 8 league rows · flagged 31 probe rows · match page renders standings/why · **0 JS errors** |
+| CI pipeline on the branch | run **39984552233** success |
+| Market probe | 31 endpoints, **0** usable price feeds (see `data/diag/market_probe.json`) |
+
+## 12. Remaining limitations (published on the site)
+
+- No reachable bookmaker prices the national/amateur leagues; the only priced source is the World Championship.
+- Leaguepedia standings do not expose a division column, so multi-division pages are shrunk and capped at Low.
+- 12 fixtures still have one side with neither history nor a standings row; the substituted tier prior is named on
+  the row.
+- Abbreviated team names (`PvB` for `Phong Vũ Buffalo`) are not guessed.
+- Hotspawn occasionally answers 403 to the runner; the run then fails loudly and the previous payload stays live.
