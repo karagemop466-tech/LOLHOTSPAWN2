@@ -1,19 +1,22 @@
 name: Pipeline test (branch verification)
 
 on:
-  workflow_dispatch:
   push:
-    branches: ["arena/**"]
+    branches-ignore: [main]
     paths:
       - "scripts/**"
-      - "docs/**"
+      - "data/aliases.json"
+      - "docs/*.html"
+      - "docs/assets/**"
+      - "verification/**"
       - ".github/workflows/pipeline-test.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: pipeline-test-${{ github.ref_name }}
+  group: pipeline-test-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -29,8 +32,6 @@ jobs:
           python-version: "3.12"
 
       - name: Run the live pipeline
-        env:
-          PYTHONUNBUFFERED: "1"
         run: |
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
@@ -38,21 +39,29 @@ jobs:
       - name: Summarise the run
         if: always()
         run: |
-          python3 - <<'PY'
-          import json, os
-          p = "docs/data/picks.json"
-          if not os.path.exists(p):
-              print("no payload produced"); raise SystemExit(0)
-          d = json.load(open(p))
-          print(json.dumps(d.get("counts"), indent=1))
-          print(json.dumps(d.get("coverage"), indent=1))
-          print(json.dumps(d.get("unresolved"), indent=1)[:1200])
-          print(json.dumps(d.get("sources_status"), indent=1)[:1600])
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          p = Path("docs/data/picks.json")
+          if not p.exists():
+              print("**picks.json was not written.**"); raise SystemExit(0)
+          d = json.loads(p.read_text())
+          print("## Live pipeline run on `" + d["generated_at"] + "`\n")
+          print("Counts:", json.dumps(d["counts"], indent=2))
+          print("\nCoverage:", json.dumps(d["coverage"], indent=2))
+          print("\nModel:", json.dumps(d["model"], indent=2))
+          print("\nSources:", json.dumps(d["sources_status"], indent=2))
           PY
 
-      - name: Verify the published site
+      - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
-        run: python3 scripts/verify_site.py
+        run: |
+          python3 verification/check_dom_contract.py
+          python3 verification/test_verifier.py
+          python3 verification/test_standings_model.py
+          python3 verification/test_entity_and_books.py
+          python3 audit/test_model.py
+          python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
 
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()
@@ -81,9 +90,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          # verify_site.py updates report.json and last_report.md; stage them
-          # with the payload so a rebase never encounters leftover worktree edits.
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/verify.json data/diag/source_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?
@@ -107,9 +114,6 @@ jobs:
               rc=$?
               fail_publish "git fetch failed on attempt ${attempt} (${rc}): ${out}"
             fi
-            # During rebase, the generated-output commit is "theirs", so keep
-            # its fresh payload on conflicts. If rebase cannot complete, merge
-            # the remote branch and prefer this workflow's generated artifacts.
             if out=$(git rebase -X theirs "origin/${GITHUB_REF_NAME}" 2>&1); then
               echo "$out"
             else

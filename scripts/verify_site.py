@@ -66,14 +66,16 @@ UA = ("Mozilla/5.0 (compatible; LOLHOTSPAWN2-verify/1.0; "
 # list only; it is explicitly rejected as a probability source (requirement).
 FIXTURE_HOSTS = ("hotspawn.com",)
 MARKET_HOSTS = ("polymarket.com", "oddspapi.io", "pinnacle.com", "pinnacleapi",
+                "bovada.lv", "kambicdn.com",
                 "bet365.com", "draftkings.com", "fanduel.com", "betmgm.com",
                 "williamhill.com", "betway.com", "1xbet.com", "gg.bet", "betboom.ru",
                 "midnite.com", "rivalry.com", "unibet.com", "betfair.com",
                 "smarkets.com", "kalshi.com", "betano.com", "betsson.com")
 RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
-                 "gamesofdesktop", "oracleselixir.com")
-ALL_HOSTS = FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + ("github.com",)
+                 "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
+                 "rivalsleague.gg", "komplettligaen.no")
+ALL_HOSTS = FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + ("github.com", "creativecommons.org")
 
 PASS, FAIL, WARN, SKIP = "PASS", "FAIL", "WARN", "SKIP"
 
@@ -446,11 +448,17 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             continue
         keys = [str(s.get("source_key") or s.get("source") or "").strip().lower()
                 for s in srcs if isinstance(s, dict)]
+        prop_leak = [s.get("market") or s.get("raw_title") or s.get("note") for s in srcs
+                     if isinstance(s, dict) and re.search(
+                         r"\b(first\s+(?:blood|tower|dragon|baron|inhibitor)|total\s+(?:kills|towers|dragons|barons)|handicap)\b",
+                         f"{s.get('market') or ''} {s.get('raw_title') or ''} {s.get('note') or ''}", re.I)]
         if len(keys) != len(set(keys)):
             dup_market_sources.append(f"{r.get('team1')} vs {r.get('team2')}: providers={keys}")
         elif mk.get("source_count") is not None and int(mk.get("source_count")) != len(keys):
             dup_market_sources.append(
                 f"{r.get('team1')} vs {r.get('team2')}: source_count={mk.get('source_count')} != {len(keys)}")
+        elif prop_leak:
+            dup_market_sources.append(f"{r.get('team1')} vs {r.get('team2')}: prop market leaked={prop_leak[0]!r}")
     emit("D20", "each external market provider counted at most once per fixture",
          dup_market_sources, "every market row has unique provider keys and matching source_count")
 
@@ -650,7 +658,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                                     ((payload.get("unresolved") or {}).get("limitations") or []))
     js_path = os.path.join(DOCS, "assets", "app.js")
     js_text = open(js_path, encoding="utf-8").read() if os.path.exists(js_path) else ""
-    required = ["index.html", "picks.html", "unresolved.html", "flagged.html",
+    required = ["index.html", "leagues.html", "picks.html", "unresolved.html", "flagged.html",
                 "methodology.html", "match.html", "assets/style.css", "assets/app.js",
                 "data/picks.json"]
     missing = [f for f in required if not os.path.exists(os.path.join(DOCS, f))]
@@ -730,7 +738,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             nav_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
     rep.add("S10", "phone bottom nav has one grid column per link on every page",
             PASS if not nav_bad else FAIL,
-            "; ".join(nav_bad[:5]) if nav_bad else "5 links, 5 columns on every page")
+            "; ".join(nav_bad[:5]) if nav_bad else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
 
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,

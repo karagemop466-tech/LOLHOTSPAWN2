@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-23T16:36:18.588289+00:00_
-172 matches · MODEL_ELO_THIN: 75 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · MODEL_ELO: 88 · UNRESOLVED: 0 · MARKET_CONSENSUS: 8 · MARKET_POLYMARKET: 0
+_2026-10-23T16:42:46.804942+00:00_
+172 matches · MODEL_ELO: 88 · MODEL_STANDINGS: 0 · UNRESOLVED: 0 · MARKET_CONSENSUS: 8 · MARKET_POLYMARKET: 0 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO_THIN: 75 · MARKET_BOOKS: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 172 matches, generated_at=2026-10-23T16:36:18.300881Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 172 matches, generated_at=2026-10-23T16:36:27.850552Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 172 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -27,8 +27,8 @@ _2026-10-23T16:36:18.588289+00:00_
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 74 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
 | D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
-| S1 all required site files exist | PASS | 9 files present |
-| S10 phone bottom nav has one grid column per link on every page | PASS | 5 links, 5 columns on every page |
+| S1 all required site files exist | PASS | 10 files present |
+| S10 phone bottom nav has one grid column per link on every page | PASS | 6 links, 6 columns on every page |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
 | S3 every page links the shared picks navigation | PASS | navigation present |
 | S4 executive summary links in-site to picks + unresolved and states limitations | PASS | exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True} |
@@ -37,7 +37,7 @@ _2026-10-23T16:36:18.588289+00:00_
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 3 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 10 external link(s) collected for manual review; 0 plain-http |
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |

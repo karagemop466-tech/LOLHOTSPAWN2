@@ -602,7 +602,7 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 
 ---
 
-## Session `arena/bdecdf49-lolhotspawn2` — 2026-10-23 (current)
+## Session `arena/bdecdf49-lolhotspawn2` — 2026-10-23 (PR #21)
 
 | Task | Status | Owner | Files (exclusive scope) |
 |---|---|---|---|
@@ -624,7 +624,6 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 ### Cross-session findings (resolved)
 
 - Q7–Q10 were addressed by `arena/bd37dbe6` (T13–T15), merged in PR **#12** at `c4619a7`. Their detailed source checks, coverage/mobile fixes, and remaining caveats are recorded in that session's results section above. This session did not edit their claimed files.
-
 
 ### Consolidation note (arena/e76bc0ae, 16:30 UTC)
 
@@ -689,3 +688,18 @@ attempt, so the 6-hour refresh no longer depends on a rebase surviving a concurr
 `docs/methodology.html` now carries a **Manual verification log** with five checks (Polymarket price vs published
 consensus, full fixture coverage, per-book de-duplication, fixture/start-time match, 36-check payload pass), each with
 the exact source link so a human can repeat it.
+
+---
+
+## Session `arena/1b6841c2-lolhotspawn2` — 2026-10-23 (mobile UX, `leagues.html`, every-row source links, Liquipedia API probe & full audit)
+
+> Branch note: Session branch fixed to `arena/1b6841c2-lolhotspawn2`. Integrated cleanly with `origin/main` through PRs #16–#19 and #21–#25 (`859d137`), preserving **100%** of all prior sessions' backend, audit, workflow, UI, and documentation work.
+
+### Scope completed (`arena/1b6841c2-lolhotspawn2`)
+
+| Task | Status | Owner | Summary & Files |
+|---|---|---|---|
+| C1/C2 Helper modules, Liquipedia `api.php` probe & `league_breakdown` | done | `arena/1b6841c2` | Added `scripts/standings_and_books.py` (compliant Liquipedia MediaWiki `api.php` probe with gzip & ≥2.2s spacing + standings/Pinnacle helpers), `scripts/entity_resolution.py` (contextual disambiguation & schedule bridging), and `build_league_breakdown()` + `Leaguepedia Standings` / `Liquipedia` `sources_status` in `scripts/update_picks.py` alongside `unresolved.by_league`. |
+| C3 Full line-by-line audit of all live fixtures | done | `arena/1b6841c2` | Published `research/line-by-line-audit-2026-10-23.md` auditing all **172 scheduled upcoming fixtures + excluded cancelled rows** line by line with source links on every row, and updated `research/betting-sources.md` + `README.md`. |
+| C4 Mobile UX, `docs/leagues.html` & every-row source links | done | `arena/1b6841c2` | Added `docs/leagues.html` (`By league` dedicated subpage); unified `docs/index.html` with `#quick-picks-body`, `#summary-leagues-body`, `#starting-soon` / `#soon-count`, `#featured-heading`, and `#unresolved-heading`; added `#league-limitations-body` on `docs/unresolved.html`; added `Sources` column on `#flagged-body`, entity-bridge audit table (`#bridges-body`), and missing `HOTSPAWN_NAME_COLLISION` / `LEAGUEPEDIA_TIME_TBD` definitions on `docs/flagged.html` + `docs/assets/app.js`; preserved `Manual verification log` + CC BY-SA 3.0 attributions on `docs/methodology.html`; synced 6-column `.bottom-nav` across all 7 HTML pages. |
+| C5 Verifier fixes, unit tests & live CI pipeline runs | done | `arena/1b6841c2` | Added `bovada.lv` / `kambicdn.com` to `MARKET_HOSTS` in `scripts/verify_site.py`, prop-board leak check in `D20`, `leagues.html` in `S1`, and `verification/test_entity_and_books.py` (`10/10`) alongside `test_standings_model.py` (`10/10`), `audit/test_model.py` (`20/20`), `test_verifier.py` (`35/35`), and `check_dom_contract.py` (`PASS`). Live branch pipeline runs `39985495515` (`6ba9bbd`) and `39987450421` (`3977141`) passed 100% end-to-end. |

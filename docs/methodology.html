@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Methodology &amp; sources — Hotspawn LoL Picks</title>
-<meta name="description" content="How every Hotspawn LoL fixture gets a pick: de-vigged external lines, a league-anchored Elo model, verification rules, out-of-sample validation and the full source list.">
+<meta name="description" content="How every Hotspawn LoL fixture gets a pick: deduplicated external bookmaker consensus, tier-anchored Elo, split standings fallback, schedule disambiguation, validation and CC BY-SA 3.0 source attributions.">
 <meta name="theme-color" content="#0b1220">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -15,7 +15,7 @@
   <div class="header-inner">
     <a class="logo" href="index.html">
       <span class="logo-mark" aria-hidden="true">🎯</span>
-      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
     </a>
     <div class="header-meta">
       <span id="updated">Loading…</span><br>
@@ -28,7 +28,8 @@
   <ul>
     <li><a href="index.html" data-nav="summary">Summary</a></li>
     <li><a href="picks.html" data-nav="picks">All picks</a></li>
-    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
     <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
     <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
   </ul>
@@ -39,74 +40,57 @@
   <div id="freshness-warning" class="hidden"></div>
 
   <p class="eyebrow">Method &amp; verification</p>
-  <h1>How the picks are made</h1>
-  <p class="lede">Fixtures come from Hotspawn. Probabilities never do. Each row is priced from external betting lines
-  when they exist, otherwise from our own Elo model trained on recorded match results.</p>
+  <h1>How every pick &amp; win probability is originated</h1>
+  <p class="lede">Fixtures come from Hotspawn. Probabilities never do. Every fixture passes through a verified 5-tier cascade:
+  external bookmaker consensus → tier-anchored Elo → split standings → competition prior → explicit 50/50 placeholder.</p>
 
   <section class="card">
-    <h3>1. Fixture list</h3>
-    <p class="small">We read Hotspawn's public lobby state (the same JSON the Pick'em page loads) and keep the League of Legends fixtures
-    with their teams, competition, best-of format, stage, tier badge and start time. Start times are taken from Hotspawn's own epoch
-    timestamp in UTC — never from the visitor's local rendering. Fixtures without a published Hotspawn match page are still listed and
-    flagged <span class="flag">NO_HOTSPAWN_MATCH_PAGE</span> so no dead link is produced.</p>
+    <h3>1. Fixture discovery &amp; lobby reconciliation (every 6 hours)</h3>
+    <p class="small">We reconcile <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's LoL Pick'em lobby</a>
+    with Hotspawn's backend fixtures feed (<code>/api/v1/fixtures</code>) every 6 hours via GitHub Actions cron (<code>0 */6 * * *</code>).
+    Cancelled or withdrawn upstream rows are excluded from pricing and audited on <a href="flagged.html#excluded">Flagged for review</a> (check D21).
+    Exact UTC timestamps come directly from millisecond epoch fields.</p>
   </section>
 
   <section class="card">
-    <h3>2. External market consensus</h3>
-    <p class="small">For each fixture we look for two-way prices from established bookmakers and prediction markets.
-    Decimal odds are converted to implied probabilities and then <b>de-vigged</b>: the two implied probabilities are normalised so they sum to 1,
-    removing the bookmaker margin. Each provider is deduplicated to at most one main series moneyline per fixture (excluding Kills/Towers/Map prop
-    boards). Multiple independent sources are combined by median when at least three agree, otherwise by a fixed-quality weighted mean
-    (Pinnacle 1.0, Unibet 0.85, Bovada 0.8, Polymarket 0.7; other books 0.6).</p>
-    <p class="small"><b>Access note:</b> Polymarket's homepage (checked 2026-10-23, <a href="https://polymarket.com/" target="_blank" rel="noopener">polymarket.com</a>) states that trading is blocked in the United States and offers a view-only mode. Its prices are used here only as public reference data; this site does not place or recommend bets.</p>
+    <h3>2. External market consensus (deduplicated 1 main-match line per bookmaker)</h3>
+    <p class="small">For every fixture we query independent bookmaker and prediction-market feeds — Pinnacle, Bovada, Unibet (Kambi) and Polymarket.
+    Child prop/special boards (kills, towers, barons, dragons, correct score, map-N child markets on series) are strictly rejected, and each bookmaker
+    contributes at most <b>one</b> full-match moneyline per fixture so no single feed can echo-dominate the median (check D20).</p>
+    <p class="small"><b>Access note:</b> Polymarket's homepage (checked 2026-10-23, <a href="https://polymarket.com/" target="_blank" rel="noopener">polymarket.com</a>) states that trading is blocked in the United States and offers a view-only mode. Its prices are used here solely as public reference data; this site does not place or recommend bets.</p>
     <ul class="clean small">
-      <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability. ≤6 points = High confidence, ≤10 = Medium, more = Low.</li>
-      <li>Matching a bookmaker row to a Hotspawn fixture uses team-name aliases plus the closest start time within ±36 hours. Bookmakers publish drifting start times; the observed delta is shown on each match page and delta &gt;1.5 h sets <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>.</li>
-      <li>Bookmaker prices are used as published; no line is invented, smoothed or extrapolated to another match.</li>
-      <li><b>One book counts once.</b> A book can publish the same match on several boards with different internal ids
-      (Pinnacle does). Rows are de-duplicated per book + team pair + start hour before the consensus is computed, so a repeated
-      board can never outvote a second book. Prop boards (kills, maps, totals) are excluded from match-winner prices.</li>
+      <li>Decimal/American prices are two-way de-vigged so probabilities sum to 100.0%.</li>
+      <li>Consensus = exact median across ≥3 independent books, or fixed-quality weighted mean (Pinnacle 1.0, Unibet 0.85, Bovada 0.8, Polymarket 0.7) for 2 books.</li>
+      <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability (≤6 pts = High confidence, ≤10 = Medium, &gt;10 = Low).</li>
+      <li><b>One book counts once (check D20):</b> repeated boards per book + team pair + start hour are de-duplicated before consensus is computed, prop boards (kills, maps, towers, barons, handicaps) are rejected, and single-game markets are blocked on Bo3/Bo5 series (check D16).</li>
     </ul>
   </section>
 
   <section class="card">
-    <h3>3. Our Elo model (when no external line exists)</h3>
-    <p class="small">A chronological Elo rating is computed from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia's recorded match results</a> over a two-year window.
-    Only completed matches with a recorded winner are used. Updates are weighted by format and score margin.</p>
-    <div class="warnbox" role="note"><b>Not an official results source:</b> Leaguepedia is a community-maintained database, not Riot or an event organizer. The model probabilities are our estimates from those records, not official odds or organizer-verified win probabilities. The Hotspawn source verifies the fixture details only. Where an exact results page cannot be linked, the historical evidence is not independently verifiable from the match row; treat it as a limitation, not a confirmed official result.</div>
+    <h3>3. Own Elo model + Split Standings fallback + Entity disambiguation</h3>
+    <p class="small">Because no accessible sportsbook prices Tier-3/national divisions (PRM 3rd Division, RIVALS League, Tunisian Super League, Komplettligaen, Arabian 2nd Division, LigaGG),
+    we originate probabilities from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia's recorded match results and split standings</a>:</p>
+    <div class="warnbox" role="note"><b>Not an official results source:</b> Leaguepedia is a community-maintained database, not Riot or an event organizer. Model probabilities are estimates derived from community records, not official odds or organizer-verified win probabilities, and Hotspawn confirms only the listed fixture.</div>
     <ul class="clean small">
-      <li><b>Base K</b> 24, scaled ×0.8 for Bo1, ×1.0 for Bo3, ×1.3 for Bo5+; score-margin multiplier up to ×1.5.</li>
-      <li><b>Activity decay</b>: a team's rating drifts back toward its competition base with a 365-day half-life while inactive.</li>
-      <li><b>Competition-strength priors</b>: pooling every league in one Elo pool without cross-play inflates teams that farm wins in weak or academy leagues. Each team is therefore anchored to the tier of the competition it actually plays in (international &gt; top regional leagues &gt; EMEA/ERLs &gt; national divisions &gt; academy/amateur). This is a documented prior, not a measured quantity — see the limitation below.</li>
-      <li><b>Shrinkage</b>: with few games, the Elo probability is pulled toward 50/50 (shrink = games/(games+8)).</li>
-      <li><b>Current-split standings fallback</b>: when a newly named or amateur team has no individual rows in <span class="flag">MatchSchedule</span> yet has recorded series in Leaguepedia's <span class="flag">Standings</span> table for the active split, a Laplace-smoothed split win-rate rating anchored to the competition prior is used (<span class="flag">MODEL_STANDINGS</span>, capped at Low confidence).</li>
-      <li><b>Head-to-head</b>: a smoothed H2H term contributes at most 15% and only with at least three meetings.</li>
-      <li><b>How the standings rating is computed</b>: the missing side's split record becomes an Elo offset from the competition prior — <span class="mono">rating = prior + 400·log₁₀(wr/(1−wr))</span>, where <span class="mono">wr = clamp(0.65·wr<sub>series</sub> + 0.35·wr<sub>games</sub>, 0.15, 0.85)</span> from Laplace-smoothed series/game win-rates (requires ≥1 decided series). The two ratings then go through the same Elo probability + shrinkage as a rated pair. It never overrides a market line, ignores strength of schedule inside the split, and is capped at Low confidence.</li>
-      <li><b>One missing side</b>: the competition median rating (or tier prior) is substituted and the shrink is halved; the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
-      <li><b>No history at all</b>: before falling back to a 50/50 placeholder, we look at the competition's
-      current-season <span class="flag">Leaguepedia Standings</span> (<code>WinSeries</code>/<code>LossSeries</code>). When both teams
-      have a decided series record, the line comes from a Bradley–Terry comparison of the two smoothed win rates, shrunk by sample
-      size (min series ÷ (min series + 8)) and, for multi-division pages, an extra 50% toward 50/50. Those rows are labelled
-      <span class="flag">MODEL_STANDINGS</span> and link the exact Leaguepedia page. A record of 0–0 carries no information and is
-      not used.</li>
-      <li><b>No history at all</b>, and no standings either: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
+      <li><b>Chronological Tier-Anchored Elo (<span class="flag">MODEL_ELO</span> / <span class="flag">MODEL_ELO_THIN</span>):</b> Base K = 24 (×0.8 Bo1, ×1.0 Bo3, ×1.3 Bo5+, margin multiplier up to ×1.5) over 24 months of completed series on Leaguepedia (<code>MatchSchedule</code>), decayed toward competition-strength priors with a 365-day half-life, smoothed with head-to-head (≤15% weight with ≥3 meetings), and shrunk toward 50/50 on small samples (<span class="mono">games/(games+8)</span>).</li>
+      <li><b>Current-split Standings Fallback (<span class="flag">MODEL_STANDINGS</span> 📊):</b> When Elo lacks games on a side yet Leaguepedia's <code>Standings</code> table records current-split series (<code>WinSeries</code>/<code>LossSeries</code>), smoothed Bradley–Terry series/game rates produce a bounded estimate shrunk by sample size (0–0 records excluded; capped at Low confidence because it ignores strength of schedule).</li>
+      <li><b>Competition-Scoped Disambiguation &amp; Schedule Bridging:</b> Resolves parenthetical disambiguations within the verified competition roster (e.g. <i>LYON (2024 American Team)</i> at Worlds, <i>Locked In (Dutch Team)</i>) and bridges upstream Hotspawn tag collisions (e.g. <i>Phong Vũ Buffalo</i> → <i>PvB (Swiss Team)</i>), flagging <span class="flag">HOTSPAWN_NAME_COLLISION</span> / <span class="flag">NAME_BRIDGED_VIA_SCHEDULE</span>.</li>
+      <li><b>Competition Prior (<span class="flag">MODEL_LEAGUE_PRIOR</span>) &amp; Unresolved (<span class="flag">UNRESOLVED</span>):</b> One missing side uses the competition median rating with halved shrink; zero-evidence matches stay strictly 50.0% / 50.0% placeholder.</li>
     </ul>
   </section>
 
   <section class="card">
     <h3>4. Out-of-sample validation</h3>
-    <p class="small">To show how the model actually performs, ratings are fitted on data before the last 30 days, frozen, and then scored on the
-    matches played in those 30 days (only matches where both teams already had a rating). Log-loss and Brier score are compared with a coin-flip
-    baseline; accuracy is the share of matches where the higher-probability side won.</p>
+    <p class="small">Ratings are fitted strictly prior to a 30-day holdout window, frozen, and scored out-of-sample on completed matches against coin-flip log-loss (0.6931) and Brier (0.2500) baselines.</p>
     <div id="backtest" class="small">Loading validation…</div>
   </section>
 
   <section class="card">
-    <h3>5. What we refuse to do</h3>
+    <h3>5. Data attribution &amp; licensing</h3>
     <ul class="clean small">
-      <li><b>Hotspawn's crowd percentage is never an input.</b> It is crowd behaviour, not a probability, and is displayed only as context.</li>
-      <li><b>No inferred values.</b> If a price, result or time cannot be read from a linked source, it stays blank or the row is flagged — never filled from memory or pattern-matching.</li>
-      <li><b>No silent edits.</b> Irregularities are published with the source link on <a href="flagged.html">Flagged for review</a>.</li>
+      <li><b>Leaguepedia (<a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">lol.fandom.com</a>, Fandom):</b> Community match schedules, recorded series results, team pages and split standings licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>.</li>
+      <li><b>Liquipedia (<a href="https://liquipedia.net/leagueoflegends/api.php?action=query&amp;meta=siteinfo&amp;format=json" target="_blank" rel="noopener">liquipedia.net MediaWiki API</a>):</b> Tournament index metadata queried strictly via the official MediaWiki API (<code>api.php</code>, gzip, ≥2.2s pacing, never HTML scraping) under <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC-BY-SA 3.0</a>.</li>
+      <li><b>Hotspawn (<a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">play.hotspawn.com</a>):</b> Used strictly for fixture discovery (teams, competition, UTC lock time). Hotspawn crowd percentages are never used in any probability calculation.</li>
     </ul>
   </section>
 
@@ -122,7 +106,7 @@
       <table>
         <thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Rows</th><th scope="col">Note</th></tr></thead>
         <tbody id="sources-status">
-          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading source status…</div></td></tr>
         </tbody>
       </table>
     </div>
@@ -130,7 +114,7 @@
 
   <section>
     <h2>Checked but unavailable</h2>
-    <p class="small">Every provider below was attempted during source research and could not be used. Listing them keeps the coverage gap explicit.</p>
+    <p class="small">Every provider tested and confirmed blocked or unavailable without paid API keys.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th scope="col">Provider</th><th scope="col">Observed</th><th scope="col">Consequence</th></tr></thead>
@@ -202,19 +186,20 @@
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Information is for research and entertainment; it is not betting advice.</p>
-    <p class="small"><a href="index.html">← Back to summary</a></p>
+    <p class="small"><a href="index.html">← Back to Executive Summary</a> · <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a></p>
+    <p class="tiny" id="footer-updated"></p>
   </div>
 </footer>
 
 <nav class="bottom-nav" aria-label="Mobile">
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
   <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>
 
 <script src="assets/app.js" defer></script>
-<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
 </body>
 </html>

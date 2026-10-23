@@ -138,6 +138,17 @@ def main() -> int:
         ],
     }
     results.append(assert_status(run([r]), "D20", vs.FAIL, "duplicate bookmaker in market.sources"))
+    # prop market board leaked into market.sources must fail D20
+    r = copy.deepcopy(BASE_ROW)
+    r["method"] = "MARKET_SINGLE"
+    r["market"] = {
+        "source_count": 1,
+        "sources": [
+            {"source": "Pinnacle", "source_key": "pinnacle", "prob_team1": 0.782,
+             "market": "First Baron", "url": "https://www.pinnacle.com/en/esports/league-of-legends"},
+        ],
+    }
+    results.append(assert_status(run([r]), "D20", vs.FAIL, "prop market leaked into market.sources"))
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],
