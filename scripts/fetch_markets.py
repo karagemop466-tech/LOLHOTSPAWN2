@@ -3,34 +3,40 @@
 
 Sources, in priority order:
   1. Pinnacle        - established sharp sportsbook, public guest JSON feed.
-  2. Bovada          - established North-American sportsbook, public coupon JSON.
-  3. Polymarket      - prediction market, public Gamma API.
+  2. Unibet (Kambi)  - established European/Australian sportsbook network, public Kambi JSON feed.
+  3. Bovada          - established North-American sportsbook, public coupon JSON.
+  4. Polymarket      - prediction market, public Gamma API.
 
-Every price is de-vigged (two-way normalisation) before it is stored. No price
-from Hotspawn is used anywhere in this file.
+Every price is de-vigged (two-way normalisation) before it is stored, and every
+provider is deduplicated to at most one main match-winner market per fixture so
+child prop boards can never inflate consensus counts. No price from Hotspawn is
+used anywhere in this file.
 """
 from __future__ import annotations
 
 import json
 import re
 import time
-import urllib.parse
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-from lib_common import (clamp, decimal_from_american, devig_two, fetch, get_json, log, norm,
-                        now_utc, source, utc_iso, write_json)
+from lib_common import (clamp, decimal_from_american, devig_two, get_json, log,
+                        norm, now_utc, utc_iso, write_json)
 
 OUT = "data/cache/markets.json"
-# Pinnacle publishes the same physical match on several league boards (the main
-# league plus stage/specials boards), each with its own matchup id and an
-# identical price. Counting them as independent sources overstates consensus
-# confidence, so records are de-duplicated per book + team pair + start hour.
-DEDUPE_WINDOW_MINUTES = 60
-PROP_NAME = re.compile(r"\((?:kills|maps?|dragons?|barons?|turrets?|handicap|total|"
-                       r"first\s+blood|first\s+dragon|first\s+baron)\)", re.I)
 PIN_KEY = {"x-api-key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R", "Accept": "application/json"}
 PIN_BASE = "https://guest.api.arcadia.pinnacle.com/0.1"
 PIN_PAGE = "https://www.pinnacle.com/en/esports/league-of-legends"
+
+UNIBET_APIS = (
+    ("https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/"
+     "esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"),
+    ("https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/"
+     "esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"),
+)
+UNIBET_PAGE = "https://www.unibet.com.au/betting/sports/filter/esports/league_of_legends/all/matches"
+UNIBET_EVENT_URL = "https://www.unibet.com.au/betting/sports/event/"
+
 BOVADA_APIS = (
     ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
      "esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en"),
@@ -43,10 +49,35 @@ BOVADA_PAGE = "https://www.bovada.lv/sports/esports/league-of-legends"
 POLY_PAGE = "https://polymarket.com/event/"
 POLY_API = "https://gamma-api.polymarket.com"
 
+_LATIN_FOLD = str.maketrans({
+    "Ø": "O", "ø": "o", "Æ": "AE", "æ": "ae", "Œ": "OE", "œ": "oe",
+    "ß": "ss", "Đ": "D", "đ": "d", "Ł": "L", "ł": "l",
+})
+_PROP_CRIT_RE = re.compile(
+    # Plural forms matter: books label these boards "Kills", "Maps", "Towers".
+    # Deliberately no plural on "odd", because "Match Odds" is the main market.
+    r"\b(maps?|games?|kills?|towers?|turrets?|dragons?|barons?|inhibitors?|handicaps?|"
+    r"totals?|over|under|first|blood|scores?|odd|even|duration|nashors?)\b",
+    re.I,
+)
+
+
+def _norm_team(s: str) -> str:
+    return norm((s or "").translate(_LATIN_FOLD))
+
+
+def _dedup_key(team_a: str, team_b: str, start_utc: str) -> tuple:
+    pair = tuple(sorted((_norm_team(team_a), _norm_team(team_b))))
+    return (pair, (start_utc or "")[:10])
+
 
 def _record(source_name, source_key, competition, start, team_a, team_b, prob_a, prob_b,
             url, decimal_a=None, decimal_b=None, note="", raw=None):
     if not team_a or not team_b or start is None:
+        return None
+    if _norm_team(team_a) in ("", "tbd") or _norm_team(team_b) in ("", "tbd"):
+        return None
+    if _norm_team(team_a) == _norm_team(team_b):
         return None
     pa, pb = clamp(prob_a), clamp(prob_b)
     s = pa + pb
@@ -67,64 +98,26 @@ def _record(source_name, source_key, competition, start, team_a, team_b, prob_a,
     }
 
 
-def is_prop_name(name) -> bool:
-    """True for derivative markets such as 'Gen.G (Kills)' - never a match winner."""
-    return bool(PROP_NAME.search(str(name or "")))
+def _select_pinnacle_moneyline(markets: list[dict], matchup_id: int) -> dict | None:
+    """Select the parent full-match/series moneyline (period == 0) for matchup_id only.
 
-
-def _start_bucket(start_utc: str, minutes: int = DEDUPE_WINDOW_MINUTES) -> str:
-    """Coarse start-time bucket used only for de-duplication."""
-    try:
-        dt = datetime.fromisoformat(str(start_utc).replace("Z", "+00:00"))
-    except Exception:
-        return str(start_utc)
-    epoch = int(dt.timestamp())
-    return str(epoch - epoch % (minutes * 60))
-
-
-def dedupe_records(records: list) -> tuple[list, list]:
-    """Collapse repeated listings of one physical match from the same book.
-
-    A book can list the same fixture on several boards with different ids but an
-    identical price. Independent *sources* are books, not board rows, so only one
-    record per (book, unordered team pair, start hour) is kept. The dropped ids
-    are returned for the audit trail and stored on the kept record.
+    Never fall back to period != 0 (Map 1/2/3) or child prop matchups (Kills,
+    Towers, Dragons, Barons, Inhibitors), which share related straight markets
+    in Pinnacle's Arcadia API.
     """
-    kept, dropped = {}, []
-    for rec in records:
-        pair = tuple(sorted((norm(rec.get("team_a")), norm(rec.get("team_b")))))
-        key = (rec.get("source_key"), pair, _start_bucket(rec.get("start_utc")))
-        if key not in kept:
-            kept[key] = rec
-            rec.setdefault("raw", {})["duplicates_collapsed"] = []
+    for mk in markets or []:
+        if mk.get("matchupId") != matchup_id:
             continue
-        prev = kept[key]
-        # Keep the most specific listing deterministically: for Polymarket the
-        # deepest market (highest volume), otherwise the lowest id / first seen.
-        replace = False
-        if rec.get("source_key") == "polymarket":
-            try:
-                replace = float((rec.get("raw") or {}).get("volume") or 0) > \
-                          float((prev.get("raw") or {}).get("volume") or 0)
-            except (TypeError, ValueError):
-                replace = False
-        if replace:
-            rec.setdefault("raw", {})["duplicates_collapsed"] = \
-                list(prev.get("raw", {}).get("duplicates_collapsed") or []) + \
-                [{"id": (prev.get("raw") or {}).get("matchup_id") or (prev.get("raw") or {}).get("event_id"),
-                  "source": prev.get("source")}]
-            kept[key] = rec
-            dropped.append({"source": prev.get("source"), "teams": [prev.get("team_a"), prev.get("team_b")],
-                            "start_utc": prev.get("start_utc"),
-                            "id": (prev.get("raw") or {}).get("matchup_id") or (prev.get("raw") or {}).get("event_id")})
-        else:
-            prev.setdefault("raw", {}).setdefault("duplicates_collapsed", []).append(
-                {"id": (rec.get("raw") or {}).get("matchup_id") or (rec.get("raw") or {}).get("event_id"),
-                 "source": rec.get("source")})
-            dropped.append({"source": rec.get("source"), "teams": [rec.get("team_a"), rec.get("team_b")],
-                            "start_utc": rec.get("start_utc"),
-                            "id": (rec.get("raw") or {}).get("matchup_id") or (rec.get("raw") or {}).get("event_id")})
-    return list(kept.values()), dropped
+        if mk.get("type") != "moneyline" or mk.get("period") != 0:
+            continue
+        if mk.get("isAlternate"):
+            continue
+        if mk.get("status") not in (None, "open"):
+            continue
+        prices = {p.get("designation"): p.get("price") for p in mk.get("prices") or []}
+        if "home" in prices and "away" in prices:
+            return mk
+    return None
 
 
 def fetch_pinnacle() -> dict:
@@ -135,7 +128,9 @@ def fetch_pinnacle() -> dict:
         return {"status": status, "records": []}
     esports = [s for s in sports if s.get("id") == 12 or "esport" in str(s.get("name", "")).lower()]
     records = []
+    seen = set()
     leagues_seen = []
+    skipped_children = 0
     for sport in esports:
         leagues, _ = get_json(f"{PIN_BASE}/sports/{sport['id']}/leagues", PIN_KEY)
         if not isinstance(leagues, list):
@@ -145,47 +140,176 @@ def fetch_pinnacle() -> dict:
             if "league of legends" not in name.lower():
                 continue
             leagues_seen.append(name)
-            matchups, _ = get_json(f"{PIN_BASE}/leagues/{league['id']}/matchups", PIN_KEY)
+            lid = league.get("id")
+            matchups, _ = get_json(f"{PIN_BASE}/leagues/{lid}/matchups", PIN_KEY)
             if not isinstance(matchups, list):
                 continue
+            straight, _ = get_json(f"{PIN_BASE}/leagues/{lid}/markets/straight", PIN_KEY)
+            by_mid: dict[int, list[dict]] = defaultdict(list)
+            if isinstance(straight, list):
+                for mk in straight:
+                    if isinstance(mk, dict) and mk.get("matchupId") is not None:
+                        by_mid[mk["matchupId"]].append(mk)
+
             for m in matchups:
+                # Exclude child prop matchups (Kills/Towers/Dragons/Barons/Inhibitors),
+                # specials/outrights, and live in-play boards.
+                if m.get("type") != "matchup" or m.get("isLive"):
+                    continue
+                if m.get("parentId") is not None or str(m.get("units") or "Regular") != "Regular":
+                    skipped_children += 1
+                    continue
                 parts = m.get("participants") or []
                 if len(parts) != 2 or not m.get("hasMarkets"):
                     continue
-                # Derivative boards ("X (Kills)", "Y (Maps)") are not match winners.
-                if any(is_prop_name(x.get("name")) for x in parts):
-                    continue
+                p_home = next((p for p in parts if p.get("alignment") == "home"), parts[0])
+                p_away = next((p for p in parts if p.get("alignment") == "away"), parts[1])
                 start = m.get("startTime")
                 try:
                     start_dt = datetime.fromisoformat(str(start).replace("Z", "+00:00"))
                 except Exception:
                     continue
-                markets, _ = get_json(f"{PIN_BASE}/matchups/{m['id']}/markets/related/straight", PIN_KEY)
-                if not isinstance(markets, list):
-                    continue
-                ml = next((x for x in markets if x.get("type") == "moneyline" and x.get("period") == 0), None)
-                if ml is None:
-                    ml = next((x for x in markets if x.get("type") == "moneyline"), None)
+                mid = m.get("id")
+                cands = by_mid.get(mid) or []
+                if not cands:
+                    rel, _ = get_json(f"{PIN_BASE}/matchups/{mid}/markets/related/straight", PIN_KEY)
+                    if isinstance(rel, list):
+                        cands = rel
+                    time.sleep(0.1)
+                ml = _select_pinnacle_moneyline(cands, mid)
                 if not ml:
                     continue
                 prices = {p.get("designation"): p.get("price") for p in ml.get("prices") or []}
-                da, db = decimal_from_american(prices.get("home")), decimal_from_american(prices.get("away"))
+                da = decimal_from_american(prices.get("home"))
+                db = decimal_from_american(prices.get("away"))
                 dv = devig_two(da, db)
                 if not dv:
                     continue
-                rec = _record("Pinnacle", "pinnacle", name, start_dt,
-                              parts[0].get("name"), parts[1].get("name"), dv[0], dv[1],
-                              PIN_PAGE, da, db, note=f"Pinnacle moneyline (matchup {m.get('id')})",
-                              raw={"matchup_id": m.get("id"), "league_id": league.get("id"),
-                                   "league": name,
-                                   "american_home": prices.get("home"), "american_away": prices.get("away"),
-                                   "api": f"{PIN_BASE}/leagues/{league.get('id')}/matchups"})
+                rec = _record(
+                    "Pinnacle", "pinnacle", name, start_dt,
+                    p_home.get("name"), p_away.get("name"), dv[0], dv[1],
+                    PIN_PAGE, da, db,
+                    note=f"Pinnacle series moneyline (matchup {mid})",
+                    raw={"matchup_id": mid, "league_id": lid,
+                         "american_home": prices.get("home"), "american_away": prices.get("away"),
+                         "market_type": "series",
+                         "api": f"{PIN_BASE}/leagues/{lid}/markets/straight"},
+                )
                 if rec:
-                    records.append(rec)
-                time.sleep(0.15)
-    status.update({"status": "ok" if records else "no_data", "count": len(records),
-                   "leagues": leagues_seen,
-                   "note": "Public guest JSON feed used by pinnacle.com; re-check the official site before betting."})
+                    dk = _dedup_key(rec["team_a"], rec["team_b"], rec["start_utc"])
+                    if dk not in seen:
+                        seen.add(dk)
+                        records.append(rec)
+            time.sleep(0.15)
+    status.update({
+        "status": "ok" if records else "no_data",
+        "count": len(records),
+        "leagues": leagues_seen,
+        "skipped_child_matchups": skipped_children,
+        "note": "Public guest JSON feed (parent Regular moneylines only); re-check pinnacle.com before betting.",
+    })
+    return {"status": status, "records": records}
+
+
+def _select_unibet_offer(bet_offers: list[dict]) -> dict | None:
+    """Pick the main 2-way pre-match Match Odds offer; reject maps/handicaps/totals/props."""
+    best = None
+    best_rank = 0
+    for bo in bet_offers or []:
+        if not isinstance(bo, dict):
+            continue
+        btype = bo.get("betOfferType") or {}
+        if btype.get("id") != 2 and str(btype.get("englishName") or "").lower() != "match":
+            continue
+        crit_obj = bo.get("criterion") or {}
+        crit = str(crit_obj.get("englishLabel") or crit_obj.get("label") or "").strip()
+        if _PROP_CRIT_RE.search(crit):
+            continue
+        if crit.lower() not in ("match odds", "match", "winner", "match winner", "full time"):
+            continue
+        outs = [o for o in (bo.get("outcomes") or []) if o.get("status") in (None, "OPEN")]
+        if len(outs) != 2:
+            continue
+        tags = bo.get("tags") or []
+        if tags and "OFFERED_PREMATCH" not in tags and "MAIN" not in tags:
+            continue
+        rank = 2 if "MAIN" in tags else 1
+        if rank > best_rank:
+            best, best_rank = bo, rank
+    return best
+
+
+def fetch_unibet() -> dict:
+    status = {"source": "Unibet", "key": "unibet", "url": UNIBET_PAGE, "status": "error", "count": 0}
+    data, r, used = None, {}, None
+    for url in UNIBET_APIS:
+        data, r = get_json(url, headers={"Accept": "application/json"})
+        if isinstance(data, dict) and isinstance(data.get("events"), list):
+            used = url
+            break
+        time.sleep(0.4)
+    if not (isinstance(data, dict) and isinstance(data.get("events"), list)):
+        status["error"] = f"Kambi feed HTTP {r.get('status')} (no events list)"
+        return {"status": status, "records": []}
+    status["feed"] = used
+    records = []
+    seen = set()
+    groups = set()
+    for item in data.get("events") or []:
+        ev = (item or {}).get("event") or {}
+        if str(ev.get("state") or "NOT_STARTED") != "NOT_STARTED":
+            continue
+        ev_tags = ev.get("tags") or ["MATCH"]
+        if "MATCH" not in ev_tags:
+            continue
+        ta = str(ev.get("homeName") or "").strip()
+        tb = str(ev.get("awayName") or "").strip()
+        if not ta or not tb:
+            continue
+        try:
+            start_dt = datetime.fromisoformat(str(ev.get("start") or "").replace("Z", "+00:00"))
+        except Exception:
+            continue
+        bo = _select_unibet_offer(item.get("betOffers") or [])
+        if not bo:
+            continue
+        outs = [o for o in (bo.get("outcomes") or []) if o.get("status") in (None, "OPEN")]
+        o_home = next((o for o in outs if o.get("type") == "OT_ONE"), None)
+        o_away = next((o for o in outs if o.get("type") == "OT_TWO"), None)
+        if not o_home or not o_away:
+            continue
+        try:
+            da = float(o_home.get("odds") or 0) / 1000.0
+            db = float(o_away.get("odds") or 0) / 1000.0
+        except (TypeError, ValueError):
+            continue
+        dv = devig_two(da, db)
+        if not dv:
+            continue
+        ev_id = ev.get("id")
+        comp = str(ev.get("group") or "League of Legends")
+        groups.add(comp)
+        ev_url = f"{UNIBET_EVENT_URL}{ev_id}" if ev_id else UNIBET_PAGE
+        rec = _record(
+            "Unibet", "unibet", comp, start_dt, ta, tb, dv[0], dv[1],
+            ev_url, da, db,
+            note=f"Unibet (Kambi) Match Odds (event {ev_id})",
+            raw={"event_id": ev_id, "bet_offer_id": bo.get("id"),
+                 "american_home": o_home.get("oddsAmerican"),
+                 "american_away": o_away.get("oddsAmerican"),
+                 "market_type": "series"},
+        )
+        if rec:
+            dk = _dedup_key(rec["team_a"], rec["team_b"], rec["start_utc"])
+            if dk not in seen:
+                seen.add(dk)
+                records.append(rec)
+    status.update({
+        "status": "ok" if records else "no_data",
+        "count": len(records),
+        "competitions": sorted(groups),
+        "note": "Public Kambi pre-match Match Odds feed powering Unibet.",
+    })
     return {"status": status, "records": records}
 
 
@@ -218,14 +342,16 @@ def fetch_bovada() -> dict:
         status["error"] = f"coupon feed HTTP {r.get('status')} (no event groups)"
         return {"status": status, "records": []}
     status["feed"] = used or BOVADA_APIS[0]
-    data = groups
     records = []
+    seen = set()
     comps = []
-    for group in data:
+    for group in groups:
         path = group.get("path") or []
         comp = path[0].get("description") if path else ""
         comps.append(comp)
         for ev in group.get("events") or []:
+            if ev.get("live"):
+                continue
             comps_names = [c.get("name") for c in ev.get("competitors") or []]
             if len(comps_names) != 2:
                 continue
@@ -236,7 +362,9 @@ def fetch_bovada() -> dict:
             market = None
             for dg in ev.get("displayGroups") or []:
                 for mk in dg.get("markets") or []:
-                    if str(mk.get("description", "")).lower() == "moneyline" and len(mk.get("outcomes") or []) == 2:
+                    desc = str(mk.get("description", "")).strip().lower()
+                    prd = str((mk.get("period") or {}).get("description") or "").lower()
+                    if desc == "moneyline" and "map" not in prd and "game" not in prd and len(mk.get("outcomes") or []) == 2:
                         market = mk
                         break
                 if market:
@@ -249,14 +377,20 @@ def fetch_bovada() -> dict:
             dv = devig_two(da, db)
             if not dv:
                 continue
-            rec = _record("Bovada", "bovada", comp, start_dt, outs[0].get("description"),
-                          outs[1].get("description"), dv[0], dv[1],
-                          "https://www.bovada.lv" + (ev.get("link") or ""), da, db,
-                          note=f"Bovada moneyline (event {ev.get('id')})",
-                          raw={"event_id": ev.get("id"), "american_a": outs[0].get("price", {}).get("american"),
-                               "american_b": outs[1].get("price", {}).get("american")})
+            rec = _record(
+                "Bovada", "bovada", comp, start_dt,
+                outs[0].get("description"), outs[1].get("description"), dv[0], dv[1],
+                "https://www.bovada.lv" + (ev.get("link") or ""), da, db,
+                note=f"Bovada moneyline (event {ev.get('id')})",
+                raw={"event_id": ev.get("id"), "market_type": "series",
+                     "american_a": outs[0].get("price", {}).get("american"),
+                     "american_b": outs[1].get("price", {}).get("american")},
+            )
             if rec:
-                records.append(rec)
+                dk = _dedup_key(rec["team_a"], rec["team_b"], rec["start_utc"])
+                if dk not in seen:
+                    seen.add(dk)
+                    records.append(rec)
     status.update({"status": "ok" if records else "no_data", "count": len(records), "competitions": comps})
     return {"status": status, "records": records}
 
@@ -266,6 +400,11 @@ def _poly_teams(title: str):
     if not m:
         m = re.match(r"^\s*LoL:\s*(.+?)\s+vs\.?\s+(.+?)\s*\((?:BO\d+)\)", title or "", re.I)
     return (m.group(1).strip(), m.group(2).strip()) if m else (None, None)
+
+
+def _poly_best_of(title: str) -> int | None:
+    m = re.search(r"\(BO([1235])\)", title or "", re.I)
+    return int(m.group(1)) if m else None
 
 
 def _select_poly_market(ev: dict, a: str, b: str, title: str):
@@ -323,12 +462,21 @@ def fetch_polymarket() -> dict:
         time.sleep(0.4)
     now = now_utc()
     records = []
+    seen = set()
     for ev in events:
         title = ev.get("title") or ""
         a, b = _poly_teams(title)
         if not a or not b:
             continue
         end = None
+        for dt_key in ("startDate", "endDate"):
+            if ev.get(dt_key):
+                try:
+                    cand = datetime.fromisoformat(str(ev.get(dt_key)).replace("Z", "+00:00"))
+                    if dt_key == "endDate" or cand >= now - timedelta(days=2):
+                        end = cand
+                except Exception:
+                    pass
         try:
             end = datetime.fromisoformat(str(ev.get("endDate")).replace("Z", "+00:00"))
         except Exception:
@@ -343,14 +491,21 @@ def fetch_polymarket() -> dict:
             pa, pb = prices[0], prices[1]
         else:
             pa, pb = prices[1], prices[0]
-        rec = _record("Polymarket", "polymarket", "Polymarket: " + title, end, a, b, pa, pb,
-                      POLY_PAGE + str(ev.get("slug") or ""), note=f"Polymarket: {mk.get('question')}",
-                      raw={"event_slug": ev.get("slug"), "market": mk.get("question"),
-                           "group": mk.get("groupItemTitle"),
-                           "market_type": market_type,
-                           "volume": ev.get("volume"), "liquidity": ev.get("liquidity")})
+        bo_num = _poly_best_of(title)
+        rec = _record(
+            "Polymarket", "polymarket", "Polymarket: " + title, end, a, b, pa, pb,
+            POLY_PAGE + str(ev.get("slug") or ""),
+            note=f"Polymarket: {mk.get('question')}",
+            raw={"event_slug": ev.get("slug"), "market": mk.get("question"),
+                 "group": mk.get("groupItemTitle"),
+                 "market_type": market_type, "best_of": bo_num,
+                 "volume": ev.get("volume"), "liquidity": ev.get("liquidity")},
+        )
         if rec:
-            records.append(rec)
+            dk = _dedup_key(rec["team_a"], rec["team_b"], rec["start_utc"])
+            if dk not in seen:
+                seen.add(dk)
+                records.append(rec)
     status.update({"status": "ok" if records else "no_data", "count": len(records),
                    "events_seen": len(events)})
     return {"status": status, "records": records}
@@ -359,7 +514,7 @@ def fetch_polymarket() -> dict:
 def main() -> int:
     results = []
     statuses = []
-    for fn in (fetch_pinnacle, fetch_bovada, fetch_polymarket):
+    for fn in (fetch_pinnacle, fetch_unibet, fetch_bovada, fetch_polymarket):
         try:
             out = fn()
         except Exception as e:  # noqa: BLE001 - one broken book must not stop the run
@@ -370,20 +525,8 @@ def main() -> int:
         results += out["records"]
         log(f"markets: {out['status'].get('source')} -> {out['status'].get('status')} "
             f"({out['status'].get('count', 0)} records)")
-    raw_count = len(results)
-    results, duplicates = dedupe_records(results)
-    by_source = {}
-    for d in duplicates:
-        by_source[d["source"]] = by_source.get(d["source"], 0) + 1
-    for s in statuses:
-        s["raw_count"] = s.get("count")
-        s["duplicates_collapsed"] = by_source.get(s.get("source"), 0)
-        # count is the number of *distinct* match lines actually used
-        s["count"] = sum(1 for r in results if r.get("source") == s.get("source"))
     payload = {"generated_at": utc_iso(now_utc()), "statuses": statuses,
-               "raw_count": raw_count, "count": len(results),
-               "duplicates_collapsed": len(duplicates),
-               "duplicates": duplicates[:60], "records": results}
+               "count": len(results), "records": results}
     write_json(OUT, payload)
     return 0
 

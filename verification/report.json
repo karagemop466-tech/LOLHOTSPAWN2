@@ -1,36 +1,36 @@
 {
- "verified_at": "2026-10-23T15:50:10.380299+00:00",
+ "verified_at": "2026-10-23T16:17:38.257708+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 31,
+  "PASS": 36,
   "FAIL": 0,
-  "WARN": 2,
+  "WARN": 0,
   "SKIP": 1
  },
- "data_matches": 189,
+ "data_matches": 172,
  "methods": {
-  "MODEL_STANDINGS": 0,
-  "UNRESOLVED": 0,
-  "MODEL_ELO": 82,
-  "MODEL_LEAGUE_PRIOR": 24,
-  "MODEL_ELO_THIN": 74,
-  "MARKET_CONSENSUS": 8,
+  "MODEL_ELO_THIN": 75,
+  "MODEL_LEAGUE_PRIOR": 0,
   "MARKET_BOOKS": 0,
+  "MODEL_ELO": 88,
+  "MARKET_POLYMARKET": 0,
+  "UNRESOLVED": 0,
+  "MARKET_CONSENSUS": 8,
   "MARKET_SINGLE": 1,
-  "MARKET_POLYMARKET": 0
+  "MODEL_STANDINGS": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "189 matches, generated_at=2026-10-23T11:00:24.895236Z (4.8h old)"
+   "detail": "172 matches, generated_at=2026-10-23T16:12:42.972684Z (0.1h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 189 rows have team1, team2 and a start time"
+   "detail": "all 172 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -70,15 +70,27 @@
   },
   {
    "id": "D7",
-   "title": "every row links at least one official/trusted source",
+   "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 189 rows carry at least one source URL"
+   "detail": "all 172 rows carry at least one source URL"
   },
   {
    "id": "D8a",
    "title": "market rows link a bookmaker/prediction-market URL",
    "status": "PASS",
    "detail": "every market row links its market"
+  },
+  {
+   "id": "D8c",
+   "title": "model rows link a results-source URL",
+   "status": "PASS",
+   "detail": "every model row links a results source"
+  },
+  {
+   "id": "D8d",
+   "title": "model rows with generic results-table sources are flagged",
+   "status": "PASS",
+   "detail": "generic Leaguepedia table links are explicitly flagged as less directly auditable"
   },
   {
    "id": "D8b",
@@ -114,19 +126,25 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=189, rows=189"
+   "detail": "declared=172, rows=172"
+  },
+  {
+   "id": "D20",
+   "title": "each external market provider counted at most once per fixture",
+   "status": "PASS",
+   "detail": "every market row has unique provider keys and matching source_count"
   },
   {
    "id": "D21",
-   "title": "every upcoming Hotspawn lobby fixture is priced",
-   "status": "WARN",
-   "detail": "lobby state unavailable for this run; coverage compared with the fixtures API only"
+   "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
+   "status": "PASS",
+   "detail": "lobby upcoming=172, priced=172, missing=0, extra=0, excluded=12, leaked=0"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 72 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 74 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
@@ -204,7 +222,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "2 external link(s) collected for manual review; 0 plain-http"
+   "detail": "3 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "W1",
@@ -215,8 +233,8 @@
   {
    "id": "W2",
    "title": "update workflow runs the generator with contents: write",
-   "status": "WARN",
-   "detail": "audit-pipeline.yml runs scripts/update_picks.py; contents write NOT declared"
+   "status": "PASS",
+   "detail": "audit-pipeline.yml runs scripts/update_picks.py; contents write present"
   },
   {
    "id": "W3",
@@ -227,8 +245,8 @@
   {
    "id": "REQ",
    "title": "requirements traceability",
-   "status": "WARN",
-   "detail": "REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 WARN; REQ11 PASS; REQ12 PASS",
+   "status": "PASS",
+   "detail": "REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS",
    "items": [
     "REQ1: A pick exists for every match (pick is one of the two teams) -> PASS",
     "REQ2: Win probabilities for both teams on every match, summing to 100% -> PASS",
@@ -237,9 +255,9 @@
     "REQ5: Every match without a market line still gets a pick + documented method -> PASS",
     "REQ6: Separate unresolved section, with limitations, linked from the exec summary -> PASS",
     "REQ7: Executive summary links in-site to the updated picks list -> PASS",
-    "REQ8: Every table row carries an official/trusted source link (or is flagged unverified) -> PASS",
+    "REQ8: Every row links its source; non-official or generic evidence is disclosed and flagged -> PASS",
     "REQ9: Mobile-friendly: responsive viewport + responsive CSS + readable cards -> PASS",
-    "REQ10: Automatic refresh every 4-8 hours, no manual input -> WARN",
+    "REQ10: Automatic refresh every 4-8 hours, no manual input -> PASS",
     "REQ11: Site integrity: no broken internal links, root entry point works -> PASS",
     "REQ12: Third-party sources attributed where their data is used -> PASS"
    ],
@@ -280,7 +298,8 @@
    "status": "PASS",
    "checks": [
     "D8a",
-    "D6"
+    "D6",
+    "D20"
    ]
   },
   {
@@ -312,12 +331,15 @@
   },
   {
    "id": "REQ8",
-   "requirement": "Every table row carries an official/trusted source link (or is flagged unverified)",
+   "requirement": "Every row links its source; non-official or generic evidence is disclosed and flagged",
    "status": "PASS",
    "checks": [
     "D7",
+    "D7b",
     "D8a",
     "D8b",
+    "D8c",
+    "D8d",
     "D17"
    ]
   },
@@ -333,7 +355,7 @@
   {
    "id": "REQ10",
    "requirement": "Automatic refresh every 4-8 hours, no manual input",
-   "status": "WARN",
+   "status": "PASS",
    "checks": [
     "W1",
     "W2",

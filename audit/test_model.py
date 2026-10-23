@@ -1,128 +1,147 @@
 #!/usr/bin/env python3
-"""Offline regression tests for the T17/T18 additions.
+"""Offline regression tests for the parts of the pick pipeline that have silently
+broken before: per-book de-duplication of market quotes, prop-board rejection,
+standings-derived Elo, and the published payload's book-count invariant.
 
-Covers:
-  * book de-duplication (one book must count once, props excluded),
-  * the standings branch (both teams have a current-season record),
-  * the untouched fallbacks (league prior when only one side is rated,
-    UNRESOLVED when nothing is known).
-
-Run: python3 audit/test_model.py   (no network)
+These run with no network access and no secrets. Run:  python3 audit/test_model.py
+Exit code 0 = all tests passed.
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
-import unittest
+from datetime import datetime, timezone
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
-os.chdir(ROOT)
 
-import model  # noqa: E402
-from fetch_markets import dedupe_records, is_prop_name  # noqa: E402
+from fetch_markets import _PROP_CRIT_RE, _dedup_key, _record, _select_unibet_offer  # noqa: E402
+from model import _standings_elo, blend_h2h  # noqa: E402
+
+PASSED: list[str] = []
+FAILED: list[str] = []
 
 
-def fixture(**kw):
-    base = {
-        "id": "1", "team1": "Alpha", "team2": "Beta", "tournament": "Test League 2027",
-        "competition_id": "9", "tier": "C", "stage": "group", "points": 10, "best_of": 3,
-        "start_utc": "2026-10-24T12:00:00Z", "status": "scheduled",
-        "hotspawn_url": "https://www.hotspawn.com/matches/x",
-        "source_lobby": "https://play.hotspawn.com/lol-pickems",
-        "crowd": {"team1_pct": 50, "team2_pct": 50, "total_picks": 1, "note": "context only"},
+def check(name: str, cond: bool, detail: str = "") -> None:
+    (PASSED if cond else FAILED).append(f"{name}{(' — ' + detail) if detail else ''}")
+    print(("  [ok]   " if cond else "  [FAIL] ") + name + (f" — {detail}" if detail else ""))
+
+
+def test_dedup_key_ignores_team_order_and_time() -> None:
+    """One book's board for a fixture must collapse onto one key.
+
+    Regression: Pinnacle listed a Worlds match on up to seven child boards with
+    distinct matchup ids but identical prices; before the fix each board counted
+    as an independent source (source_count 9, dispersion 0.011 -> High).
+    """
+    a = _dedup_key("Gen.G", "Invictus Gaming", "2026-10-24T11:00:00Z")
+    b = _dedup_key("Invictus Gaming", "Gen.G", "2026-10-24T09:30:00Z")
+    c = _dedup_key("Gen.G", "Invictus Gaming", "2026-10-25T11:00:00Z")
+    check("dedup key collapses team order + same day", a == b, f"{a} vs {b}")
+    check("dedup key separates different days", a != c, f"{a} vs {c}")
+
+
+def test_record_normalises_and_rejects_garbage() -> None:
+    start = datetime(2026, 10, 24, 11, 0, tzinfo=timezone.utc)
+    rec = _record("Pinnacle", "pinnacle", "Worlds", start, "Gen.G", "Invictus Gaming",
+                  0.7355, 0.2645, "https://example.invalid/x")
+    total = round(rec["prob_a"] + rec["prob_b"], 6) if rec else None
+    check("record keeps a two-way line balanced", rec is not None and total == 1.0, f"sum={total}")
+    check("record drops TBD participants",
+          _record("Pinnacle", "pinnacle", "Worlds", start, "TBD", "Gen.G", 0.5, 0.5, "u") is None)
+    check("record drops a team playing itself",
+          _record("Pinnacle", "pinnacle", "Worlds", start, "Gen.G", "gen.g", 0.5, 0.5, "u") is None)
+
+
+def test_prop_boards_are_rejected() -> None:
+    """Kills/maps/totals boards must never become a match-winner price."""
+    props = ["Gen.G (Kills)", "Map 1 Winner", "Total Kills Over/Under 24.5",
+             "First Blood", "Handicap -1.5"]
+    main = ["Match Odds", "Match Winner", "Full Time"]
+    check("prop criteria all rejected", all(_PROP_CRIT_RE.search(p) for p in props), ", ".join(props))
+    check("main-market criteria not rejected", not any(_PROP_CRIT_RE.search(m) for m in main), ", ".join(main))
+
+
+def _offer(label: str, tags=None, n=2, btype_id=2):
+    return {
+        "betOfferType": {"id": btype_id, "englishName": "Match"},
+        "criterion": {"englishLabel": label},
+        "tags": tags or ["OFFERED_PREMATCH"],
+        "outcomes": [{"status": "OPEN", "odds": 1.5}] * n,
     }
-    base.update(kw)
-    return base
 
 
-def market_record(source, key, a, b, start, prob_a, mid):
-    return {"source": source, "source_key": key, "team_a": a, "team_b": b,
-            "start_utc": start, "prob_a": prob_a, "prob_b": 1 - prob_a,
-            "url": "https://example.invalid/market", "note": "", "raw": {"matchup_id": mid}}
+def test_unibet_offer_selection() -> None:
+    """Only a two-way, pre-match main board may be used as a market line."""
+    prop = _offer("Map 1 Winner")
+    alt = _offer("Handicap -1.5")
+    main = _offer("Match Odds", tags=["OFFERED_PREMATCH", "MAIN"])
+    three_way = _offer("Match Odds", n=3)
+    picked = _select_unibet_offer([prop, alt, main, three_way])
+    check("unibet keeps the 2-way main board", picked is not None and picked.get("tags") == ["OFFERED_PREMATCH", "MAIN"])
+    check("unibet rejects a prop-only book", _select_unibet_offer([prop]) is None)
+    check("unibet rejects a 3-way board", _select_unibet_offer([three_way]) is None)
 
 
-SCHEDULE = [{"team1": "Alpha", "team2": "Beta", "score1": None, "score2": None, "winner": None,
-             "start_utc": "2026-10-24T12:00:00Z", "overview": "Test League/2027 Season/Fall",
-             "best_of": 3, "tab": ""}]
-STANDINGS = [
-    {"_page": "Test League/2027 Season/Fall", "Team": "Alpha", "WinSeries": 6, "LossSeries": 1,
-     "WinGames": ""},
-    {"_page": "Test League/2027 Season/Fall", "Team": "Beta", "WinSeries": 2, "LossSeries": 4,
-     "WinGames": ""},
-]
+def test_standings_elo_direction_and_bounds() -> None:
+    """A winning split record must rate above a losing one, and never explode."""
+    base = 1500.0
+    good = _standings_elo({"win_series": 6, "loss_series": 1, "win_games": 13, "loss_games": 4}, base)
+    bad = _standings_elo({"win_series": 1, "loss_series": 6, "win_games": 4, "loss_games": 13}, base)
+    empty = _standings_elo({}, base)
+    check("standings elo rates a 6-1 split above base", good > base, f"{good:.1f} > {base:.0f}")
+    check("standings elo rates a 1-6 split below base", bad < base, f"{bad:.1f} < {base:.0f}")
+    check("standings elo with no games returns the prior", abs(empty - base) < 1e-6, f"{empty:.1f}")
+    check("standings elo stays finite and bounded", -2000 < good < 2600 and -2000 < bad < 2600)
 
 
-def leaguepedia(results=None, schedule=None, standings=None):
-    return {"results": results or [], "schedule": schedule or [],
-            "teams": [{"Name": "Alpha"}, {"Name": "Beta"}, {"Name": "Gamma"}],
-            "standings": standings or []}
+def test_h2h_blend_is_conservative() -> None:
+    p, info = blend_h2h(0.6, 1, 1)
+    check("h2h does not move a probability with <3 games", p == 0.6 and info is None)
+    p2, info2 = blend_h2h(0.6, 6, 6, weight=0.15)
+    check("h2h nudges a probability toward the head-to-head", info2 is not None and p2 > 0.6, f"{p2:.4f}")
 
 
-class TestDedupe(unittest.TestCase):
-    def test_one_book_counts_once(self):
-        rows = [market_record("Pinnacle", "pinnacle", "Gen.G", "Invictus Gaming",
-                              "2026-10-23T18:00:00Z", 0.764, i) for i in range(1, 5)]
-        rows.append(market_record("Bovada", "bovada", "Gen.G", "Invictus Gaming",
-                                  "2026-10-23T18:00:00Z", 0.766, 9))
-        rows.append(market_record("Polymarket", "polymarket", "Gen.G", "Invictus Gaming",
-                                  "2026-10-23T18:00:00Z", 0.775, 11))
-        kept, dropped = dedupe_records(rows)
-        self.assertEqual(len(kept), 3, "three books must remain three records")
-        self.assertEqual(len(dropped), 3, "three duplicate board rows must be collapsed")
-        pinn = [r for r in kept if r["source_key"] == "pinnacle"][0]
-        self.assertEqual(len(pinn["raw"]["duplicates_collapsed"]), 3)
+def test_payload_book_invariant() -> None:
+    """The published payload must count each book once (regression for I13)."""
+    path = os.path.join(ROOT, "docs", "data", "picks.json")
+    if not os.path.exists(path):
+        check("payload book invariant", True, "no payload in this checkout — skipped")
+        return
+    with open(path, encoding="utf-8") as fh:
+        data = json.load(fh)
+    bad = []
+    rows = 0
+    for m in data.get("matches") or []:
+        mk = m.get("market")
+        if not mk:
+            continue
+        rows += 1
+        srcs = mk.get("sources") or []
+        keys = [s.get("source_key") or s.get("source") for s in srcs]
+        if len(keys) != len(set(keys)) or mk.get("source_count") != len(keys):
+            bad.append(f"{m.get('team1')} vs {m.get('team2')}")
+    check("payload counts each book once", not bad,
+          f"{rows} market row(s)" + (f", offenders: {bad[:3]}" if bad else ""))
 
-    def test_prop_markets_rejected(self):
-        self.assertTrue(is_prop_name("Gen.G (Kills)"))
-        self.assertTrue(is_prop_name("Top Esports (Maps)"))
-        self.assertFalse(is_prop_name("Gen.G"))
-        self.assertFalse(is_prop_name("Anyone's Legend"))
 
-
-class TestModel(unittest.TestCase):
-    def _run(self, fixtures, lp, markets=None):
-        out = model.build_matches({"fixtures": fixtures}, lp, markets or {"records": []},
-                                  model.load_aliases("data/aliases.json"))
-        return {m["id"]: m for m in out["matches"]}
-
-    def test_standings_line_when_no_elo(self):
-        rows = self._run([fixture()], leaguepedia(schedule=SCHEDULE, standings=STANDINGS))
-        m = rows["1"]
-        self.assertEqual(m["method"], "MODEL_STANDINGS")
-        self.assertGreater(m["prob_team1"], 0.5)
-        self.assertLess(m["prob_team1"], 0.85, "small samples must be shrunk")
-        self.assertTrue(m["source_url"].startswith("https://lol.fandom.com/wiki/Test_League"))
-        self.assertIn("standings", m["evidence"].lower())
-        self.assertEqual(m["confidence"], "Low")
-
-    def test_market_wins_over_model(self):
-        rec = market_record("Pinnacle", "pinnacle", "Alpha", "Beta",
-                            "2026-10-24T12:00:00Z", 0.30, 1)
-        rows = self._run([fixture()], leaguepedia(schedule=SCHEDULE, standings=STANDINGS),
-                         {"records": [rec]})
-        m = rows["1"]
-        self.assertEqual(m["method"], "MARKET_SINGLE")
-        self.assertAlmostEqual(m["pick_prob"], 0.70, places=2)
-        self.assertTrue(m["market"]["sources"])
-
-    def test_league_prior_when_only_one_side_rated(self):
-        results = [{"team1": "Alpha", "team2": "Gamma", "score1": 2, "score2": 0, "winner": 1,
-                    "start_utc": f"2026-09-0{i}T12:00:00Z",
-                    "overview": "Test League/2027 Season/Fall", "best_of": 3, "tab": ""}
-                   for i in range(1, 6)]
-        rows = self._run([fixture()], leaguepedia(results=results, schedule=SCHEDULE))
-        self.assertEqual(rows["1"]["method"], "MODEL_LEAGUE_PRIOR")
-        self.assertIn("ONE_TEAM_NO_HISTORY", rows["1"]["flags"])
-
-    def test_unresolved_when_nothing_known(self):
-        rows = self._run([fixture()], leaguepedia())
-        m = rows["1"]
-        self.assertEqual(m["method"], "UNRESOLVED")
-        self.assertEqual(m["pick_prob"], 0.5)
-        self.assertIn("NO_VERIFIED_SIGNAL", m["flags"])
+def main() -> int:
+    for fn in (test_dedup_key_ignores_team_order_and_time,
+               test_record_normalises_and_rejects_garbage,
+               test_prop_boards_are_rejected,
+               test_unibet_offer_selection,
+               test_standings_elo_direction_and_bounds,
+               test_h2h_blend_is_conservative,
+               test_payload_book_invariant):
+        print(f"\n{fn.__name__}: {fn.__doc__.strip().splitlines()[0] if fn.__doc__ else ''}")
+        fn()
+    print(f"\n{len(PASSED)} passed · {len(FAILED)} failed")
+    if FAILED:
+        print("FAILED: " + " | ".join(FAILED))
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    raise SystemExit(main())

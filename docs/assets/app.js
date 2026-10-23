@@ -11,7 +11,7 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
-    MODEL_STANDINGS: { label: "League standings", cls: "blue", ico: "📊" },
+    MODEL_STANDINGS: { label: "Split standings + Elo", cls: "amber", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved", cls: "red", ico: "⚠️" },
   };
@@ -292,6 +292,11 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
+      HOTSPAWN_NAME_COLLISION: "Hotspawn team-tag collision mapped to verified split participant",
+      LEAGUEPEDIA_TIME_TBD: "Leaguepedia lists pairing without a confirmed UTC timestamp",
+      FIXTURE_NOT_ON_LEAGUEPEDIA_SCHEDULE: "Tournament page verified; individual pairing not yet on Leaguepedia MatchSchedule",
+      FIXTURE_CANCELLED_ON_FEED: "Fixture marked cancelled/postponed on feed",
+      GENERIC_RESULTS_SOURCE: "Results model backed by generic Leaguepedia table (no tournament page matched)",
     };
     return map[f] || f;
   }

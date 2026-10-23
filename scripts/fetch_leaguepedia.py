@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
-"""Leaguepedia (lol.fandom.com) results and schedule.
+"""Leaguepedia (lol.fandom.com) results, schedule, standings and redirects.
 
 Why Special:CargoExport rather than api.php: api.php's Cargo endpoint is rate
 limited for anonymous/shared IPs (HTTP 200 with {"error":{"code":"ratelimited"}}),
 while the wiki's own Cargo export endpoint is not. Every row is a real recorded
-match: Team1/Team2 scores, Winner 1|2, exact UTC time and tournament page.
+match or split standing: Team1/Team2 scores, Winner 1|2, exact UTC time and
+tournament page.
 
 Used for:
   * our own Elo model (past results, all tiers, incl. Prime League 3rd Division,
     Tunisian Super League, 4 Nations, RIVALS LEAGUE, Komplettligaen, ...),
-  * canonical team spellings for the Hotspawn fixture names,
-  * an independent UTC cross-check of every Hotspawn start time.
+  * current-split series/game standings for newly formed or renamed regional teams,
+  * canonical team spellings and official TeamRedirects for Hotspawn fixture names,
+  * an independent UTC cross-check of every Hotspawn start time (plus TBD-time
+    upcoming MatchSchedule pairings).
 """
 from __future__ import annotations
 
+import json
 import time
 import urllib.parse
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 
 from lib_common import fetch, load_json, log, norm, now_utc, source, utc_iso, write_json
@@ -24,26 +29,26 @@ OUT = "data/cache/leaguepedia.json"
 EXPORT = "https://lol.fandom.com/wiki/Special:CargoExport?"
 API = "https://lol.fandom.com/api.php"
 FIELDS = "Team1,Team2,Team1Score,Team2Score,Winner,DateTime_UTC,OverviewPage,BestOf,Tab"
+STANDINGS_FIELDS = "OverviewPage,Team,WinSeries,LossSeries,TieSeries,WinGames,LossGames,Place"
 TABLE_URL = "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule"
-TEAMS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Teams"
 STANDINGS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
-# Field names verified 2026-10-21 with api.php?action=cargofields&table=Standings
-STANDINGS_FIELDS = "OverviewPage,Team,Place,WinSeries,LossSeries,WinGames,LossGames,Points"
-SLEEP = 2.6
+TEAMS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Teams"
+REDIRECTS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/TeamRedirects"
+SLEEP = 2.4
 
 
-def _get(params: dict, timeout=90, retries=3):
+def _get(params: dict, timeout=90):
     url = EXPORT + urllib.parse.urlencode(params)
-    r = fetch(url, timeout=timeout, retries=retries)
+    r = fetch(url, timeout=timeout, retries=3)
     return r, r["text"]
 
 
-def _rows(params: dict, timeout=90, retries=3):
-    r, text = _get(params, timeout=timeout, retries=retries)
+def _rows(params: dict):
+    r, text = _get(params)
     if r["status"] != 200:
         return None, f"HTTP {r['status']}"
     try:
-        data = __import__("json").loads(text)
+        data = json.loads(text)
     except Exception:
         return None, "non-JSON response: " + text[:120]
     if not isinstance(data, list):
@@ -79,43 +84,13 @@ def fetch_window(a: datetime, b: datetime, depth: int = 0):
     return rows, None
 
 
-def fetch_standings(pages: list[str], limit_pages: int = 24, budget_s: float = 120.0,
-                    timeout: int = 25, retries: int = 1) -> tuple[list, list]:
-    """Current-season series records from Leaguepedia's Standings table.
-
-    Used only where the Elo has no team-specific history at all (see model.py).
-    One request per competition page, paced like the other Cargo calls.
-    """
-    rows, errors = [], []
-    started = time.monotonic()
-    for page in sorted(set(p for p in pages if p))[:limit_pages]:
-        if time.monotonic() - started > budget_s:
-            errors.append({"error": "standings time budget exhausted",
-                           "pages_done": len({r["_page"] for r in rows})})
-            break
-        data, err = _rows({
-            "tables": "Standings", "fields": STANDINGS_FIELDS,
-            "where": "OverviewPage = '" + str(page).replace("'", "''") + "'",
-            "limit": "200", "format": "json",
-        }, timeout=timeout, retries=retries)
-        time.sleep(1.2)
-        if err:
-            errors.append({"page": page, "error": err})
-            continue
-        for r in data or []:
-            if isinstance(r, dict):
-                r["_page"] = page
-                rows.append(r)
-    return rows, errors
-
-
 def _norm_row(x: dict) -> dict | None:
     g = lambda k: x.get(k, x.get(k.replace("_", " ")))  # noqa: E731
     t1, t2 = g("Team1"), g("Team2")
     dt = g("DateTime_UTC")
     if not t1 or not t2 or not dt:
         return None
-    if norm(t1) == norm(t2):
+    if norm(str(t1)) == norm(str(t2)):
         return None
     try:
         when = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
@@ -136,9 +111,144 @@ def _norm_row(x: dict) -> dict | None:
         s2 = int(g("Team2Score")) if g("Team2Score") not in (None, "") else None
     except (TypeError, ValueError):
         s1 = s2 = None
-    return {"team1": t1, "team2": t2, "score1": s1, "score2": s2, "winner": winner,
-            "start_utc": utc_iso(when), "overview": g("OverviewPage") or "", "best_of": bo,
-            "tab": g("Tab") or ""}
+    return {"team1": str(t1), "team2": str(t2), "score1": s1, "score2": s2, "winner": winner,
+            "start_utc": utc_iso(when), "overview": str(g("OverviewPage") or ""), "best_of": bo,
+            "tab": str(g("Tab") or "")}
+
+
+def _norm_unscheduled_row(x: dict) -> dict | None:
+    g = lambda k: x.get(k, x.get(k.replace("_", " ")))  # noqa: E731
+    t1, t2 = str(g("Team1") or "").strip(), str(g("Team2") or "").strip()
+    ov = str(g("OverviewPage") or "").strip()
+    if not t1 or not t2 or not ov:
+        return None
+    if norm(t1) in ("", "tbd") or norm(t2) in ("", "tbd") or norm(t1) == norm(t2):
+        return None
+    try:
+        bo = int(g("BestOf")) if g("BestOf") not in (None, "") else None
+    except (TypeError, ValueError):
+        bo = None
+    return {"team1": t1, "team2": t2, "score1": None, "score2": None, "winner": None,
+            "start_utc": None, "overview": ov, "best_of": bo, "tab": str(g("Tab") or "")}
+
+
+def _int_or_zero(v) -> int:
+    try:
+        return int(v) if v not in (None, "") else 0
+    except (TypeError, ValueError):
+        return 0
+
+
+def fetch_unscheduled_upcoming() -> tuple[list[dict], str | None]:
+    """Fetch upcoming 2026/2027 MatchSchedule rows whose DateTime_UTC is TBD/null."""
+    params = {
+        "tables": "MatchSchedule",
+        "fields": FIELDS,
+        "where": ("DateTime_UTC IS NULL AND (Winner IS NULL OR Winner = '') "
+                  "AND (OverviewPage LIKE '%2026%' OR OverviewPage LIKE '%2027%')"),
+        "limit": "5000",
+        "format": "json",
+    }
+    rows, err = _rows(params)
+    time.sleep(SLEEP)
+    if err:
+        return [], err
+    seen, out = set(), []
+    for x in rows or []:
+        r = _norm_unscheduled_row(x)
+        if not r:
+            continue
+        k = (norm(r["team1"]), norm(r["team2"]), norm(r["overview"]), r["tab"])
+        if k not in seen:
+            seen.add(k)
+            out.append(r)
+    return out, None
+
+
+def fetch_standings() -> tuple[list[dict], str | None]:
+    """Fetch current-season 2026/2027 Standings rows for low-tier & renamed teams."""
+    out = []
+    seen = set()
+    for offset in (0, 5000):
+        params = {
+            "tables": "Standings",
+            "fields": STANDINGS_FIELDS,
+            "where": "OverviewPage LIKE '%2026%' OR OverviewPage LIKE '%2027%'",
+            "limit": "5000",
+            "offset": str(offset),
+            "format": "json",
+        }
+        rows, err = _rows(params)
+        time.sleep(SLEEP)
+        if err:
+            return out, err
+        for x in rows or []:
+            ov = str(x.get("OverviewPage") or "").strip()
+            tm = str(x.get("Team") or "").strip()
+            if not ov or not tm or norm(tm) in ("", "tbd"):
+                continue
+            ws = _int_or_zero(x.get("WinSeries"))
+            ls = _int_or_zero(x.get("LossSeries"))
+            ts = _int_or_zero(x.get("TieSeries"))
+            wg = _int_or_zero(x.get("WinGames"))
+            lg = _int_or_zero(x.get("LossGames"))
+            key = (norm(ov), norm(tm))
+            rec = {
+                "overview": ov,
+                "team": tm,
+                "win_series": ws,
+                "loss_series": ls,
+                "tie_series": ts,
+                "win_games": wg,
+                "loss_games": lg,
+                "place": str(x.get("Place") or ""),
+            }
+            if key in seen:
+                # Keep the row with more played games if a split has multiple stages
+                for idx, prev in enumerate(out):
+                    if (norm(prev["overview"]), norm(prev["team"])) == key:
+                        if (ws + ls + wg + lg) > (prev["win_series"] + prev["loss_series"] + prev["win_games"] + prev["loss_games"]):
+                            out[idx] = rec
+                        break
+            else:
+                seen.add(key)
+                out.append(rec)
+        if not rows or len(rows) < 5000:
+            break
+    return out, None
+
+
+def fetch_hotspawn_redirects(known_names: set[str]) -> tuple[dict[str, str], str | None]:
+    """Resolve unknown Hotspawn fixture team names via Leaguepedia TeamRedirects."""
+    hs = load_json("data/cache/hotspawn.json") or {}
+    known_norm = {norm(n) for n in known_names if n}
+    missing = sorted({
+        str(t).strip()
+        for f in (hs.get("fixtures") or [])
+        for t in (f.get("team1"), f.get("team2"))
+        if t and norm(str(t)) not in known_norm and '"' not in str(t) and "'" not in str(t)
+    })
+    if not missing:
+        return {}, None
+    quoted = ",".join(f'"{name}"' for name in missing[:80])
+    params = {
+        "tables": "TeamRedirects",
+        "fields": "AllName,_pageName=PageName",
+        "where": f"AllName IN ({quoted})",
+        "limit": "500",
+        "format": "json",
+    }
+    rows, err = _rows(params)
+    time.sleep(1.2)
+    if err:
+        return {}, err
+    redirects = {}
+    for x in rows or []:
+        src_name = str(x.get("AllName") or "").strip()
+        dst_name = str(x.get("PageName") or "").strip()
+        if src_name and dst_name:
+            redirects[src_name] = dst_name
+    return redirects, None
 
 
 def main() -> int:
@@ -170,16 +280,15 @@ def main() -> int:
     results = [r for r in clean if r["winner"] and r["start_utc"] < utc_iso(cutoff)]
     schedule = [r for r in clean if r["start_utc"] >= utc_iso(now - timedelta(days=2))]
 
-    # Standings: only for competitions that are currently running (a schedule
-    # row in the last 2 days or the near future), which keeps the number of
-    # Cargo calls bounded. Older pages cannot inform a current fixture.
-    # Only competitions with a fixture in the published window (schedule =
-    # start >= now-2d). That is exactly the set the model can price, keeps the
-    # request count bounded, and makes the pipeline resilient when Leaguepedia
-    # is slow or rate limited: standings are an enhancement, never a blocker.
-    current_pages = sorted({r["overview"] for r in schedule if r.get("overview")})
-    standings, standings_errors = fetch_standings(current_pages)
-    log(f"leaguepedia: standings {len(standings)} rows from {len(current_pages)} current pages")
+    unscheduled, u_err = fetch_unscheduled_upcoming()
+    calls += 1
+    if u_err:
+        errors.append({"table": "MatchSchedule(unscheduled)", "error": u_err})
+
+    standings, s_err = fetch_standings()
+    calls += 1
+    if s_err:
+        errors.append({"table": "Standings", "error": s_err})
 
     # canonical team spellings
     teams = []
@@ -187,38 +296,56 @@ def main() -> int:
                     "limit": "5000", "format": "json"})
     calls += 1
     try:
-        import json
-        teams = json.loads(text) if isinstance(json.loads(text), list) else []
+        parsed_teams = json.loads(text)
+        teams = parsed_teams if isinstance(parsed_teams, list) else []
     except Exception:
         errors.append({"table": "Teams", "error": text[:120]})
     time.sleep(SLEEP)
 
-    from collections import Counter
+    known_names = (
+        {x["team1"] for x in clean}
+        | {x["team2"] for x in clean}
+        | {x["team"] for x in standings}
+        | {str(t.get("Name") or "") for t in teams}
+    )
+    redirects, r_err = fetch_hotspawn_redirects(known_names)
+    if redirects or r_err:
+        calls += 1
+    if r_err:
+        errors.append({"table": "TeamRedirects", "error": r_err})
+
     tour_counts = Counter(x["overview"] for x in results)
     payload = {
         "generated_at": utc_iso(now),
         "degraded": False,
-        "counts": {"rows": len(clean), "results": len(results), "schedule": len(schedule),
-                   "teams": len(teams), "export_calls": calls,
-                   "standings": len(standings), "standings_pages": len(current_pages)},
-        "errors": errors + standings_errors,
+        "counts": {
+            "rows": len(clean),
+            "results": len(results),
+            "schedule": len(schedule),
+            "unscheduled": len(unscheduled),
+            "standings": len(standings),
+            "teams": len(teams),
+            "redirects": len(redirects),
+            "export_calls": calls,
+        },
+        "errors": errors,
         "tournaments": [{"page": k, "results": v} for k, v in tour_counts.most_common(120)],
         "sources": [
             source("Leaguepedia MatchSchedule (Cargo export)", TABLE_URL,
                    "Recorded match results and schedules with exact UTC time, BestOf and series score."),
+            source("Leaguepedia Standings (Cargo export)", STANDINGS_URL,
+                   "Current-split series and game win-loss records for active tournaments."),
             source("Leaguepedia Teams", TEAMS_URL, "Canonical team spellings and region."),
-            source("Leaguepedia Standings", STANDINGS_URL,
-                   "Current-season series win-loss records (WinSeries/LossSeries) per competition page."),
+            source("Leaguepedia TeamRedirects", REDIRECTS_URL, "Official team rename/alias redirects."),
         ],
         "results": results,
         "schedule": schedule,
-        "teams": teams,
+        "unscheduled": unscheduled,
         "standings": standings,
+        "redirects": redirects,
+        "teams": teams,
     }
     if len(results) < 1000:
-        # A rate-limited / broken run must not wipe good data. Fall back to the
-        # last good snapshot, mark it degraded and let the pipeline publish with
-        # an explicit degraded source status instead of failing the whole run.
         prev = load_json(OUT)
         if prev and prev.get("results"):
             prev["degraded"] = True
@@ -231,7 +358,8 @@ def main() -> int:
             return 0
         raise SystemExit(f"Leaguepedia returned only {len(results)} results and no fallback snapshot exists")
     write_json(OUT, payload)
-    log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, {len(teams)} teams")
+    log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, "
+        f"{len(unscheduled)} unscheduled, {len(standings)} standings, {len(teams)} teams")
     return 0
 
 
