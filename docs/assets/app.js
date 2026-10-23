@@ -11,12 +11,13 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
+    MODEL_STANDINGS: { label: "Split standings + Elo", cls: "amber", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved", cls: "red", ico: "⚠️" },
   };
   const CONF = { High: "green", Medium: "blue", Low: "amber", None: "red" };
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
-  const METHOD_RANK = { MARKET_CONSENSUS: 5, MARKET_SINGLE: 4, MODEL_ELO: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
+  const METHOD_RANK = { MARKET_CONSENSUS: 5, MARKET_SINGLE: 4, MODEL_ELO: 3, MODEL_ELO_THIN: 2, MODEL_STANDINGS: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
 
@@ -291,6 +292,11 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
+      HOTSPAWN_NAME_COLLISION: "Hotspawn team-tag collision mapped to verified split participant",
+      LEAGUEPEDIA_TIME_TBD: "Leaguepedia lists pairing without a confirmed UTC timestamp",
+      FIXTURE_NOT_ON_LEAGUEPEDIA_SCHEDULE: "Tournament page verified; individual pairing not yet on Leaguepedia MatchSchedule",
+      FIXTURE_CANCELLED_ON_FEED: "Fixture marked cancelled/postponed on feed",
+      GENERIC_RESULTS_SOURCE: "Results model backed by generic Leaguepedia table (no tournament page matched)",
     };
     return map[f] || f;
   }

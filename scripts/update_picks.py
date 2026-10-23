@@ -38,8 +38,8 @@ CHECKED_UNAVAILABLE = [
      "observed": "HTTP 403 (Cloudflare)", "consequence": "Not used."},
     {"name": "Betway Esports", "url": "https://www.betway.com/en/esports/league-of-legends",
      "observed": "HTTP 404 (LoL page unavailable)", "consequence": "Not used."},
-    {"name": "Unibet", "url": "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
-     "observed": "HTTP 503", "consequence": "Not used."},
+    {"name": "Unibet (www.unibet.com HTML shell)", "url": "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
+     "observed": "HTTP 503 on the generic HTML filter URL", "consequence": "HTML shell not used; Unibet prices are read via Kambi's public JSON feed and linked to www.unibet.com.au."},
     {"name": "Rivalry", "url": "https://www.rivalry.com/lol",
      "observed": "HTML shell only; API endpoints HTTP 502", "consequence": "No prices parsed."},
     {"name": "Midnite", "url": "https://www.midnite.com/esports/league-of-legends",
@@ -53,9 +53,9 @@ CHECKED_UNAVAILABLE = [
 ]
 
 LIMITATIONS = [
-    "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Bovada and Polymarket list the World Championship and EMEA Masters, not regional amateur leagues.",
+    "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
-    "Leaguepedia's MatchSchedule records results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new teams have no games at all.",
+    "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
     "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
