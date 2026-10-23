@@ -488,9 +488,9 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 | Task | Status | Owner | Files (exclusive scope) |
 |---|---|---|---|
 | T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | done | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
-| T20 Post-merge verification & Pages deployment recovery: monitor PR #21 main Actions runs, recover/retry the Pages deploy if transient, verify live Pages content, and record evidence | in progress | arena/bdecdf49 | `COORDINATION.md` only |
+| T20 Post-merge verification & Pages deployment recovery: monitor PR #21 main Actions runs, recover/retry the Pages deploy if transient, verify live Pages content, and record evidence | done — Pages build and live payload verified; Actions deploy step recorded a transient HTTP 500 | arena/bdecdf49 | `COORDINATION.md` only |
 
-**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), the code-change scope is limited to `.github/workflows/pipeline-test.yml`. `COORDINATION.md` is maintained as the shared log. No files in their site, source/model, or fixture scopes are edited; this is not the final integration claim.
+**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), T19's code-change scope was limited to `.github/workflows/pipeline-test.yml`; T20's post-merge verification and logging are limited to `COORDINATION.md`. No files in other sessions' site, source/model, or fixture scopes were edited.
 
 ### Workflow reliability: diagnosis and verification
 
@@ -505,3 +505,16 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 ### Cross-session findings (resolved)
 
 - Q7–Q10 were addressed by `arena/bd37dbe6` (T13–T15), merged in PR **#12** at `c4619a7`. Their detailed source checks, coverage/mobile fixes, and remaining caveats are recorded in that session's results section above. This session did not edit their claimed files.
+
+### Post-merge verification & live Pages record (T20)
+
+| Item | Result | Evidence |
+|---|---|---|
+| PR #21 | `ci: make branch artifact publishing resilient` merged into `main` | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/21 |
+| Merge | `684d6b6433fcdb72187fa1dce56e3f3cb05c17ed`, 2026-10-23 16:19:44 UTC | GitHub PR #21 merge record |
+| Main verifier (`verify.yml`) | **success**; all steps passed, including self-tests, offline verification, external source/live Pages checks, coverage audit, and DOM contract | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39985868839 |
+| Auto Pages Actions run | Jekyll build and artifact upload succeeded; the `deploy` job failed when GitHub's Pages API returned HTTP 500 (`Failed to create deployment`, request ID `EC10:37CAF:18AB01E:5029D9E:6ADB8942`; annotation advised retrying later) | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39985868427/job/120524954576 |
+| Pages build API | **`built`** for merge commit `684d6b6`, created 16:19:46Z, updated 16:21:00Z (74.601 s) | https://api.github.com/repos/karagemop466-tech/LOLHOTSPAWN2/pages/builds/latest |
+| Live dashboard | Cache-busted live summary and JSON serve the merged 16:17:40Z payload; 172 upcoming fixtures, 172 priced, 9 market-derived, 163 model-derived, 0 unresolved, 80 low-confidence, and 12 cancelled fixtures excluded | [Dashboard](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/index.html?v=684d6b6) · [Live picks JSON](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json?v=684d6b6) |
+
+**Deployment irregularity:** The Actions deploy step did fail and is not reported as green. `gh run rerun 39985868427 --failed` was unavailable for GitHub's generated `pages-build-deployment` workflow; a manual Pages-build API request was rejected with HTTP 403 (`Resource not accessible by integration`). Nevertheless, the official Pages build API reports `built` for the merge commit, and a live cache-busted fetch matches the committed payload. A fetch without a cache-busting query continued to return the older 16:09:05Z JSON snapshot (16 excluded rows); the cache-busted response returns 16:17:40Z (12 excluded). `docs/assets/app.js` requests `data/picks.json` with `cache: "no-store"`, so the stale unversioned fetch is recorded as a cache/propagation discrepancy, not proof of a stale browser view. Re-check the canonical URL if the discrepancy persists.
