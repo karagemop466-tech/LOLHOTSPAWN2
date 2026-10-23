@@ -512,3 +512,25 @@ adapter, cancelled-fixture exclusion) and re-applied this session's work on top 
   never implied to come from a table that does not contain it.
 - No additional priced source exists that we can reach: 31 endpoints probed, all blocked, unreachable
   or without two-way prices.
+## Session `arena/bdecdf49-lolhotspawn2` — 2026-10-23 (current)
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | done | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
+
+**Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), the code-change scope is limited to `.github/workflows/pipeline-test.yml`. `COORDINATION.md` is maintained as the shared log. No files in their site, source/model, or fixture scopes are edited; this is not the final integration claim.
+
+### Workflow reliability: diagnosis and verification
+
+- Actions run **39980957176** passed pipeline generation, summary, and site verification but failed in “Commit outputs for review” with `could not abort failed output rebase (128): fatal: no rebase in progress`. The Actions log archive could not be retrieved (GitHub returned EOF), so the annotation is the available failure evidence.
+- `verify_site.py` updates tracked `verification/report.json` and `verification/last_report.md`. The workflow had not staged those files, leaving the worktree dirty and preventing the output rebase from starting. Staging both reports with the payload and diagnostics fixed the issue: run **39981581552** succeeded end-to-end.
+- The `fail_publish` “Remote HEAD” line used valid Bash command substitution; its nested quoting was not a syntax/runtime defect. It was simplified to assign `remote_head` before writing the summary. `bash -n` and a local runtime check passed. The failure-only branch was not deliberately triggered.
+- After PR #18 merged the market-deduplication, Unibet, and D20 changes (`fcffaaa`) and PR #17's final report was merged (`3ad4f00`), this branch was rebased onto current main. Actions run **39985420241** tested that rebased tree and passed end-to-end in **1m8s**; all steps passed, including live generation, site verification, and “Commit outputs for review.” Generated artifact commit `25f017c` was pushed.
+- The 39985420241 payload (generated **2026-10-23T16:17:40Z**) contains **172** upcoming fixtures: **172 resolved**, **9 market-derived** (8 consensus, 1 single), **163 model-derived**, **0 unresolved**, **80 low-confidence**, **12 cancelled excluded**, **0** upcoming fixtures without a published match page, and **0** `GENERIC_RESULTS_SOURCE` rows. These are run-specific values.
+- Source status in that run: Pinnacle **ok** (8), Unibet **ok** (8), Polymarket **ok** (9), Leaguepedia MatchSchedule **ok** (31,728), and Hotspawn lobby **ok** (172); Bovada was **no_data** (0). Do not report Bovada lines as used. D20 passed: every market row has unique provider keys and matching `source_count`.
+- `verification/report.json` for run 39985420241: **36 PASS, 0 FAIL, 0 WARN, 1 SKIP**. D20 and D21 passed (172 upcoming and priced, missing 0, extra 0, excluded 12, leaked 0); D18 was skipped because no Leaguepedia schedule snapshot was supplied. The existing stale-snapshot caveat remains for independent current start-time checking.
+
+### Cross-session findings (resolved)
+
+- Q7–Q10 were addressed by `arena/bd37dbe6` (T13–T15), merged in PR **#12** at `c4619a7`. Their detailed source checks, coverage/mobile fixes, and remaining caveats are recorded in that session's results section above. This session did not edit their claimed files.
+##### the-other-side: origin/main
