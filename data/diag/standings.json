@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-23T15:59:46.953770Z",
+ "generated_at": "2026-10-23T16:06:56.327816Z",
  "source": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
  "pages": [
   "Prime League 2nd Division/2027 Season/Fall Split",
@@ -377,1126 +377,6 @@
  },
  "rows": [
   {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "2 Massive",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 6,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "B2U",
-   "place": 1,
-   "wins": 3,
-   "losses": 0,
-   "win_games": 6,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Bulldog Academy",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Fenrir (Swedish Team)",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 5,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "FlameHard",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Hållbar Gaming",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 4,
-   "loss_games": 8,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Karolinerna",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 6,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Laoban Esports",
-   "place": 12,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 4,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Lund Esports Organization Academy",
-   "place": 1,
-   "wins": 3,
-   "losses": 0,
-   "win_games": 6,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Lundqvist Darkside",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Malsta Tigers",
-   "place": 15,
-   "wins": 0,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Mazepa",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 7,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "OnlyWinByFF",
-   "place": 12,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "RX-Esports",
-   "place": 12,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 3,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "Team CD",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 8,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 1",
-   "team": "The Final Tribe",
-   "place": 15,
-   "wins": 0,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Clã NKZ VÓRAX",
-   "place": 3,
-   "wins": 8,
-   "losses": 3,
-   "win_games": 8,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "EmBRAZA! Esports",
-   "place": 1,
-   "wins": 10,
-   "losses": 1,
-   "win_games": 10,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Invictus Team",
-   "place": 7,
-   "wins": 4,
-   "losses": 7,
-   "win_games": 4,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Juventus Gaming Red",
-   "place": 11,
-   "wins": 2,
-   "losses": 9,
-   "win_games": 2,
-   "loss_games": 9,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "LØS Academy",
-   "place": 4,
-   "wins": 8,
-   "losses": 3,
-   "win_games": 8,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Marere e-Sports",
-   "place": 5,
-   "wins": 8,
-   "losses": 3,
-   "win_games": 8,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Neon eSports (Brazilian Team)",
-   "place": 6,
-   "wins": 7,
-   "losses": 4,
-   "win_games": 7,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "SharkBite Furious Gaming Black",
-   "place": 8,
-   "wins": 4,
-   "losses": 7,
-   "win_games": 4,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "SharkBite Furious Gaming White",
-   "place": 10,
-   "wins": 2,
-   "losses": 9,
-   "win_games": 2,
-   "loss_games": 9,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Smoke Tram",
-   "place": 2,
-   "wins": 10,
-   "losses": 1,
-   "win_games": 10,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Smoke Tram Ascension",
-   "place": 9,
-   "wins": 3,
-   "losses": 8,
-   "win_games": 3,
-   "loss_games": 8,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
-   "team": "Sphere Esports",
-   "place": 12,
-   "wins": 0,
-   "losses": 11,
-   "win_games": 0,
-   "loss_games": 11,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Alvora Gaming",
-   "place": 5,
-   "wins": 4,
-   "losses": 5,
-   "win_games": 9,
-   "loss_games": 11,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "BaronX",
-   "place": 4,
-   "wins": 6,
-   "losses": 3,
-   "win_games": 14,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Botafogo Esports",
-   "place": 5,
-   "wins": 5,
-   "losses": 4,
-   "win_games": 10,
-   "loss_games": 11,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Clã NKZ Reapers",
-   "place": 8,
-   "wins": 2,
-   "losses": 7,
-   "win_games": 5,
-   "loss_games": 14,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Clã NKZ Revengers",
-   "place": 3,
-   "wins": 7,
-   "losses": 2,
-   "win_games": 14,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Docta Esports Club",
-   "place": 1,
-   "wins": 7,
-   "losses": 2,
-   "win_games": 15,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Final Level eSports",
-   "place": 7,
-   "wins": 3,
-   "losses": 6,
-   "win_games": 7,
-   "loss_games": 12,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Final Level eSports Academy",
-   "place": 4,
-   "wins": 5,
-   "losses": 4,
-   "win_games": 10,
-   "loss_games": 9,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Final Level eSports Core",
-   "place": 10,
-   "wins": 0,
-   "losses": 9,
-   "win_games": 0,
-   "loss_games": 18,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Infinity Gaming (Brazilian Team)",
-   "place": 3,
-   "wins": 7,
-   "losses": 2,
-   "win_games": 14,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Juventus Gaming White",
-   "place": 7,
-   "wins": 4,
-   "losses": 5,
-   "win_games": 12,
-   "loss_games": 11,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Marere Academy",
-   "place": 2,
-   "wins": 7,
-   "losses": 2,
-   "win_games": 16,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Maze GG",
-   "place": 1,
-   "wins": 9,
-   "losses": 0,
-   "win_games": 18,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Ownage Gaming",
-   "place": 10,
-   "wins": 1,
-   "losses": 8,
-   "win_games": 4,
-   "loss_games": 16,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Ownage Gaming Black",
-   "place": 6,
-   "wins": 5,
-   "losses": 4,
-   "win_games": 13,
-   "loss_games": 10,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Phantom E-Sports",
-   "place": 9,
-   "wins": 2,
-   "losses": 7,
-   "win_games": 5,
-   "loss_games": 15,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Scale Esports",
-   "place": 9,
-   "wins": 2,
-   "losses": 7,
-   "win_games": 4,
-   "loss_games": 14,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Team Victory",
-   "place": 8,
-   "wins": 3,
-   "losses": 6,
-   "win_games": 9,
-   "loss_games": 13,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Torin",
-   "place": 6,
-   "wins": 4,
-   "losses": 5,
-   "win_games": 9,
-   "loss_games": 12,
-   "points": 0
-  },
-  {
-   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
-   "team": "Viktus",
-   "place": 2,
-   "wins": 7,
-   "losses": 2,
-   "win_games": 15,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "6GPA",
-   "place": 2,
-   "wins": 6,
-   "losses": 1,
-   "win_games": 12,
-   "loss_games": 6,
-   "points": 14
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "All for One Gaming",
-   "place": 2,
-   "wins": 4,
-   "losses": 3,
-   "win_games": 10,
-   "loss_games": 6,
-   "points": 14
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "CGN Esports",
-   "place": 1,
-   "wins": 6,
-   "losses": 1,
-   "win_games": 12,
-   "loss_games": 4,
-   "points": 16
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "DKB XPERION NXT",
-   "place": 1,
-   "wins": 6,
-   "losses": 1,
-   "win_games": 13,
-   "loss_games": 4,
-   "points": 17
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Entropy x Teufel",
-   "place": 7,
-   "wins": 2,
-   "losses": 5,
-   "win_games": 6,
-   "loss_games": 11,
-   "points": 7
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Esport Factory",
-   "place": 6,
-   "wins": 4,
-   "losses": 3,
-   "win_games": 8,
-   "loss_games": 9,
-   "points": 9
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Footprint Gaming",
-   "place": 5,
-   "wins": 3,
-   "losses": 4,
-   "win_games": 8,
-   "loss_games": 10,
-   "points": 9
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Kanji Esports",
-   "place": 8,
-   "wins": 1,
-   "losses": 6,
-   "win_games": 2,
-   "loss_games": 13,
-   "points": 2
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Lausanne-Sport Esports",
-   "place": 6,
-   "wins": 2,
-   "losses": 5,
-   "win_games": 7,
-   "loss_games": 10,
-   "points": 9
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "MT1 Esports",
-   "place": 8,
-   "wins": 2,
-   "losses": 5,
-   "win_games": 5,
-   "loss_games": 11,
-   "points": 6
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Münster Esports",
-   "place": 7,
-   "wins": 2,
-   "losses": 5,
-   "win_games": 5,
-   "loss_games": 11,
-   "points": 6
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "regnum4games",
-   "place": 4,
-   "wins": 3,
-   "losses": 4,
-   "win_games": 7,
-   "loss_games": 8,
-   "points": 10
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Reveal Multigaming",
-   "place": 4,
-   "wins": 4,
-   "losses": 3,
-   "win_games": 10,
-   "loss_games": 8,
-   "points": 12
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "Spongecord prime",
-   "place": 3,
-   "wins": 4,
-   "losses": 3,
-   "win_games": 9,
-   "loss_games": 6,
-   "points": 13
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "TeamOrangeGaming Academy",
-   "place": 5,
-   "wins": 3,
-   "losses": 4,
-   "win_games": 9,
-   "loss_games": 9,
-   "points": 11
-  },
-  {
-   "page": "Prime League 2nd Division/2026 Season/Fall Split",
-   "team": "VfB eSports",
-   "place": 3,
-   "wins": 4,
-   "losses": 3,
-   "win_games": 9,
-   "loss_games": 6,
-   "points": 13
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Bilibili Gaming",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 5,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Dplus Kia",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 3,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "FlyQuest",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 5,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Fnatic",
-   "place": 12,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "G2 Esports",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 3,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "GAM Esports",
-   "place": 12,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 3,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Gen.G",
-   "place": 1,
-   "wins": 3,
-   "losses": 0,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Hanwha Life Esports",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 5,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "LNG Esports",
-   "place": 1,
-   "wins": 3,
-   "losses": 0,
-   "win_games": 4,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "MAD Lions KOI",
-   "place": 15,
-   "wins": 0,
-   "losses": 3,
-   "win_games": 1,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "paiN Gaming",
-   "place": 15,
-   "wins": 0,
-   "losses": 3,
-   "win_games": 0,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "PSG Talon",
-   "place": 12,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 1,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "T1",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Team Liquid",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 5,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Top Esports",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "2024 Season World Championship/Main Event",
-   "team": "Weibo Gaming",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 5,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "404 Multigaming e.V.",
-   "place": 5,
-   "wins": 1,
-   "losses": 1,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 2
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "AceGaming",
-   "place": 7,
-   "wins": 0,
-   "losses": 0,
-   "win_games": 0,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "Babos Gaming",
-   "place": 4,
-   "wins": 1,
-   "losses": 0,
-   "win_games": 2,
-   "loss_games": 0,
-   "points": 3
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "BvP",
-   "place": 7,
-   "wins": 0,
-   "losses": 3,
-   "win_games": 0,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "DKB XPERION NXT",
-   "place": 8,
-   "wins": 0,
-   "losses": 1,
-   "win_games": 1,
-   "loss_games": 2,
-   "points": 1
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "Hannover Esports e.V.",
-   "place": 1,
-   "wins": 2,
-   "losses": 0,
-   "win_games": 4,
-   "loss_games": 0,
-   "points": 6
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "Locked In (Dutch Team)",
-   "place": 3,
-   "wins": 1,
-   "losses": 1,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 4
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "MT1 Esports",
-   "place": 4,
-   "wins": 0,
-   "losses": 3,
-   "win_games": 3,
-   "loss_games": 6,
-   "points": 3
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "No Need Orga",
-   "place": 4,
-   "wins": 1,
-   "losses": 1,
-   "win_games": 3,
-   "loss_games": 3,
-   "points": 3
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "PvB (Swiss Team)",
-   "place": 5,
-   "wins": 1,
-   "losses": 1,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 2
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "regnum4games",
-   "place": 1,
-   "wins": 2,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 3,
-   "points": 5
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "reGOLD eSport",
-   "place": 3,
-   "wins": 1,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 4,
-   "points": 4
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "Reveal Multigaming",
-   "place": 2,
-   "wins": 2,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 3,
-   "points": 5
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "Team 300",
-   "place": 4,
-   "wins": 1,
-   "losses": 1,
-   "win_games": 2,
-   "loss_games": 2,
-   "points": 3
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "The Bandits Prime",
-   "place": 1,
-   "wins": 2,
-   "losses": 0,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 5
-  },
-  {
-   "page": "Prime League 2nd Division/2027 Season/Fall Split",
-   "team": "VfB eSports",
-   "place": 5,
-   "wins": 1,
-   "losses": 0,
-   "win_games": 2,
-   "loss_games": 1,
-   "points": 2
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "2 Massive",
-   "place": 1,
-   "wins": 4,
-   "losses": 1,
-   "win_games": 9,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "B2U",
-   "place": 2,
-   "wins": 4,
-   "losses": 0,
-   "win_games": 8,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "DMG Esports Sweden",
-   "place": 4,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 6,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "FlameHard",
-   "place": 1,
-   "wins": 5,
-   "losses": 0,
-   "win_games": 10,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Fritt Fall",
-   "place": 5,
-   "wins": 3,
-   "losses": 3,
-   "win_games": 7,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Karolinerna",
-   "place": 7,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 3,
-   "loss_games": 9,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Lund Esports Organization OGs",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Lundqvist Darkside",
-   "place": 3,
-   "wins": 4,
-   "losses": 1,
-   "win_games": 9,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Mazepa",
-   "place": 7,
-   "wins": 0,
-   "losses": 4,
-   "win_games": 1,
-   "loss_games": 8,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Northern Wolves Esports",
-   "place": 5,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 4,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "OnlyWinByFF",
-   "place": 8,
-   "wins": 0,
-   "losses": 5,
-   "win_games": 2,
-   "loss_games": 10,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Rich Gang Sweden",
-   "place": 6,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 4,
-   "loss_games": 8,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Team CD",
-   "place": 6,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 5,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Team Lucidity Esports",
-   "place": 8,
-   "wins": 0,
-   "losses": 5,
-   "win_games": 2,
-   "loss_games": 10,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Tung Sahur Mid",
-   "place": 4,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "RIVALS LEAGUE/2026 Season/Season 2",
-   "team": "Turbo Gaming",
-   "place": 2,
-   "wins": 4,
-   "losses": 2,
-   "win_games": 9,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
    "page": "Prime League 3rd Division/2026 Season/Fall Split",
    "team": "1. Esport Club Frankfurt e.V.",
    "place": 7,
@@ -1847,6 +727,726 @@
    "points": 0
   },
   {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "404 Multigaming e.V.",
+   "place": 5,
+   "wins": 1,
+   "losses": 1,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 2
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "AceGaming",
+   "place": 7,
+   "wins": 0,
+   "losses": 0,
+   "win_games": 0,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "Babos Gaming",
+   "place": 4,
+   "wins": 1,
+   "losses": 0,
+   "win_games": 2,
+   "loss_games": 0,
+   "points": 3
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "BvP",
+   "place": 7,
+   "wins": 0,
+   "losses": 3,
+   "win_games": 0,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "DKB XPERION NXT",
+   "place": 8,
+   "wins": 0,
+   "losses": 1,
+   "win_games": 1,
+   "loss_games": 2,
+   "points": 1
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "Hannover Esports e.V.",
+   "place": 1,
+   "wins": 2,
+   "losses": 0,
+   "win_games": 4,
+   "loss_games": 0,
+   "points": 6
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "Locked In (Dutch Team)",
+   "place": 3,
+   "wins": 1,
+   "losses": 1,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 4
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "MT1 Esports",
+   "place": 4,
+   "wins": 0,
+   "losses": 3,
+   "win_games": 3,
+   "loss_games": 6,
+   "points": 3
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "No Need Orga",
+   "place": 4,
+   "wins": 1,
+   "losses": 1,
+   "win_games": 3,
+   "loss_games": 3,
+   "points": 3
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "PvB (Swiss Team)",
+   "place": 5,
+   "wins": 1,
+   "losses": 1,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 2
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "regnum4games",
+   "place": 1,
+   "wins": 2,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 3,
+   "points": 5
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "reGOLD eSport",
+   "place": 3,
+   "wins": 1,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 4,
+   "points": 4
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "Reveal Multigaming",
+   "place": 2,
+   "wins": 2,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 3,
+   "points": 5
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "Team 300",
+   "place": 4,
+   "wins": 1,
+   "losses": 1,
+   "win_games": 2,
+   "loss_games": 2,
+   "points": 3
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "The Bandits Prime",
+   "place": 1,
+   "wins": 2,
+   "losses": 0,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 5
+  },
+  {
+   "page": "Prime League 2nd Division/2027 Season/Fall Split",
+   "team": "VfB eSports",
+   "place": 5,
+   "wins": 1,
+   "losses": 0,
+   "win_games": 2,
+   "loss_games": 1,
+   "points": 2
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Bilibili Gaming",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 5,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Dplus Kia",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 3,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "FlyQuest",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 5,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Fnatic",
+   "place": 12,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "G2 Esports",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 3,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "GAM Esports",
+   "place": 12,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 3,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Gen.G",
+   "place": 1,
+   "wins": 3,
+   "losses": 0,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Hanwha Life Esports",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 5,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "LNG Esports",
+   "place": 1,
+   "wins": 3,
+   "losses": 0,
+   "win_games": 4,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "MAD Lions KOI",
+   "place": 15,
+   "wins": 0,
+   "losses": 3,
+   "win_games": 1,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "paiN Gaming",
+   "place": 15,
+   "wins": 0,
+   "losses": 3,
+   "win_games": 0,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "PSG Talon",
+   "place": 12,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 1,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "T1",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Team Liquid",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 5,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Top Esports",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "2024 Season World Championship/Main Event",
+   "team": "Weibo Gaming",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 5,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "6GPA",
+   "place": 2,
+   "wins": 6,
+   "losses": 1,
+   "win_games": 12,
+   "loss_games": 6,
+   "points": 14
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "All for One Gaming",
+   "place": 2,
+   "wins": 4,
+   "losses": 3,
+   "win_games": 10,
+   "loss_games": 6,
+   "points": 14
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "CGN Esports",
+   "place": 1,
+   "wins": 6,
+   "losses": 1,
+   "win_games": 12,
+   "loss_games": 4,
+   "points": 16
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "DKB XPERION NXT",
+   "place": 1,
+   "wins": 6,
+   "losses": 1,
+   "win_games": 13,
+   "loss_games": 4,
+   "points": 17
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Entropy x Teufel",
+   "place": 7,
+   "wins": 2,
+   "losses": 5,
+   "win_games": 6,
+   "loss_games": 11,
+   "points": 7
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Esport Factory",
+   "place": 6,
+   "wins": 4,
+   "losses": 3,
+   "win_games": 8,
+   "loss_games": 9,
+   "points": 9
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Footprint Gaming",
+   "place": 5,
+   "wins": 3,
+   "losses": 4,
+   "win_games": 8,
+   "loss_games": 10,
+   "points": 9
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Kanji Esports",
+   "place": 8,
+   "wins": 1,
+   "losses": 6,
+   "win_games": 2,
+   "loss_games": 13,
+   "points": 2
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Lausanne-Sport Esports",
+   "place": 6,
+   "wins": 2,
+   "losses": 5,
+   "win_games": 7,
+   "loss_games": 10,
+   "points": 9
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "MT1 Esports",
+   "place": 8,
+   "wins": 2,
+   "losses": 5,
+   "win_games": 5,
+   "loss_games": 11,
+   "points": 6
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Münster Esports",
+   "place": 7,
+   "wins": 2,
+   "losses": 5,
+   "win_games": 5,
+   "loss_games": 11,
+   "points": 6
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "regnum4games",
+   "place": 4,
+   "wins": 3,
+   "losses": 4,
+   "win_games": 7,
+   "loss_games": 8,
+   "points": 10
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Reveal Multigaming",
+   "place": 4,
+   "wins": 4,
+   "losses": 3,
+   "win_games": 10,
+   "loss_games": 8,
+   "points": 12
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "Spongecord prime",
+   "place": 3,
+   "wins": 4,
+   "losses": 3,
+   "win_games": 9,
+   "loss_games": 6,
+   "points": 13
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "TeamOrangeGaming Academy",
+   "place": 5,
+   "wins": 3,
+   "losses": 4,
+   "win_games": 9,
+   "loss_games": 9,
+   "points": 11
+  },
+  {
+   "page": "Prime League 2nd Division/2026 Season/Fall Split",
+   "team": "VfB eSports",
+   "place": 3,
+   "wins": 4,
+   "losses": 3,
+   "win_games": 9,
+   "loss_games": 6,
+   "points": 13
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "JSK Academy",
+   "place": 5,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 6,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "New Era Team",
+   "place": 4,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 6,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "NextGeneration Esports",
+   "place": 7,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "Pegasus Esports",
+   "place": 6,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 3,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "Slam Dunk",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "Team Reds",
+   "place": 8,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 4,
+   "loss_games": 9,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "Team VDS",
+   "place": 2,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
+   "team": "Void Walkers",
+   "place": 1,
+   "wins": 5,
+   "losses": 0,
+   "win_games": 10,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "2 Massive",
+   "place": 1,
+   "wins": 4,
+   "losses": 1,
+   "win_games": 9,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "B2U",
+   "place": 2,
+   "wins": 4,
+   "losses": 0,
+   "win_games": 8,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "DMG Esports Sweden",
+   "place": 4,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 6,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "FlameHard",
+   "place": 1,
+   "wins": 5,
+   "losses": 0,
+   "win_games": 10,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Fritt Fall",
+   "place": 5,
+   "wins": 3,
+   "losses": 3,
+   "win_games": 7,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Karolinerna",
+   "place": 7,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 3,
+   "loss_games": 9,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Lund Esports Organization OGs",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Lundqvist Darkside",
+   "place": 3,
+   "wins": 4,
+   "losses": 1,
+   "win_games": 9,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Mazepa",
+   "place": 7,
+   "wins": 0,
+   "losses": 4,
+   "win_games": 1,
+   "loss_games": 8,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Northern Wolves Esports",
+   "place": 5,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 4,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "OnlyWinByFF",
+   "place": 8,
+   "wins": 0,
+   "losses": 5,
+   "win_games": 2,
+   "loss_games": 10,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Rich Gang Sweden",
+   "place": 6,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 4,
+   "loss_games": 8,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Team CD",
+   "place": 6,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 5,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Team Lucidity Esports",
+   "place": 8,
+   "wins": 0,
+   "losses": 5,
+   "win_games": 2,
+   "loss_games": 10,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Tung Sahur Mid",
+   "place": 4,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 2",
+   "team": "Turbo Gaming",
+   "place": 2,
+   "wins": 4,
+   "losses": 2,
+   "win_games": 9,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
    "page": "2026 Season World Championship/Main Event",
    "team": "Anyone's Legend",
    "place": 1,
@@ -2003,486 +1603,6 @@
    "wins": 0,
    "losses": 0,
    "win_games": 0,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "AZ Rising Eterna",
-   "place": 8,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Barcząca Esports Babylon",
-   "place": 5,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Blue Otter Europe",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Brest Esport",
-   "place": 10,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Burn The Battlefield",
-   "place": 16,
-   "wins": 0,
-   "losses": 5,
-   "win_games": 0,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Elysion Flora Fatalis",
-   "place": 15,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 1,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "G2 Hel",
-   "place": 4,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Good Chi Sakura",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Ionian Girls",
-   "place": 11,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Mental Rush",
-   "place": 2,
-   "wins": 4,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Moira-inbow",
-   "place": 14,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 1,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "NYX ROGUE",
-   "place": 13,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "SK Gaming Avarosa",
-   "place": 3,
-   "wins": 4,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Solary Eclipse",
-   "place": 7,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Team HsD",
-   "place": 12,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 5",
-   "team": "Vitality Rising Bees",
-   "place": 1,
-   "wins": 5,
-   "losses": 0,
-   "win_games": 5,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "JSK Academy",
-   "place": 5,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 6,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "New Era Team",
-   "place": 4,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 6,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "NextGeneration Esports",
-   "place": 7,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 6,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "Pegasus Esports",
-   "place": 6,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 3,
-   "loss_games": 7,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "Slam Dunk",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "Team Reds",
-   "place": 8,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 4,
-   "loss_games": 9,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "Team VDS",
-   "place": 2,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 7,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "Arabian League 2nd Division/2026 Season/Summer Split",
-   "team": "Void Walkers",
-   "place": 1,
-   "wins": 5,
-   "losses": 0,
-   "win_games": 10,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "El Menzah Esports",
-   "place": 7,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 1,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Enfida Esports",
-   "place": 9,
-   "wins": 0,
-   "losses": 4,
-   "win_games": 0,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Jendouba Esports",
-   "place": 7,
-   "wins": 1,
-   "losses": 3,
-   "win_games": 1,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "JSK Academy",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 3,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "JSK Esports",
-   "place": 1,
-   "wins": 4,
-   "losses": 0,
-   "win_games": 4,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Olympique Mnihla",
-   "place": 3,
-   "wins": 3,
-   "losses": 1,
-   "win_games": 3,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Olympique Mnihla Academy",
-   "place": 5,
-   "wins": 2,
-   "losses": 2,
-   "win_games": 2,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Simplicity Gaming",
-   "place": 1,
-   "wins": 4,
-   "losses": 0,
-   "win_games": 4,
-   "loss_games": 0,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Supreme Leaders",
-   "place": 5,
-   "wins": 2,
-   "losses": 2,
-   "win_games": 2,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "Tunisian Super League/2026 Season",
-   "team": "Zahrouni Esports",
-   "place": 9,
-   "wins": 0,
-   "losses": 4,
-   "win_games": 0,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "AZ Rising Eterna",
-   "place": 2,
-   "wins": 4,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Barcząca Esports Babylon",
-   "place": 4,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Blue Otter Europe",
-   "place": 8,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "G2 Hel",
-   "place": 7,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Good Chi Sakura",
-   "place": 6,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Ionian Girls",
-   "place": 11,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Mental Rush",
-   "place": 3,
-   "wins": 4,
-   "losses": 1,
-   "win_games": 4,
-   "loss_games": 1,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Packmiko E-Sports Eclipse",
-   "place": 14,
-   "wins": 0,
-   "losses": 5,
-   "win_games": 0,
-   "loss_games": 5,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Polish Gang",
-   "place": 12,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 1,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Project Conquerors Athena",
-   "place": 13,
-   "wins": 1,
-   "losses": 4,
-   "win_games": 1,
-   "loss_games": 4,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "SK Gaming Avarosa",
-   "place": 5,
-   "wins": 3,
-   "losses": 2,
-   "win_games": 3,
-   "loss_games": 2,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Solary Eclipse",
-   "place": 10,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Team HsD",
-   "place": 9,
-   "wins": 2,
-   "losses": 3,
-   "win_games": 2,
-   "loss_games": 3,
-   "points": 0
-  },
-  {
-   "page": "LoL Game Changers/2026 Season/Stage 4",
-   "team": "Vitality Rising Bees",
-   "place": 1,
-   "wins": 5,
-   "losses": 0,
-   "win_games": 5,
    "loss_games": 0,
    "points": 0
   },
@@ -2797,6 +1917,226 @@
    "points": 6
   },
   {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "El Menzah Esports",
+   "place": 7,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 1,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Enfida Esports",
+   "place": 9,
+   "wins": 0,
+   "losses": 4,
+   "win_games": 0,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Jendouba Esports",
+   "place": 7,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 1,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "JSK Academy",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 3,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "JSK Esports",
+   "place": 1,
+   "wins": 4,
+   "losses": 0,
+   "win_games": 4,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Olympique Mnihla",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 3,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Olympique Mnihla Academy",
+   "place": 5,
+   "wins": 2,
+   "losses": 2,
+   "win_games": 2,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Simplicity Gaming",
+   "place": 1,
+   "wins": 4,
+   "losses": 0,
+   "win_games": 4,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Supreme Leaders",
+   "place": 5,
+   "wins": 2,
+   "losses": 2,
+   "win_games": 2,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "Tunisian Super League/2026 Season",
+   "team": "Zahrouni Esports",
+   "place": 9,
+   "wins": 0,
+   "losses": 4,
+   "win_games": 0,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Clã NKZ VÓRAX",
+   "place": 3,
+   "wins": 8,
+   "losses": 3,
+   "win_games": 8,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "EmBRAZA! Esports",
+   "place": 1,
+   "wins": 10,
+   "losses": 1,
+   "win_games": 10,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Invictus Team",
+   "place": 7,
+   "wins": 4,
+   "losses": 7,
+   "win_games": 4,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Juventus Gaming Red",
+   "place": 11,
+   "wins": 2,
+   "losses": 9,
+   "win_games": 2,
+   "loss_games": 9,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "LØS Academy",
+   "place": 4,
+   "wins": 8,
+   "losses": 3,
+   "win_games": 8,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Marere e-Sports",
+   "place": 5,
+   "wins": 8,
+   "losses": 3,
+   "win_games": 8,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Neon eSports (Brazilian Team)",
+   "place": 6,
+   "wins": 7,
+   "losses": 4,
+   "win_games": 7,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "SharkBite Furious Gaming Black",
+   "place": 8,
+   "wins": 4,
+   "losses": 7,
+   "win_games": 4,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "SharkBite Furious Gaming White",
+   "place": 10,
+   "wins": 2,
+   "losses": 9,
+   "win_games": 2,
+   "loss_games": 9,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Smoke Tram",
+   "place": 2,
+   "wins": 10,
+   "losses": 1,
+   "win_games": 10,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Smoke Tram Ascension",
+   "place": 9,
+   "wins": 3,
+   "losses": 8,
+   "win_games": 3,
+   "loss_games": 8,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série A/2026 Season/Split 2",
+   "team": "Sphere Esports",
+   "place": 12,
+   "wins": 0,
+   "losses": 11,
+   "win_games": 0,
+   "loss_games": 11,
+   "points": 0
+  },
+  {
    "page": "2025 Season World Championship/Main Event",
    "team": "100 Thieves",
    "place": 12,
@@ -2954,6 +2294,666 @@
    "losses": 3,
    "win_games": 2,
    "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "AZ Rising Eterna",
+   "place": 2,
+   "wins": 4,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Barcząca Esports Babylon",
+   "place": 4,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Blue Otter Europe",
+   "place": 8,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "G2 Hel",
+   "place": 7,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Good Chi Sakura",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Ionian Girls",
+   "place": 11,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Mental Rush",
+   "place": 3,
+   "wins": 4,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Packmiko E-Sports Eclipse",
+   "place": 14,
+   "wins": 0,
+   "losses": 5,
+   "win_games": 0,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Polish Gang",
+   "place": 12,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 1,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Project Conquerors Athena",
+   "place": 13,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 1,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "SK Gaming Avarosa",
+   "place": 5,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Solary Eclipse",
+   "place": 10,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Team HsD",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 4",
+   "team": "Vitality Rising Bees",
+   "place": 1,
+   "wins": 5,
+   "losses": 0,
+   "win_games": 5,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "2 Massive",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 6,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "B2U",
+   "place": 1,
+   "wins": 3,
+   "losses": 0,
+   "win_games": 6,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Bulldog Academy",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Fenrir (Swedish Team)",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 5,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "FlameHard",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Hållbar Gaming",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 4,
+   "loss_games": 8,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Karolinerna",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 6,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Laoban Esports",
+   "place": 12,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 4,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Lund Esports Organization Academy",
+   "place": 1,
+   "wins": 3,
+   "losses": 0,
+   "win_games": 6,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Lundqvist Darkside",
+   "place": 3,
+   "wins": 3,
+   "losses": 1,
+   "win_games": 7,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Malsta Tigers",
+   "place": 15,
+   "wins": 0,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Mazepa",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 7,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "OnlyWinByFF",
+   "place": 12,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "RX-Esports",
+   "place": 12,
+   "wins": 1,
+   "losses": 3,
+   "win_games": 3,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "Team CD",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 8,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "RIVALS LEAGUE/2026 Season/Season 1",
+   "team": "The Final Tribe",
+   "place": 15,
+   "wins": 0,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "AZ Rising Eterna",
+   "place": 8,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Barcząca Esports Babylon",
+   "place": 5,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Blue Otter Europe",
+   "place": 9,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Brest Esport",
+   "place": 10,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Burn The Battlefield",
+   "place": 16,
+   "wins": 0,
+   "losses": 5,
+   "win_games": 0,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Elysion Flora Fatalis",
+   "place": 15,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 1,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "G2 Hel",
+   "place": 4,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Good Chi Sakura",
+   "place": 6,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Ionian Girls",
+   "place": 11,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Mental Rush",
+   "place": 2,
+   "wins": 4,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Moira-inbow",
+   "place": 14,
+   "wins": 1,
+   "losses": 4,
+   "win_games": 1,
+   "loss_games": 4,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "NYX ROGUE",
+   "place": 13,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "SK Gaming Avarosa",
+   "place": 3,
+   "wins": 4,
+   "losses": 1,
+   "win_games": 4,
+   "loss_games": 1,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Solary Eclipse",
+   "place": 7,
+   "wins": 3,
+   "losses": 2,
+   "win_games": 3,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Team HsD",
+   "place": 12,
+   "wins": 2,
+   "losses": 3,
+   "win_games": 2,
+   "loss_games": 3,
+   "points": 0
+  },
+  {
+   "page": "LoL Game Changers/2026 Season/Stage 5",
+   "team": "Vitality Rising Bees",
+   "place": 1,
+   "wins": 5,
+   "losses": 0,
+   "win_games": 5,
+   "loss_games": 0,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Alvora Gaming",
+   "place": 5,
+   "wins": 4,
+   "losses": 5,
+   "win_games": 9,
+   "loss_games": 11,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "BaronX",
+   "place": 4,
+   "wins": 6,
+   "losses": 3,
+   "win_games": 14,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Botafogo Esports",
+   "place": 5,
+   "wins": 5,
+   "losses": 4,
+   "win_games": 10,
+   "loss_games": 11,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Clã NKZ Reapers",
+   "place": 8,
+   "wins": 2,
+   "losses": 7,
+   "win_games": 5,
+   "loss_games": 14,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Clã NKZ Revengers",
+   "place": 3,
+   "wins": 7,
+   "losses": 2,
+   "win_games": 14,
+   "loss_games": 7,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Docta Esports Club",
+   "place": 1,
+   "wins": 7,
+   "losses": 2,
+   "win_games": 15,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Final Level eSports",
+   "place": 7,
+   "wins": 3,
+   "losses": 6,
+   "win_games": 7,
+   "loss_games": 12,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Final Level eSports Academy",
+   "place": 4,
+   "wins": 5,
+   "losses": 4,
+   "win_games": 10,
+   "loss_games": 9,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Final Level eSports Core",
+   "place": 10,
+   "wins": 0,
+   "losses": 9,
+   "win_games": 0,
+   "loss_games": 18,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Infinity Gaming (Brazilian Team)",
+   "place": 3,
+   "wins": 7,
+   "losses": 2,
+   "win_games": 14,
+   "loss_games": 6,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Juventus Gaming White",
+   "place": 7,
+   "wins": 4,
+   "losses": 5,
+   "win_games": 12,
+   "loss_games": 11,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Marere Academy",
+   "place": 2,
+   "wins": 7,
+   "losses": 2,
+   "win_games": 16,
+   "loss_games": 5,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Maze GG",
+   "place": 1,
+   "wins": 9,
+   "losses": 0,
+   "win_games": 18,
+   "loss_games": 2,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Ownage Gaming",
+   "place": 10,
+   "wins": 1,
+   "losses": 8,
+   "win_games": 4,
+   "loss_games": 16,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Ownage Gaming Black",
+   "place": 6,
+   "wins": 5,
+   "losses": 4,
+   "win_games": 13,
+   "loss_games": 10,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Phantom E-Sports",
+   "place": 9,
+   "wins": 2,
+   "losses": 7,
+   "win_games": 5,
+   "loss_games": 15,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Scale Esports",
+   "place": 9,
+   "wins": 2,
+   "losses": 7,
+   "win_games": 4,
+   "loss_games": 14,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Team Victory",
+   "place": 8,
+   "wins": 3,
+   "losses": 6,
+   "win_games": 9,
+   "loss_games": 13,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Torin",
+   "place": 6,
+   "wins": 4,
+   "losses": 5,
+   "win_games": 9,
+   "loss_games": 12,
+   "points": 0
+  },
+  {
+   "page": "LigaGG/CELOL Série B/2026 Season/Split 2",
+   "team": "Viktus",
+   "place": 2,
+   "wins": 7,
+   "losses": 2,
+   "win_games": 15,
+   "loss_games": 6,
    "points": 0
   },
   {
