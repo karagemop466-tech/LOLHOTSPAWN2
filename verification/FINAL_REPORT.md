@@ -231,3 +231,30 @@ the two remaining live data-quality and provenance limitations surfaced in §9:
 4. **Combined verification:** `python3 verification/test_verifier.py` → **34/34**; `python3 verification/check_dom_contract.py`
    → **PASS**; `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` → **36 PASS · 0 FAIL · 1 WARN (`D18` stale diagnostic snapshot)**.
 
+
+---
+
+## 13. Session `arena/b132c242-lolhotspawn2` — reconciliation and integration (2026-10-23)
+
+`main` moved while this session worked (PR #17 merged a different standings implementation). The merge
+kept the parallel session's model base and re-applied this session's additions on top; nothing was
+discarded. See `COORDINATION.md` for the full reconciliation table.
+
+**Added on top of `main`**
+
+- `MULTI_DIVISION_STANDINGS`: a standings page with more than one first place halves the edge and caps
+  confidence at Low.
+- Prior fallback chain now ends at the pooled global median only as a last resort (competition median →
+  competition tier → tournament tier → team's competition → global).
+- Conservative name variants as a resolver fallback (`Locked In (Dutch Team)` ↔ `Locked IN`, `ex-`,
+  `e.V.`), refused when ambiguous.
+- Every row carries `why` (plain English), a `standings` block with **each team's own table link** and
+  sample size, and a `source_url` naming the table actually used.
+- Executive summary "Where to find the picks" block + next-24h jump; per-league unresolved table.
+- 31-endpoint betting-source probe published with its measured status.
+- Verifier `D21` + `S7b`, 37 self-tests, and an offline model regression test.
+- `set -o pipefail` so a failed pipeline fails the CI run.
+
+**Verification on the merged branch:** 37 PASS · 0 FAIL · 1 WARN (D18); 37/37 self-tests; model
+regression PASS; DOM contract PASS; jsdom render of all six pages with 0 JS errors; live pipeline runs
+39985557010 and 39985879771 successful; probe 31 endpoints, 0 usable.
