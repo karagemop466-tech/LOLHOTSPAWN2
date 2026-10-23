@@ -45,21 +45,34 @@ def probe(name, url, kind):
     status = r.get("status")
     is_json = False
     lol_hits = None
+    detail = {}
     try:
         data = json.loads(text)
         is_json = True
-        if isinstance(data, dict) and isinstance(data.get("series"), list):
-            lol_hits = sum(1 for s in data["series"]
-                           if "league of legends" in json.dumps(s).lower())
+        if isinstance(data, dict):
+            detail["top_level_keys"] = sorted(data.keys())[:12]
+            if isinstance(data.get("series"), list):  # Kalshi
+                tickers = [str(s.get("ticker", "")) for s in data["series"] if isinstance(s, dict)]
+                detail["series_count"] = len(tickers)
+                detail["series_ticker_sample"] = tickers[:10]
+                lol_hits = sum(1 for s in data["series"]
+                               if "league of legends" in json.dumps(s).lower()
+                               or str(s.get("ticker", "")).upper().startswith("KXLOL"))
         elif isinstance(data, list):
+            detail["item_count"] = len(data)
             lol_hits = sum(1 for s in data[:50]
                            if "league of legends" in json.dumps(s).lower())
+            # Manifold-style search results: how many look like per-match ("X vs Y")?
+            questions = [str(s.get("question", "")) for s in data[:50] if isinstance(s, dict)]
+            if questions:
+                detail["vs_style_questions"] = sum(1 for q in questions if " vs " in q.lower())
+                detail["question_sample"] = questions[:3]
     except Exception:
         pass
     return {
         "name": name, "url": url, "kind": kind, "http_status": status,
         "bytes": len(text.encode("utf-8", "ignore")), "is_json": is_json,
-        "lol_mentions_in_first_items": lol_hits,
+        "lol_mentions_in_first_items": lol_hits, "detail": detail,
         "verdict": ("reachable; structured JSON — candidate for a future adapter, "
                     "needs per-match price verification before any production use"
                     if status == 200 and is_json else
