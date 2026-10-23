@@ -1,36 +1,36 @@
 {
- "verified_at": "2026-10-23T16:04:10.134177+00:00",
+ "verified_at": "2026-10-23T16:25:48.682200+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 36,
   "FAIL": 0,
-  "WARN": 1,
+  "WARN": 2,
   "SKIP": 0
  },
- "data_matches": 175,
+ "data_matches": 172,
  "methods": {
+  "UNRESOLVED": 0,
+  "MARKET_CONSENSUS": 8,
+  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO": 88,
+  "MODEL_ELO_THIN": 75,
+  "MODEL_LEAGUE_PRIOR": 0,
   "MODEL_STANDINGS": 0,
   "MARKET_SINGLE": 1,
-  "MARKET_BOOKS": 0,
-  "UNRESOLVED": 0,
-  "MARKET_POLYMARKET": 0,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MARKET_CONSENSUS": 8,
-  "MODEL_ELO_THIN": 77,
-  "MODEL_ELO": 89
+  "MARKET_BOOKS": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "175 matches, generated_at=2026-10-23T16:00:44.679049Z (0.1h old)"
+   "detail": "172 matches, generated_at=2026-10-23T16:25:47.544438Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 175 rows have team1, team2 and a start time"
+   "detail": "all 172 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -72,7 +72,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 175 rows carry at least one source URL"
+   "detail": "all 172 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -126,7 +126,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=175, rows=175"
+   "detail": "declared=172, rows=172"
   },
   {
    "id": "D20",
@@ -138,19 +138,19 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=175, priced=175, missing=0, extra=0, excluded=13, leaked=0"
+   "detail": "lobby upcoming=172, priced=172, missing=0, extra=0, excluded=12, leaked=0"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 75 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 74 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "WARN",
-   "detail": "126/132 matched fixture times agree with Leaguepedia; 43 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.3h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
+   "detail": "125/131 matched fixture times agree with Leaguepedia; 41 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.7h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
    "items": [
     "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
     "FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30",
@@ -170,13 +170,13 @@
    "id": "S1",
    "title": "all required site files exist",
    "status": "PASS",
-   "detail": "9 files present"
+   "detail": "10 files present"
   },
   {
    "id": "S10",
    "title": "phone bottom nav has one grid column per link on every page",
    "status": "PASS",
-   "detail": "5 links, 5 columns on every page"
+   "detail": "6 links, 6 columns on every page"
   },
   {
    "id": "S2",
@@ -230,7 +230,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "3 external link(s) collected for manual review; 0 plain-http"
+   "detail": "5 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "W1",
@@ -249,6 +249,15 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
+  },
+  {
+   "id": "X1",
+   "title": "external links reachable (official-source links resolve)",
+   "status": "WARN",
+   "detail": "3/5 returned 2xx/3xx; 1 blocked by the host; 0 unreachable",
+   "items": [
+    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403"
+   ]
   },
   {
    "id": "REQ",
