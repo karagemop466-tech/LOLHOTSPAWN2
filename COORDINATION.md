@@ -469,7 +469,7 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 
 | Task | Status | Owner | Files (exclusive scope) |
 |---|---|---|---|
-| T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | done | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
+| T19 Workflow reliability: make the branch pipeline artifact commit/rebase/push fail loudly and safely, without touching other sessions' claimed site/data scopes | in progress | arena/bdecdf49 | `.github/workflows/pipeline-test.yml`; this file for coordination entries |
 
 **Scope note:** This session uses Arena's fixed branch `arena/bdecdf49-lolhotspawn2`; branch creation/switching is not permitted in this workspace. After checking the active claims on `arena/bd37dbe6` (T13–T16) and `arena/e76bc0ae` (T17–T18), the code-change scope is limited to `.github/workflows/pipeline-test.yml`. `COORDINATION.md` is maintained as the shared log. No files in their site, source/model, or fixture scopes are edited; this is not the final integration claim.
 
@@ -481,6 +481,7 @@ Branch note: Arena fixes this session's branch as `arena/bd37dbe6-lolhotspawn2`;
 - Latest run payload (generated **2026-10-23T16:02:01Z**): **175** upcoming lobby fixtures, **175 resolved**, **9 market-derived** (8 consensus, 1 single-market), **166 model-derived**, **0 unresolved**, **91 low-confidence**, and **13 cancelled feed fixtures excluded from picks**; **0** upcoming lobby fixtures lacked a published match page. These are values captured by this run, not a guarantee about future refreshes.
 - Latest source status: Pinnacle **ok** (136 records), Polymarket **ok** (9), Hotspawn lobby **ok** (175), Leaguepedia MatchSchedule **ok** (31,732), and Bovada **error** (0 records). Do not treat Bovada lines as used in this run; its degraded status is included in the generated payload. The eight market-consensus rows still contain repeated Pinnacle matchup records; that is the already-logged R16/source-key issue, outside this workflow-only scope.
 - `verification/report.json` for run 39982748796: **33 PASS, 0 FAIL, 0 WARN, 1 SKIP**. D21 passed: lobby upcoming 175, priced 175, missing 0, extra 0, cancelled excluded 13, leaked 0. D18 was skipped because no Leaguepedia schedule snapshot was supplied.
+- Main then advanced with PR #13 (`1983290`), which adds model-source provenance flags and identifies the committed Leaguepedia snapshot as stale. During rebase, the two generated-output commits from the pre-PR-13 tree were skipped so they would not overwrite those newer source flags and verifier results; main's 15:58 payload and report are retained. A fresh pipeline run on this rebased tree is pending, so T19 remains in progress.
 
 ### Cross-session findings (resolved)
 
