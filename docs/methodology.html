@@ -78,6 +78,7 @@
       <li><b>Shrinkage</b>: with few games, the Elo probability is pulled toward 50/50 (shrink = games/(games+8)).</li>
       <li><b>Current-split standings fallback</b>: when a newly named or amateur team has no individual rows in <span class="flag">MatchSchedule</span> yet has recorded series in Leaguepedia's <span class="flag">Standings</span> table for the active split, a Laplace-smoothed split win-rate rating anchored to the competition prior is used (<span class="flag">MODEL_STANDINGS</span>, capped at Low confidence).</li>
       <li><b>Head-to-head</b>: a smoothed H2H term contributes at most 15% and only with at least three meetings.</li>
+      <li><b>How the standings rating is computed</b>: the missing side's split record becomes an Elo offset from the competition prior — <span class="mono">rating = prior + 400·log₁₀(wr/(1−wr))</span>, where <span class="mono">wr = clamp(0.65·wr<sub>series</sub> + 0.35·wr<sub>games</sub>, 0.15, 0.85)</span> from Laplace-smoothed series/game win-rates (requires ≥1 decided series). The two ratings then go through the same Elo probability + shrinkage as a rated pair. It never overrides a market line, ignores strength of schedule inside the split, and is capped at Low confidence.</li>
       <li><b>One missing side</b>: the competition median rating (or tier prior) is substituted and the shrink is halved; the row is labelled <span class="flag">MODEL_LEAGUE_PRIOR</span>.</li>
       <li><b>No history at all</b>: the row is <b>unresolved</b> (50/50 placeholder) and listed on its own page.</li>
     </ul>

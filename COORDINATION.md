@@ -1,5 +1,21 @@
 # Coordination Board
 
+## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (in progress)
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| T13 Standings fallback for non-market fixtures (Leaguepedia `Standings`, Bradley–Terry, `MODEL_STANDINGS`) between Elo and league-prior | done | arena/92bfcdd3 | scripts/fetch_leaguepedia.py, scripts/model.py, scripts/update_picks.py, .github/workflows/update-picks.yml, verification/test_standings_model.py |
+| T14 Phone-first executive summary: starting-soon picks first, quick-jump links, per-league unresolved/limitations table; bottom-nav 5-col fix | done | arena/92bfcdd3 | docs/index.html, docs/unresolved.html, docs/picks.html, docs/methodology.html, docs/assets/app.js, docs/assets/style.css |
+| T15 Fresh source research (established books → esportsbooks → community) + Actions probe of new candidates; PR + merge + Pages check | done (PR below) | arena/92bfcdd3 | research/betting-sources.md, scripts/probe_sources.py, .github/workflows/pipeline-test.yml, COORDINATION.md, README.md |
+
+Baseline at claim (main `3addc56`): 189 fixtures · 9 market · 82 MODEL_ELO · 74 MODEL_ELO_THIN · 24 MODEL_LEAGUE_PRIOR · 0 UNRESOLVED · 101 low-confidence; `scripts/verify_site.py` 31 PASS / 0 FAIL. No other session active on these files.
+
+**Results (2026-10-23):** live branch runs 39980317947 / 39981419030 / 39982897776 all **success**. Latest payload: 188 fixtures · 9 market · 81 MODEL_ELO · 74 MODEL_ELO_THIN · **4 MODEL_STANDINGS** (PRM 3rd Div, from 167 Leaguepedia standings rows / 14 competitions) · 20 MODEL_LEAGUE_PRIOR (was 24) · 0 UNRESOLVED. `verify_site.py` **31 PASS / 0 FAIL / 0 WARN**, verifier self-tests 27/27, standings unit test 11/11, jsdom DOM checks 14/14. Probe of 13 candidate books/aggregators: no new structured per-match LoL feed usable from CI (Kalshi: no LoL series; Manifold: futures only; esportsbooks 403/404/503) — `data/diag/source_probe.json`. Flagged (non-blocking, on Flagged page + `verification/flagged_items.md` S1–S3): 20 prior-only rows whose Hotspawn names match no verifiable Leaguepedia identity; 5 competitions with no standings table; probe candidates need human verification before any adapter.
+**Merge reconciliation (2026-10-23, arena/92bfcdd3):** main advanced via PRs #11–#15 (sessions bd37dbe6/cd27b02f/b252f309: lobby-authoritative fixture set — 13 cancelled fixtures excluded, verifier D21/D8d, coverage audit) while this branch was in flight. Merged `origin/main` (7d27d82) into this branch: generated files kept branch copy pending CI regeneration; style.css kept main's `minmax` nav columns; index hero actions combined; research sections kept both (main §11, this session renumbered §12). No other session's work discarded. Post-merge pipeline-test must regenerate the payload (175 lobby fixtures + standings) and pass D21/D8d before PR #16 merges.
+**Second reconciliation (2026-10-23):** session `arena/0fb2d0c7` (T17–T19, PRs #18/#19) independently implemented Standings + Unibet Kambi feed + verified aliases and merged first. This branch adopted their `fetch_leaguepedia.py`/`model.py` wholesale (standings→Elo blend supersedes this session's Bradley–Terry variant, live-verified on-branch), kept this session's site work (starting-soon exec summary, per-league unresolved table, standings filter), research §12 + source probe, and rewrote `verification/test_standings_model.py` against the merged semantics (10/10 pass). No work discarded silently; formula history in `research/betting-sources.md` §12.3.
+
+
+
+
 Shared task board. Rule: claim a task here (session ID + file scope) and push the claim before starting. A status of **needs review** means the item is published on the site's *Flagged for Review* page and does not block anything. Never mark a task verified without the official source link.
 
 > Branch note: Arena tracks this session by branch `arena/fa3f554c-lolhotspawn2` and the tooling does not permit creating other branches. That branch is the session branch required by the system, so it stands in for the `session-<id>/<task>` naming convention.
