@@ -164,35 +164,28 @@ _Filled in after merging the verification PR._
 
 ## 9. Follow-up integration audit — 2026-10-23 (Arena session `arena/b252f309-lolhotspawn2`)
 
-This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. The latest branch pipeline snapshot was generated at **2026-10-23 15:47:57 UTC** by successful Actions run
-[39981008309](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39981008309), and was **0.0 hours old** at local verification.
-It contains **188 fixtures**: 9 with external market data, 179 Elo-model estimates, and 0 unresolved placeholders. The
-scheduled six-hour refresh remains configured. The latest observed main-branch refresh (Actions run
-[39942806398](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39942806398)) and Pages build
-([39943048408](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39943048408)) succeeded. The latest scheduled
-verification run ([39949842068](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39949842068)) also succeeded;
-the new source-flagging and navigation changes are on the branch pending integration.
+This dated audit supplements (it does not overwrite) the 2026-10-21 run metrics above. After re-integrating merged PR #12,
+the current payload snapshot is **2026-10-23 15:52:07 UTC** (successful main refresh run
+[39981419329](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39981419329)). It contains **175 upcoming lobby
+fixtures**: 9 with external market data, 166 Elo-model estimates, 0 unresolved placeholders, and 91 low-confidence rows.
+The 13 cancelled API fixtures are excluded from picks and separately listed with source links; coverage rule D21 confirms
+175/175 upcoming fixtures priced, no priced extras, and all 13 cancelled rows excluded. The six-hour refresh is active.
 
-The audit found and fixed two presentation/provenance issues:
+The audit found and addressed source and navigation clarity:
 
-1. The mobile fixed navigation had **five destinations but only four CSS grid columns**, which could strand the last
-   destination on an extra row on narrow screens. It now has five responsive columns; `verification/check_dom_contract.py`
-   checks that every page's mobile-nav link count equals the stylesheet's column count.
-2. **37/179 model rows** linked only to a generic Leaguepedia Cargo table, not a fixture-specific competition page,
-   in the latest branch payload. The model now adds `GENERIC_RESULTS_SOURCE` for this case; all 37 such model rows carry
-   the flag, and the Flagged page explains it. A market row also links this generic table as a secondary Elo cross-check,
-   but is priced by bookmaker/market consensus. The verifier requires each model row to have a results-source URL and
-   fails if a generic Cargo table is not accompanied by the flag. The source is community-maintained, not official
-   organizer verification; that caveat is explicit in the Executive Summary, Methodology, and Flagged for review pages.
+1. The five-link mobile navigation is now checked against its CSS columns on every page (S10 and the DOM contract).
+   The earlier four-column bug was fixed in merged PR #12; long URLs also wrap to preserve 390px phone layouts.
+2. **24/166 model rows** in this snapshot link only to a generic Leaguepedia Cargo table, not a fixture-specific competition
+   page. The model now adds `GENERIC_RESULTS_SOURCE` for those cases; all 24 rows in the audit payload carry the flag, and
+   the Flagged page explains it. The verifier requires a model results-source URL and fails if a generic table is unflagged.
+   Leaguepedia is community-maintained, not official organizer verification; this is disclosed on the Executive Summary,
+   Methodology, and Flagged pages. External line availability and low-confidence model limitations remain visible.
 
-Updated audit suite on the refreshed branch payload: **33 PASS, 0 FAIL, 1 WARN**; `verification/test_verifier.py`
-**32/32**; DOM contract PASS. The sole warning is **D18**: the committed Leaguepedia schedule snapshot's newest diagnostic capture is
-2026-10-21T20:44:30Z, more than 24 hours old. It matches 137 fixtures, shows 10 timestamp differences, and omits 51
-fixtures. The warning is now explicitly labelled as stale/historical and is not represented as current reschedules. The
-fresh 2026-10-23 pipeline fetched 203 Leaguepedia schedule rows; the current payload has no `START_TIME_MISMATCH` flags,
-but those raw row-level results are not persisted, so an independent current timestamp audit remains limited. Hotspawn
-remains the displayed pick-lock source; confirm current times with an event organizer. The five-column mobile navigation
-and internal-link checks pass. In run 39981008309, Hotspawn (188 fixtures), Pinnacle (62 records), Polymarket (9 records),
-and Leaguepedia (31,732 results) returned `ok`; Bovada returned `error` with 0 records. Bovada's degraded status is
-visible in the source-status tables, and the market prices use available healthy inputs. The branch payload is not yet
-the production Pages payload until PR integration and deployment.
+Updated audit suite: **35 PASS, 0 FAIL, 1 WARN**; `verification/test_verifier.py` **32/32**; DOM contract PASS. D18 is
+explicitly a stale-snapshot warning: the newest committed diagnostic capture is 2026-10-21T20:44:30Z; among 132 matched
+fixtures it shows 6 historical time differences and omits 43 fixtures. These are not represented as confirmed current
+reschedules. The fresh 2026-10-23 run fetched 203 Leaguepedia schedule rows and current rows have no
+`START_TIME_MISMATCH` flags, but raw current schedule rows are not persisted for independent comparison. Hotspawn controls
+Pick'em lock times. Latest source status in the 15:52 payload: Hotspawn 175, Pinnacle 136, Bovada 8, Polymarket 9, and
+Leaguepedia 31,732 — all `ok`. The new source flagging and detailed verifier changes remain in PR #13 pending merge and
+production Pages deployment.
