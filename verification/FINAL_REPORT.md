@@ -190,3 +190,36 @@ comparison. Hotspawn controls Pick'em lock times. Latest source status (run 3998
 Polymarket 9, and Leaguepedia 31,732 were `ok`; Bovada returned `error` with 0 events. The bookmaker degradation is
 visible in Source status, and the pipeline prices from healthy market inputs rather than inventing Bovada prices. PR #13
 is open; final Pages deployment must be confirmed after merge.
+
+## 10. Market deduplication, Unibet sportsbook redundancy & 100% provenance upgrade — 2026-10-23 (Arena session `arena/0fb2d0c7-lolhotspawn2`)
+
+Building on merged PRs #12 (`arena/bd37dbe6-lolhotspawn2`) and #13 (`arena/b252f309-lolhotspawn2`), this session resolved
+the two remaining live data-quality and provenance limitations surfaced in §9:
+
+1. **Pinnacle parent-Regular deduplication + `D20` unique-bookmaker invariant (`REQ4`):** Pinnacle's Arcadia guest endpoint
+   returns 6–8 child/special/map/handicap `matchup` rows alongside each parent match. `scripts/fetch_markets.py` now keeps
+   only `parentId is None` and `units == "Regular"` matchups (`period == 0`, `type == "moneyline"` via
+   `/leagues/{id}/markets/straight`), and `scripts/model.py` enforces at most one quote per `source_key` per fixture.
+   Pinnacle quotes dropped from `134` duplicate rows to **8** clean two-way full-match moneylines (`D20` PASS).
+2. **Fourth independent external market provider — Unibet (Kambi JSON feed):** Added `fetch_unibet()` in
+   `scripts/fetch_markets.py` querying Kambi's public offering API
+   (`https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true`),
+   strictly restricted to pre-match (`event.state == "NOT_STARTED"`), two-way (`len(outcomes) == 2`), full-match
+   `Match Odds` (`criterion.label == "Match Odds"`), linked to HTTP-200 event pages on `https://www.unibet.com.au/betting/sports/event/{id}`.
+   During live Actions run [39983000259](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39983000259) when
+   Bovada returned `0` events, Unibet supplied **8/8** Worlds 2026 Swiss moneylines alongside Pinnacle (`8`) and
+   Polymarket (`9`), keeping every Worlds fixture backed by **3 independent external providers**.
+3. **100% fixture-specific Leaguepedia provenance (`0` `GENERIC_RESULTS_SOURCE` rows) + `best_of` & team resolution:**
+   Verified all 12 active Hotspawn tournaments, canonical team redirects (`TeamRedirects`), current-split `Standings`
+   (`2,880` rows), undated upcoming `MatchSchedule` pairings (`DateTime_UTC IS NULL`, e.g. `Defiance eSports vs REH Gaming`),
+   and ±18-day rescheduled pairings (`RIVALS LEAGUE/2026 Season/Season 2`). Fixed `LYON` → `LYON (2024 American Team)` in
+   Worlds 2026, scoped Hotspawn's `Phong Vũ Buffalo` collision in `PRM 2nd Division 26-27 Fall` to verified split
+   participant `PvB (Swiss Team)` (flagged `HOTSPAWN_NAME_COLLISION`), and fixed division-first tier priors so 2nd/3rd
+   Division leagues never inherit Tier-1 ratings (`VfB eSports` vs `regnum4games`: `1511` vs `1512` Elo instead of an
+   inflated `1652` prior). Result on live run `39983000259`: **175/175 fixtures (`100%`)** link their exact Leaguepedia
+   competition page (`0` generic `Special:CargoTables` fallbacks), **175/175** carry verified `best_of` (`138` Bo3,
+   `33` Bo1, `4` Bo5), and **166/166** model fixtures have recorded team evidence (`89 MODEL_ELO` + `77 MODEL_ELO_THIN`,
+   `0` prior-only, `0` unresolved).
+4. **Combined verification:** `python3 verification/test_verifier.py` → **34/34**; `python3 verification/check_dom_contract.py`
+   → **PASS**; `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` → **36 PASS · 0 FAIL · 1 WARN (`D18` stale diagnostic snapshot)**.
+

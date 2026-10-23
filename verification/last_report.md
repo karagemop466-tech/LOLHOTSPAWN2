@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-23T15:59:00.619828+00:00_
-175 matches · MODEL_ELO: 78 · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 71 · UNRESOLVED: 0 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 17 · MARKET_CONSENSUS: 8 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1
+_2026-10-23T16:04:10.134177+00:00_
+175 matches · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · UNRESOLVED: 0 · MARKET_POLYMARKET: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 77 · MODEL_ELO: 89
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 175 matches, generated_at=2026-10-23T15:58:28.634505Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 175 matches, generated_at=2026-10-23T16:00:44.679049Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 175 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -22,9 +22,10 @@ _2026-10-23T15:59:00.619828+00:00_
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 declared counts agree with the rows | PASS | counts.resolved/unresolved consistent |
 | D11 declared count equals number of rows | PASS | declared=175, rows=175 |
+| D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=175, priced=175, missing=0, extra=0, excluded=13, leaked=0 |
-| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 67 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 126/132 matched fixture times agree with Leaguepedia; 43 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.2h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 75 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 126/132 matched fixture times agree with Leaguepedia; 43 fixture(s) not in the snapshot; 6 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (43.3h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 9 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 5 links, 5 columns on every page |
@@ -49,7 +50,7 @@ _2026-10-23T15:59:00.619828+00:00_
 | REQ1 | A pick exists for every match (pick is one of the two teams) | PASS | D3, D11 |
 | REQ2 | Win probabilities for both teams on every match, summing to 100% | PASS | D4, D5 |
 | REQ3 | Probabilities come from outside Hotspawn (books/markets/our results model) | PASS | D12, W3 |
-| REQ4 | External betting lines used where they exist (markets first) | PASS | D8a, D6 |
+| REQ4 | External betting lines used where they exist (markets first) | PASS | D8a, D6, D20 |
 | REQ5 | Every match without a market line still gets a pick + documented method | PASS | D8b, D13 |
 | REQ6 | Separate unresolved section, with limitations, linked from the exec summary | PASS | S4, S5, S5b |
 | REQ7 | Executive summary links in-site to the updated picks list | PASS | S4 |

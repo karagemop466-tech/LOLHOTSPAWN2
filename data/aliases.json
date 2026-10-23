@@ -1,0 +1,89 @@
+{
+  "_comment": "Canonical team and tournament mappings verified line-by-line against Leaguepedia (lol.fandom.com) and external sportsbooks. Never infer unconfirmed names.",
+  "hotspawn_to_leaguepedia": {
+    "LOS": "LOS",
+    "LØS": "LOS",
+    "LYON": "LYON (2024 American Team)",
+    "Team Secret Whales": "Team Secret Whales",
+    "Karmine Corp": "Karmine Corp",
+    "Anyone's Legend": "Anyone's Legend",
+    "Bilibili Gaming": "Bilibili Gaming",
+    "Invictus Gaming": "Invictus Gaming",
+    "Dplus KIA": "Dplus KIA",
+    "Gen.G": "Gen.G",
+    "Hanwha Life Esports": "Hanwha Life Esports",
+    "Top Esports": "Top Esports",
+    "G2 Esports": "G2 Esports",
+    "Movistar KOI": "Movistar KOI",
+    "CTBC Flying Oyster": "CTBC Flying Oyster",
+    "Team Liquid": "Team Liquid",
+    "T1": "T1",
+    "Solary": "Solary",
+    "Galions": "Galions",
+    "Rich Gang": "Rich Gang (Norwegian Team)",
+    "Locked IN": "Locked In (Dutch Team)",
+    "Victorious Demons": "Team VDS",
+    "Team Gromp": "Team Gromp (Australian Team)",
+    "Infinity Gaming": "Infinity Gaming (Brazilian Team)",
+    "Neon eSports": "Neon eSports (Brazilian Team)",
+    "REH Gaming": "REH Gaming"
+  },
+  "competition_scoped_aliases": {
+    "PRM 2nd Division 26-27 Fall": {
+      "Phong Vũ Buffalo": {
+        "canonical": "PvB (Swiss Team)",
+        "flag": "HOTSPAWN_NAME_COLLISION",
+        "source_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
+        "note": "Hotspawn expands the 'PVB' tag to defunct Vietnamese team Phong Vũ Buffalo; official Prime League 2nd Division 26-27 Fall participant is PvB (Swiss Team)."
+      }
+    }
+  },
+  "market_aliases": {
+    "pinnacle": {
+      "Liquid": "Team Liquid",
+      "Bilibili": "Bilibili Gaming",
+      "Secret Whales": "Team Secret Whales",
+      "Invictus": "Invictus Gaming",
+      "Hanwha Life": "Hanwha Life Esports",
+      "G2": "G2 Esports",
+      "LYON": "LYON (2024 American Team)",
+      "Lyon Gaming": "LYON (2024 American Team)",
+      "LØS": "LOS"
+    },
+    "unibet": {
+      "LØS": "LOS",
+      "Los Grandes": "LOS",
+      "Lyon Gaming": "LYON (2024 American Team)",
+      "LYON": "LYON (2024 American Team)",
+      "Gen.G Esports": "Gen.G",
+      "TOP Esports": "Top Esports",
+      "Dplus": "Dplus KIA"
+    },
+    "bovada": {
+      "Los Grandes": "LOS",
+      "LØS": "LOS",
+      "Team Secret": "Team Secret Whales",
+      "Lyon Gaming": "LYON (2024 American Team)",
+      "LYON": "LYON (2024 American Team)"
+    },
+    "polymarket": {
+      "LYON": "LYON (2024 American Team)",
+      "Lyon Gaming": "LYON (2024 American Team)",
+      "LØS": "LOS"
+    }
+  },
+  "tournament_pages": {
+    "Worlds 2026 Main Event": "2026 Season World Championship/Main Event",
+    "LGC Rising 2026 Playoffs": "LoL Game Changers/2026 Season/Playoffs",
+    "LCP 2027 Promotion": "LCP/2027 Season/Promotion",
+    "PRM 2nd Division 26-27 Fall": "Prime League 2nd Division/2027 Season/Fall Split",
+    "PRM 3rd Division 26-27 Fall": "Prime League 3rd Division/2027 Season/Fall Split",
+    "Arabian League 2nd Division 2026 Summer": "Arabian League 2nd Division/2026 Season/Summer Split",
+    "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": "Arabian Regional Championship 2026/Qualifiers/LB-Li-SY-PS",
+    "Komplettligaen 2026 Autumn": "Komplettligaen/2026 Season/Autumn Split",
+    "RIVALS LEAGUE Season 2": "RIVALS LEAGUE/2026 Season/Season 2",
+    "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
+    "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
+    "LigaGG CELOL B 2026 Split 2 Playoffs": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs"
+  }
+}

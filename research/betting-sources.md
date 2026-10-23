@@ -253,7 +253,8 @@ Only the sources in the **verified** column were read directly. The others come 
 
 | Source | Type | Status | What the source says | Link |
 |---|---|---|---|---|
-| Pinnacle (guest front-end feed) | Sharp esportsbook | **Verified in production** (unofficial feed) | Prices the World Championship and EMEA Masters only; no amateur leagues | https://www.pinnacle.com/en/esports/league-of-legends |
+| Pinnacle (guest front-end feed) | Sharp esportsbook | **Verified in production** (parent Regular `period == 0` moneylines only; child Kills/Towers/Dragons prop matchups excluded) | Prices the World Championship and EMEA Masters only; no amateur leagues | https://www.pinnacle.com/en/esports/league-of-legends |
+| Unibet (Kambi JSON offering API) | Major EU/AU sportsbook network | **Verified in production** (`eu-offering-api.kambicdn.com` pre-match 2-way `Match Odds`, linked per event on `www.unibet.com.au`) | Prices the World Championship (8/8 Swiss matches verified) and major LoL events | https://www.unibet.com.au/betting/sports/filter/esports/league_of_legends/all/matches |
 | Bovada (coupon JSON) | US-facing esportsbook | **Verified in production** (unofficial JSON) | Prices the World Championship and a few other matches | https://www.bovada.lv/sports/esports/league-of-legends |
 | Polymarket (Gamma API, public) | Prediction market | **Verified in production** | Prices Worlds 2026 and some tier-2/3 events; thin volume | https://gamma-api.polymarket.com |
 | Polymarket homepage | Operator notice | **Verified 2026-10-23** — the homepage says *"Trading is blocked in the United States on polymarket.com"* and offers a view-only mode | https://polymarket.com/ |
@@ -278,3 +279,6 @@ Only the sources in the **verified** column were read directly. The others come 
 2. **Lobby header "139 matches this week" does not reconcile** with the fixture data (64 rows inside the week window). Flagged, unverified.
 3. **Polymarket US access**: trading is blocked for US users on polymarket.com (see §11.2). Its prices are reference data only.
 4. **OddsPapi wording** in the earlier payload described an adapter that does not exist. Corrected: no adapter, no key, no data read.
+5. **Pinnacle child prop-matchup duplication (`D20` fixed)**: Pinnacle's `/leagues/{id}/matchups` returns 5–7 child matchups (`parentId != null`, `units = Kills/Towers/Dragons/Barons/Inhibitors`) whose `/markets/related/straight` endpoint repeated the parent's `period == 0` moneyline. Fixed in `scripts/fetch_markets.py` (parent `Regular` matchups + `/leagues/{id}/markets/straight`) and enforced by verifier rule `D20`.
+6. **Hotspawn `PVB` tag collision in German PRM 2nd Division (`HOTSPAWN_NAME_COLLISION` flagged)**: Hotspawn expands `PVB` in `PRM 2nd Division 26-27 Fall` to defunct Vietnamese team `Phong Vũ Buffalo`; Leaguepedia's verified participant page (`https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split`) confirms the team is **`PvB (Swiss Team)`**. Mapped via competition-scoped alias and flagged on every affected row.
+7. **`LYON` homonym in Worlds 2026**: Hotspawn's `LYON` in `Worlds 2026 Main Event` is **`LYON (2024 American Team)`** on Leaguepedia (`https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event`), not the defunct 2013 LAN team `LYON`. Fixed in `data/aliases.json`.
