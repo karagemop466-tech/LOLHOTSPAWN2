@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flagged for review — Hotspawn LoL Picks</title>
-<meta name="description" content="Irregularities and unverified items: thin history, name and time mismatches, tier uncertainty and model–market disagreements, each with source links.">
+<meta name="description" content="Irregularities and unverified items: excluded cancelled rows, upstream team-tag collisions, schedule bridges, thin history, flex-schedule time shifts and model–market disagreements, every row with source links.">
 <meta name="theme-color" content="#0b1220">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -15,7 +15,7 @@
   <div class="header-inner">
     <a class="logo" href="index.html">
       <span class="logo-mark" aria-hidden="true">🎯</span>
-      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
     </a>
     <div class="header-meta">
       <span id="updated">Loading…</span><br>
@@ -28,7 +28,8 @@
   <ul>
     <li><a href="index.html" data-nav="summary">Summary</a></li>
     <li><a href="picks.html" data-nav="picks">All picks</a></li>
-    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
     <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
     <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
   </ul>
@@ -41,15 +42,15 @@
   <p class="eyebrow">Nothing is hidden</p>
   <h1>Flagged for review</h1>
   <p class="lede">
-    Anything irregular, uncertain or unverified is listed here with a link to the source that was checked.
-    Flags do not block publication — every affected row is still shown, labelled, and linked to its evidence so it can be reviewed by hand.
+    Every irregularity, cancelled upstream row, team-tag collision, thin-history warning, or unverified field is published here in table format
+    with direct links to the external sources checked. Flags never block publication — every item is documented for manual review.
   </p>
 
   <section>
-    <h2>Flag counts</h2>
+    <h2>Flag summary counts</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th scope="col">Flag</th><th scope="col">Rows</th><th scope="col"></th></tr></thead>
+        <thead><tr><th scope="col">Flag</th><th scope="col">Rows</th><th scope="col">Inspect</th></tr></thead>
         <tbody id="flag-groups">
           <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading flags…</div></td></tr>
         </tbody>
@@ -57,22 +58,9 @@
     </div>
   </section>
 
-  <section>
-    <h2>Flagged fixtures</h2>
-    <p class="small">Newest first rows follow the current fixture list. Open a match for the full evidence trail.</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Start</th><th scope="col">Match</th><th scope="col">Flags</th><th scope="col">Pick</th></tr></thead>
-        <tbody id="flagged-body">
-          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
   <section id="excluded">
-    <h2>Excluded from picks (not listed in the Hotspawn lobby)</h2>
-    <p class="small">These fixtures still appear in Hotspawn's fixtures feed with a future start time, but the lobby no longer lists them (status <b>cancelled</b>). They receive <b>no pick</b>, so no probability is published for them. Source: the Hotspawn fixtures API.</p>
+    <h2>Excluded from picks (cancelled / withdrawn on Hotspawn lobby)</h2>
+    <p class="small">These fixtures still appear in Hotspawn's backend fixtures API with a future timestamp, but have status <b>cancelled</b> and are withdrawn from the Pick'em lobby. They receive <b>no pick</b> and no probability is published for them.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th scope="col">Start</th><th scope="col">Match</th><th scope="col">Status</th><th scope="col">Why not priced</th></tr></thead>
@@ -83,29 +71,57 @@
 
   <section id="source-limitations" class="warnbox">
     <h2>Source limitations: official vs. community data</h2>
-    <p class="small">External market probabilities link to the named bookmaker or prediction market. For fixtures without a market line, our own Elo estimate uses recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer source. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing, not the model probability. Therefore model outputs are research estimates, not official lines; the linked community data does not independently verify every historical result on each match row. Review linked organizer sources where available and treat those estimates accordingly.</p>
-    <p class="small">Current model-only picks are visibly marked <span class="flag">NO_EXTERNAL_MARKET</span>. Unverified tiers, missing Hotspawn match pages, thin history, and schedule differences have separate row-level flags below.</p>
+    <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>
+    <p class="small">All model-only picks are marked <span class="flag">NO_EXTERNAL_MARKET</span>. Unverified tiers, missing Hotspawn match pages, upstream tag collisions, thin history, and schedule differences carry explicit row-level flags below.</p>
   </section>
+
+  <section>
+    <h2>Forensic entity &amp; schedule bridges detected</h2>
+    <p class="small">Upstream Hotspawn tag collisions or rebrands resolved deterministically from unanimous UTC schedule slots on Leaguepedia competition split pages.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Competition</th><th scope="col">Hotspawn name</th><th scope="col">Verified Leaguepedia team</th><th scope="col">Exact UTC slots</th><th scope="col">Source link</th></tr></thead>
+        <tbody id="bridges-body">
+          <tr><td colspan="5"><div class="loading"><span class="spinner"></span>Loading entity audit…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>All flagged fixtures (with source links on every row)</h2>
+    <p class="small">Every table row includes direct links to the Hotspawn fixture and external bookmaker / Leaguepedia split source checked.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Start</th><th scope="col">Match</th><th scope="col">Flags</th><th scope="col">Pick &amp; Win %</th><th scope="col">Sources</th></tr></thead>
+        <tbody id="flagged-body">
+          <tr><td colspan="5"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section>
     <h2>What each flag means</h2>
     <div class="card">
       <dl class="kv small">
-        <dt><span class="flag">NO_EXTERNAL_MARKET</span></dt><dd>No bookmaker or prediction-market line was found for this fixture, so the pick comes from our own model (or is unresolved).</dd>
-        <dt><span class="flag">NO_TEAM_HISTORY</span></dt><dd>Neither team has recorded games in the last 365 days; the row is an explicit 50/50 placeholder.</dd>
+        <dt><span class="flag">HOTSPAWN_NAME_COLLISION</span></dt><dd>Hotspawn expands an abbreviated team tag to a different/defunct team (e.g. <i>Phong Vũ Buffalo</i> for DACH entrant <i>PvB (Swiss Team)</i> in PRM 2nd Division); priced using the verified split entrant.</dd>
+        <dt><span class="flag">HOTSPAWN_ENTITY_MISMATCH</span></dt><dd>Hotspawn's upstream feed mapped a team tag to an unrelated defunct/foreign team; verified via unanimous exact UTC schedule slots on Leaguepedia.</dd>
+        <dt><span class="flag">NAME_BRIDGED_VIA_SCHEDULE</span></dt><dd>Rebranded/acronym team name matched to its Leaguepedia split entrant via 2+ exact UTC schedule slots in the same competition.</dd>
+        <dt><span class="flag">LEAGUEPEDIA_TIME_TBD</span></dt><dd>Leaguepedia records the split matchup without a confirmed timestamp yet; Hotspawn's epoch timestamp governs pick lock.</dd>
+        <dt><span class="flag">NO_EXTERNAL_MARKET</span></dt><dd>No bookmaker or prediction-market line was found for this fixture, so the pick comes from our Elo/standings model (or is unresolved).</dd>
+        <dt><span class="flag">NO_TEAM_HISTORY</span></dt><dd>Neither team has recorded games or split standings; published as an explicit 50/50 placeholder.</dd>
         <dt><span class="flag">ONE_TEAM_NO_HISTORY</span></dt><dd>One side has no usable history, so the model substitutes the competition median or tier prior and shrinks toward 50/50.</dd>
-        <dt><span class="flag">THIN_HISTORY</span></dt><dd>Fewer than five recorded games in 365 days for at least one team — the rating is unstable.</dd>
-        <dt><span class="flag">MODEL_ELO_THIN</span></dt><dd>The Elo row is published but one side has fewer than eight games; confidence is capped at Low.</dd>
-        <dt><span class="flag">CROSS_LEAGUE_MODEL</span></dt><dd>The two teams' recent competitions differ, so absolute league strength matters more than usual. Confidence is capped and any model–market gap is treated as indicative.</dd>
-        <dt><span class="flag">MODEL_DISAGREES_WITH_MARKET</span></dt><dd>The model differs from the external consensus by 8 points or more in the same competition. The published pick follows the market; the gap is shown.</dd>
-        <dt><span class="flag">MARKET_DISAGREEMENT</span></dt><dd>Sources disagree with each other by more than 10 probability points.</dd>
-        <dt><span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span></dt><dd>A bookmaker's start time differs from Hotspawn's by more than 90 minutes. Hotspawn's timestamp is used for display; the delta is recorded on the match page.</dd>
-        <dt><span class="flag">START_TIME_MISMATCH</span></dt><dd>Hotspawn and Leaguepedia disagree on the start time by more than 30 minutes.</dd>
-        <dt><span class="flag">NO_HOTSPAWN_MATCH_PAGE</span></dt><dd>Hotspawn lists the fixture but has not published a match page, so the row links the lobby instead of a dead match URL.</dd>
-        <dt><span class="flag">TIER_UNVERIFIED</span></dt><dd>Hotspawn has not assigned a tier badge yet (the fixture is still waiting for information).</dd>
-        <dt><span class="flag">GENERIC_RESULTS_SOURCE</span></dt><dd>No fixture-specific Leaguepedia competition page was matched for this model row; its recorded-results source link is a general Leaguepedia table. This is community data, not official organizer verification. Treat the model estimate as less directly auditable.</dd>
-        <dt><span class="flag">NO_VERIFIED_SIGNAL</span></dt><dd>No external market and no model output — unresolved placeholder.</dd>
+        <dt><span class="flag">THIN_HISTORY</span></dt><dd>Fewer than five recorded games in 365 days for at least one team — confidence is capped.</dd>
+        <dt><span class="flag">CROSS_LEAGUE_MODEL</span></dt><dd>The two teams' recent competitions differ across ecosystem tiers; confidence is capped at Low.</dd>
+        <dt><span class="flag">MODEL_DISAGREES_WITH_MARKET</span></dt><dd>The model differs from the external bookmaker consensus by ≥8 percentage points in the same competition. Published pick follows the market; gap is shown.</dd>
+        <dt><span class="flag">MARKET_DISAGREEMENT</span></dt><dd>Independent bookmaker/market sources disagree by more than 10 probability points.</dd>
+        <dt><span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span></dt><dd>A bookmaker's listed start time differs from Hotspawn's epoch timestamp by &gt;90 minutes.</dd>
+        <dt><span class="flag">START_TIME_MISMATCH</span></dt><dd>Hotspawn and Leaguepedia differ on start time by &gt;30 minutes (common on flex-scheduled amateur matches; Hotspawn governs pick lock).</dd>
+        <dt><span class="flag">NO_HOTSPAWN_MATCH_PAGE</span></dt><dd>Hotspawn's API lists the fixture without a standalone permalink; links point cleanly to the official lobby instead of a 404.</dd>
+        <dt><span class="flag">TIER_UNVERIFIED</span></dt><dd>Hotspawn still marks the competition tier as "waiting for information".</dd>
+        <dt><span class="flag">GENERIC_RESULTS_SOURCE</span></dt><dd>No fixture-specific Leaguepedia competition page was matched for this model row; its recorded-results source link is a general Leaguepedia table.</dd>
+        <dt><span class="flag">NO_VERIFIED_SIGNAL</span></dt><dd>No external market, no Elo history, and no standings — explicit 50/50 placeholder.</dd>
       </dl>
     </div>
   </section>
@@ -124,7 +140,7 @@
 
   <section>
     <h2>Checked but unavailable</h2>
-    <p class="small">Providers we attempted and could not use. They are listed so the gap in coverage is explicit, not hidden.</p>
+    <p class="small">Sportsbooks and data providers tested programmatically and confirmed unavailable without paid keys or blocked to CI IPs.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th scope="col">Provider</th><th scope="col">Observed</th><th scope="col">Consequence</th></tr></thead>
@@ -140,20 +156,21 @@
 
 <footer class="site-footer">
   <div class="wrap footer-grid">
-    <p class="small">Flagged rows are published, not withheld. Check them against the linked source before using a number.</p>
+    <p class="small">Flagged rows are published transparently, never hidden. Verify any row directly via its linked sources.</p>
     <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
+    <p class="tiny" id="footer-updated"></p>
   </div>
 </footer>
 
 <nav class="bottom-nav" aria-label="Mobile">
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
   <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>
 
 <script src="assets/app.js" defer></script>
-<noscript><p class="wrap small">This dashboard needs JavaScript. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
 </body>
 </html>

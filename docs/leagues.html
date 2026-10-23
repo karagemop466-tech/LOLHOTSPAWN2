@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picks by League &amp; Category — Hotspawn LoL Picks</title>
+<meta name="description" content="All Hotspawn League of Legends matches organized by competition tier and league category, with win probabilities, picks, limitations, and official source links.">
+<meta name="theme-color" content="#0b1220">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="leagues">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
+    </a>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    </div>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+  <div id="error-box"></div>
+  <div id="freshness-warning" class="hidden"></div>
+
+  <p class="eyebrow">Category breakdown</p>
+  <h1>Picks organized by competition tier &amp; league</h1>
+  <p class="lede">
+    Every League of Legends competition listed on <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
+    grouped by ecosystem tier: international championships covered by external sportsbooks, regional challenger/promotion events,
+    and national/amateur divisions resolved via recorded match history and official split standings.
+  </p>
+
+  <div class="hero-actions">
+    <a class="btn primary" href="picks.html">📋 Full searchable picks table →</a>
+    <a class="btn warn" href="unresolved.html">⚠️ Unresolved &amp; low-confidence →</a>
+    <a class="btn" href="flagged.html">🚩 Flagged items →</a>
+  </div>
+
+  <nav class="cat-nav" id="league-jump-links" aria-label="Jump to league"></nav>
+
+  <section>
+    <h2>Master summary table by competition</h2>
+    <p class="small">Every row links directly to the verified tournament wiki page and, where available, the official league organizer site.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Competition</th>
+            <th scope="col">Category</th>
+            <th scope="col">Fixtures</th>
+            <th scope="col">Pricing breakdown</th>
+            <th scope="col">Coverage note &amp; limitation</th>
+            <th scope="col">Official sources</th>
+          </tr>
+        </thead>
+        <tbody id="leagues-summary-body">
+          <tr><td colspan="6"><div class="loading"><span class="spinner"></span>Loading league breakdown…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div id="leagues-sections">
+    <div class="loading"><span class="spinner"></span>Loading per-league match tables…</div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <p class="small">Fixture list from Hotspawn's public lobby (fixture metadata only; Hotspawn crowd % is never used). External market consensus from Pinnacle, Bovada, Unibet (Kambi) and Polymarket; own lines from Leaguepedia (CC BY-SA 3.0) match history &amp; split standings.</p>
+    <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice. <a href="index.html">Summary</a> · <a href="methodology.html">Methodology</a> · <a href="flagged.html">Flagged for review</a></p>
+    <p class="tiny" id="footer-updated"></p>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Mobile">
+  <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
+  <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
+  <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
+</nav>
+
+<script src="assets/app.js" defer></script>
+<noscript><p class="wrap small">This dashboard needs JavaScript to render the picks data. Raw data: <a href="data/picks.json">data/picks.json</a>.</p></noscript>
+</body>
+</html>

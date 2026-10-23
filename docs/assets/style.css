@@ -90,7 +90,7 @@ img { max-width: 100%; }
 .bottom-nav {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--surface);
   border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
-  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 .bottom-nav a {
   min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
@@ -275,3 +275,14 @@ footer.site-footer a { color: var(--brand); }
 
 /* long source URLs must wrap on phones instead of forcing sideways scroll */
 main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
+
+/* high-contrast pick badge & competition category navigation */
+.pick-pill {
+  display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 13px;
+  padding: 5px 10px; border-radius: 999px; background: var(--green-soft); color: var(--green);
+  border: 1px solid rgba(11, 138, 75, .28); line-height: 1.2;
+}
+.pick-pill.amber { background: var(--amber-soft); color: var(--amber); border-color: rgba(180, 83, 9, .3); }
+.pick-pill.red { background: var(--red-soft); color: var(--red); border-color: rgba(185, 28, 28, .3); }
+.cat-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+.cat-section { margin: 22px 0; scroll-margin-top: 90px; }

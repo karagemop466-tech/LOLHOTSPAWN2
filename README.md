@@ -3,61 +3,52 @@
 Mobile-first dashboard published with GitHub Pages:
 **[Executive summary](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/)** (the repo root redirects there) ·
 [all picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/picks.html) ·
+[by league / tier](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/leagues.html) ·
 [unresolved & low confidence](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/unresolved.html) ·
 [flagged for review](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html) ·
 [methodology & sources](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/methodology.html).
 
-Every League of Legends fixture listed on
-[Hotspawn's Pick'em lobby](https://play.hotspawn.com/lol-pickems) gets a pick and a win
-probability for both teams. Rows are priced in this order:
+Every upcoming scheduled League of Legends fixture listed on
+[Hotspawn's Pick'em lobby](https://play.hotspawn.com/lol-pickems) gets a clear pick and win
+probability (%) for both teams. Cancelled upstream fixtures are excluded and audited on Flagged.
+Rows are priced in a strict 5-tier cascade:
 
-1. **External market consensus** — de-vigged two-way lines from Pinnacle, Bovada and
-   Polymarket (median if ≥3 sources, otherwise a fixed-quality weighted mean).
-2. **Our own Elo model** — chronological ratings from Leaguepedia's recorded results,
-   anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting,
-   head-to-head smoothing and shrinkage for thin history.
-3. **League prior** — one team has no usable history; the competition median/tier prior is
-   substituted, shrunk toward 50/50 and labelled `MODEL_LEAGUE_PRIOR` (low confidence).
-4. **Unresolved** — no market and no history at all: published as an explicit 50/50
-   placeholder, listed on its own page with the written limitations. Never an edge.
+1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada and Polymarket (median across ≥3 books, or quality-weighted mean across 2 books).
+2. **Chronological Tier-Anchored Elo (`MODEL_ELO` / `MODEL_ELO_THIN`)** — computed from 24 months of completed series on Leaguepedia (`MatchSchedule`), anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting, head-to-head smoothing, competition-scoped disambiguation, and deterministic UTC schedule bridging.
+3. **Split Standings Fallback (`MODEL_STANDINGS`)** — when recent match history has <3 games on a side, split records from Leaguepedia's `Standings` Cargo table (`WinSeries`/`LossSeries`/`WinGames`/`LossGames`) provide an empirical-Bayes probability (0–0 records excluded).
+4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one debut side lacks both match history and split standings; priced against the verified competition median prior, shrunk toward 50/50 and capped at Low confidence.
+5. **Unresolved (`UNRESOLVED`)** — neither external lines nor recorded team/standings evidence exist: published strictly as an explicit `50.0% / 50.0%` placeholder on its dedicated Unresolved & Limitations page. Never an edge.
 
 **Hotspawn is used for the fixture list only.** Its crowd percentages are displayed as
-context and are never an input to any probability. Unverified or irregular rows are
-published on the *Flagged for review* page, with source links, and do not block a release.
+context and are never an input to any probability. Every table row carries direct links to
+its verified sources, and any upstream irregularity is surfaced on *Flagged for review*.
 
-## Automation
+## Automation & Verification
 
-`.github/workflows/update-picks.yml` runs every 6 hours (and on demand / on `main` script
-changes): it fetches the Hotspawn fixture list, external prices and Leaguepedia results,
-rebuilds the model, verifies the payload and the static site
-(`scripts/verify_site.py`), then commits `docs/data/picks.json`. GitHub Pages serves
-`main:/docs`, so the site refreshes with the commit.
-
-`.github/workflows/pipeline-test.yml` is the branch verification runner: it executes the
-same live pipeline on `arena/**` and commits the payload + `data/diag/pipeline.log` for
-inspection.
+- `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
+- `.github/workflows/verify.yml` runs every 6 hours (`30 */6 * * *`) against external links and the deployed GitHub Pages URL (`--check-external --live-url`).
+- `.github/workflows/pipeline-test.yml` runs end-to-end live verification on `arena/**` branches (`check_dom_contract.py`, `test_verifier.py`, `test_entity_and_books.py`, `verify_site.py --leaguepedia-schedule data/diag --check-external`).
 
 ## Data sources
 
 | Source | Used for | Link |
 |---|---|---|
-| Hotspawn fixture API | Fixture list, tournament, exact UTC start, match links | https://play.hotspawn.com/lol-pickems |
-| Pinnacle guest JSON | Two-way moneyline | https://www.pinnacle.com/en/esports/league-of-legends |
-| Bovada coupon JSON | Two-way moneyline | https://www.bovada.lv/sports/esports/league-of-legends |
-| Polymarket Gamma API | Match/series prices | https://gamma-api.polymarket.com |
-| Leaguepedia CargoExport | Recorded results + schedule + canonical team names | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
+| Hotspawn Pick'em lobby & fixtures API | Upcoming scheduled fixture list, UTC lock timestamps, match links | https://play.hotspawn.com/lol-pickems |
+| Pinnacle guest JSON | Sharp 2-way match moneyline (main parent boards only) | https://www.pinnacle.com/en/esports/league-of-legends |
+| Unibet (Kambi CDN JSON) | 2-way pre-match series moneyline | https://www.unibet.com/betting/sports/filter/esports/league_of_legends |
+| Bovada coupon JSON | 2-way pre-match series moneyline | https://www.bovada.lv/sports/esports/league-of-legends |
+| Polymarket Gamma API | Public prediction-market reference probabilities | https://gamma-api.polymarket.com |
+| Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
+| Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
 
-Providers that were checked and could not be used (403/404/502, paid key required, no
-per-match markets) are listed with their observed status on the
-[Flagged page](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html).
-
-## Local run
+## Local verification
 
 ```bash
-python3 scripts/update_picks.py            # live fetch + model + publish
-python3 scripts/update_picks.py --use-cache  # reuse data/cache/*.json
-python3 scripts/verify_site.py             # schema + link + page checks
+python3 scripts/update_picks.py                 # live fetch + model + publish
+python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
+python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
+python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
+python3 scripts/verify_site.py                  # full schema + link + page audit
 ```
 
-Caches (`data/cache/`) are generated and git-ignored. Not betting advice; no affiliation
-with Hotspawn, Riot Games or any bookmaker.
+Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.

@@ -1,4 +1,4 @@
-/* Hotspawn LoL Picks — data-driven UI (vanilla JS, no build step) */
+/* Hotspawn LoL Picks — data-driven mobile-first dashboard (vanilla JS, zero build step) */
 (() => {
   "use strict";
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -6,18 +6,23 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const pct = (x) => (x == null ? "—" : `${Math.round(x * 100)}%`);
   const pct1 = (x) => (x == null ? "—" : `${(x * 100).toFixed(1)}%`);
+  const slugify = (s) => String(s || "league").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   const METHOD = {
     MARKET_CONSENSUS: { label: "Market consensus", cls: "green", ico: "💰" },
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
-    MODEL_STANDINGS: { label: "Split standings + Elo", cls: "amber", ico: "📊" },
+    MODEL_STANDINGS: { label: "Split standings", cls: "blue", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
-    UNRESOLVED: { label: "Unresolved", cls: "red", ico: "⚠️" },
+    UNRESOLVED: { label: "Unresolved 50/50", cls: "red", ico: "⚠️" },
   };
   const CONF = { High: "green", Medium: "blue", Low: "amber", None: "red" };
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
-  const METHOD_RANK = { MARKET_CONSENSUS: 5, MARKET_SINGLE: 4, MODEL_ELO: 3, MODEL_ELO_THIN: 2, MODEL_STANDINGS: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0 };
+  const METHOD_RANK = {
+    MARKET_CONSENSUS: 6, MARKET_SINGLE: 5, MODEL_ELO: 4,
+    MODEL_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
+  };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
 
@@ -76,6 +81,11 @@
     if (!list.length) return "";
     return `<div class="src-links">${list.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("")}</div>`;
   }
+  function pickPill(m) {
+    const tone = m.method === "UNRESOLVED" ? "red" : (m.confidence === "Low" ? "amber" : "");
+    const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
+    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
+  }
 
   function matchCard(m, opts = {}) {
     const cls = matchClass(m);
@@ -86,7 +96,7 @@
       <div class="teams"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a></div>
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
       <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
-      <div class="pickline"><span class="pick">✅ ${esc(m.pick)} <span class="p">${pct1(m.pick_prob)}</span></span><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
+      <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
     </article>`;
@@ -97,16 +107,53 @@
     const mi = methodInfo(m);
     const cls = matchClass(m);
     const srcCount = (m.sources || []).filter((s) => s.url).length;
-    const srcLinks = (m.sources || []).filter((s) => s.url).slice(0, 2)
+    const srcLinks = (m.sources || []).filter((s) => s.url).slice(0, 3)
       .map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join(" ");
     return `<tr class="${cls}">
       <td data-label="Start" title="${esc(t.title)}"><b>${esc(t.text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span><span class="sub">${esc(relative(m.start_utc))}</span></td>
       <td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}${m.best_of ? ` · Bo${esc(m.best_of)}` : ""}${m.tier && !/^WAITING/i.test(m.tier) ? ` · Tier ${esc(m.tier)}` : ""}</span></td>
       <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pct1(m.prob_team1)}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pct1(m.prob_team2)}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
-      <td class="pickcell" data-label="Pick">${esc(m.pick)}<span class="p">${pct1(m.pick_prob)}</span></td>
+      <td class="pickcell" data-label="Pick">${pickPill(m)}</td>
       <td data-label="Method"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="sub"><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")}</span></span></td>
-      <td data-label="Sources"><span class="sub">${srcCount} link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
+      <td data-label="Sources"><span class="sub">${srcCount} verified link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
     </tr>`;
+  }
+
+  function computeLeagueBreakdown(d) {
+    if (Array.isArray(d.league_breakdown) && d.league_breakdown.length) return d.league_breakdown;
+    const byTour = new Map();
+    (d.matches || []).forEach((m) => {
+      const k = m.tournament || "Unknown competition";
+      if (!byTour.has(k)) byTour.set(k, []);
+      byTour.get(k).push(m);
+    });
+    return Array.from(byTour.entries()).sort((a, b) => b[1].length - a[1].length).map(([tour, ms]) => {
+      const lpUrl = (ms.find((x) => x.leaguepedia_url) || {}).leaguepedia_url || "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule";
+      const mkt = ms.filter((x) => x.market).length;
+      const elo = ms.filter((x) => x.method === "MODEL_ELO" || x.method === "MODEL_ELO_THIN").length;
+      const st = ms.filter((x) => x.method === "MODEL_STANDINGS").length;
+      const prior = ms.filter((x) => x.method === "MODEL_LEAGUE_PRIOR").length;
+      const unres = ms.filter((x) => x.method === "UNRESOLVED").length;
+      const t = tour.toLowerCase();
+      const cat = /worlds|msi|lck|lpl|lec|lcs|lta/.test(t)
+        ? "Tier 1 — International & Major Leagues"
+        : /emea masters|promotion|lgc rising|2nd division/.test(t)
+          ? "Tier 2 — Regional Challenger & Promotion"
+          : "Tier 3 — National & Amateur Divisions";
+      return {
+        tournament: tour, category: cat, fixtures: ms.length, market: mkt, elo, standings: st,
+        league_prior: prior, unresolved: unres, leaguepedia_url: lpUrl,
+        limitation: mkt ? "Priced by external bookmaker/prediction-market consensus." : "No external sportsbook line; priced via Leaguepedia recorded results & split standings.",
+      };
+    });
+  }
+
+  function leagueSourceLinks(lb) {
+    const links = [];
+    if (lb.leaguepedia_url) links.push(`<a href="${esc(lb.leaguepedia_url)}" target="_blank" rel="noopener">Leaguepedia ↗</a>`);
+    if (lb.organizer_url) links.push(`<a href="${esc(lb.organizer_url)}" target="_blank" rel="noopener">${esc(lb.organizer_name || "Organizer")} ↗</a>`);
+    if (!links.length) links.push(`<a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a>`);
+    return `<div class="src-links">${links.join(" ")}</div>`;
   }
 
   function setHeader(d) {
@@ -115,7 +162,7 @@
     const t = whenLocal(d.generated_at);
     if (upd) upd.innerHTML = `<b>Updated</b> ${esc(t.text)}`;
     const fu = $("#footer-updated");
-    if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · every 6 hours.`;
+    if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · automatic refresh every 6 hours.`;
     if (fresh) {
       const ok = isFresh(d);
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
@@ -126,7 +173,6 @@
       warn.className = "warnbox";
       warn.innerHTML = `<b>This data is older than expected.</b> Last update ${esc(t.text)}; next expected ${esc(whenUTC(d.next_update_utc))}. The 6-hour GitHub Action may have failed — check the repository Actions tab.`;
     }
-    document.title = document.title.replace("Hotspawn LoL", "Hotspawn LoL");
   }
 
   function setActiveNav() {
@@ -143,31 +189,6 @@
     set("#stat-market", c.market ?? "—");
     set("#stat-model", c.model ?? "—");
     set("#stat-unresolved", c.unresolved ?? "—");
-    const cov = d.coverage || {};
-    const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a published pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external market lines, <b>${cov.with_team_specific_model ?? 0}</b> from the Elo model, <b>${cov.with_prior_only ?? 0}</b> from a league prior, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. Low-confidence rows are labelled and explained on the <a href="unresolved.html">Unresolved page</a>.`;
-    const covBar = $("#coverage-bar");
-    if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
-
-    const byId = new Map((d.matches || []).map((m) => [m.id, m]));
-    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 6);
-    const nextBox = $("#next24");
-    if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 2 })).join("") : `<div class="card">No matches in the next 24 hours.</div>`;
-
-    const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 8);
-    const featBox = $("#featured");
-    if (featBox) featBox.innerHTML = featured.length ? featured.map((m) => matchCard(m, { sources: 4 })).join("")
-      : `<div class="card">No external market lines are available right now. Every match below is priced by our own model or marked unresolved.</div>`;
-
-    const u = d.unresolved || {};
-    const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
-    const lims = (u.limitations || []).slice(0, 3).map((x) => `<li>${esc(x)}</li>`).join("");
-    const ubox = $("#unresolved-summary");
-    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks — ${u.count ?? 0} match${(u.count ?? 0) === 1 ? "" : "es"}</h3>
-      <p>${u.count ?? 0} fixture${(u.count ?? 0) === 1 ? "" : "s"} have no external betting line and no usable team history, so the published pick is an explicit 50/50 placeholder — <b>not an edge</b>. ${u.low_confidence_count ?? 0} more rely on thin history or a league prior and are labelled low confidence. Hotspawn's crowd percentage is never used.</p>
-      ${reasons ? `<p class="small"><b>Reasons</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      <p class="small"><b>Key limitations</b></p><ul class="clean small">${lims}</ul>
-      <p><a class="btn warn" href="unresolved.html">See every unresolved pick and all limitations →</a></p></div>`;
 
     const rb = $("#recon-body");
     if (rb) {
@@ -188,8 +209,96 @@
       }
     }
 
+    const cov = d.coverage || {};
+    const stCount = cov.with_standings_model ?? c.standings ?? 0;
+    const covText = $("#coverage-text");
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external betting lines, <b>${(cov.with_team_specific_model ?? 0) - stCount}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${cov.with_prior_only ?? 0}</b> from competition priors, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    const covBar = $("#coverage-bar");
+    if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
+
+    const sortedAll = (d.matches || []).slice().sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+    const quickBody = $("#quick-picks-body");
+    if (quickBody) {
+      const quickRows = sortedAll.slice(0, 12);
+      quickBody.innerHTML = quickRows.length ? quickRows.map(row).join("") : `<tr><td colspan="6">No upcoming matches right now.</td></tr>`;
+    }
+
+    const lbs = computeLeagueBreakdown(d);
+    const sumLeagues = $("#summary-leagues-body");
+    if (sumLeagues) {
+      sumLeagues.innerHTML = lbs.map((lb) => `<tr>
+        <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(lb.tournament))}"><b>${esc(lb.tournament)}</b></a><span class="sub"><a href="picks.html?tournament=${encodeURIComponent(lb.tournament)}">Filter in All picks →</a></span></td>
+        <td data-label="Category"><span class="chip">${esc(lb.category)}</span></td>
+        <td data-label="Fixtures"><b>${lb.fixtures}</b></td>
+        <td data-label="Pricing breakdown" class="small">💰 ${lb.market} mkt · 🧮 ${lb.elo} Elo · 📊 ${lb.standings || 0} st · 📐 ${lb.league_prior} prior · ⚠️ ${lb.unresolved} unres</td>
+        <td data-label="Source links">${leagueSourceLinks(lb)}</td>
+      </tr>`).join("");
+    }
+
+    const byId = new Map((d.matches || []).map((m) => [m.id, m]));
+    const next = (d.next_24h || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 6);
+    const nextBox = $("#next24");
+    if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No matches locking in the next 24 hours. <a href="picks.html">Browse all upcoming picks →</a></div>`;
+
+    const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 10);
+    const featBox = $("#featured");
+    if (featBox) featBox.innerHTML = featured.length ? featured.map((m) => matchCard(m, { sources: 4 })).join("")
+      : `<div class="card">No external market lines are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
+
+    const u = d.unresolved || {};
+    const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
+    const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const ubox = $("#unresolved-summary");
+    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; Low-confidence picks (${u.low_confidence_count ?? 0})</h3>
+      <p><b>${u.count ?? 0}</b> fixture${(u.count ?? 0) === 1 ? "" : "s"} lack external lines, recorded team matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge). <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows rely on thin history (&lt;8 games), split standings, or a single debut side against the competition prior and are capped at Low confidence. Hotspawn's crowd % is never used.</p>
+      ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
+      <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
+      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
+  }
+
+  function renderLeagues(d) {
+    const lbs = computeLeagueBreakdown(d);
+    const jump = $("#league-jump-links");
+    if (jump) {
+      jump.innerHTML = lbs.map((lb) => `<a class="chipbtn" href="#league-${esc(slugify(lb.tournament))}">${esc(lb.tournament)} <span class="n">${lb.fixtures}</span></a>`).join("");
+    }
+    const sumBody = $("#leagues-summary-body");
+    if (sumBody) {
+      sumBody.innerHTML = lbs.map((lb) => `<tr>
+        <td data-label="Competition"><a class="rowlink" href="#league-${esc(slugify(lb.tournament))}"><b>${esc(lb.tournament)}</b></a></td>
+        <td data-label="Category"><span class="chip">${esc(lb.category)}</span></td>
+        <td data-label="Fixtures"><b>${lb.fixtures}</b></td>
+        <td data-label="Pricing breakdown" class="small">💰 ${lb.market} market · 🧮 ${lb.elo} Elo · 📊 ${lb.standings || 0} standings · 📐 ${lb.league_prior} prior · ⚠️ ${lb.unresolved} unresolved</td>
+        <td data-label="Limitation" class="small">${esc(lb.limitation || "")}</td>
+        <td data-label="Sources">${leagueSourceLinks(lb)}</td>
+      </tr>`).join("");
+    }
+    const container = $("#leagues-sections");
+    if (container) {
+      const byTour = new Map();
+      (d.matches || []).forEach((m) => {
+        const k = m.tournament || "Unknown competition";
+        if (!byTour.has(k)) byTour.set(k, []);
+        byTour.get(k).push(m);
+      });
+      container.innerHTML = lbs.map((lb) => {
+        const ms = (byTour.get(lb.tournament) || []).slice().sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+        return `<section class="cat-section" id="league-${esc(slugify(lb.tournament))}">
+          <h2>${esc(lb.tournament)} <span class="chip">${esc(lb.category)}</span></h2>
+          <p class="small">${esc(lb.limitation || "")}</p>
+          ${leagueSourceLinks(lb)}
+          <div class="table-wrap" style="margin-top:10px">
+            <table>
+              <thead><tr><th>Start (UTC)</th><th>Match</th><th>Win probability</th><th>Pick</th><th>Method</th><th>Sources</th></tr></thead>
+              <tbody>${ms.map(row).join("")}</tbody>
+            </table>
+          </div>
+        </section>`;
+      }).join("");
+    }
   }
 
   function applyFilter(m) {
@@ -249,6 +358,7 @@
     });
     const url = new URL(location.href);
     if (state.filter !== "all") url.searchParams.set("filter", state.filter); else url.searchParams.delete("filter");
+    if (state.tournament) url.searchParams.set("tournament", state.tournament); else url.searchParams.delete("tournament");
     history.replaceState(null, "", url.toString());
   }
 
@@ -265,9 +375,20 @@
     const un = all.filter((m) => m.method === "UNRESOLVED");
     const low = all.filter((m) => m.method !== "UNRESOLVED" && (m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low"));
     const ub = $("#unresolved-body");
-    if (ub) ub.innerHTML = un.length ? un.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="okbox">None right now — every fixture has either an external market line or usable team history.</div>`;
+    if (ub) ub.innerHTML = un.length ? un.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="okbox">0 unresolved placeholders right now — every listed fixture has either external bookmaker odds, recorded Leaguepedia match history, or split standings.</div>`;
     const lb = $("#lowconf-body");
     if (lb) lb.innerHTML = low.length ? low.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No low-confidence rows.</div>`;
+    const limBody = $("#league-limitations-body");
+    if (limBody) {
+      const lbs = computeLeagueBreakdown(d);
+      limBody.innerHTML = lbs.map((x) => `<tr>
+        <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(x.tournament))}"><b>${esc(x.tournament)}</b></a></td>
+        <td data-label="Fixtures"><b>${x.fixtures}</b></td>
+        <td data-label="Breakdown" class="small">💰 ${x.market} · 🧮 ${x.elo} · 📊 ${x.standings || 0} · 📐 ${x.league_prior} · ⚠️ ${x.unresolved}</td>
+        <td data-label="Limitation" class="small">${esc(x.limitation || "")}</td>
+        <td data-label="Sources">${leagueSourceLinks(x)}</td>
+      </tr>`).join("");
+    }
     const reasons = (d.unresolved?.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const rbox = $("#reasons");
     if (rbox) rbox.innerHTML = reasons || "<li>None.</li>";
@@ -275,14 +396,19 @@
     const lbox = $("#limitations");
     if (lbox) lbox.innerHTML = lim;
     const stat = $("#unresolved-counts");
-    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved · <b>${low.length}</b> low-confidence · <b>${(d.counts?.market ?? 0)}</b> with external market lines`;
+    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
   }
 
   function flagLabel(f) {
     const map = {
+      HOTSPAWN_NAME_COLLISION: "Upstream Hotspawn tag collision mapped to verified split entrant",
+      HOTSPAWN_ENTITY_MISMATCH: "Upstream Hotspawn tag collision resolved via Leaguepedia UTC schedule",
+      NAME_BRIDGED_VIA_SCHEDULE: "Team name bridged via 2+ exact UTC schedule slots",
+      LEAGUEPEDIA_TIME_TBD: "Leaguepedia match timestamp still TBD (Hotspawn governs lock)",
+      GENERIC_RESULTS_SOURCE: "General Leaguepedia table link (no fixture-specific split page matched)",
       NO_EXTERNAL_MARKET: "No external market line",
       NO_TEAM_HISTORY: "No recorded team history",
-      ONE_TEAM_NO_HISTORY: "One team has no history (prior used)",
+      ONE_TEAM_NO_HISTORY: "One team has no history (competition prior used)",
       THIN_HISTORY: "Thin history (<5 games)",
       NO_VERIFIED_SIGNAL: "No verified signal",
       MODEL_DISAGREES_WITH_MARKET: "Model disagrees with market (≥8 pts)",
@@ -292,11 +418,6 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
-      HOTSPAWN_NAME_COLLISION: "Hotspawn team-tag collision mapped to verified split participant",
-      LEAGUEPEDIA_TIME_TBD: "Leaguepedia lists pairing without a confirmed UTC timestamp",
-      FIXTURE_NOT_ON_LEAGUEPEDIA_SCHEDULE: "Tournament page verified; individual pairing not yet on Leaguepedia MatchSchedule",
-      FIXTURE_CANCELLED_ON_FEED: "Fixture marked cancelled/postponed on feed",
-      GENERIC_RESULTS_SOURCE: "Results model backed by generic Leaguepedia table (no tournament page matched)",
     };
     return map[f] || f;
   }
@@ -306,16 +427,60 @@
     (d.matches || []).forEach((m) => (m.flags || []).forEach((f) => { (groups[f] = groups[f] || []).push(m); }));
     const order = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
     const gb = $("#flag-groups");
-    if (gb) gb.innerHTML = order.length ? order.map((f) => `<tr><td><span class="flag">${esc(f)}</span><span class="sub">${esc(flagLabel(f))}</span></td><td><b>${groups[f].length}</b></td><td><a href="picks.html?filter=${f === "NO_EXTERNAL_MARKET" || f === "NO_VERIFIED_SIGNAL" ? "unresolved" : "all"}">view</a></td></tr>`).join("") : `<tr><td colspan="3">No flags.</td></tr>`;
+    if (gb) gb.innerHTML = order.length ? order.map((f) => {
+      const sampleSrc = groups[f][0]?.sources?.[0]?.url || "https://play.hotspawn.com/lol-pickems";
+      return `<tr><td><span class="flag">${esc(f)}</span><span class="sub">${esc(flagLabel(f))}</span></td><td><b>${groups[f].length}</b></td><td><a href="picks.html?filter=${f === "NO_VERIFIED_SIGNAL" ? "unresolved" : "all"}">picks →</a> · <a href="${esc(sampleSrc)}" target="_blank" rel="noopener">source ↗</a></td></tr>`;
+    }).join("") : `<tr><td colspan="3">No flags.</td></tr>`;
+
     const eb = $("#excluded-body");
     if (eb) {
       const ex = d.excluded_fixtures || [];
-      eb.innerHTML = ex.length ? ex.map((x) => `<tr><td data-label="Start"><b>${esc(whenLocal(x.start_utc).text)}</b></td><td class="teams-cell" data-label="Match">${esc(x.team1)} vs ${esc(x.team2)}<span class="sub">${esc(x.tournament || "")} · fixture ${esc(x.id)}</span></td><td data-label="Status"><span class="chip amber">${esc(x.status || "")}</span></td><td class="small" data-label="Why not priced">${esc(x.reason || "")}<span class="sub"><a href="${esc(x.source || "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures")}" target="_blank" rel="noopener">Hotspawn fixtures API ↗</a></span></td></tr>`).join("")
+      eb.innerHTML = ex.length ? ex.map((x) => `<tr><td data-label="Start"><b>${esc(whenLocal(x.start_utc).text)}</b><span class="sub">${esc(whenUTC(x.start_utc))}</span></td><td class="teams-cell" data-label="Match">${esc(x.team1)} vs ${esc(x.team2)}<span class="sub">${esc(x.tournament || "")} · fixture ${esc(x.id)}</span></td><td data-label="Status"><span class="chip amber">${esc(x.status || "")}</span></td><td class="small" data-label="Why not priced">${esc(x.reason || "")}<span class="sub"><a href="${esc(x.source || "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures")}" target="_blank" rel="noopener">Hotspawn fixtures API ↗</a></span></td></tr>`).join("")
         : `<tr><td colspan="4">No excluded fixtures in this run.</td></tr>`;
     }
+
+    const bridgesBody = $("#bridges-body");
+    if (bridgesBody) {
+      const explicit = d.model?.schedule_bridges || [];
+      let bridges = explicit.slice();
+      if (!bridges.length) {
+        const seenB = new Map();
+        (d.matches || []).forEach((m) => {
+          const md = m.model || {};
+          const page = m.leaguepedia_page || md.tournament_page || m.tournament || "";
+          [[m.team1, md.canonical_team1 || md.resolved_team1], [m.team2, md.canonical_team2 || md.resolved_team2]].forEach(([hs, lp]) => {
+            if (hs && lp && hs !== lp) {
+              const key = `${page}::${hs}::${lp}`;
+              const cur = seenB.get(key) || { overview: page, hotspawn_name: hs, leaguepedia_name: lp, exact_slot_matches: 0, entity_mismatch: (m.flags || []).includes("HOTSPAWN_NAME_COLLISION") };
+              cur.exact_slot_matches += 1;
+              seenB.set(key, cur);
+            }
+          });
+        });
+        bridges = Array.from(seenB.values());
+      }
+      bridgesBody.innerHTML = bridges.length ? bridges.map((b) => {
+        const wiki = "https://lol.fandom.com/wiki/" + String(b.overview || "").replace(/ /g, "_");
+        return `<tr>
+          <td data-label="Competition">${esc(b.overview)}</td>
+          <td data-label="Hotspawn name"><b>${esc(b.hotspawn_name)}</b>${b.entity_mismatch ? ` <span class="chip amber">tag collision</span>` : ""}</td>
+          <td data-label="Leaguepedia team"><b>${esc(b.leaguepedia_name)}</b></td>
+          <td data-label="Fixtures">${b.exact_slot_matches} verified fixture${b.exact_slot_matches === 1 ? "" : "s"}</td>
+          <td data-label="Source link"><a href="${esc(wiki)}" target="_blank" rel="noopener">Leaguepedia split ↗</a></td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="5">No schedule-bridged team names required in this snapshot (<a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia MatchSchedule ↗</a>).</td></tr>`;
+    }
+
     const flagged = (d.matches || []).filter((m) => (m.flags || []).length).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const body = $("#flagged-body");
-    if (body) body.innerHTML = flagged.map((m) => `<tr class="${matchClass(m)}"><td data-label="Start"><b>${esc(whenLocal(m.start_utc).text)}</b></td><td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)} vs ${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}</span></td><td data-label="Flags">${(m.flags || []).map((f) => `<span class="chip amber flag" title="${esc(flagLabel(f))}">${esc(f)}</span>`).join(" ")}</td><td data-label="Pick">${esc(m.pick)} <span class="sub">${pct1(m.pick_prob)}</span></td></tr>`).join("");
+    if (body) body.innerHTML = flagged.map((m) => `<tr class="${matchClass(m)}">
+      <td data-label="Start"><b>${esc(whenLocal(m.start_utc).text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span></td>
+      <td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)} vs ${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}</span></td>
+      <td data-label="Flags">${(m.flags || []).map((f) => `<span class="chip amber flag" title="${esc(flagLabel(f))}">${esc(f)}</span>`).join(" ")}</td>
+      <td data-label="Pick">${pickPill(m)}</td>
+      <td data-label="Sources">${sourcesInline(m, 3)}</td>
+    </tr>`).join("");
+
     const ss = $("#sources-status");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b>${s.url ? `<span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span>` : ""}</td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
@@ -343,33 +508,35 @@
         <p class="small">${esc(m.tournament || "")} · ${esc(t.text)} <span title="${esc(t.title)}">· ${esc(whenUTC(m.start_utc))}</span> · ${esc(relative(m.start_utc))}</p>
         <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
         <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
-        <div class="pickline"><span class="pick">✅ PICK: ${esc(m.pick)} <span class="p">${pct1(m.pick_prob)}</span></span></div>
+        <div class="pickline">${pickPill(m)}</div>
         <p class="small">${esc(m.evidence || "")}</p>
       </div>
       <div class="two-col">
         <div>
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
-            ${m.market ? `<p class="small">Consensus: <b>${pct1(m.market.consensus_team1)}</b> ${esc(m.team1)} · <b>${pct1(1 - m.market.consensus_team1)}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.source_count} source(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
-            <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th></th></tr></thead><tbody>${marketRows}</tbody></table></div>`
-            : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? "our own Elo model" : "an explicit 50/50 placeholder"}.</p>`}
+            ${m.market ? `<p class="small">Consensus: <b>${pct1(m.market.consensus_team1)}</b> ${esc(m.team1)} · <b>${pct1(1 - m.market.consensus_team1)}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.source_count} independent book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
+            <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
+            : `<p>No bookmaker or prediction-market line was found for this fixture at update time. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>`}
           </div>
-          <div class="card"><h3>Our model</h3>
+          <div class="card"><h3>Our model &amp; standings inputs</h3>
             ${m.model ? `<dl class="kv">
+              <dt>Resolved teams</dt><dd>${esc(model.canonical_team1 || model.resolved_team1 || m.team1)} vs ${esc(model.canonical_team2 || model.resolved_team2 || m.team2)}</dd>
               <dt>Elo (team 1)</dt><dd>${model.elo_team1 ?? "—"} <span class="small">${model.games_team1_365d != null ? `(${model.games_team1_365d} games in 365d)` : ""}</span></dd>
               <dt>Elo (team 2)</dt><dd>${model.elo_team2 ?? "—"} <span class="small">${model.games_team2_365d != null ? `(${model.games_team2_365d} games in 365d)` : ""}</span></dd>
+              ${model.standings_team1 ? `<dt>Split standings</dt><dd>${esc(model.standings_team1)} vs ${esc(model.standings_team2)}</dd>` : ""}
               <dt>Prior used</dt><dd>${esc(model.prior_used || "—")}</dd>
               <dt>Head-to-head</dt><dd>${h2h}</dd>
               <dt>Tournament page</dt><dd>${m.leaguepedia_url ? `<a href="${esc(m.leaguepedia_url)}" target="_blank" rel="noopener">Leaguepedia ↗</a>` : "—"}</dd>
-            </dl>` : `<p>No rated team history was available. The row is an explicit 50/50 placeholder.</p>`}
+            </dl>` : `<p>No rated team history or standings record was available. Published as an explicit 50/50 placeholder.</p>`}
           </div>
         </div>
         <div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
-          <div class="card"><h3>Sources & verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
-          <p class="tiny">Crowd context (not used in the probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
+          <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
+          <p class="tiny">Crowd context (never used in probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
         </div>
       </div>
-      <p><a class="btn" href="picks.html">← All picks</a></p>`;
+      <p><a class="btn" href="picks.html">← All picks</a> <a class="btn" href="leagues.html">By league →</a></p>`;
   }
 
   function renderMethodology(d) {
@@ -377,11 +544,15 @@
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
     if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+    const lims = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
+    const lbox = $("#limitations");
+    if (lbox && lims) lbox.innerHTML = lims;
     const m = $("#model-info");
     if (m && d.model) m.innerHTML = `<dl class="kv">
       <dt>Results used</dt><dd>${d.model.matches_used}</dd>
       <dt>Teams rated</dt><dd>${d.model.teams_rated}</dd>
       <dt>Teams with 365d games</dt><dd>${d.model.teams_with_recent_games}</dd>
+      <dt>Schedule bridges</dt><dd>${(d.model.schedule_bridges || []).length} verified upstream tag mappings</dd>
       <dt>Elo K</dt><dd>${d.model.k_base} (scaled by BestOf and score margin)</dd>
       <dt>Inactivity half-life</dt><dd>${d.model.half_life_days} days</dd>
       <dt>Competition priors</dt><dd>${d.model.competitions_with_prior} leagues mapped to strength tiers</dd>
@@ -416,6 +587,7 @@
     $$("[data-filter]").forEach((b) => b.addEventListener("click", () => { state.filter = b.dataset.filter; renderPicks(DATA); }));
     const params = new URLSearchParams(location.search);
     if (params.get("filter")) state.filter = params.get("filter");
+    if (params.get("tournament")) state.tournament = params.get("tournament");
   }
 
   async function main() {
@@ -424,6 +596,7 @@
       DATA = await load();
       setHeader(DATA);
       if (PAGE === "summary") renderIndex(DATA);
+      if (PAGE === "leagues") renderLeagues(DATA);
       if (PAGE === "picks") { wirePicks(); renderPicks(DATA); }
       if (PAGE === "unresolved") renderUnresolved(DATA);
       if (PAGE === "flagged") renderFlagged(DATA);

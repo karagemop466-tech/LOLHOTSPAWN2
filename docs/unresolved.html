@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unresolved &amp; low-confidence picks — Hotspawn LoL Picks</title>
-<meta name="description" content="Every Hotspawn LoL fixture without a verified signal, published as an explicit placeholder with the reasons and limitations written out.">
+<meta name="description" content="Every Hotspawn LoL fixture without a verified market line, per-league resolution methods, written limitations, and explicit 50/50 placeholders with official source links.">
 <meta name="theme-color" content="#0b1220">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -15,7 +15,7 @@
   <div class="header-inner">
     <a class="logo" href="index.html">
       <span class="logo-mark" aria-hidden="true">🎯</span>
-      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
     </a>
     <div class="header-meta">
       <span id="updated">Loading…</span><br>
@@ -28,7 +28,8 @@
   <ul>
     <li><a href="index.html" data-nav="summary">Summary</a></li>
     <li><a href="picks.html" data-nav="picks">All picks</a></li>
-    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; low confidence</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
     <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
     <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
   </ul>
@@ -38,32 +39,55 @@
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
 
-  <p class="eyebrow">Transparency</p>
+  <p class="eyebrow">Transparency &amp; limitations</p>
   <h1>Unresolved &amp; low-confidence picks</h1>
   <p class="lede">
-    Every match on Hotspawn's list gets a published pick — but a pick is only as good as its inputs.
-    When there is no external line and no usable recorded history, the row is <b>unresolved</b>: we show an
-    explicit 50/50 placeholder, label it, and explain it here. It is <b>not</b> an edge or a recommendation.
+    Every match on Hotspawn's list gets a published pick — never invented values.
+    When an amateur or debut match lacks both external betting lines and recorded history/standings, it stays an
+    <b>explicit 50.0% / 50.0% unresolved placeholder</b> with its exact reason and source link.
+    Hotspawn's crowd percentage is never used as a substitute.
   </p>
 
   <div class="note">
-    <p><b>Why this page exists.</b> Bookmakers and prediction markets price the top competitions — the World Championship,
-    the EMEA Masters, the major regional leagues. They do not price most national leagues, third divisions or amateur cups.
-    Leaguepedia records results unevenly at that level, and brand-new rosters have no games at all. Rather than invent a number,
-    we publish the placeholder and tell you which input was missing. Hotspawn's crowd percentage is never used as a substitute.</p>
+    <p><b>How non-market matches are resolved first:</b> Before marking any fixture unresolved, the pipeline checks
+    (1) de-vigged lines from Pinnacle, Bovada, Unibet (Kambi) and Polymarket,
+    (2) chronological Elo from Leaguepedia's recorded series results with competition-scoped entity disambiguation and exact UTC schedule bridging,
+    (3) smoothed Bradley-Terry series/game win rates from Leaguepedia's official split <code>Standings</code> tables, and
+    (4) tournament median prior when exactly one side has verified history (<span class="flag">MODEL_LEAGUE_PRIOR</span>).</p>
     <p class="small" id="unresolved-counts">Loading…</p>
   </div>
 
-  <div class="two-col">
+  <section>
+    <h2>Per-league resolution &amp; limitations table</h2>
+    <p class="small">Why certain competitions have no external bookmaker lines and how each league's picks are originated from verified sources.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Competition</th>
+            <th scope="col">Fixtures</th>
+            <th scope="col">Market / Model / Standings / Prior / Unres</th>
+            <th scope="col">Specific limitation</th>
+            <th scope="col">Official source</th>
+          </tr>
+        </thead>
+        <tbody id="league-limitations-body">
+          <tr><td colspan="5"><div class="loading"><span class="spinner"></span>Loading per-league limitations…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="two-col" style="margin-top:20px">
     <section class="card">
       <h3>⚠️ Unresolved — explicit 50/50 placeholders</h3>
-      <p class="small">No external market line and no team has enough recorded games for the model. The probability is a placeholder only.</p>
+      <p class="small">No external market line, no recorded match history, and no split standings record for either team. Probability is strictly 50.0% / 50.0% placeholder.</p>
       <div id="unresolved-body"><div class="loading"><span class="spinner"></span>Loading…</div></div>
     </section>
 
     <section class="card">
-      <h3>🧮 Low confidence — a real but weak signal</h3>
-      <p class="small">These rows do have a pick from the model, but it relies on thin history (&lt;8 games), a league-tier prior for one side, or a cross-league comparison. Treat the number as indicative.</p>
+      <h3>🧮 Low confidence — real but thin signal</h3>
+      <p class="small">Priced from recorded data (&lt;8 games in 365 days, early-split standings, cross-league comparison, or one debut side against competition prior), with official source links on every card.</p>
       <div id="lowconf-body"><div class="loading"><span class="spinner"></span>Loading…</div></div>
     </section>
   </div>
@@ -74,20 +98,9 @@
   </section>
 
   <section class="card">
-    <h3>Written limitations</h3>
+    <h3>Written limitations for generating picks</h3>
     <ol class="small" id="limitations"><li>Loading…</li></ol>
-    <p class="small">Also see <a href="methodology.html">Methodology &amp; sources</a> for exactly how probabilities are produced and
-    <a href="flagged.html">Flagged for review</a> for individual irregularities.</p>
-  </section>
-
-  <section class="card">
-    <h3>What we do instead of guessing</h3>
-    <ul class="clean small">
-      <li><b>No line, no problem — as long as there is history.</b> Our Elo model uses recorded results and is anchored to the strength tier of the competition each team plays in.</li>
-      <li><b>One side unknown?</b> We use the competition's median rating (or its tier prior) for the missing side and mark the row <span class="flag">MODEL_LEAGUE_PRIOR</span> / <span class="flag">ONE_TEAM_NO_HISTORY</span>.</li>
-      <li><b>Both sides unknown?</b> The row stays unresolved (50/50 placeholder) and appears above — it is never dressed up as a model output.</li>
-      <li><b>Verification.</b> Every row links its Hotspawn fixture and either the bookmaker/market page or the Leaguepedia tournament page used. No value is inferred without a link.</li>
-    </ul>
+    <p class="small">Also see <a href="picks.html">All picks</a>, <a href="leagues.html">By league</a>, <a href="methodology.html">Methodology &amp; sources</a> and <a href="flagged.html">Flagged for review</a>.</p>
   </section>
 
   <div class="loading"><span class="spinner"></span>Loading unresolved data…</div>
@@ -95,14 +108,16 @@
 
 <footer class="site-footer">
   <div class="wrap footer-grid">
-    <p class="small">Fixtures from Hotspawn's public lobby; probabilities from external markets where available, otherwise our own Elo model. Hotspawn crowd percentages are never used.</p>
+    <p class="small">Fixtures from Hotspawn's public lobby; probabilities from external markets where available, otherwise our own Elo &amp; standings models on Leaguepedia (CC BY-SA 3.0). Hotspawn crowd percentages are never used.</p>
     <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
+    <p class="tiny" id="footer-updated"></p>
   </div>
 </footer>
 
 <nav class="bottom-nav" aria-label="Mobile">
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
+  <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
   <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
