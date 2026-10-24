@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-24T16:51:39.210601+00:00",
+ "verified_at": "2026-10-24T16:57:26.308339+00:00",
  "status": "FAIL",
  "counts": {
   "PASS": 39,
@@ -9,22 +9,22 @@
  },
  "data_matches": 160,
  "methods": {
-  "MODEL_ELO_THIN": 57,
-  "MODEL_ELO": 94,
-  "MODEL_STANDINGS": 0,
-  "MARKET_SINGLE": 1,
-  "MARKET_POLYMARKET": 0,
   "MARKET_CONSENSUS": 8,
+  "MARKET_BOOKS": 0,
+  "MARKET_SINGLE": 1,
   "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_STANDINGS": 0,
   "UNRESOLVED": 0,
-  "MARKET_BOOKS": 0
+  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO_THIN": 57,
+  "MODEL_ELO": 94
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "160 matches, generated_at=2026-10-24T16:51:37.840150Z (0.0h old)"
+   "detail": "160 matches, generated_at=2026-10-24T16:57:25.137710Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -150,9 +150,10 @@
    "id": "D23",
    "title": "probe separates the production feeds from checked-only sources",
    "status": "FAIL",
-   "detail": "4 wired feed(s) counted consistently with summary (3/4 reachable)",
+   "detail": "4 wired feed(s) counted consistently with summary (4/4 reachable)",
    "items": [
     "Pinnacle LoL matchups (wired feed): wired row carries a probability",
+    "Unibet/Kambi LoL listView (wired feed): wired row carries a probability",
     "Bovada esports coupon (wired feed): wired row carries a probability",
     "Polymarket LoL tag (wired feed): wired row carries a probability"
    ]
@@ -167,7 +168,7 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "WARN",
-   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.1h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
+   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.2h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
    "items": [
     "Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00",
     "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
