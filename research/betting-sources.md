@@ -349,3 +349,60 @@ Standings ignore strength of schedule; Elo tiers across leagues are priors, not 
 | 2026-10-23 | Live pipeline (Actions 39980317947) | Standings fetched: 167 rows / 14 competitions; 4 fixtures → `MODEL_STANDINGS`; 188/188 picks, 0 unresolved | `data/diag/pipeline.log`, `docs/data/picks.json` |
 | 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
 
+
+---
+
+## 13. Refresh 2026-10-24 — tier-3/amateur lines: established books → esportsbooks → aggregators (session `arena/e6f33fe9`)
+
+**Question this round.** The live payload prices 100% of upcoming Hotspawn LoL fixtures (169/169 on
+2026-10-24T15:28Z), but only **9** come from an external market; the other **160** are our own Elo /
+standings line. The open question is not "do picks exist" (they do) but "can any accessible external
+feed price the amateur / promotion leagues" — PRM 2nd & 3rd Division, RIVALS LEAGUE Season 2,
+Tunisian Super League, Icelandic Esports League, Komplettligaen, LigaGG CELOL, Arabian regional
+splits. Everything below was checked by hand on **2026-10-24** and is reproducible from the links.
+
+### 13.1 Established sportsbooks — lines exist, public feeds do not
+
+| Source checked | What was observed (2026-10-24) | Can CI use it? |
+|---|---|---|
+| Betmonitor — Prime League 2nd Division odds comparison ([link](https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464)) | Page lists real two-way prices for a PRM 2nd Division fixture: **bet365 1.98 / 1.92**, **Unibet 2.50**, **efbet.net 3.38**, **novibet 5.25 / 12.25** | No. Aggregator HTML behind Cloudflare, no published API, scraping is against their terms. |
+| OddsPortal — LoL Prime League ([link](https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/)) | Confirms bet365/Unibet etc. publish Prime League lines and closing odds | No. Bot-protected; no API. |
+| BMBets — LoL Prime League ([link](https://www.bmbets.com/e-sports/world/lol---prime-league/)) | Book-by-book comparison table for Prime League fixtures | No. Same restrictions. |
+| Unibet / Kambi (feeds already in production) | `ubca` (`market=ZZ`) and `ub` (`market=GB`) both return **only World Championship** events for LoL today; switching the `market` parameter to `DE` or `SE` returns the **same 8 events**; the German brand endpoint `…/ubde/listView/…` answers **HTTP 400 `Unable to resolve customer for extApiEndpoint ubde`** | Already used, but it does not extend coverage to tier 2/3. Probed every run (`scripts/probe_sources.py`, controls added this session). |
+
+**Reading:** bet365 and Unibet *do* price German Prime League 2nd Division matches. What they do not
+offer is a public, licensed, machine-readable feed that a GitHub Actions runner may pull. Building a
+scraper for a Cloudflare-protected comparison page would break those sites' terms and would be
+fragile in exactly the way this project has been avoiding. **No adapter was added.**
+
+### 13.2 Esportsbooks and esports-odds aggregators
+
+| Source checked | What was observed | Verdict |
+|---|---|---|
+| eGamersWorld LoL odds ([link](https://egamersworld.com/lol/bets)) | Aggregates five books (Vave, Thunderpick, Rainbet, Underdog, CocoBet). On 2026-10-24 its entire "today's upcoming" board was **2026 World Championship** fixtures — no tier-2/3 event | Human cross-check only; nothing to add |
+| Oddspedia LoL odds ([link](https://oddspedia.com/league-of-legends/odds)) | Claims coverage of "hundreds" of LoL tournaments; its pages are geo-targeted comparison views with no public API | Not usable from CI |
+| Strafe LoL odds ([link](https://www.strafe.com/esports-betting/odds/league-of-legends/)) | Oddspedia-powered front end; same limitation | Not usable |
+| GG.Bet / Thunderpick / Rivalry / Midnite / Betway | Probe history from §11–§12 (403/404/503 or JS-only SPA boards) | Still not usable |
+
+### 13.3 What this session changed as a result
+
+1. `scripts/probe_sources.py` now also probes the four comparison pages above **and** two Kambi
+   control endpoints, so the "lines exist but no feed" conclusion is re-measured on every CI run
+   rather than asserted.
+2. No new market adapter was written. Adding a source that cannot be verified end-to-end would
+   violate the project rule "never infer or fill in values".
+3. The alternative route — our own line — is what the site actually uses for those leagues, and its
+   limitations are now stated **on the executive summary itself** (fixture list + per-league
+   limitation table), not only on a subpage (see `docs/index.html#unresolved-section`).
+
+### 13.4 Verification log additions (2026-10-24)
+
+| Source | Claim verified | Link |
+|---|---|---|
+| Hotspawn LoL lobby | 241 LoL matches listed (169 upcoming + 72 past); our payload covers all 169 upcoming | https://play.hotspawn.com/lol-pickems |
+| Live payload on Pages | 169 fixtures, 169 priced, 9 market, 160 model, 0 unresolved; reconciliation `lobby_upcoming=169`, `priced=169`, `missing=0` | [docs/data/picks.json](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json) |
+| Kambi `ubca` LoL feed | 8 World Championship events only | https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true |
+| Kambi `ub` feed, `market=DE` | Identical World Championship event set — the market parameter does not widen LoL coverage | https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true |
+| Kambi `ubde` brand feed | HTTP 400, customer cannot be resolved — no German-brand feed available to us | https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true |
+| Betmonitor PRM 2nd Division | bet365 / Unibet / efbet / novibet publish Prime League 2nd Division lines | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| OddsPortal Prime League | Established books carry the league and closing odds | https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ |

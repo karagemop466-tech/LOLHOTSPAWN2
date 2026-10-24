@@ -184,11 +184,29 @@
 
   function renderIndex(d) {
     const c = d.counts || {};
+    const allMatches = d.matches || [];
     const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
     set("#stat-fixtures", c.fixtures ?? "—");
     set("#stat-market", c.market ?? "—");
     set("#stat-model", c.model ?? "—");
     set("#stat-unresolved", c.unresolved ?? "—");
+
+    // ---- findability counters (hero + "Where the picks are" cards)
+    const nowMsForCounts = Date.now();
+    const next24Count = allMatches.filter((m) => {
+      const t = new Date(m.start_utc).getTime();
+      return t >= nowMsForCounts - 300000 && t <= nowMsForCounts + 86400000;
+    }).length;
+    const lowCount = allMatches.filter((m) => m.method !== "UNRESOLVED"
+      && (m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")).length;
+    const unresolvedCount = allMatches.filter((m) => m.method === "UNRESOLVED").length;
+    set("#hero-count-picks", allMatches.length ? `(${allMatches.length})` : "");
+    set("#hero-count-next24", next24Count ? `(${next24Count})` : "(0)");
+    set("#hero-count-unresolved", `(${unresolvedCount})`);
+    set("#where-next24", next24Count);
+    set("#where-leagues", computeLeagueBreakdown(d).length);
+    set("#where-unresolved", unresolvedCount);
+    set("#where-low", lowCount);
 
     const rb = $("#recon-body");
     if (rb) {
@@ -262,6 +280,29 @@
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
       <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+
+    // ---- every unresolved fixture, listed inline on the executive summary
+    const uList = $("#unresolved-list");
+    if (uList) {
+      const un = allMatches.filter((m) => m.method === "UNRESOLVED")
+        .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+      uList.innerHTML = un.length
+        ? un.map((m) => matchCard(m, { sources: 3 })).join("")
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${allMatches.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so there is nothing to list here. Low-confidence rows (${lowCount}) are priced but labelled; see <a href="unresolved.html">Unresolved &amp; limits</a>.</div>`;
+    }
+
+    // ---- per-league limitation table inline on the executive summary
+    const limBody = $("#summary-limitations-body");
+    if (limBody) {
+      const rowsHtml = computeLeagueBreakdown(d).map((lb) => `<tr>
+        <td data-label="Competition"><a class="rowlink" href="picks.html?tournament=${encodeURIComponent(lb.tournament)}"><b>${esc(lb.tournament)}</b></a><span class="sub">${esc(lb.category || "")}</span></td>
+        <td data-label="Fixtures"><b>${lb.fixtures}</b></td>
+        <td data-label="Pricing" class="small">💰 ${lb.market} mkt · 🧮 ${lb.elo} Elo · 📊 ${lb.standings || 0} st · 📐 ${lb.league_prior} prior · ⚠️ ${lb.unresolved} unres</td>
+        <td data-label="Limitation" class="small">${esc(lb.limitation || "")}</td>
+        <td data-label="Source">${leagueSourceLinks(lb)}</td>
+      </tr>`).join("");
+      limBody.innerHTML = rowsHtml || `<tr><td colspan="5">No competitions in this snapshot.</td></tr>`;
+    }
 
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");

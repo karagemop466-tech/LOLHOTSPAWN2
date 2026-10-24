@@ -13,25 +13,29 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="wrap bar">
-    <a class="brand" href="index.html">
-      <span class="mark" aria-hidden="true">LP</span>
-      <span>LoL Pick'em <small>Independent Hotspawn companion</small></span>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
     </a>
-    <nav class="top-nav" aria-label="Primary">
-      <a href="index.html" data-nav="summary">Executive summary</a>
-      <a href="picks.html" data-nav="picks">All picks</a>
-      <a href="leagues.html" data-nav="leagues">By league</a>
-      <a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a>
-      <a href="flagged.html" data-nav="flagged">Flagged</a>
-      <a href="methodology.html" data-nav="methodology">Methodology</a>
-    </nav>
-    <div class="bar-end">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">☀️</button>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
     </div>
   </div>
-  <div class="status-strip"><div class="wrap" id="status-strip">Loading latest picks…</div></div>
 </header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
+
 
 <main id="main" class="wrap">
   <div id="error-box"></div>

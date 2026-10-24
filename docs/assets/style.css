@@ -287,3 +287,33 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
 .pick-pill.red { background: var(--red-soft); color: var(--red); border-color: rgba(185, 28, 28, .3); }
 .cat-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
 .cat-section { margin: 22px 0; scroll-margin-top: 90px; }
+
+/* ---- executive summary findability & phone ergonomics (session arena/e6f33fe9) ---- */
+/* stat cards render <b>/<span> (older pages used .n/.l) — size both so the numbers read at a glance */
+.stat b, .stat .n { display: block; font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -.02em; }
+.stat span, .stat .l { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-top: 5px; }
+
+/* coverage bar used by the executive summary (was referenced but never styled) */
+.covbar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); margin: 8px 0 4px; }
+.covbar i { display: block; height: 100%; background: var(--green); }
+.covbar b { display: block; height: 100%; background: var(--muted); opacity: .35; }
+
+/* hero: primary "find the picks" buttons must be thumb-sized on a phone */
+.btn.big { font-size: 16px; min-height: 54px; }
+.btn-n { font-weight: 800; opacity: .85; }
+.hero-details { margin: 8px 0 0; }
+.hero-details > summary { cursor: pointer; padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 620px) {
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .hero h1 { font-size: clamp(22px, 6.6vw, 28px); }
+  .lede { font-size: 16px; }
+  .linkcard { min-height: 76px; }
+}
+
+/* in-page anchors must clear the sticky header (mobile header is ~2 rows tall) */
+section[id], h2[id], h3[id] { scroll-margin-top: 150px; }
+@media (min-width: 860px) {
+  section[id], h2[id], h3[id] { scroll-margin-top: 112px; }
+  .hero-details > summary { min-height: 0; }
+}

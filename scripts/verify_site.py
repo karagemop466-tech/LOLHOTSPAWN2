@@ -741,6 +741,65 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             PASS if not nav_bad else FAIL,
             "; ".join(nav_bad[:5]) if nav_bad else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
 
+    # S11: the executive summary must carry its own "separate unresolved section"
+    # (fixture list + per-league limitation table) and put picks ahead of it.
+    idx_path = os.path.join(DOCS, "index.html")
+    s11_detail = "docs/index.html missing"
+    s11_ok = False
+    if os.path.exists(idx_path):
+        idx_html = open(idx_path, encoding="utf-8").read()
+        need_ids = ["picks-now", "quick-picks-body", "unresolved-section",
+                    "unresolved-list", "summary-limitations-body"]
+        missing_ids = [i for i in need_ids if f'id="{i}"' not in idx_html]
+        pos_picks = idx_html.find('id="quick-picks-body"')
+        pos_unres = idx_html.find('id="unresolved-section"')
+        ordered = pos_picks >= 0 and pos_unres >= 0 and pos_picks < pos_unres
+        in_site_links = all(f'href="{h}"' in idx_html for h in
+                            ("picks.html", "picks.html?filter=next24", "unresolved.html", "leagues.html"))
+        s11_ok = not missing_ids and ordered and in_site_links
+        s11_detail = (f"unresolved section ids {'present' if not missing_ids else 'missing ' + str(missing_ids)}; "
+                      f"picks before unresolved section: {'yes' if ordered else 'NO'}; "
+                      f"in-site pick links: {'yes' if in_site_links else 'NO'}")
+    rep.add("S11", "executive summary has a separate unresolved section (fixture list + "
+                   "per-league limits) with the picks listed first and linked in-site",
+            PASS if s11_ok else FAIL, s11_detail)
+
+    # S12: every CSS class used by a page must actually have a rule. A shared class
+    # name collision (`class="wrap bar"` reused the 12px probability bar) silently
+    # clipped the header on the summary and unresolved pages.
+    defined = set(re.findall(r"\.([A-Za-z][A-Za-z0-9_-]*)", css_text))
+    used_classes: dict[str, set[str]] = {}
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep) or not pg.endswith(".html"):
+            continue
+        with open(pg, encoding="utf-8") as fh:
+            raw = fh.read()
+        for m in re.finditer(r'class="([^"]+)"', raw):
+            for cls in m.group(1).split():
+                used_classes.setdefault(cls, set()).add(os.path.basename(pg))
+    unstyled = {c: sorted(v) for c, v in used_classes.items()
+                if c not in defined and c != "table"}
+    rep.add("S12", "every CSS class used by a page has a stylesheet rule",
+            PASS if not unstyled else FAIL,
+            f"{len(used_classes)} classes used, {len(unstyled)} unstyled",
+            [f"{c}: {', '.join(v)}" for c, v in sorted(unstyled.items())])
+
+    # S13: the jsdom render harness must exist and be run by CI, so a page that
+    # fails to render cannot pass verification.
+    harness = os.path.join(ROOT, "verification", "check_dom_render.js")
+    wf_dir = os.path.join(ROOT, ".github", "workflows")
+    wired = []
+    if os.path.isdir(wf_dir):
+        for f in sorted(os.listdir(wf_dir)):
+            if f.endswith((".yml", ".yaml")):
+                text = open(os.path.join(wf_dir, f), encoding="utf-8").read()
+                if "check_dom_render.js" in text:
+                    wired.append(f)
+    rep.add("S13", "jsdom render harness exists and runs in CI",
+            PASS if os.path.exists(harness) and wired else FAIL,
+            f"harness {'present' if os.path.exists(harness) else 'MISSING'}; "
+            f"wired into {', '.join(wired) if wired else 'no workflow'}")
+
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
             "all pages declare a responsive viewport" if not viewport_bad

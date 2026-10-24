@@ -36,6 +36,25 @@ CANDIDATES = [
     ("Betway LoL", "https://www.betway.com/en/esports/league-of-legends", "sportsbook-page"),
     ("Unibet LoL", "https://www.unibet.com/betting/sports/filter/esports/league_of_legends", "sportsbook-page"),
     ("OddsPapi LoL (no key configured)", "https://oddspapi.io/sports/esports/lol", "aggregator-page"),
+    # Verified by hand on 2026-10-24 (session arena/e6f33fe9) as showing LoL match
+    # lines, including DACH Prime League 2nd Division at bet365 / Unibet / efbet /
+    # novibet. They are comparison pages behind Cloudflare/geo walls with no
+    # published API, so they are probed for evidence only — never parsed into picks.
+    ("Oddspedia LoL odds comparison", "https://oddspedia.com/league-of-legends/odds", "odds-comparison-page"),
+    ("Betmonitor Prime League 2nd Division (bet365/Unibet/efbet/novibet lines)",
+     "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+     "odds-comparison-page"),
+    ("BMBets LoL Prime League", "https://www.bmbets.com/e-sports/world/lol---prime-league/", "odds-comparison-page"),
+    ("Strafe LoL odds (Oddspedia feed)", "https://www.strafe.com/esports-betting/odds/league-of-legends/", "odds-comparison-page"),
+    # Kambi powers several Unibet brands. `ub`/`ubca` are the feeds production
+    # uses; these two prove per-brand feeds are not a route to lower-tier leagues:
+    # ubde is rejected outright and the market= parameter does not widen coverage.
+    ("Unibet DE Kambi brand feed (control probe)",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+     "sportsbook-api"),
+    ("Unibet Kambi feed with market=DE (coverage control)",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+     "sportsbook-api"),
 ]
 
 
