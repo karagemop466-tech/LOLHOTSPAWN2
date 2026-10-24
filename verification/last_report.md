@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-24T16:42:06.051766+00:00_
-160 matches · MODEL_ELO: 93 · MARKET_CONSENSUS: 8 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · UNRESOLVED: 0 · MODEL_ELO_THIN: 58 · MARKET_SINGLE: 1 · MARKET_POLYMARKET: 0 · MODEL_STANDINGS: 0
+_2026-10-24T16:43:08.567472+00:00_
+160 matches · MARKET_POLYMARKET: 0 · MARKET_BOOKS: 0 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO: 93 · MODEL_STANDINGS: 0 · MODEL_ELO_THIN: 58 · MARKET_CONSENSUS: 8 · UNRESOLVED: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 160 matches, generated_at=2026-10-24T16:40:07.613899Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 160 matches, generated_at=2026-10-24T16:39:13.364426Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 160 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -45,6 +45,7 @@ _2026-10-24T16:42:06.051766+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
+| X1 external links reachable (official-source links resolve) | WARN | 12/14 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -75,6 +76,9 @@ _2026-10-24T16:42:06.051766+00:00_
 - Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00
 - Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30
 - 2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30
+
+**X1 items:**
+- https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
