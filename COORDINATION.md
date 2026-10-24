@@ -832,3 +832,26 @@ PR/merge record — completed 2026-10-24:
 | Pages status | **built** — live |
 | Live site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ (serving the merged payload: 169 fixtures, 169 resolved, 0 unresolved; live dashboard render confirmed) |
 
+---
+
+## Session `arena/607dddb0-lolhotspawn2` — 2026-10-24 (live sportsbook & wiki forensic audit: Bovada 8-match restoration, `Inari Esports` entity repair, 404 URL elimination, Liquipedia API normalization & 6h CI hardening)
+
+> Branch & coordination note: Fixed session branch `arena/607dddb0-lolhotspawn2` (rebased onto `origin/main` `689d824`, preserving all prior sessions' entries). Scope restricted strictly to unclaimed files (`data/aliases.json`, `scripts/entity_resolution.py`, `scripts/fetch_markets.py`, `scripts/standings_and_books.py`, `.github/workflows/update-picks.yml`, `research/line-by-line-audit-2026-10-24.md`, `COORDINATION.md`).
+
+| Task | Status | Owner | Exclusive file scope |
+|---|---|---|---|
+| T34 Tournament/entity alias & 100% Leaguepedia provenance repair: map `4 Nations 2026 Halloween Heist`, `Komplettligaen 2026 Autumn Playoffs`, `PRM 1st Division 26-27 Fall`, `Arabian League 2nd Division 2026 Fall Playoffs`, and fix `Inari Esports` -> `Inari Esports (British Team)` (`1081700` was previously mis-resolved to unrelated `NARI` via 4-letter substring containment, producing `GENERIC_RESULTS_SOURCE`) | review | arena/607dddb0 | `data/aliases.json`, `scripts/entity_resolution.py` |
+| T35 Live sportsbook & Liquipedia restoration: (1) restore Bovada from `no_data (0)` to `ok (8)` by querying `/description/esports` filtered to LoL coupon groups, accepting Bovada's `period={"description":"Game","main":true}` series moneyline while rejecting `Map N`/`Game N` sub-boards, and prefixing `/sports` on event URLs (`200 OK`); (2) replace 404 `www.pinnacle.com/en/esports/league-of-legends` with `200 OK` Arcadia JSON URLs; (3) normalize/deduplicate Liquipedia `api.php` prefixes (`≤8` queries instead of 169 raw tournament loops, cutting ~6 min per CI run and restoring `status: "ok"`) | review | arena/607dddb0 | `scripts/fetch_markets.py`, `scripts/standings_and_books.py` |
+| T36 Scheduled 6h workflow hardening: add `data/aliases.json` to `update-picks.yml` push trigger and discard unstaged `verification/` reports before the `git merge -X ours` push-retry loop | review | arena/607dddb0 | `.github/workflows/update-picks.yml` |
+| T37 Full line-by-line 2026-10-24 live external source audit (`research/line-by-line-audit-2026-10-24.md`), CI branch verification (`pipeline-test.yml`), PR → `main`, merge & Pages confirmation | in progress | arena/607dddb0 | `research/line-by-line-audit-2026-10-24.md`, `COORDINATION.md` |
+
+### Irregularities discovered & fixed during live external audit (`2026-10-24`)
+- **I20 (FIXED — wrong entity disambiguation & `GENERIC_RESULTS_SOURCE` on fixture `1081700`):** `Inari Esports vs Bulldog Esports` (`4 Nations 2026 Halloween Heist`, `2026-10-26T19:00:00Z`) resolved `"Inari Esports"` to unrelated team `NARI` (`"nari"` substring inside `"inariesports"`), missing Leaguepedia's official schedule row (`Inari Esports (British Team)` vs `Bulldog Esports`, `BestOf: 3`, Round 2) at <https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist>. Fixed in `data/aliases.json` + `scripts/entity_resolution.py` with `HOTSPAWN_NAME_COLLISION` flag.
+- **I21 (FIXED — Bovada triple-bug caused false `no_data (0)` despite 8 live Worlds moneylines):** `/description/esports/league-of-legends` returns `{}`, whereas `/description/esports?marketFilterId=def&preMatchOnly=true&lang=en` returns HTTP `200 OK` with all 8 `World Championship '26` LoL moneylines (`path` includes `/esports/league-of-legends`). In addition, `fetch_bovada()` previously rejected `period.description == "Game"` (`main: true`) and built `/esports/...` links (HTTP 404) instead of `/sports/esports/...` (HTTP 200). Fixing all three upgrades all 8 Worlds matches to **4-source consensus** (`Pinnacle + Unibet + Bovada + Polymarket`).
+- **I22 (FIXED — Pinnacle 404 URL & Liquipedia 169-call raw prefix loop):** Replaced 404 `https://www.pinnacle.com/en/esports/league-of-legends` with `200 OK` `https://guest.api.arcadia.pinnacle.com/0.1/matchups/{mid}/markets/related/straight` and deduplicated `probe_liquipedia_pages()` to ≤8 verified `apprefix` strings on `liquipedia.net/leagueoflegends/api.php`.
+
+### Logged cross-session requests (non-blocking; owned by active UI/publisher sessions)
+- **R20 → `docs/**` owners:** `docs/picks.html` / `docs/flagged.html` carry trailing `<div class="loading">` blocks outside tables, and `docs/methodology.html` `#manual-checks` row 4 still cites stale v2 `"13 rows have no match page"`.
+- **R21 → `scripts/update_picks.py` owners:** Add `"Komplettligaen 2026 Autumn Playoffs": ("Komplettligaen (LoL)", "https://www.komplettligaen.no/lol/")` alongside `"Komplettligaen 2026 Autumn"` in `ORGANIZER_LINKS`.
+
+
