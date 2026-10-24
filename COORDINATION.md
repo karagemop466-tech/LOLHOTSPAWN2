@@ -1171,3 +1171,24 @@ https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2
 append-only); the resolver is committed at `scripts/resolve_coordination_conflict.py`. No other session's work
 was discarded at any point. `research/betting-sources.md` §13 (session `arena/26fa1cec`) and §14 (this
 session) are both present and renumbered so the section numbers stay unique.
+
+---
+
+## Session `arena/f0a8380a-lolhotspawn2` — 2026-10-24 (structural `Resolver` short-tag & disambiguation hardening + full line-by-line verification)
+
+### Claimed tasks (`F1`–`F4`)
+- **F1 — Structural entity-resolution hardening (`scripts/model.py`)**:
+  - Audited all non-exact entity resolutions across the entire Hotspawn fixture slate and identified the root cause of the `1081700` (`4 Nations 2026 Halloween Heist`: `Inari Esports vs Bulldog Esports`) false match: `contains(a, b)` in `scripts/model.py` previously accepted any substring (`na in nb or nb in na`), allowing 4-character SEA tag `"NARI"` (`"nari"` in `"inariesports"`) to beat `"Inari Esports (British Team)"` whenever an explicit alias was absent.
+  - Hardened `contains(a, b)` in `scripts/model.py` to require `len(short) >= 5` for non-identical substring matching, preventing 3–4 character team tags (`"NARI"`, `"TES"`, `"BLG"`, `"GEN"`, `"PNS"`) from substring-matching inside unrelated multi-word team names.
+  - Added stripped-parenthetical disambiguation resolution (`_strip_disambig`: `"Inari Esports (British Team)" -> "Inari Esports"`, `"Locked In (Dutch Team)" -> "Locked In"`, `"Rich Gang (Norwegian Team)" -> "Rich Gang"`) to `Resolver.resolve_with_meta` ahead of substring fallback, and synced `DEFAULT_ALIASES` in `scripts/model.py` (`"Inari Esports": "Inari Esports (British Team)"`, `"4 Nations 2026 Halloween Heist"`, `"Komplettligaen 2026 Autumn Playoffs"`, `"EM 2026 Summer Main Event"`).
+- **F2–F4 — Regression tests & end-to-end verification (`verification/test_entity_and_books.py`)**:
+  - Added 3 unit tests in `verification/test_entity_and_books.py` (`13/13` passing) verifying that `contains("Inari Esports", "NARI")` is `False`, `Resolver` resolves `"Inari Esports"` to `"Inari Esports (British Team)"` even when `"NARI"` is in the candidate pool and no explicit alias is passed, and `tournament_pages` maps `"4 Nations 2026 Halloween Heist"` and `"Komplettligaen 2026 Autumn Playoffs"`.
+  - Integrated concurrent merges on `main` (PRs #32–#39) without discarding any session's work.
+  - Verified all automated suites on the merged tree:
+    - `python3 scripts/verify_site.py`: **40 PASS · 0 FAIL · 0 WARN · 1 SKIP** (`REQ1`–`REQ12` all PASS; 160 upcoming fixtures, 160 resolved `100.0%`, 0 unresolved, 9 external market rows, 151 model rows including 55 `MODEL_ELO_STANDINGS` rows)
+    - `python3 verification/test_verifier.py`: **45/45** self-tests passed
+    - `python3 verification/check_dom_contract.py`: **PASS** (48 JS target IDs, 76 page IDs across 7 HTML pages)
+    - `python3 audit/test_model.py`: **23/23** passed
+    - `python3 verification/test_standings_model.py`: **18/18** passed
+    - `python3 verification/test_entity_and_books.py`: **13/13** passed
+

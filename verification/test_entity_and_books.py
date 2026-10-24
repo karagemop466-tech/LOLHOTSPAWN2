@@ -13,6 +13,7 @@ from standings_and_books import (  # noqa: E402
     is_pinnacle_main_matchup,
     standings_probability,
 )
+from model import Resolver, contains, load_aliases  # noqa: E402
 from entity_resolution import (  # noqa: E402
     build_page_rosters,
     build_tournament_page_map,
@@ -126,6 +127,17 @@ def main() -> int:
     )
     check("standings model prices 2-0 vs 0-2 > 0.55", p_reh is not None and p_reh > 0.55 and meta is not None)
     check("0-0 standings entries rejected", p_zero is None)
+
+    # 4. Inari Esports -> Inari Esports (British Team) (never 4-char SEA tag NARI)
+    aliases = load_aliases(os.path.join(ROOT, "data", "aliases.json"))
+    res_inari = Resolver(["NARI", "Inari Esports (British Team)", "Bulldog Esports"], {})
+    check("short 4-char tag NARI does not substring-match Inari Esports",
+          not contains("Inari Esports", "NARI"))
+    check("Inari Esports stripped-parenthetical beats short substring NARI",
+          res_inari.resolve("Inari Esports") == "Inari Esports (British Team)")
+    check("tournament_pages maps 4 Nations 2026 Halloween Heist & Komplettligaen Playoffs",
+          aliases["tournament_pages"].get("4 Nations 2026 Halloween Heist") == "4 Nations/2026 Season/Halloween Heist"
+          and aliases["tournament_pages"].get("Komplettligaen 2026 Autumn Playoffs") == "Komplettligaen/2026 Season/Autumn Playoffs")
 
     passed = sum(1 for _, ok in checks if ok)
     print(f"\n{passed}/{len(checks)} entity & sportsbook unit tests passed")
