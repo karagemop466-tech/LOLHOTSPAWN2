@@ -1,6 +1,6 @@
 {
- "checked_at": "2026-10-24T16:43:39.010291Z",
- "candidates": [
+ "checked_at": "2026-10-24T16:45:22.098756Z",
+ "books": [
   {
    "name": "Pinnacle (guest JSON)",
    "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
@@ -64,7 +64,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 366118,
+   "bytes": 366116,
    "lol_mentions": 0,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -117,12 +117,15 @@
    "name": "Rivalry LoL",
    "url": "https://www.rivalry.com/lol",
    "kind": "esportsbook-page",
+   "category": "market",
    "http_status": 503,
-   "bytes": 1591,
    "is_json": false,
-   "lol_mentions_in_first_items": null,
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "bytes": 1591,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "not reachable from CI this run (HTTP 503) — nothing used",
+   "reachable": false,
+   "structured": false
   },
   {
    "name": "Midnite LoL",
@@ -185,13 +188,13 @@
    "url": "https://www.oddsportal.com/lol/",
    "kind": "aggregator-page",
    "category": "market",
-   "http_status": 200,
+   "http_status": 503,
    "is_json": false,
-   "bytes": 491898,
-   "lol_mentions": 7,
+   "bytes": 0,
+   "lol_mentions": null,
    "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
-   "reachable": true,
+   "verdict": "not reachable from CI this run (HTTP 503) — nothing used",
+   "reachable": false,
    "structured": false
   },
   {
@@ -220,6 +223,62 @@
    "vs_style_items": null,
    "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
    "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Betmonitor — Prime League 2nd Division comparison",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 412150,
+   "lol_mentions": 5,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Betmonitor — esports odds hub",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 412050,
+   "lol_mentions": 5,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "EsportBet — LoL odds board",
+   "url": "https://esportbet.com/odds/league-of-legends/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 407421,
+   "lol_mentions": 442,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "EsportsBets — LoL betting guide",
+   "url": "https://www.esportsbets.com/betting/league-of-legends/",
+   "kind": "odds-guide",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 178373,
+   "lol_mentions": 129,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
    "structured": false
   },
   {
@@ -270,9 +329,12 @@
    "http_status": 200,
    "bytes": 190915,
    "is_json": false,
-   "lol_mentions_in_first_items": null,
-   "detail": {},
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+   "bytes": 190915,
+   "lol_mentions": 177,
+   "vs_style_items": null,
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
+   "reachable": true,
+   "structured": false
   },
   {
    "name": "Riot LoLESports official schedule",
@@ -304,12 +366,12 @@
   }
  ],
  "summary": {
-  "checked": 22,
-  "reachable": 10,
+  "checked": 26,
+  "reachable": 13,
   "structured_json": 5,
   "structured_with_lol": 3,
-  "market_sources_checked": 18,
-  "market_sources_reachable": 7,
+  "market_sources_checked": 22,
+  "market_sources_reachable": 10,
   "results_sources_reachable": 3,
   "note": "Probe only: no probed value is used in any probability. Only the four production feeds (Pinnacle, Unibet/Kambi, Bovada, Polymarket) produce market probabilities."
  }

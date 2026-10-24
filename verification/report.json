@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-24T16:43:08.567472+00:00",
+ "verified_at": "2026-10-24T16:45:23.861400+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 40,
@@ -9,22 +9,22 @@
  },
  "data_matches": 160,
  "methods": {
-  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO": 93,
+  "MARKET_CONSENSUS": 8,
+  "UNRESOLVED": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
   "MARKET_BOOKS": 0,
   "MARKET_SINGLE": 1,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO": 93,
-  "MODEL_STANDINGS": 0,
+  "MARKET_POLYMARKET": 0,
   "MODEL_ELO_THIN": 58,
-  "MARKET_CONSENSUS": 8,
-  "UNRESOLVED": 0
+  "MODEL_STANDINGS": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "160 matches, generated_at=2026-10-24T16:39:13.364426Z (0.1h old)"
+   "detail": "160 matches, generated_at=2026-10-24T16:45:22.099449Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -138,13 +138,13 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=160, priced=160, missing=0, extra=0, excluded=18, leaked=0"
+   "detail": "lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0"
   },
   {
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "22 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "26 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
@@ -282,7 +282,7 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "12/14 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "detail": "13/15 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
    "items": [
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403"
    ]
