@@ -1,36 +1,36 @@
 {
- "verified_at": "2026-10-23T16:57:04.857741+00:00",
- "status": "PASS",
+ "verified_at": "2026-10-24T17:14:25.064775+00:00",
+ "status": "FAIL",
  "counts": {
-  "PASS": 36,
-  "FAIL": 0,
-  "WARN": 0,
-  "SKIP": 1
+  "PASS": 41,
+  "FAIL": 1,
+  "WARN": 2,
+  "SKIP": 0
  },
- "data_matches": 172,
+ "data_matches": 169,
  "methods": {
-  "MARKET_BOOKS": 0,
-  "MODEL_ELO": 88,
-  "MARKET_SINGLE": 1,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO": 93,
   "MARKET_CONSENSUS": 8,
   "MODEL_STANDINGS": 0,
-  "MODEL_ELO_THIN": 75,
-  "UNRESOLVED": 0
+  "UNRESOLVED": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MARKET_BOOKS": 0,
+  "MODEL_ELO_THIN": 67,
+  "MARKET_POLYMARKET": 0,
+  "MARKET_SINGLE": 1
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "172 matches, generated_at=2026-10-23T16:52:07.057868Z (0.1h old)"
+   "detail": "169 matches, generated_at=2026-10-24T15:28:56.619239Z (1.8h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 172 rows have team1, team2 and a start time"
+   "detail": "all 169 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -72,7 +72,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 172 rows carry at least one source URL"
+   "detail": "all 169 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -126,7 +126,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=172, rows=172"
+   "detail": "declared=169, rows=169"
   },
   {
    "id": "D20",
@@ -138,19 +138,46 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=172, priced=172, missing=0, extra=0, excluded=12, leaked=0"
+   "detail": "lobby upcoming=169, priced=169, missing=0, extra=0, excluded=14, leaked=0"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 74 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 69 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+  },
+  {
+   "id": "D22",
+   "title": "verified source ladder present (https, observed status, dated, one usable input)",
+   "status": "FAIL",
+   "detail": "1 problem(s)",
+   "items": [
+    "missing source_research.categories"
+   ]
+  },
+  {
+   "id": "D23",
+   "title": "unresolved section publishes limitations and per-league limits",
+   "status": "PASS",
+   "detail": "9 limitation(s), 12 league row(s)"
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "SKIP",
-   "detail": "no --leaguepedia-schedule snapshot supplied"
+   "status": "WARN",
+   "detail": "117/127 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.5h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
+   "items": [
+    "Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00",
+    "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
+    "Karolinerna vs Turbo Gaming: ours=2026-10-27 18:00 lp=2026-10-24 16:30",
+    "FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30",
+    "Babos Gaming Academy vs VfB x Engines Stuttgart: ours=2026-10-29 18:00 lp=2026-10-25 16:00",
+    "Playwell Rød Q vs Your Saviours: ours=2026-10-30 17:00 lp=2026-10-01 17:45",
+    "Volda E-Sport vs Ascent Gaming: ours=2026-10-30 17:00 lp=2026-09-26 17:00",
+    "Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00",
+    "Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30",
+    "2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30"
+   ]
   },
   {
    "id": "D14",
@@ -169,6 +196,30 @@
    "title": "phone bottom nav has one grid column per link on every page",
    "status": "PASS",
    "detail": "6 links, 6 columns on every page"
+  },
+  {
+   "id": "S11",
+   "title": "one shared header, theme toggle and 6-link navigation on every page",
+   "status": "PASS",
+   "detail": "shared header/nav present on all dashboard pages"
+  },
+  {
+   "id": "S12",
+   "title": "executive summary has an explicit 'find the picks' hub with in-site links",
+   "status": "PASS",
+   "detail": "hub links to starting-soon, all picks, leagues, unresolved, flagged and methodology"
+  },
+  {
+   "id": "S13",
+   "title": "executive summary always renders a separate unresolved & limitations section",
+   "status": "PASS",
+   "detail": "section present and renders a zero-state plus all limitations"
+  },
+  {
+   "id": "S14",
+   "title": "every page has a direct in-site link to the updated picks list",
+   "status": "PASS",
+   "detail": "all dashboard pages link picks.html"
   },
   {
    "id": "S2",
@@ -243,10 +294,21 @@
    "detail": "static scan found no crowd->probability usage"
   },
   {
+   "id": "X1",
+   "title": "external links reachable (official-source links resolve)",
+   "status": "WARN",
+   "detail": "7/10 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "items": [
+    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
+    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
+    "https://thunderpick.io/esports/league-of-legends/lgc-rising-2026-playoffs/11363 -> 403"
+   ]
+  },
+  {
    "id": "REQ",
    "title": "requirements traceability",
-   "status": "PASS",
-   "detail": "REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS",
+   "status": "FAIL",
+   "detail": "REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 FAIL; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS; REQ13 FAIL; REQ14 PASS",
    "items": [
     "REQ1: A pick exists for every match (pick is one of the two teams) -> PASS",
     "REQ2: Win probabilities for both teams on every match, summing to 100% -> PASS",
@@ -255,11 +317,13 @@
     "REQ5: Every match without a market line still gets a pick + documented method -> PASS",
     "REQ6: Separate unresolved section, with limitations, linked from the exec summary -> PASS",
     "REQ7: Executive summary links in-site to the updated picks list -> PASS",
-    "REQ8: Every row links its source; non-official or generic evidence is disclosed and flagged -> PASS",
+    "REQ8: Every row links its source; non-official or generic evidence is disclosed and flagged -> FAIL",
     "REQ9: Mobile-friendly: responsive viewport + responsive CSS + readable cards -> PASS",
     "REQ10: Automatic refresh every 4-8 hours, no manual input -> PASS",
     "REQ11: Site integrity: no broken internal links, root entry point works -> PASS",
-    "REQ12: Third-party sources attributed where their data is used -> PASS"
+    "REQ12: Third-party sources attributed where their data is used -> PASS",
+    "REQ13: Every looked-at source is published with an observed status, date and link -> FAIL",
+    "REQ14: Consistent, phone-first navigation to the picks on every page -> PASS"
    ],
    "aggregate": true
   }
@@ -318,7 +382,9 @@
    "checks": [
     "S4",
     "S5",
-    "S5b"
+    "S5b",
+    "S13",
+    "D23"
    ]
   },
   {
@@ -326,13 +392,15 @@
    "requirement": "Executive summary links in-site to the updated picks list",
    "status": "PASS",
    "checks": [
-    "S4"
+    "S4",
+    "S12",
+    "S14"
    ]
   },
   {
    "id": "REQ8",
    "requirement": "Every row links its source; non-official or generic evidence is disclosed and flagged",
-   "status": "PASS",
+   "status": "FAIL",
    "checks": [
     "D7",
     "D7b",
@@ -340,7 +408,8 @@
     "D8b",
     "D8c",
     "D8d",
-    "D17"
+    "D17",
+    "D22"
    ]
   },
   {
@@ -378,6 +447,25 @@
    "status": "PASS",
    "checks": [
     "S5c"
+   ]
+  },
+  {
+   "id": "REQ13",
+   "requirement": "Every looked-at source is published with an observed status, date and link",
+   "status": "FAIL",
+   "checks": [
+    "D22"
+   ]
+  },
+  {
+   "id": "REQ14",
+   "requirement": "Consistent, phone-first navigation to the picks on every page",
+   "status": "PASS",
+   "checks": [
+    "S11",
+    "S12",
+    "S13",
+    "S14"
    ]
   }
  ]
