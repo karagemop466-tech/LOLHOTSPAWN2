@@ -598,3 +598,56 @@ BetExplorer 404, Smarkets 404; OddsPortal / Midnite / OddsPapi return HTML shell
 machine-readable per-match price for the 160 non-featured fixtures without either (a) a paid/registered API key
 (OddsPapi), or (b) a headless browser to read an odds-comparison page (Betmonitor). Neither is available in a
 6-hourly, no-manual-input Actions job, so those fixtures keep our own line and the site says so on every row.
+
+## 15. Refresh 2026-10-24 — fixture-matched check: does *any* source price the model-only rows?
+
+Session `arena/ac089f33-lolhotspawn2`. This section complements §13/§14 (session `arena/26fa1cec`) and the
+production `scripts/source_probe.py` (`market_probe`): those record **reachability**. This one records
+**coverage** — for each source, how many two-way prices it produced that belong to a fixture we currently
+price ourselves.
+
+Starting snapshot (main `72c9b5a`, 15:28 UTC): 169 fixtures, 9 with an external line, 160 by the model
+(PRM 2nd Division 36, PRM 3rd Division 61, Tunisian Super League 20, RIVALS LEAGUE 18, Arabian League
+2nd Division 6, 4 Nations 4, Komplettligaen 3, LCP 2027 Promotion 3, LigaGG A/B 4).
+
+### 15.1 Method
+
+`scripts/probe_lines.py` (new, stdlib only, never writes a probability) fetches each candidate, extracts
+only **two-way main-match** prices (map/prop boards rejected), and matches every price to the published
+fixture list by normalised team name **and** start time (±48 h). Per candidate it records the HTTP
+status, the number of two-way prices, and how many *currently model-only* fixtures those prices cover.
+Raw output: `data/diag/line_probe.json`. Run it with `.github/workflows/line-probe.yml`
+(manual dispatch, ~1 minute); it is not part of the 6-hour production run.
+
+### 15.2 Result — 39 requests across 30 sites, 0 with new coverage
+
+| Candidate | Observed | Two-way prices | Model-only fixtures covered |
+|---|---|---|---|
+| Pinnacle league index (control) | 200; only `League of Legends - World Championship` | 8 fixtures seen | **0** |
+| Kambi/Unibet, markets GB, DE, SE, IT, NL, FR, PL, AU, ZZ | 200 in every market, identical 8 World Championship matches | 8 | **0** |
+| Kambi/Betsson, NordicBet, LeoVegas, Betcity | 429 / 429 / 400 / 400 | 0 | 0 |
+| SofaScore esports API | 403 to a CI runner | 0 | 0 |
+| bo3.gg public API | 200, match records without odds fields | 0 | 0 |
+| 1xBet / Betwinner / Melbet `LineFeed` | 203 geo stub for sport ids 3, 12, 70, 85, 109 | 0 | 0 |
+| bmbets LoL comparison | 200 HTML; LoL index = Worlds, LCP, Game Changers Rising | 0 | 0 |
+| eGamersWorld / Oddspedia / GGScore / BetExplorer | 403 / 410 / 403 / 404 | 0 | 0 |
+| Winamax / Marathonbet / Betano / Stake / William Hill / Parimatch / Rainbet / Thunderpick / GG.Bet / SportsBetting.ag / Rivalry | 403 (Rivalry 503) | 0 | 0 |
+| BetOnline.ag / BC.Game / Vave | 200 HTML shell, no server-rendered per-match prices | 0 | 0 |
+| Prime League official (organizer) | 403 to CI; schedule/results only, never odds; rules prohibit betting-operator sponsors | 0 | 0 |
+| RIVALS LEAGUE official (organizer) | 200 | 0 | 0 |
+
+**Conclusion:** no accessible betting source publishes a price for those competitions, so there is no
+external line to quote for them. That is a property of the market, not a gap in the pipeline — and it is
+now measured each time the probe runs rather than asserted from memory. The sportsbooks that *do* carry
+the World Championship already feed the pricing cascade through `scripts/fetch_markets.py`.
+
+### 15.3 Verification log additions
+
+| Date | Source | What it verified | Link / evidence |
+|---|---|---|---|
+| 2026-10-24 | Pinnacle guest league index | One LoL league listed; 8 fixtures | https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues |
+| 2026-10-24 | Kambi offering API (9 markets) | Same 8 World Championship matches in every country market | https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true |
+| 2026-10-24 | bmbets LoL index | LoL coverage = Worlds, LCP, Game Changers Rising | https://www.bmbets.com/e-sports/world/lol---world-championship/ |
+| 2026-10-24 | Prime League official rules | Betting/gambling operators are a prohibited sponsor category | https://www.primeleague.gg/en/statics/rules_general |
+| 2026-10-24 | Prime League Fall Split 2026/27 | League is running (group stage 24.09–04.12) even though no book prices it | https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 |
+| 2026-10-24 | Actions 40110923198, 40111672023, 40111922808 | Probe executed in CI; evidence committed; 0 sources with coverage | `data/diag/line_probe.json` |

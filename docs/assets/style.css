@@ -348,3 +348,10 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
   h1 { font-size: clamp(23px, 6.2vw, 34px); }
   .lede { font-size: 16px; }
 }
+
+/* Touch targets + phone-only full-width primary actions (2026-10-24) */
+details > summary { min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 640px) {
+  .hero-actions .btn { flex: 1 1 100%; }
+  .hero-actions { gap: 8px; }
+}
