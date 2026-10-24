@@ -273,6 +273,175 @@ def standings_probability(rec1: dict | None, rec2: dict | None) -> tuple[float, 
     return p1, meta
 
 
+_TOURNAMENT_STOP = re.compile(
+    r"\s+(?:\d{2,4}(?:-\d{2,4})?|season|split|spring|summer|autumn|winter|fall|"
+    r"playoffs?|regular season|group stage|main event|promotion|halloween heist|"
+    r"finals?|round \d+|week \d+)\b.*$",
+    re.I,
+)
+
+
+def liquipedia_search_prefix(tournament: str) -> str:
+    """Turn a Hotspawn tournament label into a Liquipedia search term.
+
+    Hotspawn labels ("PRM 3rd Division 26-27 Fall", "RIVALS LEAGUE Season 2") are
+    not wiki titles ("Prime League/3. Liga/...", "RIVALS LEAGUE/Season 2"). Cutting
+    the season/stage tail leaves a term the MediaWiki search API can resolve.
+    """
+    name = str(tournament or "").strip()
+    if not name:
+        return ""
+    stripped = _TOURNAMENT_STOP.sub("", name).strip(" -/")
+    if len(stripped) < 3:
+        stripped = re.split(r"\s+\d", name, maxsplit=1)[0].strip(" -/") or name
+    return stripped[:80]
+
+
+def _liquipedia_query(label: str) -> str:
+    """Search the league term plus the label's year, when it has one."""
+    term = liquipedia_search_prefix(label)
+    if not term:
+        return ""
+    year = re.search(r"\b(20[0-9]{2})\b", label or "")
+    return f"{term} {year.group(1)}" if year else term
+
+
+def probe_liquipedia_pages(prefixes: tuple[str, ...] | list[str] = ()) -> dict:
+    """Compliant read-only check via Liquipedia's official MediaWiki API (CC-BY-SA 3.0).
+
+    The argument is the list of *Hotspawn tournament labels* seen in the fixture
+    feed, not wiki prefixes: the old `list=allpages&apprefix=` call only ever ran
+    against a hardcoded prefix list, so leagues such as RIVALS LEAGUE, Arabian
+    League, LCP or LigaGG were never looked up and could never be linked.
+
+    Strictly obeys https://liquipedia.net/api-terms-of-use:
+      * MediaWiki api.php endpoint ONLY (never HTML scraping)
+      * Accept-Encoding: gzip (handled by lib_common.fetch)
+      * Custom contact User-Agent (LOLHOTSPAWN2 bot UA)
+      * >= 2.2s spacing between requests, deduplicated, <=14 queries per run
+    """
+    found: dict[str, list[str]] = {}
+    errors: list[str] = []
+    queries: list[str] = []
+    seen: set[str] = set()
+    for label in prefixes or ():
+        q = _liquipedia_query(label)
+        if not q or q.lower() in seen:
+            continue
+        seen.add(q.lower())
+        queries.append(q)
+        if len(queries) >= 14:
+            break
+    for q in queries:
+        params = urllib.parse.urlencode({
+            "action": "query",
+            "list": "search",
+            "srsearch": q,
+            "srlimit": "5",
+            "format": "json",
+        })
+        r = fetch(f"{LIQUIPEDIA_API}?{params}", timeout=30, retries=2)
+        time.sleep(2.2)
+        if r["status"] != 200:
+            errors.append(f"{q}: HTTP {r['status']}")
+            continue
+        try:
+            body = json.loads(r["text"])
+        except Exception:
+            errors.append(f"{q}: parse error")
+            continue
+        if isinstance(body.get("error"), dict):
+            errors.append(f"{q}: API error {str(body['error'].get('code'))[:40]}")
+            continue
+        hits = [x.get("title") for x in (body.get("query", {}).get("search") or []) if x.get("title")]
+        if hits:
+            found[q] = hits
+    total = sum(len(v) for v in found.values())
+    matched = len(found)
+    status = "ok" if total else ("degraded" if errors else "no_data")
+    note = ("Official MediaWiki api.php search index (gzip, >=2.2s spacing; HTML never scraped; "
+            f"CC-BY-SA 3.0 attribution on Methodology & Sources). {matched} of {len(queries)} "
+            "Hotspawn tournament label(s) matched a Liquipedia page; metadata only, never a "
+            "probability input.")
+    if errors:
+        note += " Errors: " + "; ".join(errors[:3])
+    return {
+        "name": "Liquipedia MediaWiki API (CC-BY-SA 3.0)",
+        "url": LIQUIPEDIA_PAGE,
+        "status": status,
+        "count": total,
+        "tournaments_matched": matched,
+        "pages": found,
+        "note": note,
+    }
+
+
+def build_standings_index(standings_rows: list[dict]) -> dict[tuple[str, str], dict]:
+    """Index unambiguous non-empty standings records by (OverviewPage, norm(team)).
+
+    Safety rules:
+      * If the same (OverviewPage, norm(team)) appears multiple times (multi-division
+        page sharing team names), mark ambiguous and DO NOT index it.
+      * If a team has 0 completed series AND 0 completed games (0-0 start of split),
+        DO NOT index it (0-0 is not evidence).
+    """
+    counts = Counter((r["overview"], norm(r["team"])) for r in (standings_rows or []) if r.get("overview") and r.get("team"))
+    idx: dict[tuple[str, str], dict] = {}
+    for r in standings_rows or []:
+        key = (r.get("overview") or "", norm(r.get("team") or ""))
+        if not key[0] or not key[1] or counts[key] > 1:
+            continue
+        n_series = int(r.get("win_series") or 0) + int(r.get("loss_series") or 0) + int(r.get("tie_series") or 0)
+        n_games = int(r.get("win_games") or 0) + int(r.get("loss_games") or 0)
+        if n_series == 0 and n_games == 0:
+            continue
+        idx[key] = r
+    return idx
+
+
+def standings_probability(rec1: dict | None, rec2: dict | None) -> tuple[float, dict] | tuple[None, None]:
+    """Compute smoothed empirical-Bayes win probability from official division standings.
+
+    Requires BOTH teams to have at least 1 completed match/game in the exact same
+    OverviewPage. Never fabricates probabilities for 0-0 teams.
+    """
+    if not rec1 or not rec2:
+        return None, None
+    if rec1.get("overview") != rec2.get("overview"):
+        return None, None
+
+    def _strength(r: dict) -> tuple[float, float, str]:
+        ws, ls, ts = int(r.get("win_series") or 0), int(r.get("loss_series") or 0), int(r.get("tie_series") or 0)
+        wg, lg = int(r.get("win_games") or 0), int(r.get("loss_games") or 0)
+        ns = ws + ls + ts
+        ng = wg + lg
+        if ns > 0:
+            p_ser = (ws + 0.5 * ts + 2.0) / (ns + 4.0)
+            if ng > 0:
+                p_gam = (wg + 3.0) / (ng + 6.0)
+                return 0.7 * p_ser + 0.3 * p_gam, float(ns), f"{ws}-{ls}" + (f"-{ts}" if ts else "")
+            return p_ser, float(ns), f"{ws}-{ls}" + (f"-{ts}" if ts else "")
+        p_gam = (wg + 3.0) / (ng + 6.0)
+        return p_gam, float(ng) / 2.0, f"{wg}-{lg} games"
+
+    s1, n1, lbl1 = _strength(rec1)
+    s2, n2, lbl2 = _strength(rec2)
+    o1 = s1 / max(1e-6, 1.0 - s1)
+    o2 = s2 / max(1e-6, 1.0 - s2)
+    raw_p1 = o1 / (o1 + o2)
+    n_eff = min(n1, n2)
+    shrink = n_eff / (n_eff + 3.0)
+    p1 = clamp(0.5 + (raw_p1 - 0.5) * shrink, 0.05, 0.95)
+    meta = {
+        "tournament_page": rec1["overview"],
+        "record_team1": lbl1,
+        "record_team2": lbl2,
+        "series_n_min": round(n_eff, 1),
+        "shrink": round(shrink, 3),
+    }
+    return p1, meta
+
+
 _LIQUIPEDIA_PREFIX_RULES: tuple[tuple[str, str], ...] = (
     ("worlds", "World_Championship/2026"),
     ("world championship", "World_Championship/2026"),

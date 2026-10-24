@@ -11,8 +11,10 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from standings_and_books import (  # noqa: E402
     build_standings_index,
     is_pinnacle_main_matchup,
+    liquipedia_search_prefix,
     standings_probability,
 )
+from update_picks import liquipedia_page_for  # noqa: E402
 from model import Resolver, contains, load_aliases  # noqa: E402
 from entity_resolution import (  # noqa: E402
     build_page_rosters,
@@ -163,6 +165,50 @@ def main() -> int:
               and all((r.get("raw") or {}).get("market_type") == "series" for r in recs))
     else:
         check("bovada coupon snapshot replays to records (9 events)", False)
+
+    # 6. Liquipedia lookups: league terms from Hotspawn labels, strict page match
+    check("Liquipedia search terms strip the Hotspawn season/stage tail",
+          liquipedia_search_prefix("PRM 3rd Division 26-27 Fall") == "PRM 3rd Division"
+          and liquipedia_search_prefix("RIVALS LEAGUE Season 2") == "RIVALS LEAGUE"
+          and liquipedia_search_prefix("Worlds 2026 Main Event") == "Worlds"
+          and liquipedia_search_prefix("") == "")
+    liq_cases = [
+        ("RIVALS LEAGUE Season 2",
+         {"RIVALS LEAGUE": ["RIVALS LEAGUE/Season 1", "RIVALS LEAGUE/Season 2"]},
+         "https://liquipedia.net/leagueoflegends/RIVALS_LEAGUE/Season_2"),
+        ("Arabian League 2nd Division 2026 Summer",
+         {"Arabian League 2nd Division 2026": [
+             "Arabian League/2nd Division/2026/Spring",
+             "Arabian League/2nd Division/2026/Summer",
+             "Arabian League/2nd Division/2026/Spring/Open Qualifier"]},
+         "https://liquipedia.net/leagueoflegends/Arabian_League/2nd_Division/2026/Summer"),
+        ("Komplettligaen 2026 Autumn Playoffs",
+         {"Komplettligaen 2026": ["Komplettligaen/2026/Playoffs",
+                                  "Komplettligaen/2026/Autumn",
+                                  "Komplettligaen/2026/Spring"]},
+         "https://liquipedia.net/leagueoflegends/Komplettligaen/2026/Autumn"),
+        ("LCP 2027 Promotion",
+         {"LCP 2027": ["LCP/2027/Promotion", "LCP/2027/Promotion/Wild Card Playoffs"]},
+         "https://liquipedia.net/leagueoflegends/LCP/2027/Promotion"),
+        # refused: wrong split, wrong year, lookalike league, no page
+        ("Komplettligaen 2026 Autumn Playoffs",
+         {"Komplettligaen 2026": ["Komplettligaen/2026/Playoffs",
+                                  "Komplettligaen/2026/Spring"]}, None),
+        ("4 Nations 2026 Halloween Heist",
+         {"4 Nations 2026": ["4 Nations/2026/Summer", "4 Nations/2026/Spring"]}, None),
+        ("LGC Rising 2026 Playoffs", {"LGC Rising 2026": ["LGC/2025/Rising"]}, None),
+        ("PRM 3rd Division 26-27 Fall",
+         {"PRM 3rd Division": ["Prime League/2023/Pokal"]}, None),
+        ("Worlds 2026 Main Event",
+         {"Worlds 2026": ["2026 Season World Championship"]}, None),
+        ("Tunisian Super League 2026", {}, None),
+    ]
+    bad = [(label, liquipedia_page_for(label, pages), want)
+           for label, pages, want in liq_cases
+           if liquipedia_page_for(label, pages) != want]
+    check("Liquipedia links only the page that matches the whole label", not bad)
+    if bad:
+        print("      refused/accepted wrong:", bad)
 
     passed = sum(1 for _, ok in checks if ok)
     print(f"\n{passed}/{len(checks)} entity & sportsbook unit tests passed")

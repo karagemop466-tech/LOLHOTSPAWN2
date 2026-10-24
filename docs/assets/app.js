@@ -166,6 +166,7 @@
     const links = [];
     if (lb.leaguepedia_url) links.push(`<a href="${esc(lb.leaguepedia_url)}" target="_blank" rel="noopener">Leaguepedia ↗</a>`);
     if (lb.organizer_url) links.push(`<a href="${esc(lb.organizer_url)}" target="_blank" rel="noopener">${esc(lb.organizer_name || "Organizer")} ↗</a>`);
+    if (lb.liquipedia_url) links.push(`<a href="${esc(lb.liquipedia_url)}" target="_blank" rel="noopener">Liquipedia ↗</a>`);
     if (!links.length) links.push(`<a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a>`);
     return `<div class="src-links">${links.join(" ")}</div>`;
   }
