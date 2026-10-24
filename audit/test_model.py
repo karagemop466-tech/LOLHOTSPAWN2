@@ -163,12 +163,21 @@ def test_payload_book_invariant() -> None:
     check("standings blend invariants hold", not bad_blend,
           (f"offenders: {bad_blend[:3]}" if bad_blend else f"{len(blends)} blend row(s) ok"))
 
-    # a standings-sourced row must link the Leaguepedia Standings table
+    # a standings-sourced row must link a standings source explicitly
     no_st_src = [m.get("id") for m in rows
                  if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS")
-                 and not any("Standings" in str(s.get("name") or "") for s in (m.get("sources") or []))]
-    check("standings rows link the Standings table", not no_st_src,
+                 and not any("standing" in str(s.get("name") or "").lower()
+                             for s in (m.get("sources") or []))]
+    check("standings rows link a standings source", not no_st_src,
           (f"offenders: {no_st_src[:3]}" if no_st_src else "all standings rows linked"))
+
+    # a standings row must not hide behind a generic Cargo-table link only
+    generic_st = [m.get("id") for m in rows
+                  if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS")
+                  and not any("/Special:CargoTables/" not in str(s.get("url") or "")
+                              for s in (m.get("sources") or []))]
+    check("standings rows cite a competition-specific page", not generic_st,
+          (f"offenders: {generic_st[:3]}" if generic_st else "all standings rows specific"))
 
 
 def main() -> int:

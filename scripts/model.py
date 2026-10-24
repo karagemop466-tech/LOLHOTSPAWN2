@@ -970,11 +970,20 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                             "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
                             "claim": "Recorded match results used for the Elo model."})
         if model_method in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
-            # Name the standings table explicitly so the row's evidence is
-            # auditable without guessing which Leaguepedia table was read.
-            sources.append({"name": "Leaguepedia Standings",
-                            "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
-                            "claim": "Current-split series/game record used for this row."})
+            # Point at the competition's own standings page rather than the
+            # generic Cargo table index, so a human can read this exact
+            # team's split record on this exact competition page. When no
+            # competition page was matched we fall back to the table index
+            # and the row already carries GENERIC_RESULTS_SOURCE.
+            if eff_page:
+                sources.append({"name": "Leaguepedia split standings",
+                                "url": "https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_"),
+                                "claim": ("Current-split series/game record for this competition "
+                                          f"({eff_page}).")})
+            else:
+                sources.append({"name": "Leaguepedia Standings table",
+                                "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
+                                "claim": "Current-split series/game record used for this row."})
         for meta in (meta1, meta2):
             if meta and meta.get("source_url"):
                 u = meta["source_url"]
