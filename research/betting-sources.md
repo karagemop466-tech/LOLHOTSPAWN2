@@ -605,10 +605,15 @@ machine-readable per-match price for the 160 non-featured fixtures without eithe
 (session `arena/9d523943`)
 
 §13/§14 above already establish the landscape. This pass adds three things they do not cover, and does not
-repeat their measurements. Evidence: `data/diag/source_probe.json` @ 2026-10-24T16:26:27Z (pipeline-test run
-[40110891210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40110891210)) from a probe that now
-tags every candidate with a **tier** (`established-book` / `esportsbook` / `community`) and retries blocked sites
-with a **browser-like User-Agent**, plus direct page reads on 2026-10-24.
+repeat their measurements. Evidence: a tier-tagged probe (28 candidates, browser-like User-Agent for the sites that
+block bots), run in CI on 2026-10-24 and **preserved as a dated snapshot** —
+`data/diag/source_probe_2026-10-24_arena-9d523943.json` @ **2026-10-24T16:48:11Z** (older snapshot
+16:26:27Z from run [40110891210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40110891210);
+later one from run [40112604014](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112604014)).
+The live `data/diag/source_probe.json` is regenerated on every run by `scripts/source_probe.py`, so the dated copy
+is the one to cite. Per-tier roll-up at 16:48:11Z: established-book 11 probed / 7 × HTTP 200 / 6 JSON;
+esportsbook 10 probed / 3 × 200 / 0 JSON; community 7 probed / 5 × 200 / 3 JSON. Direct page reads on 2026-10-24
+follow.
 
 ### 15.1 Does a browser User-Agent get us into the esportsbooks? No.
 
@@ -620,7 +625,7 @@ with a **browser-like User-Agent**, plus direct page reads on 2026-10-24.
 | Betway / BetExplorer / Smarkets | 404 | 404 | n/a |
 | 1xBet line index | 203 | 203 | non-authoritative status, not parsed |
 | The Odds API | 401 (no key) | 401 | n/a |
-| OddsPortal `/lol/` | 200 to CI | 200 to CI | **404 “Offside — page not found”** when opened — a 200 from a bot-facing edge is not evidence the board exists, so it is not cited |
+| OddsPortal `/lol/` | 200 then **503** on the next CI run | 200 to CI | **404 “Offside — page not found”** when opened — a 200 from a bot-facing edge is not evidence the board exists, so it is not cited |
 
 Tier 3 of the fixture list stays unpriced by books. The one production source that reaches below tier 2 remains
 **Polymarket**, which prices the *LGC Rising* BO5 decider (`MARKET_SINGLE`, 39.0 / 61.0 in the 16:47Z payload).
