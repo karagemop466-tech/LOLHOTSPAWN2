@@ -832,3 +832,23 @@ PR/merge record — completed 2026-10-24:
 | Pages status | **built** — live |
 | Live site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ (serving the merged payload: 169 fixtures, 169 resolved, 0 unresolved; live dashboard render confirmed) |
 
+---
+
+## Session `arena/f0a8380a-lolhotspawn2` — 2026-10-24 (claim)
+
+> Branch note: Arena fixes this session to `arena/f0a8380a-lolhotspawn2`; branch creation/switching is not permitted in this workspace, so `arena/f0a8380a-lolhotspawn2` stands in for `session-<id>/<task>`.
+
+Baseline at claim (`origin/main` @ `689d824`, payload `2026-10-24T15:28:56.619239Z`): 169 upcoming fixtures · 169 resolved (`100.0%`) · 9 market · 160 model · 0 unresolved · 73 low-confidence · 14 cancelled excluded. Line-by-line audit of the 2026-10-24 payload uncovered 4 concrete defects on `main`:
+1. Fixture `1081700` (`4 Nations 2026 Halloween Heist`: `Inari Esports vs Bulldog Esports`) has `canonical_team1 = "NARI"` (4-char Southeast Asian tag from `Battle of S.E.A 2026: Proving Grounds` matched via unguarded substring `"nari" in "inariesports"`) instead of verified British entrant `Inari Esports (British Team)` on `4 Nations/2026 Season/Halloween Heist`, and `leaguepedia_page = null` (`GENERIC_RESULTS_SOURCE`) because `4 Nations 2026 Halloween Heist` and `Komplettligaen 2026 Autumn Playoffs` are missing from `data/aliases.json` / `scripts/model.py` `tournament_pages`.
+2. `fetch_bovada()` in `scripts/fetch_markets.py` rejects `period.description == "Game"` (`"game" not in prd`), dropping 100% of Bovada's full-match moneylines (`period: {"description": "Game", "main": true}`) and causing `Bovada: no_data (0)`.
+3. `update_picks.py` passes all 169 non-deduplicated tournament strings to `probe_liquipedia_pages()`, causing 169 serial `api.php` calls (~6–40 min runtime, `status: no_data (0)`), and `fetch_leaguepedia.py` omits `standings_pages` from `counts` (printing `"Standings rows: 2880 across 0 competitions"`).
+4. `docs/index.html` and `docs/unresolved.html` use `<div class="wrap bar">` in `<header class="site-header">`, which collides with `.bar` (`height: 12px; overflow: hidden`), and reference `.brand`, `.mark`, `.bar-end`, `.icon-btn`, `.status-strip`, `.nav-list`, `.covbar`, `#status-strip`, and `#theme-toggle` without CSS rules or JS handlers.
+
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| F1 Entity & tournament provenance repair (`Inari Esports` -> `Inari Esports (British Team)`, `4 Nations 2026 Halloween Heist` & `Komplettligaen 2026 Autumn Playoffs` tournament mappings, `Resolver` stripped-parenthetical & substring-length guard so `GENERIC_RESULTS_SOURCE` = 0 across all 169 fixtures) | in progress | arena/f0a8380a | `data/aliases.json`, `scripts/model.py`, `scripts/update_picks.py`, `verification/test_entity_and_books.py` |
+| F2 External market & source-probe fixes (Bovada `main: true` full-match moneyline period filter, `probe_liquipedia_pages` canonical prefix deduplication, `standings_pages` count in `fetch_leaguepedia.py` & `update_picks.py`) | in progress | arena/f0a8380a | `scripts/fetch_markets.py`, `scripts/standings_and_books.py`, `scripts/fetch_leaguepedia.py`, `scripts/update_picks.py` |
+| F3 Mobile & executive-summary CSS/DOM repair (fix `.site-header .bar` height collision, style `.brand`/`.mark`/`.bar-end`/`.icon-btn`/`.status-strip`/`.nav-list`/`.covbar`/`.stat b`, wire `#status-strip` & `#theme-toggle` in `app.js`) | in progress | arena/f0a8380a | `docs/assets/style.css`, `docs/assets/app.js`, `docs/index.html`, `docs/unresolved.html` |
+| F4 Full line-by-line verification, live CI pipeline regeneration, reconciliation with any concurrent session merges on `main`, PR → merge → confirm GitHub Pages deployment | in progress | arena/f0a8380a | `COORDINATION.md`, `docs/data/picks.json`, `verification/**` |
+
+
