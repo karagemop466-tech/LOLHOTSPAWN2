@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-10-24T17:17:25.569243Z",
- "fixture_count": 159,
- "fixtures_without_external_line": 151,
+ "checked_at": "2026-10-24T18:15:55.624354Z",
+ "fixture_count": 158,
+ "fixtures_without_external_line": 150,
  "candidates_with_new_coverage": [],
  "candidates": [
   {
@@ -14,7 +14,7 @@
    "competitions": [
     "League of Legends - World Championship"
    ],
-   "schedule_records": 8,
+   "schedule_records": 6,
    "detail": {
     "leagues": [
      "League of Legends - World Championship"
@@ -26,14 +26,14 @@
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
-   "verdict": "reachable; lists 8 LoL match(es), but none in a competition we cannot already price from a book"
+   "verdict": "reachable; lists 6 LoL match(es), but none in a competition we cannot already price from a book"
   },
   {
    "name": "Polymarket (control)",
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4358122,
+   "bytes": 4376616,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -62,35 +62,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true",
    "http_status": 200,
-   "bytes": 14120,
+   "bytes": 12453,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.14,
-     "decimal_b": 1.63,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.5,
+     "decimal_b": 1.26,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -175,6 +164,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
@@ -187,35 +195,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
    "http_status": 200,
-   "bytes": 14120,
+   "bytes": 12455,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.14,
-     "decimal_b": 1.63,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.4,
+     "decimal_b": 1.28,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -300,6 +297,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
@@ -312,35 +328,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true",
    "http_status": 200,
-   "bytes": 14120,
+   "bytes": 12455,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.14,
-     "decimal_b": 1.63,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.4,
+     "decimal_b": 1.28,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -425,6 +430,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
@@ -437,35 +461,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true",
    "http_status": 200,
-   "bytes": 14120,
+   "bytes": 12458,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.14,
-     "decimal_b": 1.63,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.1,
+     "decimal_b": 1.33,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -550,6 +563,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
@@ -562,35 +594,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true",
    "http_status": 200,
-   "bytes": 14120,
+   "bytes": 12458,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.14,
-     "decimal_b": 1.63,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.1,
+     "decimal_b": 1.33,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -675,6 +696,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
@@ -687,35 +727,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true",
    "http_status": 200,
-   "bytes": 14120,
+   "bytes": 12458,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.14,
-     "decimal_b": 1.63,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.1,
+     "decimal_b": 1.33,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -800,6 +829,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
@@ -812,35 +860,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true",
    "http_status": 200,
-   "bytes": 14121,
+   "bytes": 12458,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.1,
-     "decimal_b": 1.66,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.1,
+     "decimal_b": 1.33,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -925,6 +962,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
@@ -937,35 +993,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true",
    "http_status": 200,
-   "bytes": 14121,
+   "bytes": 12458,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.1,
-     "decimal_b": 1.66,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.1,
+     "decimal_b": 1.33,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -1050,6 +1095,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
@@ -1062,35 +1126,24 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true",
    "http_status": 200,
-   "bytes": 14121,
+   "bytes": 12458,
    "is_json": true,
    "competitions": [
     "World Championship"
    ],
    "error": null,
-   "priced_records": 8,
+   "priced_records": 7,
    "records_matched_to_fixtures": 7,
    "fixtures_matched": 7,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "Anyone's Legend",
-     "competition": "World Championship",
-     "start": "2026-10-24T17:02:00Z",
-     "decimal_a": 2.1,
-     "decimal_b": 1.66,
-     "matched_fixture": null,
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
-    },
-    {
      "team_a": "CTBC Flying Oyster",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-24T18:10:00Z",
-     "decimal_a": 2.95,
-     "decimal_b": 1.36,
+     "start": "2026-10-24T17:58:00Z",
+     "decimal_a": 3.1,
+     "decimal_b": 1.33,
      "matched_fixture": {
       "id": "1067881",
       "team1": "Movistar KOI",
@@ -1175,6 +1228,25 @@
       "start_utc": "2026-10-24T22:00:00Z",
       "had_market": true,
       "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "T1",
+     "competition": "World Championship",
+     "start": "2026-10-24T23:00:00Z",
+     "decimal_a": 2.33,
+     "decimal_b": 1.54,
+     "matched_fixture": {
+      "id": "1067880",
+      "team1": "Dplus KIA",
+      "team2": "T1",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T23:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
@@ -1208,7 +1280,7 @@
    "kind": "esports-aggregator",
    "url": "https://api.bo3.gg/api/v1/matches",
    "http_status": 200,
-   "bytes": 201453,
+   "bytes": 201449,
    "is_json": true,
    "schedule_records": 0,
    "detail": {
@@ -1304,7 +1376,7 @@
      },
      {
       "sport_id": 109,
-      "status": 0
+      "status": 203
      }
     ]
    },
@@ -1343,7 +1415,7 @@
      },
      {
       "sport_id": 109,
-      "status": 0
+      "status": 203
      }
     ]
    },
@@ -1379,7 +1451,7 @@
    "kind": "aggregator-page",
    "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
    "http_status": 200,
-   "bytes": 1068506,
+   "bytes": 1070377,
    "is_json": false,
    "detail": {
     "odd_cells": 18,
@@ -1462,7 +1534,7 @@
    "kind": "established-sportsbook",
    "url": "https://sportsbetting.ag/sportsbook/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5845,
+   "bytes": 5824,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1542,7 +1614,7 @@
    "kind": "aggregator-page",
    "url": "https://egamersworld.com/lol/bets",
    "http_status": 403,
-   "bytes": 5740,
+   "bytes": 5718,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1558,7 +1630,7 @@
    "kind": "aggregator-page",
    "url": "https://oddspedia.com/esports/league-of-legends",
    "http_status": 410,
-   "bytes": 341188,
+   "bytes": 341185,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 410",
@@ -1574,7 +1646,7 @@
    "kind": "aggregator-page",
    "url": "https://ggscore.com/en/lol/matches",
    "http_status": 403,
-   "bytes": 5714,
+   "bytes": 5693,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1622,7 +1694,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
    "http_status": 403,
-   "bytes": 5849,
+   "bytes": 5848,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1686,7 +1758,7 @@
    "kind": "esportsbook",
    "url": "https://thunderpick.io/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5789,
+   "bytes": 5767,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",

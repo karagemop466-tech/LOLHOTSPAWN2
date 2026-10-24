@@ -1438,3 +1438,47 @@ column (3 new checks, 53/53). Verified non-vacuous: restoring the old `app.js` f
 | Local gates | `check_dom_render.js` **50/50** (real payload and a band-injected payload); `verify_site.py` 44 PASS · 0 FAIL · 0 WARN · 1 SKIP; `check_dom_contract.py` PASS; `test_verifier.py` 45/45; `backtest()` unit-checked so band and calibration rows sum to `n` exactly. |
 | Notes for the next session | `verification/report.json`, `last_report.md`, `docs/data/picks.json`, `data/diag/*` are CI-generated: always resolve to **theirs**, never hand-merge. The branch also receives `pipeline: test run [skip ci]` commits from `pipeline-test.yml` while a run is in flight, so a push can be rejected as non-fast-forward mid-run — re-fetch the branch and merge it before pushing. |
 | Line coverage (unchanged, re-stated) | 151 of 159 rows have **no** reachable bookmaker line; the source field was re-read this session and still returns: Pinnacle = Worlds only; nine Kambi/Unibet country markets = the same 8 Worlds matches (DE does not carry Prime League); bmbets = Worlds / LCP / Game Changers Rising only; everything else 403/410/404/429/geo-stub/client-rendered. No new line source was found, so no pick changed on market grounds. |
+
+---
+
+## Session `arena/26d1e778-lolhotspawn2` — 2026-10-24 (T21–T25: reliability of the 6-hour publisher)
+
+> Branch note: Arena fixes this session to `arena/26d1e778-lolhotspawn2`; the system branch stands in for the
+> `session-<id>/<task>` convention and no other branch may be created or pushed.
+
+**Claim (pushed before work):** commit `3e3cb81` appended the original T21–T25 claim (data integrity, source
+research, mobile executive summary, verifier extensions, live run → PR). Exclusive scope was
+`scripts/fetch_leaguepedia.py`, `scripts/update_picks.py`, `scripts/probe_sources.py`, `docs/*`, `docs/assets/*`,
+`scripts/verify_site.py`, `verification/**`, `README.md`, `research/betting-sources.md`, `COORDINATION.md`.
+
+### What this session found and changed
+
+Main advanced through other sessions while this branch was running; `origin/main` already contains the
+`standings_pages` fix, a Bovada series-moneyline parser, the unified mobile header, a market-source probe and a
+jsdom render check. To avoid regressing any of that, this branch **adopted `origin/main`'s integrated tree**
+(merge `fd703c1`) and re-applied only the two reliability fixes that main does not have, both derived from
+failures observed on this branch today:
+
+| Fix | Evidence | Files |
+|---|---|---|
+| **Leaguepedia fetch budget + snapshot guard.** Requests were capped at 90 s with 3 retries (~20 calls), so a throttled runner IP could burn the whole 40-minute job before any fallback. Now 25 s / 2 retries, a 600 s wall-clock budget, and the previous snapshot is preferred if a fresh export is under 85% of its size (a partial export silently drops teams). Partial exports are published as `degraded` rather than looking clean. | Branch run `40112232282`: “Run the live pipeline” was still executing after 37 minutes and was only stopped by the next push's concurrency cancel. Branch run `40115157991` completed the same pipeline in 7m54s. | `scripts/fetch_leaguepedia.py`, both workflows (`actions/cache` for `data/cache`, explicit step timeouts) |
+| **Publisher cannot lose a run in an aborted rebase.** The publish step rebased in a detached-HEAD checkout; when the rebase refused to start, `git rebase --abort` exited 128 and the step failed, discarding the freshly generated payload. Replaced with `git merge --no-edit -X ours` (keeps this run's files, no-op when the branch has not moved). The 6-hour publisher no longer runs `git reset --hard HEAD~1` after a rejected push, which used to discard the refresh and push a stale tree on the next attempt. | Branch run `40111481359`: probe, pipeline and the full verify step all **succeeded**, then the publish step failed with `could not abort failed output rebase (128): fatal: no rebase in progress` — the run's payload was never committed. | `.github/workflows/pipeline-test.yml`, `.github/workflows/update-picks.yml` |
+
+### Verification performed
+
+* Offline suite (`scripts`, `verification`, `audit`): `py_compile` all, `node --check`, DOM contract,
+  `test_dom_contract`, `test_verifier`, `test_standings_model`, `test_entity_and_books`, `audit/test_model`,
+  `verify_site.py` — all green on the adopted tree plus the two fixes (see the PR run for the CI copy).
+* Earlier branch runs exercised the full live pipeline end-to-end: `40115157991` (7m54s) published
+  `schema_version 4`, 159 fixtures, 0 unresolved, 8 market rows, 27-source probe, and `40117535357`
+  published Bovada `ok` with 7 two-way prices after the coupon-shape fix (superseded by main's own fix).
+* This session did **not** use Hotspawn crowd percentages, did not infer a value from a blocked source, and
+  published every looked-at source with its observed status and date.
+
+### Irregularities carried forward (for review)
+
+| ID | Item | State |
+|---|---|---|
+| I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
+| I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
+| I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |

@@ -18,6 +18,7 @@ Used for:
 from __future__ import annotations
 
 import json
+import os
 import time
 import urllib.parse
 from collections import Counter
@@ -35,11 +36,24 @@ STANDINGS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Standings"
 TEAMS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/Teams"
 REDIRECTS_URL = "https://lol.fandom.com/wiki/Special:CargoTables/TeamRedirects"
 SLEEP = 2.4
+# A shared CI IP can be throttled by Leaguepedia. 90 s x 3 retries x ~20 calls
+# is enough to burn a 40-minute job before any fallback runs (observed on
+# 2026-10-24), so keep each request short and enforce a wall-clock budget.
+REQUEST_TIMEOUT = int(os.environ.get("LEAGUEPEDIA_TIMEOUT", "25"))
+REQUEST_RETRIES = int(os.environ.get("LEAGUEPEDIA_RETRIES", "2"))
+BUDGET_SECONDS = int(os.environ.get("LEAGUEPEDIA_BUDGET", "600"))
+_DEADLINE = time.monotonic() + BUDGET_SECONDS
 
 
-def _get(params: dict, timeout=90):
+def _budget_left() -> float:
+    return _DEADLINE - time.monotonic()
+
+
+def _get(params: dict, timeout: int | None = None):
+    if _budget_left() <= 5:
+        return {"status": 0, "text": "", "error": "Leaguepedia export budget exhausted"}, ""
     url = EXPORT + urllib.parse.urlencode(params)
-    r = fetch(url, timeout=timeout, retries=3)
+    r = fetch(url, timeout=timeout or REQUEST_TIMEOUT, retries=REQUEST_RETRIES)
     return r, r["text"]
 
 
@@ -347,18 +361,33 @@ def main() -> int:
         "redirects": redirects,
         "teams": teams,
     }
-    if len(results) < 1000:
-        prev = load_json(OUT)
+    prev = load_json(OUT) if os.path.exists(OUT) else None
+    prev_results = len((prev or {}).get("results") or [])
+
+    def use_previous(reason: str) -> int:
         if prev and prev.get("results"):
             prev["degraded"] = True
-            prev["degraded_reason"] = (f"fresh export returned only {len(results)} results "
-                                       f"({len(errors)} errors); using snapshot from "
-                                       f"{prev.get('generated_at')}")
+            prev["degraded_reason"] = f"{reason}; using snapshot from {prev.get('generated_at')}"
             prev["last_attempt_utc"] = utc_iso(now)
             write_json(OUT, prev)
             log("leaguepedia: " + prev["degraded_reason"])
             return 0
-        raise SystemExit(f"Leaguepedia returned only {len(results)} results and no fallback snapshot exists")
+        raise SystemExit(f"{reason} and no fallback snapshot exists")
+
+    # A partial export is worse than the previous complete one: it silently drops
+    # teams from the model. Prefer the snapshot unless the fresh export is >=85%
+    # of its size.
+    if prev_results and len(results) < 0.85 * prev_results:
+        return use_previous(f"fresh export returned {len(results)} results "
+                            f"({len(errors)} error(s)), below 85% of the previous snapshot")
+    if len(results) < 1000:
+        return use_previous(f"fresh export returned only {len(results)} results "
+                            f"({len(errors)} error(s))")
+    if errors:
+        payload["degraded"] = True
+        payload["degraded_reason"] = (f"{len(errors)} Leaguepedia call(s) failed within the "
+                                      f"{BUDGET_SECONDS}s budget; results may be incomplete")
+        log("leaguepedia: " + payload["degraded_reason"])
     write_json(OUT, payload)
     log(f"leaguepedia: {len(results)} results, {len(schedule)} schedule rows, "
         f"{len(unscheduled)} unscheduled, {len(standings)} standings, {len(teams)} teams")

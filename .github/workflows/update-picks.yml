@@ -30,7 +30,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore the Leaguepedia snapshot cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: leaguepedia-${{ github.run_id }}
+          restore-keys: |
+            leaguepedia-
+
       - name: Fetch fixtures, external lines and results; build picks
+        timeout-minutes: 25
         env:
           PYTHONUNBUFFERED: "1"
         run: |
@@ -110,7 +119,8 @@ jobs:
               echo "pushed on attempt ${attempt}"
               exit 0
             fi
-            git reset --hard HEAD~1 >/dev/null 2>&1 || true
+            # Keep the refreshed payload: resetting here discards this run's
+            # commit and the retry would push the stale tree.
             echo "push rejected on attempt ${attempt}; retrying" >&2
             sleep 5
           done

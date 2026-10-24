@@ -1,18 +1,18 @@
 # Verification report — PASS
-_2026-10-24T17:48:13.532018+00:00_
-158 matches · MODEL_ELO: 93 · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 2 · MARKET_BOOKS: 0 · UNRESOLVED: 0 · MODEL_STANDINGS: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_SINGLE: 1 · MODEL_ELO_STANDINGS: 55 · MARKET_CONSENSUS: 7
+_2026-10-24T18:18:49.231641+00:00_
+155 matches · MARKET_BOOKS: 0 · MODEL_ELO_STANDINGS: 53 · MODEL_ELO_THIN: 2 · MODEL_LEAGUE_PRIOR: 0 · UNRESOLVED: 0 · MODEL_ELO: 93 · MARKET_POLYMARKET: 0 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MARKET_CONSENSUS: 6
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 158 matches, generated_at=2026-10-24T17:47:54.076796Z (0.0h old) |
-| D2 two distinct teams and a start time on every match | PASS | all 158 rows have team1, team2 and a start time |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 155 matches, generated_at=2026-10-24T18:18:14.606787Z (0.0h old) |
+| D2 two distinct teams and a start time on every match | PASS | all 155 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
 | D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_STANDINGS', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D6b confidence labels are from the documented set | PASS | High/Medium/Low/None only |
 | D7c every source URL is absolute http(s) | PASS | all source URLs well formed |
-| D7 every row links at least one source URL | PASS | all 158 rows carry at least one source URL |
+| D7 every row links at least one source URL | PASS | all 155 rows carry at least one source URL |
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
 | D8c model rows link a results-source URL | PASS | every model row links a results source |
 | D8d model rows with generic results-table sources are flagged | PASS | generic Leaguepedia table links are explicitly flagged as less directly auditable |
@@ -21,12 +21,12 @@ _2026-10-24T17:48:13.532018+00:00_
 | D16 no single-game (Game 1/Map 1) market used as a series probability | PASS | no non-BO1 row cites a single-game market |
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 declared counts agree with the rows | PASS | counts.resolved/unresolved consistent |
-| D11 declared count equals number of rows | PASS | declared=158, rows=158 |
+| D11 declared count equals number of rows | PASS | declared=155, rows=155 |
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
-| D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=158, priced=158, missing=0, extra=0, excluded=9, leaked=0 |
+| D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=155, priced=155, missing=0, extra=0, excluded=9, leaked=0 |
 | D22 external-source probe rows are sourced and never carry a probability | PASS | 37 probed source(s), each with an https link, HTTP status and verdict |
-| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 40 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 136/137 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 1 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:46:23.528604+00:00 (0.0h old). |
+| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 39 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 132/134 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 2 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T18:15:10.066703+00:00 (0.1h old). |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | D23 no committed artifact contains git conflict markers | PASS | no conflict markers in docs/, data/, verification/, research/, scripts/, .github/ |
 | S1 all required site files exist | PASS | 10 files present |
@@ -49,7 +49,7 @@ _2026-10-24T17:48:13.532018+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
-| X1 external links reachable (official-source links resolve) | WARN | 15/18 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
+| X1 external links reachable (official-source links resolve) | WARN | 15/18 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -70,9 +70,11 @@ _2026-10-24T17:48:13.532018+00:00_
 | REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
 
 **D18 items:**
+- Docta Esports Club vs Clã NKZ Revengers: ours=2026-10-25 15:00 lp=2026-10-24 15:00
 - Maze GG vs Viktus: ours=2026-10-25 15:00 lp=2026-10-24 23:00
 
 **X1 items:**
+- https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429
 - https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
 - https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403
 
