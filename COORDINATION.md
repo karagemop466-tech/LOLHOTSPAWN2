@@ -1383,3 +1383,16 @@ time regardless.
 3. The X1 external-link check tolerates host-blocked links (Polymarket/Unibet geoblocks from US runners)
    and fails only on genuinely dead links — that is how the dead `github.com/.../blob/main/...` link was
    caught during this session.
+
+### Fix `arena/e6f33fe9` — unresolved page contradicted itself on split-standings counts
+
+The "How this snapshot was resolved" line on `unresolved.html` reported **0 by split standings** while the
+league table further down the same page showed **55**, and the executive summary showed 55 as well. Cause: the
+line counted `m.method === "MODEL_STANDINGS"`, an id the pipeline never emits — the real id is
+`MODEL_ELO_STANDINGS` — so it fell back to 0, and "by our Elo model" absorbed those 55 by subtraction.
+
+Fixed by one shared `methodMix()` helper in `docs/assets/app.js` that reads the pipeline's own
+`coverage.counts_by_method` tally (falling back to scanning `matches`) and is used by **both** the summary and
+the unresolved page, so the two can no longer drift. `verification/check_dom_render.js` now asserts the
+reported standings/Elo counts match the payload **and** that they equal the sum of the per-league standings
+column (3 new checks, 53/53). Verified non-vacuous: restoring the old `app.js` fails exactly the standings check.
