@@ -1021,3 +1021,66 @@ Verified with a jsdom pass over all 160 rendered rows: 160/160 pairs sum to 100.
 | Post-merge production refresh on `main` | `update-picks.yml` run [40112685473](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112685473) — **success** (`1m36s`), commit `d5e3127`, payload `2026-10-24T16:42:29.066048Z`: **160 upcoming fixtures · 160 resolved (`100.0%`) · 0 unresolved · 9 market (`8` 4-book Worlds consensus + `1` single Polymarket) · 151 Elo model (`94` `MODEL_ELO` + `57` `MODEL_ELO_THIN`) · `8/8` `sources_status` `ok` (`Bovada: ok/8`, `Liquipedia: ok`) · `0` `GENERIC_RESULTS_SOURCE`** |
 | GitHub Pages builds | [40112685075](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112685075) & post-refresh [40112807856](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112807856) — **success**, Pages API `status: built` for `d5e3127` (`2026-10-24T16:43:03Z`) |
 | Live site verification | Live checks on <https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/>, `match.html?id=1067688` (4-book consensus: Pinnacle + Unibet + Bovada + Polymarket with `200 OK` links), and `match.html?id=1081700` (`Inari Esports (British Team)` Bo3 on `4 Nations/2026 Season/Halloween Heist`) all confirmed live. |
+
+---
+
+## Session `arena/c38ce482-lolhotspawn2` — 2026-10-24 (standings blend → PR #38)
+
+**Root cause found and fixed.** The split-standings signal — the only *community* source that prices tier-3
+fixtures where no book does — was fetched but never applied, because `MODEL_STANDINGS` required a side with
+**no Elo at all**, while Elo needs only one recorded game in 365 days. Every priced side therefore always had
+an Elo rating, so the standings branch was unreachable: **0 rows across every production run**.
+
+| Fix | Detail |
+|---|---|
+| New method `MODEL_ELO_STANDINGS` | A side with **thin** Elo (<8 games in 365d) **and** a current-split standings record **for this row's own competition** has that record blended into the rating. Weight `series/(series+4)`, capped at 0.6 so pooled Elo still dominates. Flagged `STANDINGS_BLEND_APPLIED`; confidence ≤ Medium (Low when cross-league). A record from a **different** competition is never blended in. |
+| `standings_pages` counter | `fetch_leaguepedia.py` never emitted it, so the site printed "Standings rows: 2 880 across **0** competitions". Now computed from the distinct `OverviewPage` values → **209** competitions. |
+| Accurate per-league limitation text | Names only the signals that actually priced the competition, instead of always claiming "recorded match results **and split standings**". |
+| Standings source link | Standings rows cite the competition's **own** page (e.g. `RIVALS_LEAGUE/2026_Season/Season_2`), not the generic `Special:CargoTables/Standings` index, so check `D8d` keeps its meaning instead of being weakened. |
+| `D18` reads the live cache | The start-time cross-check now uses `data/cache/leaguepedia.json`, written by the same run that priced the model, instead of committed `data/diag/ms_*.json` snapshots that were **67.8 h old** and could not verify the current schedule. |
+| Exec summary per-league limitations | The executive summary carries the per-league limitations table itself, and reads correctly whether or not anything is unresolved ("0 fixtures lack …" was confusing). |
+| New DOM render regression test | `verification/check_dom_render.js` renders all six pages against the published payload in jsdom and asserts every content container was filled. Wired into `pipeline-test.yml` (skips cleanly when jsdom is unavailable). |
+
+**Measured effect** (live pipeline, Actions 40112986629, payload `2026-10-24T16:46:33Z`):
+
+| Metric | Before | After |
+|---|---|---|
+| Fixtures priced by the standings signal | **0** | **55** |
+| `MODEL_ELO_THIN` rows | 67 | **2–3** |
+| Low-confidence rows | 73 | **9** |
+| Unresolved (explicit 50/50) | 0 | **0** |
+| Coverage of the Hotspawn lobby | 100 % | **100 %** |
+
+Example row (`RIVALS LEAGUE Season 2`, 2026-10-24): Karolinerna 41.9 % vs Turbo Gaming 58.1 %. Pooled Elo
+1466 vs 1491 blended with the current-split record (1–4 series vs 4–2 series) to 1388 vs 1528 — source:
+https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2
+
+**Verification performed**
+
+| Check | Result | Evidence |
+|---|---|---|
+| Live pipeline + verifier on the branch | **success**, **38 PASS / 0 FAIL** (was 1 FAIL on the first attempt) | Actions run 40112986629; `verification/last_report.md` (52 PASS rows) |
+| `verification/test_standings_model.py` | **17/17** (8 new: blend fires, favours the stronger split record, records the weight, is flagged, confidence ≤ Medium, an out-of-competition record is **not** blended, a deep Elo pair is not overridden) | `verification/test_standings_model.py` |
+| `audit/test_model.py` | **23/23** (2 new: blend weight in [0, 0.6]; standings rows cite a standings source and a competition-specific page) | `audit/test_model.py` |
+| `verification/test_verifier.py` | 38/38 | unchanged |
+| `verification/test_entity_and_books.py` | 10/10 | unchanged |
+| `verification/check_dom_contract.py` | PASS | unchanged |
+| `verification/check_dom_render.js` (new) | all 6 pages render, 0 empty containers | run locally + in `pipeline-test.yml` |
+| `D8d` regression | violations 59 → 0 after the source-link change | simulated against the CI payload before the fix landed |
+| `D18` start-time cross-check | **now PASS**: 139/139 matched fixture times agree with Leaguepedia, 0 differ, snapshot 0.0 h old | `verification/last_report.md` |
+
+**Irregularities flagged for review (non-blocking, on the Flagged page / `research/betting-sources.md` §14)**
+
+- `MODEL_ELO_STANDINGS` rows are Medium confidence, not Low: the split record is in-competition evidence but
+  ignores strength of schedule and roster changes.
+- The committed `data/diag/ms_*.json` snapshots remain as the D18 fallback and are stale by nature; the live
+  cache is now preferred.
+- `X1` still WARNs on one link: `Special:CargoTables/MatchSchedule` returns **403** to the verifier's bot
+  User-Agent (Fandom bot protection). It is 0 dead links; the link is a table index, not a dead page.
+- `D18` still notes that Hotspawn's epoch timestamp governs pick lock times when Leaguepedia disagrees.
+
+**Coordination note.** This session was rebased onto `main` repeatedly while other sessions merged PRs
+#30–#39. Every `COORDINATION.md` conflict was resolved by keeping **both** session blocks (the board is
+append-only); the resolver is committed at `scripts/resolve_coordination_conflict.py`. No other session's work
+was discarded at any point. `research/betting-sources.md` §13 (session `arena/26fa1cec`) and §14 (this
+session) are both present and renumbered so the section numbers stay unique.
