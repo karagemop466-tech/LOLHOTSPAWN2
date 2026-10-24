@@ -831,3 +831,70 @@ pipeline and wired into `verify.yml` (an unreachable API is a warning, a missing
 **Nothing.** No new adapter was promoted, no formula changed, no probability moved. The evidence supports what the
 site already says: above the World Championship, no reachable book prices these competitions, so those rows are our
 own line, disclosed per league with the Low-confidence count.
+
+---
+
+---
+
+## 19. Refresh 2026-10-24 — live source re-verification + fresh candidate research (session `arena/df8a86d2`)
+
+Brief: re-verify the current payload line by line against the official feeds it cites, then re-run the
+established-books → esportsbooks → community search for any fixture that still has no book line.
+
+### 19.1 Line-by-line spot checks of the priced rows (live, 2026-10-24 ~16:1x–16:3x UTC)
+
+Payload under test: `docs/data/picks.json` generated **2026-10-24T15:28:56Z** (169 fixtures, 169 priced, 0 unresolved, 9 market rows).
+
+| Row checked | Cited source | Live value observed | Payload value | Result |
+|---|---|---|---|---|
+| Dplus KIA vs T1 (Worlds) | Polymarket Gamma `lol-dk-t1-2026-10-24` | `outcomePrices ["0.435","0.565"]` (updated 16:14Z) | 0.435 / 0.565 | ✅ exact |
+| Top Esports vs Anyone's Legend (Worlds) | Polymarket Gamma `lol-tes-al-2026-10-24` | `["0.365","0.635"]` (updated 16:10Z) | 0.365 / 0.635 | ✅ exact |
+| Dplus KIA vs T1 (Worlds) | Pinnacle guest API matchup `1639127310` (parent, `units: Regular`) period-0 moneyline | `home +117 → 2.17`, `away -137 → 1.7299`; devig = 0.4436 / 0.5564 | 0.4436 / 0.5564 (recorded matchup id 1639127310) | ✅ exact |
+| Hanwha Life vs Gen.G (Worlds) | Unibet/Kambi event `1029609640` Match Odds | 2.20 / 1.60 (changed 06:39Z, before snapshot); devig = 0.4211 | 0.4211 | ✅ exact |
+| Team Liquid vs Bilibili Gaming (Worlds) | Unibet/Kambi event `1029609649` | 3.35 / 1.29; devig BLG = 0.7220 | 0.722 | ✅ exact |
+| Top Esports vs AL / CFO vs MKOI / G2 vs LØS / IG vs TSW | Unibet/Kambi events `1029609648/39/46/47` | devig 0.349 / 0.663 / 0.788 / 0.696 | 0.349 / 0.663 / 0.788 / 0.696 | ✅ exact |
+| Dplus KIA vs T1 | Unibet/Kambi event `1029609638` | 2.33 / 1.54 at `changedDate 16:15:37Z` | 2.20 / 1.60 recorded 15:28:56Z | ⚠️ line moved ~47 min **after** the snapshot; recorded value was correct at generation |
+| LYON vs Karmine Corp | Unibet/Kambi event `1029609641` | devig LYON 0.457 at `changedDate 15:29:55Z` | 0.462 recorded 15:28:56Z | ⚠️ odds updated 59 s **after** the snapshot; recorded value correct at generation |
+| Mental Rush vs Vitality Rising Bees (LGC Rising) | Polymarket `lol-rb-mr-2026-10-27`, **"Match Winner"** market id `6036989` | `["0.61","0.39"]` (updated 16:12Z) | 0.615 / 0.385 | ✅ consistent (0.5¢ drift after snapshot). Child `Game N` markets in the same event show dead `0.5/0.5` prices and are **not** the cited market — confirmed the selector used the series market |
+| JSK Esports vs El Menzah Esports (Tunisian Super League) | Leaguepedia `Tunisian Super League/2026 Season` standings | JSK Esports **4-0 (100%)**, El Menzah Esports **1-3 (25%)** | Elo 1593 vs 1434 → 57.1% / 42.9% (model row) | ✅ direction confirmed by the cited standings page |
+| Coverage of the lobby | Hotspawn lobby header | `All tiers (241)` | `lobby_lol_listed: 241` | ✅ exact |
+| Whalepower Humpbacks vs 1. ECF start time & crowd | Hotspawn lobby card | Oct 24 13:30, 72% / 28% (25 picks) | start `17:30Z` (=13:30 UTC), crowd 72/28 n=25 | ✅ exact |
+
+Suite results on this commit: `check_dom_contract.py` PASS · `test_verifier.py` 35/35 · `test_entity_and_books.py` 10/10 ·
+`test_standings_model.py` ALL PASS · `audit/test_model.py` 20/20 · `scripts/verify_site.py` **36 PASS · 0 FAIL · 0 WARN · 1 skip**
+(including REQ1–REQ12 traceability: pick on every match, probabilities sum to 100%, outside-Hotspawn inputs,
+separate unresolved section linked from the exec summary, mobile viewport, 4–8 h refresh).
+
+### 19.2 Established LoL betting sites (fresh check 2026-10-24)
+
+| Source | What was observed today | Usable for our low-tier fixtures? | Evidence |
+|---|---|---|---|
+| **Pinnacle** (production source) | Guest API `sports/12/leagues` lists exactly **one** LoL league: `League of Legends - World Championship` (id 9587, 10 matchups). No domestic/amateur LoL boards open during the Worlds window. | Worlds only — no | https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues |
+| **Unibet / Kambi** (production source) | `listView …league_of_legends…matches.json` returns exactly **8** pre-match events, all `World Championship`. | Worlds only — no | https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ |
+| **Polymarket** (production source) | Prices the 8 Worlds rows + the LGC Rising final; no amateur-league markets found in the LoL tag (also confirmed 2026-10-23 probes). | Tier-1/2 only — no | https://gamma-api.polymarket.com/events?tag_slug=league-of-legends |
+| **OddsPapi** | Live page today: **`0 Fixtures scheduled`** measured 2026-10-24 04:15 UTC for LoL tournamentIds `2452, 2454, 39985`; documented coverage remains Worlds/LEC/LCS/LCK/LPL/CBLOL/LJL/Prime League **Pro** Division. Free REST tier exists but requires a sign-up key — **no key configured, no manual input available**. | No amateur leagues; key required — no | https://oddspapi.io/sports/esports/lol |
+| **eGamersWorld odds board** | Today's board lists only `2026 World Championship` (5 books: Vave, Thunderpick, Rainbet, Underdog, CocoBet) and `LGC 2026 Rising` (same 5 books). No PRM 3rd/2nd Division, RIVALS LEAGUE, Tunisian, Komplettligaen, LigaGG, Icelandic, Benelux, 4 Nations, Superstrike, Hitpoint or Arabian events. Their LGC line (Vave 1.40/2.73 → devig RB ≈ 66%) corroborates the direction of our Polymarket-only row (RB 61.5%). | Human cross-check only; HTML, no structured feed — no | https://egamersworld.com/lol/bets |
+
+### 19.3 Esportsbooks & esports betting lines (fresh check 2026-10-24)
+
+| Source | Observation today | Verdict |
+|---|---|---|
+| **Oddiwire** (new candidate found this session) | Resells the **ODDIN.GG** esports feed (REST + SSE, raw no-vig probabilities). Free plan: 100 REST calls/day, **no card** — but the key is issued only after an **email + Cloudflare human-verification** step ("We send the key to your inbox"). Homepage today showed `PREMATCH EVENTS 161 … LOL 8` — 8 LoL events board-wide (tier-1 scale). | Interesting future adapter; **blocked on key issuance (human step)**. Not integrated. https://oddiwire.com/ |
+| **SportsGameOdds** (new candidate) | Free "Amateur" tier: 2,500 objects/mo, 8 leagues / 9 bookmakers, but **signup requires a card** and the league list is not published as covering our amateur LoL divisions. | Not usable autonomously — no https://sportsgameodds.com/pricing |
+| **The Odds API** | Free 500 credits/mo but key signup required; prior probe HTTP 401 without key. | Not usable autonomously — no |
+| **GG.Bet / Thunderpick / Rivalry / Midnite / Betway / Marathonbet / BetMGM** | Previous CI probe statuses (403/404/503/403/404/403/403) stand; re-confirmed by the branch `probe_sources.py` run of this session (`data/diag/source_probe.json`). Their own pages (per eGamersWorld's board above) price Worlds/LGC only anyway. | No change — no |
+| **Kalshi / Smarkets / Manifold** | Prior probe: no per-match LoL series (Kalshi none, Smarkets 404, Manifold futures only). Unchanged in this session's CI probe. | No change — no |
+
+### 19.4 Community / results sources (resolution path for matches no book prices — unchanged and still the production answer)
+
+All 169 current fixtures are priced; **0 UNRESOLVED**. For any fixture that ever lacks a book line the cascade is:
+Leaguepedia `MatchSchedule` Elo (31,633 matches / 5,493 teams in the current payload) → Leaguepedia `Standings`
+(`MODEL_STANDINGS`) → competition prior (`MODEL_LEAGUE_PRIOR`) → explicit 50/50 `UNRESOLVED` published on the
+Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is never an input (verifier W3).
+
+### 19.5 Irregularities found this session (all non-blocking)
+
+1. **Two Unibet rows show small post-snapshot drift** (DK/T1 moved 16:15Z, LYON/KC 15:29Z vs payload 15:28:56Z generation). Not errors: values were correct when generated; the 6-hour refresh picks up the new prices. No action.
+2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
+3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
+4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.

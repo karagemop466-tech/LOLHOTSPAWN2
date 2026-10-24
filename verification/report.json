@@ -1,37 +1,37 @@
 {
- "verified_at": "2026-10-24T17:30:53.400528+00:00",
+ "verified_at": "2026-10-24T17:48:13.532018+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 45,
+  "PASS": 44,
   "FAIL": 0,
-  "WARN": 1,
+  "WARN": 2,
   "SKIP": 0
  },
- "data_matches": 159,
+ "data_matches": 158,
  "methods": {
+  "MODEL_ELO": 93,
+  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO_THIN": 2,
+  "MARKET_BOOKS": 0,
+  "UNRESOLVED": 0,
   "MODEL_STANDINGS": 0,
   "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO_STANDINGS": 55,
-  "UNRESOLVED": 0,
   "MARKET_SINGLE": 1,
-  "MARKET_CONSENSUS": 7,
-  "MARKET_BOOKS": 0,
-  "MODEL_ELO_THIN": 2,
-  "MARKET_POLYMARKET": 0,
-  "MODEL_ELO": 94
+  "MODEL_ELO_STANDINGS": 55,
+  "MARKET_CONSENSUS": 7
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "159 matches, generated_at=2026-10-24T17:30:34.796548Z (0.0h old)"
+   "detail": "158 matches, generated_at=2026-10-24T17:47:54.076796Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 159 rows have team1, team2 and a start time"
+   "detail": "all 158 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -73,7 +73,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 159 rows carry at least one source URL"
+   "detail": "all 158 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -127,7 +127,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=159, rows=159"
+   "detail": "declared=158, rows=158"
   },
   {
    "id": "D20",
@@ -139,7 +139,7 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=159, priced=159, missing=0, extra=0, excluded=9, leaked=0"
+   "detail": "lobby upcoming=158, priced=158, missing=0, extra=0, excluded=9, leaked=0"
   },
   {
    "id": "D22",
@@ -151,13 +151,16 @@
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 41 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 40 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "PASS",
-   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:28:58.250279+00:00 (0.0h old)."
+   "status": "WARN",
+   "detail": "136/137 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 1 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:46:23.528604+00:00 (0.0h old).",
+   "items": [
+    "Maze GG vs Viktus: ours=2026-10-25 15:00 lp=2026-10-24 23:00"
+   ]
   },
   {
    "id": "D14",
