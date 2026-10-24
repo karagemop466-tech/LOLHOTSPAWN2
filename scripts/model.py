@@ -59,6 +59,7 @@ DEFAULT_ALIASES = {
         "Team Gromp": "Team Gromp (Australian Team)",
         "Infinity Gaming": "Infinity Gaming (Brazilian Team)",
         "Neon eSports": "Neon eSports (Brazilian Team)",
+        "Inari Esports": "Inari Esports (British Team)",
         "REH Gaming": "REH Gaming",
     },
     "competition_scoped_aliases": {
@@ -108,6 +109,7 @@ DEFAULT_ALIASES = {
     },
     "tournament_pages": {
         "Worlds 2026 Main Event": "2026 Season World Championship/Main Event",
+        "EM 2026 Summer Main Event": "EMEA Masters/2026 Season/Summer Main Event",
         "LGC Rising 2026 Playoffs": "LoL Game Changers/2026 Season/Playoffs",
         "LCP 2027 Promotion": "LCP/2027 Season/Promotion",
         "PRM 2nd Division 26-27 Fall": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -115,6 +117,8 @@ DEFAULT_ALIASES = {
         "Arabian League 2nd Division 2026 Summer": "Arabian League 2nd Division/2026 Season/Summer Split",
         "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": "Arabian Regional Championship 2026/Qualifiers/LB-Li-SY-PS",
         "Komplettligaen 2026 Autumn": "Komplettligaen/2026 Season/Autumn Split",
+        "Komplettligaen 2026 Autumn Playoffs": "Komplettligaen/2026 Season/Autumn Playoffs",
+        "4 Nations 2026 Halloween Heist": "4 Nations/2026 Season/Halloween Heist",
         "RIVALS LEAGUE Season 2": "RIVALS LEAGUE/2026 Season/Season 2",
         "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
         "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
@@ -133,6 +137,12 @@ METHOD_LABELS = {
     "UNRESOLVED": "Unresolved - no verified signal",
 }
 
+_PAREN_RE = re.compile(r"\s*\([^)]*\)\s*$")
+
+
+def _strip_disambig(s: str) -> str:
+    return _PAREN_RE.sub("", str(s or "")).strip()
+
 
 def sim(a: str, b: str) -> float:
     return SequenceMatcher(None, _norm_team(a), _norm_team(b)).ratio()
@@ -140,7 +150,14 @@ def sim(a: str, b: str) -> float:
 
 def contains(a: str, b: str) -> bool:
     na, nb = _norm_team(a), _norm_team(b)
-    return bool(na and nb) and (na in nb or nb in na)
+    if not na or not nb:
+        return False
+    short, long_ = (na, nb) if len(na) <= len(nb) else (nb, na)
+    if short == long_:
+        return True
+    if len(short) < 5:
+        return False
+    return short in long_
 
 
 def load_aliases(path="data/aliases.json"):
@@ -308,6 +325,9 @@ class Resolver:
             return self.by_norm.get(_norm_team(target), target), None
         if n in self.by_norm:
             return self.by_norm[n], None
+        stripped = [x for x in self.names if _norm_team(_strip_disambig(x)) == n]
+        if len(stripped) == 1:
+            return stripped[0], None
         cands = [x for x in self.names if contains(name, x)]
         if len(cands) == 1:
             return cands[0], None
