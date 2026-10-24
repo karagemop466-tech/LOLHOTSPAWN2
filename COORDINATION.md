@@ -715,3 +715,18 @@ the exact source link so a human can repeat it.
 | Post-merge live 6h refresh on `main` | **success** — run `39989184592` (`9d65409`, `generated_at = 2026-10-23T16:52:07.057868Z`): **172 / 172 upcoming fixtures resolved (`100.0%`)**, `9` market (`8` 3-book consensus + `1` single), `163` Elo model (`88` `MODEL_ELO` + `75` `MODEL_ELO_THIN`), `0` unresolved, `12` cancelled fixtures excluded, `10` per-league breakdown rows & all 8 `sources_status` entries published |
 | Post-refresh Pages deploy #2 | **success** — run `39990334025` deployed fresh `9d65409` payload to https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
 | Follow-up verifier hardening PR (#28 + #29) | Merged `wait_for_http()` + `http_status_retry()` in `scripts/verify_site.py` (PR **#28**, Pages deploy `39990798461` **success**), and replaced US-geoblocked SPA route `www.pinnacle.com/en/esports/league-of-legends` (HTTP `404` on US-East CI runners) in `docs/methodology.html`'s manual check log with the public `200 OK` JSON feeds actually queried by CI (`guest.api.arcadia.pinnacle.com` & `gamma-api.polymarket.com`) so `verify.yml` passes `X1`–`X3` cleanly on `main`. |
+
+---
+
+## Session `arena/9d523943-lolhotspawn2` — 2026-10-24 (T20–T23: exec-summary/mobile defect repair, verified source research, full verification, PR)
+
+> Claimed at 2026-10-24 (branch `arena/9d523943-lolhotspawn2`, based on `main` @ `72c9b5a`). No other session holds these files. Open PRs from earlier sessions (#20 `arena/b132c242`, #26 `arena/e76bc0ae`) are **not** touched by this session; if either merges, this session rebases rather than overwrites.
+
+| Task | Status | Owner | File scope (exclusive to this session) |
+|---|---|---|---|
+| T20 Fix the executive-summary + unresolved page header/nav defects and dead controls found by reading `docs/*.html` against `docs/assets/style.css`; standardise all 7 pages on one mobile header/nav and add the missing CSS the pages actually use | in progress | arena/9d523943 | `docs/index.html`, `docs/unresolved.html`, `docs/assets/style.css`, `docs/assets/app.js` |
+| T21 Verification hardening: fail the build on unstyled classes, a non-standard header, a dead control, or a page missing the JS-populated timestamp/freshness ids; publish the mobile audit | in progress | arena/9d523943 | `verification/check_dom_contract.py`, `verification/mobile_audit.md` |
+| T22 Fresh, dated source research for the *unresolved/low-confidence* bucket: established LoL betting sites → esportsbooks → community, checked with a real page fetch (not assumed) and recorded with links; extend the CI probe list | in progress | arena/9d523943 | `research/betting-sources.md`, `scripts/probe_sources.py` |
+| T23 Line-by-line verification of the combined payload/site, PR to `main`, merge, confirm the Pages deploy, record the PR/deploy here | pending | arena/9d523943 | `COORDINATION.md`, `README.md` |
+
+**Baseline at claim** (`main` `72c9b5a`, 2026-10-24T15:28:56Z payload): 169 fixtures · 169 priced (100%) · 9 market · 160 model · 0 unresolved · 73 low-confidence · 14 cancelled excluded. `scripts/verify_site.py` passes but the DOM contract does **not** check markup/CSS agreement, so the defects in T20 shipped green.
