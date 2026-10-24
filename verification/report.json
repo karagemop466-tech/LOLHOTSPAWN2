@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-24T17:17:43.885381+00:00",
+ "verified_at": "2026-10-24T17:23:56.536881+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 45,
@@ -9,23 +9,23 @@
  },
  "data_matches": 159,
  "methods": {
-  "MARKET_CONSENSUS": 7,
-  "UNRESOLVED": 0,
   "MODEL_ELO_STANDINGS": 55,
-  "MODEL_ELO_THIN": 2,
-  "MARKET_BOOKS": 0,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_STANDINGS": 0,
-  "MODEL_ELO": 94,
+  "UNRESOLVED": 0,
   "MARKET_SINGLE": 1,
-  "MARKET_POLYMARKET": 0
+  "MODEL_ELO": 94,
+  "MARKET_BOOKS": 0,
+  "MODEL_STANDINGS": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO_THIN": 2,
+  "MARKET_POLYMARKET": 0,
+  "MARKET_CONSENSUS": 7
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "159 matches, generated_at=2026-10-24T17:17:23.901000Z (0.0h old)"
+   "detail": "159 matches, generated_at=2026-10-24T17:23:37.900548Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -157,7 +157,7 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:15:48.397923+00:00 (0.0h old)."
+   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:22:06.969879+00:00 (0.0h old)."
   },
   {
    "id": "D14",
