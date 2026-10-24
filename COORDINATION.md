@@ -1,5 +1,17 @@
 # Coordination Board
 
+## Session `arena/ac93853f-lolhotspawn2` — 2026-10-24 (active claim)
+
+No active claim is recorded on this board; prior session entries are complete and open PRs #20/#26 have had no updates for more than 60 minutes. Arena fixes this session to `arena/ac93853f-lolhotspawn2`, which stands in for the requested `session-<id>/<task>` branch naming convention. This session will not switch or push another branch.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T21 Fresh end-to-end audit: current Hotspawn lobby coverage, external-book lines for featured matches, low-tier fallback evidence, and per-row source/limitations verification | in progress | arena/ac93853f | `scripts/**`, `audit/**`, `research/**`, `verification/**`, `data/diag/**`, generated `docs/data/picks.json` |
+| T22 Phone-first executive summary and complete picks/limitations/findings experience; fix verified gaps only | in progress | arena/ac93853f | `docs/**`, `README.md` |
+| T23 Final integration: offline/live tests, internal/external link checks, PR from the fixed Arena branch to `main`, merge, Pages deployment confirmation, and closeout evidence | in progress | arena/ac93853f | `.github/workflows/**`, `COORDINATION.md`, generated verification artifacts |
+
+Requests for changes to this scope from another session must be logged here rather than edited concurrently. Generated data will come from the live pipeline; no probability, fixture, or source value will be manually invented.
+
 ## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (done, merged)
 | Task | Status | Owner | Files |
 |---|---|---|---|
