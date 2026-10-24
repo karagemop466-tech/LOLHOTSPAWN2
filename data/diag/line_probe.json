@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:29:00.131010Z",
+ "checked_at": "2026-10-24T16:32:02.303294Z",
  "fixture_count": 164,
  "fixtures_without_external_line": 155,
  "candidates_with_new_coverage": [],
@@ -26,7 +26,7 @@
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
+   "verdict": "reachable; lists 8 LoL match(es), but none in a competition we cannot already price from a book"
   },
   {
    "name": "Polymarket (control)",
@@ -55,7 +55,7 @@
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
+   "verdict": "reachable; lists 17 LoL match(es), but none in a competition we cannot already price from a book"
   },
   {
    "name": "Kambi / Unibet / GB",
@@ -1482,22 +1482,6 @@
    "verdict": "reachable, but no two-way per-match price was extracted"
   },
   {
-   "name": "bmbets LoL odds comparison",
-   "kind": "aggregator-page",
-   "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
-   "http_status": 200,
-   "bytes": 1060961,
-   "is_json": false,
-   "lol_mentions": 3,
-   "error": null,
-   "priced_records": 0,
-   "records_matched_to_fixtures": 0,
-   "fixtures_matched": 0,
-   "fixtures_matched_and_previously_unpriced": 0,
-   "samples": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
-  },
-  {
    "name": "Prime League official (organizer)",
    "kind": "organizer-results",
    "url": "https://www.primeleague.gg/en/liga2",
@@ -1534,7 +1518,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366116,
+   "bytes": 366115,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
@@ -1550,7 +1534,7 @@
    "kind": "established-sportsbook",
    "url": "https://sportsbetting.ag/sportsbook/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5866,
+   "bytes": 5824,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1630,7 +1614,7 @@
    "kind": "aggregator-page",
    "url": "https://egamersworld.com/lol/bets",
    "http_status": 403,
-   "bytes": 5740,
+   "bytes": 5718,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1662,7 +1646,7 @@
    "kind": "aggregator-page",
    "url": "https://ggscore.com/en/lol/matches",
    "http_status": 403,
-   "bytes": 5714,
+   "bytes": 5693,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1710,7 +1694,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
    "http_status": 403,
-   "bytes": 5850,
+   "bytes": 5849,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1758,7 +1742,7 @@
    "kind": "esportsbook",
    "url": "https://rainbet.com/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 110741,
+   "bytes": 110720,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1805,17 +1789,17 @@
    "name": "Rivalry LoL",
    "kind": "esportsbook",
    "url": "https://www.rivalry.com/lol",
-   "http_status": 503,
-   "bytes": 1591,
+   "http_status": 404,
+   "bytes": 65054,
    "is_json": false,
-   "lol_mentions": null,
-   "error": "HTTP 503",
+   "lol_mentions": 1,
+   "error": "HTTP 404",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "not usable from CI (HTTP 404)"
   }
  ],
  "rule": "A candidate is promoted into scripts/fetch_markets.py only when it returns structured two-way per-match prices for fixtures in the published list and the sample rows are re-checked by hand. Status-only probes never contribute a price."
