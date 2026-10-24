@@ -1384,6 +1384,18 @@ time regardless.
    and fails only on genuinely dead links — that is how the dead `github.com/.../blob/main/...` link was
    caught during this session.
 
+### PR #44 merged — production refresh & Pages verified (`arena/66e731b3`, 2026-10-24 17:13–17:18 UTC)
+
+| Item | Result & evidence |
+|---|---|
+| Pull request | **PR #44** https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/44 — **MERGED** 2026-10-24T17:13:30Z, merge commit `e6849d6` |
+| Post-merge production refresh on `main` | **success** — run `40115143658` (Update Hotspawn LoL picks), then refresh commit `a64173f`; payload generated 2026-10-24T17:18:06Z: **159/159 resolved, 0 unresolved**, Bovada in 4-book consensus, `checked_unavailable` 27, probe 37 sources |
+| GitHub Pages | builds `40115143605` + `40115498312` **success**; Pages API `built` for `a64173f`; live fetch verified: exec summary renders picks-first cards, 159/159 priced, "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s))" on Worlds rows — https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ |
+| Tasks U1–U5 | **done** |
+| Follow-up fix (this commit) | Coverage/resolution-mix sub-counts double-subtracted the standings blend (live read "41 from Elo" for 94 `MODEL_ELO` + 2 thin; resolution-mix omitted the 55 blend rows). Both texts now derive from `counts_by_method` (buckets sum to fixtures), and `with_team_specific_model` includes `MODEL_ELO_STANDINGS`. Local: verify 44 PASS, DOM PASS, render_check PASS, check_dom_render 50/50. |
+
+---
+
 ### Fix `arena/e6f33fe9` — unresolved page contradicted itself on split-standings counts
 
 The "How this snapshot was resolved" line on `unresolved.html` reported **0 by split standings** while the

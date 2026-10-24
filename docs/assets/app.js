@@ -339,11 +339,6 @@
     }
 
     const cov = d.coverage || {};
-<<<<<<< HEAD
-    const mx = methodMix(d);
-    const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mx.market}</b> from external betting lines, <b>${mx.elo}</b> from our chronological Elo model, <b>${mx.standings}</b> from split standings, <b>${mx.prior}</b> from competition priors, and <b>${mx.unresolved}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
-=======
     // Count the pricing mix from the rows themselves. The coverage fields are a
     // summary written by the generator and mixing them with method counts produced a
     // breakdown that did not add up to the fixture total (e.g. 9 + 41 + 55 = 105 of 160).
@@ -351,7 +346,6 @@
     const stCount = mix.standings;
     const covText = $("#coverage-text");
     if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
->>>>>>> origin/main
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -600,14 +594,6 @@
     if (lbox) lbox.innerHTML = lim;
     const mix = $("#resolution-mix");
     if (mix) {
-<<<<<<< HEAD
-      const mix_ = methodMix(d);
-      mix.innerHTML = `<b>${mix_.fixtures}</b> scheduled fixtures published · `
-        + `<b>${mix_.market}</b> priced by external betting lines · `
-        + `<b>${mix_.elo}</b> by our Elo model · `
-        + `<b>${mix_.standings}</b> by split standings · <b>${mix_.prior}</b> by a competition prior · `
-        + `<b>${mix_.unresolved}</b> explicit 50/50 placeholders. `
-=======
       const cov = d.coverage || {};
       const counts = pricingMix(d);
       mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
@@ -616,7 +602,6 @@
         + `<b>${counts.standings}</b> by split standings · `
         + `<b>${counts.prior}</b> by a competition prior · `
         + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}). `
->>>>>>> origin/main
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }
     const psum = $("#probe-summary");
@@ -625,39 +610,6 @@
     if (pbody) pbody.innerHTML = probeRows(d);
     const stat = $("#unresolved-counts");
     if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
-  }
-
-  // Count how each fixture was priced. Prefers the pipeline's own per-method tally
-  // (coverage.counts_by_method, schema v3) and falls back to scanning matches, so the
-  // "how this snapshot was resolved" line can never drift from the league table below it.
-  // (It did once: the model emits METHOD "MODEL_ELO_STANDINGS", while this line used to look
-  // for the non-existent "MODEL_STANDINGS" and reported 0 standings alongside a table showing 55.)
-  function methodMix(d) {
-    const cov = d.coverage || {};
-    const by = cov.counts_by_method || null;
-    const has = (k) => !!(by && Object.prototype.hasOwnProperty.call(by, k));
-    const count = (names) => (d.matches || []).filter((m) => names.includes(m.method)).length;
-    let market, elo, standings, prior;
-    if (by && Object.keys(by).length) {
-      market = (by.MARKET_CONSENSUS || 0) + (by.MARKET_SINGLE || 0) + (by.MARKET_OTHER || 0);
-      standings = by.MODEL_ELO_STANDINGS || 0;
-      prior = (by.MODEL_LEAGUE_PRIOR || 0) + (by.MODEL_PRIOR || 0);
-      elo = (by.MODEL_ELO || 0) + (by.MODEL_ELO_THIN || 0);
-    } else {
-      market = count(["MARKET_CONSENSUS", "MARKET_SINGLE", "MARKET_OTHER"]);
-      standings = count(["MODEL_ELO_STANDINGS", "MODEL_STANDINGS"]);
-      prior = count(["MODEL_LEAGUE_PRIOR", "MODEL_PRIOR"]);
-      elo = count(["MODEL_ELO", "MODEL_ELO_THIN"]);
-    }
-    if (!has("MARKET_CONSENSUS")) market = market || (cov.with_external_market ?? 0);
-    return {
-      fixtures: cov.fixtures ?? (d.matches || []).length,
-      market,
-      elo,
-      standings,
-      prior,
-      unresolved: cov.unresolved ?? 0,
-    };
   }
 
   function flagLabel(f) {
