@@ -16,6 +16,7 @@ import fetch_leaguepedia
 import fetch_markets
 import model
 from lib_common import load_json, log, now_utc, utc_iso, write_json
+from source_probe import probe_sources
 from standings_and_books import probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
@@ -64,6 +65,32 @@ LIMITATIONS = [
     "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
 ]
+
+# Liquipedia MediaWiki `list=allpages` needs a *page title prefix*, not a Hotspawn
+# tournament label. Before 2026-10-24 this probe passed whole tournament names
+# ("PRM 3rd Division 26-27 Fall") as `apprefix`, so it always returned no_data.
+LIQUIPEDIA_PREFIXES = {
+    "prime league": "Prime_League",
+    "prm": "Prime_League",
+    "rivals": "RIVALS_LEAGUE",
+    "komplett": "Komplettligaen",
+    "4 nations": "4_Nations",
+    "tunisian": "Tunisian",
+    "lgc rising": "LGC_Rising",
+    "worlds": "2026_Season_World_Championship",
+}
+
+
+def liquipedia_prefixes_for(tournaments: list[str]) -> tuple[str, ...]:
+    """Map the active Hotspawn tournament labels to Liquipedia page prefixes."""
+    found: list[str] = []
+    for t in tournaments:
+        low = (t or "").lower()
+        for needle, prefix in LIQUIPEDIA_PREFIXES.items():
+            if needle in low and prefix not in found:
+                found.append(prefix)
+    return tuple(found) or ("Prime_League", "RIVALS_LEAGUE", "Komplettligaen")
+
 
 ORGANIZER_LINKS = {
     "PRM 2nd Division 26-27 Fall": ("Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
@@ -128,7 +155,7 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     return rows
 
 
-def build_payload(fixtures, markets, leaguepedia, picks):
+def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     now = now_utc()
     matches = picks["matches"]
     unresolved = [m for m in matches if m["method"] == "UNRESOLVED"]
@@ -256,6 +283,9 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,
         "checked_unavailable": CHECKED_UNAVAILABLE,
+        # Live-measured reachability of the wider external source field. Diagnostic
+        # only: nothing here is used in a probability (see scripts/source_probe.py).
+        "market_probe": market_probe or {"checked_at": None, "books": [], "summary": {}},
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
         "next_24h": [m["id"] for m in next_24h[:8]],
@@ -282,9 +312,17 @@ def main() -> int:
     if not (fixtures and markets and leaguepedia):
         raise SystemExit("missing cache inputs; run without --use-cache")
     if not args.use_cache and not leaguepedia.get("liquipedia"):
-        leaguepedia["liquipedia"] = probe_liquipedia_pages([f.get("tournament") or "" for f in fixtures.get("fixtures") or []])
+        tournaments_seen = sorted({(f.get("tournament") or "") for f in fixtures.get("fixtures") or []})
+        leaguepedia["liquipedia"] = probe_liquipedia_pages(liquipedia_prefixes_for(tournaments_seen))
     picks = model.run(fixtures, leaguepedia, markets)
-    payload = build_payload(fixtures, markets, leaguepedia, picks)
+    market_probe = None
+    if not args.use_cache:
+        try:
+            market_probe = probe_sources()
+            write_json("data/diag/market_source_probe.json", market_probe)
+        except Exception as e:  # noqa: BLE001 - a probe must never break the pipeline
+            log(f"market source probe failed: {e!r}")
+    payload = build_payload(fixtures, markets, leaguepedia, picks, market_probe)
     write_json(DOCS_DATA, payload, compact=True)
     log(f"wrote {DOCS_DATA}: {payload['counts']}")
     return 0
