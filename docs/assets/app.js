@@ -297,8 +297,41 @@
       }).join("") : `<tr><td colspan="5">No competitions in this snapshot.</td></tr>`;
     }
 
+    renderLineProbe(d);
+
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
+  }
+
+
+  function renderLineProbe(d) {
+    const lp = d.line_probe || {};
+    const box = $("#line-probe-summary");
+    const body = $("#line-probe-body");
+    if (!box && !body) return;
+    const checked = lp.checked_at ? whenLocal(lp.checked_at).text : "not run yet";
+    const n = lp.sources_checked ?? 0;
+    const covered = lp.sources_with_new_coverage ?? 0;
+    const unpriced = lp.fixtures_without_external_line ?? (d.matches || []).filter((m) => !m.market).length;
+    if (box) {
+      box.innerHTML = `<div class="note">
+        <b>Line-source research:</b> ${n} betting sites/aggregators were queried for a two-way price on
+        ${checked}; <b>${covered}</b> could price a fixture that currently relies on our model
+        (${unpriced} fixtures without an external line in this snapshot).
+        ${covered === 0 ? "No accessible sportsbook, esportsbook or odds aggregator lists those competitions, so the pick rests on recorded results and official standings — the limits are listed on <a href=\"unresolved.html\">Unresolved &amp; limitations</a>." : "The others are used in the pricing cascade above."}
+        <span class="small">${esc(lp.note || "")}</span>
+      </div>`;
+    }
+    if (body) {
+      const rows = (lp.candidates || []).map((c) => `<tr class="${c.covered_unpriced_fixtures ? "market" : ""}">
+        <td data-label="Source"><a class="rowlink" href="${esc(c.url || "#")}" target="_blank" rel="noopener"><b>${esc(c.name || "")}</b></a></td>
+        <td data-label="HTTP" class="small">${esc(c.http_status ?? "—")}</td>
+        <td data-label="Two-way prices" class="small">${c.priced_records ?? 0}</td>
+        <td data-label="Covers our model-only rows" class="small"><b>${c.covered_unpriced_fixtures ?? 0}</b></td>
+        <td data-label="Verdict" class="small">${esc(c.verdict || "")}</td>
+      </tr>`).join("");
+      body.innerHTML = rows || `<tr><td colspan="5">No probe evidence committed yet.</td></tr>`;
+    }
   }
 
   function renderLeagues(d) {
@@ -588,6 +621,7 @@
   }
 
   function renderMethodology(d) {
+    renderLineProbe(d);
     const ss = $("#sources-status");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");

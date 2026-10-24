@@ -1,6 +1,7 @@
 # LOLHOTSPAWN2 — Hotspawn LoL Pick'em, priced for every match
 
-Mobile-first dashboard published with GitHub Pages:
+Mobile-first dashboard published with GitHub Pages (the executive summary opens with
+**"Where the picks are"** cards that jump straight to the live, filtered pick lists):
 **[Executive summary](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/)** (the repo root redirects there) ·
 [all picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/picks.html) ·
 [by league / tier](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/leagues.html) ·
@@ -23,11 +24,33 @@ Rows are priced in a strict 5-tier cascade:
 context and are never an input to any probability. Every table row carries direct links to
 its verified sources, and any upstream irregularity is surfaced on *Flagged for review*.
 
+## Line-source research: can a book price the low-tier fixtures?
+
+The 164-fixture snapshot of 2026-10-24 had only 9 fixtures with an external betting line; the other 155
+(PRM 2nd/3rd Division, Tunisian Super League, RIVALS LEAGUE, Arabian League 2nd Division, 4 Nations,
+Komplettligaen, LCP Promotion, LigaGG) were priced by the model. `scripts/probe_lines.py` re-tests, from
+a CI runner, whether an established LoL betting site, an esportsbook or an odds aggregator publishes a
+two-way price for exactly those fixtures.
+
+**Result (2026-10-24, 39 requests across 30 sites): 0 could.** Pinnacle's league index lists a single
+LoL league (World Championship); nine Kambi/Unibet country markets (GB, DE, SE, IT, NL, FR, PL, AU, ZZ)
+return the same eight World Championship matches; bmbets' LoL index stops at Worlds, LCP and Game
+Changers Rising; SofaScore, eGamersWorld, Oddspedia, GGScore, Winamax, Marathonbet, Betano, Stake, GG.Bet,
+Thunderpick, Rainbet and others return 403/410/404 to CI; the 1xBet/Betwinner/Melbet LineFeed returns a
+geo-restriction stub (HTTP 203); bo3.gg is a results database with no odds fields.
+
+Evidence is committed at `data/diag/line_probe.json` and rendered as a table on the
+[Method & Sources page](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/methodology.html) and as a
+summary card on the executive summary. A source is only promoted into `scripts/fetch_markets.py` when it
+returns prices for fixtures in the published list **and** a sample row has been checked by hand — the
+probe itself never writes a probability.
+
 ## Automation & Verification
 
 - `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
 - `.github/workflows/verify.yml` runs every 6 hours (`30 */6 * * *`) against external links and the deployed GitHub Pages URL (`--check-external --live-url`).
-- `.github/workflows/pipeline-test.yml` runs end-to-end live verification on `arena/**` branches (`check_dom_contract.py`, `test_verifier.py`, `test_entity_and_books.py`, `verify_site.py --leaguepedia-schedule data/diag --check-external`).
+- `.github/workflows/pipeline-test.yml` runs end-to-end live verification on `arena/**` branches (`check_dom_contract.py`, `test_verifier.py`, `test_entity_and_books.py`, `verify_site.py --leaguepedia-schedule data/diag --check-external`) plus the line-source probe.
+- `.github/workflows/line-probe.yml` runs only the line-source probe (~1 min) and commits its evidence, so the research can be re-run without waiting for a full pipeline run.
 
 ## Data sources
 
@@ -49,6 +72,7 @@ python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav col
 python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit
+python3 scripts/probe_lines.py                  # re-test every betting-line candidate (diagnostic)
 ```
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.

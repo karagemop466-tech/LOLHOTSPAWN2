@@ -349,3 +349,71 @@ Standings ignore strength of schedule; Elo tiers across leagues are priors, not 
 | 2026-10-23 | Live pipeline (Actions 39980317947) | Standings fetched: 167 rows / 14 competitions; 4 fixtures → `MODEL_STANDINGS`; 188/188 picks, 0 unresolved | `data/diag/pipeline.log`, `docs/data/picks.json` |
 | 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
 
+
+## 13. Refresh 2026-10-24 — can any betting source price the model-only fixtures?
+
+Session `arena/ac089f33-lolhotspawn2`. Driver: on 2026-10-24 the published payload had **164 fixtures, 9
+with an external betting line and 155 priced by our Elo model** (PRM 2nd Division 36, PRM 3rd Division
+61, Tunisian Super League 20, RIVALS LEAGUE 18, Arabian League 2nd Division 6, 4 Nations 4,
+Komplettligaen 3, LCP 2027 Promotion 3, LigaGG A/B 4). The question was whether an established
+LoL betting site, an esportsbook, or an esports betting-line aggregator actually publishes a two-way
+price for any of those 155.
+
+### 13.1 Method
+
+`scripts/probe_lines.py` (new, stdlib only) queries each candidate once, extracts only *two-way
+main-match* prices (never map/prop markets), and matches every extracted price to the published
+fixture list by normalised team name **and** start time (±48 h). For each candidate it records the HTTP
+status, how many two-way prices were produced, and — the decisive number — how many *currently
+model-only* fixtures those prices would cover. Output: `data/diag/line_probe.json` (committed). The
+probe never writes a probability; a candidate is promoted into `scripts/fetch_markets.py` only if it
+returns prices for real fixtures and the sample rows are re-checked by hand.
+
+### 13.2 Result (run 2026-10-24 16:29 UTC, 39 requests across 30 sites)
+
+| Candidate | Observed | Two-way prices | Model-only fixtures covered |
+|---|---|---|---|
+| Pinnacle (control, all LoL leagues) | 200; only league listed = `League of Legends - World Championship` | 8 fixtures seen | **0** |
+| Kambi / Unibet, markets GB, DE, SE, IT, NL, FR, PL, AU, ZZ | 200 in every market; identical 8 World Championship matches | 8 | **0** |
+| Kambi / Betsson, NordicBet, LeoVegas, Betcity | 429 / 429 / 400 / 400 | 0 | 0 |
+| Kambi all-esports view | 404 | 0 | 0 |
+| Bovada coupon, Polymarket gamma | unchanged from production (`no_data` / 9 markets) | 0 | 0 |
+| SofaScore esports API | 403 from the CI runner | 0 | 0 |
+| bo3.gg public API | 200, match records with no odds fields | 0 | 0 |
+| 1xBet / Betwinner / Melbet `LineFeed` | 203 geo-restriction stub for sport ids 3, 12, 70, 85, 109 | 0 | 0 |
+| bmbets LoL odds comparison | 200 HTML; LoL index = World Championship, LCP, Game Changers Rising only | 0 | 0 |
+| eGamersWorld / Oddspedia / GGScore / BetExplorer | 403 / 410 / 403 / 404 | 0 | 0 |
+| Winamax / Marathonbet / Betano / Stake / William Hill / Parimatch / Rainbet / Thunderpick / GG.Bet / SportsBetting.ag / Rivalry | 403 (Rivalry 503) | 0 | 0 |
+| BetOnline.ag / BC.Game / Vave | 200 HTML shell, no server-rendered per-match LoL prices | 0 | 0 |
+| Prime League official site (organizer) | 403 to CI; publishes schedule/results, never odds; general rules prohibit betting-operator sponsors | 0 | 0 |
+| RIVALS LEAGUE official site (organizer) | 200 | 0 | 0 |
+
+**Conclusion: 0 of 30.** No accessible betting source currently publishes a price for those
+competitions, so there is no external line to quote for them. This is a property of the market, not a
+gap in the pipeline: Pinnacle's own league index contains a single LoL league, and Kambi's German
+market does not offer the German ERL either.
+
+### 13.3 What the site does with that finding
+
+1. Every fixture still gets a pick and both win probabilities, from a *documented* signal (Elo on
+   recorded Leaguepedia results → split standings → competition prior), never from Hotspawn's crowd
+   percentage.
+2. The **executive summary** carries a separate *Unresolved picks & limitations* section: the count of
+   matches without an external line, the count with no signal at all (explicit 50/50), the count capped
+   at Low confidence, a per-competition limitations table, and links straight into the filtered rows.
+3. The **Method & Sources** page publishes the full probe table (source, HTTP status, prices found,
+   coverage of model-only fixtures, verdict) plus every blocked provider with the observed status, so a
+   reviewer can repeat each check.
+4. `docs/data/picks.json` exposes the last probe as `line_probe` with its own `checked_at`, so a stale
+   probe can never look current.
+
+### 13.4 Verification log additions
+
+| Date | Source | What it verified | Link / evidence |
+|---|---|---|---|
+| 2026-10-24 | Pinnacle guest league index | Only `League of Legends - World Championship` is listed (8 fixtures) | https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues |
+| 2026-10-24 | Kambi offering API (9 country markets) | Identical 8 World Championship matches in every market; no ERL coverage | https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true |
+| 2026-10-24 | bmbets LoL league index | LoL coverage limited to World Championship, LCP and Game Changers Rising | https://www.bmbets.com/e-sports/world/lol---world-championship/ |
+| 2026-10-24 | Prime League official rules | Betting/gambling operators are a prohibited sponsorship category for the league | https://www.primeleague.gg/en/statics/rules_general |
+| 2026-10-24 | Prime League Fall Split 2026/27 page | League is running (group stage 24.09–04.12), i.e. the fixture list is real even though no book prices it | https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 |
+| 2026-10-24 | Actions run 40110923198 + 40111672023 | Probe executed in CI; 39 requests, 30 sites, 0 with new coverage; payload regenerated with `line_probe` | `data/diag/line_probe.json`, `data/diag/pipeline.log` |

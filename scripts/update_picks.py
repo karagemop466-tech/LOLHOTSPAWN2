@@ -51,10 +51,46 @@ CHECKED_UNAVAILABLE = [
      "observed": "Only futures/prop markets, no per-match prices", "consequence": "Not used for match picks."},
     {"name": "Riot LoLESports API", "url": "https://esports-api.lolesports.com/persisted/gw/getSchedule?hl=en-US",
      "observed": "HTTP 403 for the public key", "consequence": "Official Riot schedule not used; Leaguepedia is the results source."},
+
+    # Re-probed 2026-10-24 (scripts/probe_lines.py, evidence in data/diag/line_probe.json)
+    # specifically to find a line for the 155 fixtures no book prices.
+    {"name": "Pinnacle league index (all LoL leagues)", "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
+     "observed": "HTTP 200; the only League of Legends league listed is 'League of Legends - World Championship'",
+     "consequence": "No Pinnacle line exists for PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG."},
+    {"name": "Kambi / Unibet country markets (GB, DE, SE, IT, NL, FR, PL, AU, ZZ)", "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+     "observed": "HTTP 200 in every market; each returns the same 8 World Championship matches and no other LoL competition",
+     "consequence": "A German-market query does not surface Prime League; no extra line is available."},
+    {"name": "Kambi / Betsson, NordicBet, LeoVegas, Betcity", "url": "https://eu-offering-api.kambicdn.com/offering/v2018/betsson/listView/esports/league_of_legends/all/all/matches.json",
+     "observed": "HTTP 429 (Betsson, NordicBet) and HTTP 400 (LeoVegas, Betcity) to a CI runner",
+     "consequence": "Same Kambi odds pool as Unibet; not usable, no extra line."},
+    {"name": "SofaScore esports API", "url": "https://api.sofascore.com/api/v1/sport/esports/scheduled-events/2026-10-24",
+     "observed": "HTTP 403 from the CI runner", "consequence": "No schedule or odds read."},
+    {"name": "bo3.gg public API", "url": "https://api.bo3.gg/api/v1/matches?page[limit]=100&sort=start_date",
+     "observed": "HTTP 200 with match records, but no bookmaker odds fields",
+     "consequence": "A results database, not a price source; not used."},
+    {"name": "1xBet / Betwinner / Melbet LineFeed", "url": "https://1xbet.com/LineFeed/Get1x2_VZip?sports=3&count=1000&lng=en&mode=4&country=1&partner=51",
+     "observed": "HTTP 203 geo-restriction stub for every sport id tried (3, 12, 70, 85, 109) on all three hosts",
+     "consequence": "The deep tier-3 esportsbook lines are not readable from CI; no price copied."},
+    {"name": "bmbets esports odds comparison", "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
+     "observed": "HTTP 200 HTML; the LoL league index lists only 'LoL World Championship', 'LoL - LCP' and 'Game Changers Rising' on 2026-10-24",
+     "consequence": "The aggregator does not cover the unpriced competitions either; not parsed."},
+    {"name": "eGamersWorld / Oddspedia / GGScore / BetExplorer", "url": "https://egamersworld.com/lol/bets",
+     "observed": "HTTP 403 / 410 / 403 / 404 to a CI runner",
+     "consequence": "No structured per-match price read; not used."},
+    {"name": "Winamax / Marathonbet / Betano / Stake / William Hill / Parimatch / Rainbet / Thunderpick / GG.Bet / SportsBetting.ag / Rivalry", "url": "https://www.betano.de/esports/",
+     "observed": "HTTP 403 (Rivalry 503, SportsBetting.ag 403) to a CI runner",
+     "consequence": "Geo/Cloudflare protection blocks automated reads; no price copied."},
+    {"name": "BetOnline.ag / BC.Game / Vave (HTML shells)", "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
+     "observed": "HTTP 200 HTML with no server-rendered per-match LoL prices",
+     "consequence": "Client-rendered books; nothing readable, no price copied."},
+    {"name": "Prime League official site (organizer)", "url": "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627",
+     "observed": "HTTP 403 to a CI runner (the page loads in a browser); it publishes schedule and results, never betting odds, and its general rules prohibit betting operators as sponsors",
+     "consequence": "Used only as a human-verifiable organizer reference in text, never as an automated price or probability input."},
 ]
 
 LIMITATIONS = [
     "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
+    "This was re-tested on 2026-10-24 against every source listed in the Line-source probe table on the Method & Sources page (Pinnacle, nine Kambi/Unibet country markets, SofaScore, bo3.gg, the 1xBet/Betwinner/Melbet LineFeed, bmbets, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others): not one returned a two-way price for a fixture that currently relies on the model. For those matches there is therefore no external line to quote, and the pick rests entirely on recorded results and official standings.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
@@ -126,6 +162,49 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
             "limitation": lim,
         })
     return rows
+
+
+LINE_PROBE = "data/diag/line_probe.json"
+
+
+def line_probe_summary() -> dict:
+    """Summarise the last committed line-source probe (evidence, never an input).
+
+    The probe is written by scripts/probe_lines.py in its own job, so this reads the
+    most recent committed evidence. It is disclosed with its own timestamp so a stale
+    probe can never look current.
+    """
+    data = load_json(LINE_PROBE, None)
+    if not isinstance(data, dict):
+        return {"available": False,
+                "note": "No line-source probe has been committed yet; run scripts/probe_lines.py."}
+    cands = data.get("candidates") or []
+    usable = [c.get("name") for c in cands if c.get("fixtures_matched_and_previously_unpriced")]
+
+    def _family(name: str) -> str:
+        # "Kambi / Unibet / DE" and "Kambi / Unibet / SE" are one site, two markets.
+        parts = [x.strip() for x in str(name or "").split("/")]
+        return " / ".join(parts[:2]) if parts and parts[0].startswith("Kambi") else str(name or "")
+
+    families = sorted({_family(c.get("name")) for c in cands})
+    return {
+        "available": True,
+        "checked_at": data.get("checked_at"),
+        "probe_requests": len(cands),
+        "sources_checked": len(families),
+        "sources_checked_names": families,
+        "fixtures_without_external_line": data.get("fixtures_without_external_line"),
+        "sources_with_new_coverage": len(usable),
+        "sources_with_new_coverage_names": usable,
+        "candidates": [{"name": c.get("name"), "url": c.get("url"),
+                        "http_status": c.get("http_status"),
+                        "priced_records": c.get("priced_records", 0),
+                        "covered_unpriced_fixtures": c.get("fixtures_matched_and_previously_unpriced", 0),
+                        "verdict": c.get("verdict")} for c in cands],
+        "note": ("Every source above was queried for structured two-way per-match prices on the "
+                 "date shown. A source is only used for a probability once it returns prices for "
+                 "fixtures in the published list and a sample row has been checked by hand."),
+    }
 
 
 def build_payload(fixtures, markets, leaguepedia, picks):
@@ -256,6 +335,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,
         "checked_unavailable": CHECKED_UNAVAILABLE,
+        "line_probe": line_probe_summary(),
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
         "next_24h": [m["id"] for m in next_24h[:8]],
