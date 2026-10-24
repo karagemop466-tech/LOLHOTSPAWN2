@@ -15,25 +15,24 @@
   <div class="header-inner">
     <a class="logo" href="index.html">
       <span class="logo-mark" aria-hidden="true">🎯</span>
-      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
     </a>
     <div class="header-meta">
       <span id="updated">Loading…</span><br>
       <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
     </div>
   </div>
-</header>
-
 <nav class="top-nav" aria-label="Main">
   <ul>
     <li><a href="index.html" data-nav="summary">Summary</a></li>
     <li><a href="picks.html" data-nav="picks">All picks</a></li>
     <li><a href="leagues.html" data-nav="leagues">By league</a></li>
     <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
-    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
-    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology</a></li>
   </ul>
 </nav>
+</header>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
@@ -120,6 +119,27 @@
         <thead><tr><th scope="col">Provider</th><th scope="col">Observed</th><th scope="col">Consequence</th></tr></thead>
         <tbody id="checked-unavailable">
           <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="market-probe">
+    <h2>External sources re-checked on this update</h2>
+    <p class="small">
+      A fixed list of established sportsbooks, esportsbooks, exchanges, odds aggregators, prediction markets and
+      community/official result sites is requested <b>once per refresh</b> (single GET each, 12-second timeout).
+      The table is the observed result — nothing here is inferred, and nothing here is ever used in a probability.
+      A source only becomes a market input after it returns structured per-match prices <em>and</em> a sample price is
+      verified by hand against the live page. The narrative research (what each site claims to cover, with links) is in
+      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md ↗</a>.
+    </p>
+    <p class="small" id="probe-summary">Loading…</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Source</th><th scope="col">Type</th><th scope="col">HTTP</th><th scope="col">Verdict</th></tr></thead>
+        <tbody id="market-probe-body">
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading source checks…</div></td></tr>
         </tbody>
       </table>
     </div>

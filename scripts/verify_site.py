@@ -480,6 +480,33 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         rep.add("D21", "every upcoming Hotspawn lobby fixture is priced", WARN,
                 "lobby state unavailable for this run; coverage compared with the fixtures API only")
 
+    # D22: the live external-source probe is reachability evidence only. Every row must
+    # carry an https link and an HTTP status, and no probed value may carry a probability
+    # (nothing from the probe is allowed to feed a pick).
+    probe = payload.get("market_probe")
+    if isinstance(probe, dict) and probe.get("books"):
+        bad_probe = []
+        for b in probe["books"]:
+            if not isinstance(b, dict):
+                bad_probe.append("non-dict probe row")
+                continue
+            name = b.get("name") or "?"
+            if not str(b.get("url") or "").startswith("https://"):
+                bad_probe.append(f"{name}: no https source url")
+            if not isinstance(b.get("http_status"), int):
+                bad_probe.append(f"{name}: http_status is not an integer")
+            if any(k in b for k in ("prob_team1", "prob_team2", "probability", "prob_a", "prob_b")):
+                bad_probe.append(f"{name}: probed value carries a probability")
+            if not str(b.get("verdict") or "").strip():
+                bad_probe.append(f"{name}: no verdict recorded")
+        rep.add("D22", "external-source probe rows are sourced and never carry a probability",
+                PASS if not bad_probe else FAIL,
+                f"{len(probe['books'])} probed source(s), each with an https link, HTTP status and verdict"
+                if not bad_probe else "; ".join(bad_probe[:6]), bad_probe)
+    else:
+        rep.add("D22", "external-source probe rows are sourced and never carry a probability",
+                WARN, "no market_probe block in this payload (probe did not run)")
+
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
     def lacks_evidence(r):
@@ -758,6 +785,27 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     else:
         rep.add("S4", "executive summary links in-site to picks + unresolved and "
                       "states limitations", FAIL, "docs/index.html not found")
+
+    # S4c: the executive summary must expose the updated picks lists as first-class
+    # in-site navigation (the "where the picks are" block), not only in the top nav.
+    ipath = os.path.join(DOCS, "index.html")
+    if os.path.exists(ipath):
+        ihtml = open(ipath, encoding="utf-8").read()
+        block = re.search(r'id="picks-here".*?(?=<section|<footer)', ihtml, re.S)
+        if not block:
+            rep.add("S4c", "executive summary has a dedicated in-site picks block",
+                    FAIL, "no #picks-here block on docs/index.html")
+        else:
+            blk = block.group(0)
+            need_links = ["picks.html", "picks.html?filter=next24", "leagues.html", "unresolved.html"]
+            missing_links = [h for h in need_links if f'href="{h}"' not in blk]
+            has_js_targets = all(k in js_text for k in ("here-all-count", "here-24-count",
+                                                        "here-leagues-count", "here-unresolved-count"))
+            rep.add("S4c", "executive summary has a dedicated in-site picks block",
+                    PASS if not missing_links and has_js_targets else FAIL,
+                    (f"4 in-site links, counts bound to ids; {len(missing_links)} missing"
+                     if not missing_links and has_js_targets
+                     else f"missing links={missing_links}, js counts wired={has_js_targets}"))
 
     # S4b unresolved page
     upath = os.path.join(DOCS, "unresolved.html")

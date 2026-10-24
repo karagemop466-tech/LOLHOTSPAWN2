@@ -182,6 +182,52 @@
     });
   }
 
+
+  function probeBooks(d) {
+    const p = d.market_probe || {};
+    return Array.isArray(p.books) ? p.books : [];
+  }
+
+  function probeSummaryLine(d) {
+    const p = d.market_probe || {};
+    const s = p.summary || {};
+    if (!p.checked_at) return "No external-source probe ran in this refresh.";
+    const when = whenUTC(p.checked_at);
+    return `<b>${s.checked ?? 0}</b> external sources were requested once on ${esc(when)}: `
+      + `<b>${s.reachable ?? 0}</b> answered, <b>${s.structured_json ?? 0}</b> returned structured JSON, `
+      + `<b>${s.structured_with_lol ?? 0}</b> contained any League of Legends match market. `
+      + `Market sources checked: <b>${s.market_sources_checked ?? 0}</b>, reachable: <b>${s.market_sources_reachable ?? 0}</b>. `
+      + `Only Pinnacle, Unibet (Kambi), Bovada and Polymarket can produce a market probability, and only when they publish a full-match line.`;
+  }
+
+  function probeRows(d, opts = {}) {
+    const books = probeBooks(d);
+    if (!books.length) return `<tr><td colspan="4" class="small">No external-source probe ran in this refresh.</td></tr>`;
+    return books.map((b) => `<tr>
+      <td data-label="Source"><b>${esc(b.name)}</b><span class="sub"><a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.url)} ↗</a></span></td>
+      <td data-label="Type"><span class="chip">${esc(b.category || b.kind || "")}</span><span class="sub">${esc(b.kind || "")}</span></td>
+      <td data-label="HTTP"><span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}">${esc(b.http_status ?? "no response")}</span></td>
+      <td data-label="Verdict" class="small">${esc(b.verdict || "")}</td>
+    </tr>`).join("");
+  }
+
+  function probeStrip(d) {
+    const books = probeBooks(d);
+    if (!books.length) return `<span class="chip">No probe ran</span>`;
+    return books.map((b) => `<span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}" title="${esc(b.verdict || "")}" role="listitem">${esc(b.name)} · ${esc(b.http_status ?? "—")}</span>`).join(" ");
+  }
+
+  function leagueLimitRows(lbs, withCategory) {
+    if (!lbs.length) return `<tr><td colspan="${withCategory ? 6 : 5}">No competitions in this refresh.</td></tr>`;
+    return lbs.map((lb) => `<tr>
+      <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(lb.tournament))}"><b>${esc(lb.tournament)}</b></a>${withCategory ? `<span class="sub">${esc(lb.category || "")}</span>` : ""}</td>
+      <td data-label="Fixtures"><b>${lb.fixtures}</b></td>
+      <td data-label="Pricing mix" class="small">💰 ${lb.market} · 🧮 ${lb.elo} · 📊 ${lb.standings || 0} · 📐 ${lb.league_prior} · ⚠️ ${lb.unresolved}</td>
+      <td data-label="Limitation" class="small">${esc(lb.limitation || "")}</td>
+      <td data-label="Source">${leagueSourceLinks(lb)}</td>
+    </tr>`).join("");
+  }
+
   function renderIndex(d) {
     const c = d.counts || {};
     const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
@@ -189,6 +235,22 @@
     set("#stat-market", c.market ?? "—");
     set("#stat-model", c.model ?? "—");
     set("#stat-unresolved", c.unresolved ?? "—");
+
+    const cov0 = d.coverage || {};
+    const all0 = d.matches || [];
+    const n24 = all0.filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= Date.now() - 300000 && t <= Date.now() + 86400000; }).length;
+    set("#here-all-count", all0.length);
+    set("#here-24-count", n24);
+    set("#here-leagues-count", computeLeagueBreakdown(d).length);
+    set("#here-unresolved-count", cov0.unresolved ?? 0);
+    set("#here-low-count", cov0.low_confidence ?? c.low_confidence ?? 0);
+    const hs = $("#hero-status");
+    if (hs) {
+      hs.innerHTML = `<b>Updated ${esc(whenLocal(d.generated_at).text)}</b> (${esc(whenUTC(d.generated_at))}) · `
+        + `next refresh ${esc(whenUTC(d.next_update_utc))} · `
+        + `<b>${cov0.resolved ?? 0}/${cov0.fixtures ?? 0}</b> listed matches priced `
+        + `(${cov0.resolved_pct ?? 0}%) · <a href="picks.html">open the picks →</a>`;
+    }
 
     const rb = $("#recon-body");
     if (rb) {
@@ -262,6 +324,21 @@
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
       <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+
+    const exLimBody = $("#exec-league-limits-body");
+    if (exLimBody) exLimBody.innerHTML = leagueLimitRows(computeLeagueBreakdown(d), false);
+
+    const exProbeStrip = $("#exec-probe-strip");
+    if (exProbeStrip) exProbeStrip.innerHTML = probeStrip(d);
+    const exProbeSummary = $("#probe-summary");
+    if (exProbeSummary) exProbeSummary.innerHTML = probeSummaryLine(d);
+
+    const exLimits = $("#exec-limitations");
+    if (exLimits) {
+      const list = (u.limitations || []);
+      exLimits.innerHTML = list.length ? list.map((x) => `<li>${esc(x)}</li>`).join("")
+        : "<li>No limitations recorded in this refresh.</li>";
+    }
 
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
@@ -405,6 +482,22 @@
     const lim = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const lbox = $("#limitations");
     if (lbox) lbox.innerHTML = lim;
+    const mix = $("#resolution-mix");
+    if (mix) {
+      const cov = d.coverage || {};
+      const nPrior = (d.matches || []).filter((m) => m.method === "MODEL_LEAGUE_PRIOR").length;
+      const nStand = (d.matches || []).filter((m) => m.method === "MODEL_STANDINGS").length;
+      mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
+        + `<b>${cov.with_external_market ?? 0}</b> priced by external betting lines · `
+        + `<b>${(cov.with_team_specific_model ?? 0) - nStand}</b> by our Elo model · `
+        + `<b>${nStand}</b> by split standings · <b>${nPrior}</b> by a competition prior · `
+        + `<b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. `
+        + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
+    }
+    const psum = $("#probe-summary");
+    if (psum) psum.innerHTML = probeSummaryLine(d);
+    const pbody = $("#probe-body");
+    if (pbody) pbody.innerHTML = probeRows(d);
     const stat = $("#unresolved-counts");
     if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
   }
@@ -554,6 +647,10 @@
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
     if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+    const mProbe = $("#market-probe-body");
+    if (mProbe) mProbe.innerHTML = probeRows(d);
+    const mProbeSum = $("#probe-summary");
+    if (mProbeSum) mProbeSum.innerHTML = probeSummaryLine(d);
     const lims = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const lbox = $("#limitations");
     if (lbox && lims) lbox.innerHTML = lims;
