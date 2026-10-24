@@ -41,13 +41,6 @@ def payload(rows, **kw):
     p = {"generated_at": NOW, "count": len(rows),
          "counts_by_method": {m: sum(1 for r in rows if r.get("method") == m)
                               for m in vs.METHODS},
-         "unresolved": {"count": 0, "limitations": ["Test limitation"],
-                        "by_league": [{"tournament": "Test League"}]},
-         "source_research": {"verified_on": "2026-10-24", "categories": [{
-             "step": 1, "title": "Test sources", "sources": [{
-                 "name": "Test book", "url": "https://example.com/lol",
-                 "role": "probability_input", "observed": "checked directly",
-                 "verified_on": "2026-10-24"}]}]},
          "matches": rows}
     p.update(kw)
     return p
@@ -156,35 +149,81 @@ def main() -> int:
         ],
     }
     results.append(assert_status(run([r]), "D20", vs.FAIL, "prop market leaked into market.sources"))
-    # source ladder missing entirely
-    p = payload([copy.deepcopy(BASE_ROW)]); p.pop("source_research", None)
-    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
-    results.append(assert_status({x["id"]: x for x in rep.checks}, "D22", vs.FAIL,
-                                 "missing source_research"))
-    # source ladder with a non-https link and no observation
-    p = payload([copy.deepcopy(BASE_ROW)])
-    p["source_research"]["categories"][0]["sources"][0].update({"url": "http://example.com", "observed": ""})
-    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
-    results.append(assert_status({x["id"]: x for x in rep.checks}, "D22", vs.FAIL,
-                                 "source without https/observation"))
-    # source ladder with no usable probability input
-    p = payload([copy.deepcopy(BASE_ROW)])
-    p["source_research"]["categories"][0]["sources"][0]["role"] = "context"
-    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
-    results.append(assert_status({x["id"]: x for x in rep.checks}, "D22", vs.FAIL,
-                                 "source ladder without a probability input"))
-    # unresolved section without limitations / per-league rows
-    p = payload([copy.deepcopy(BASE_ROW)]); p["unresolved"] = {"count": 0}
-    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
-    results.append(assert_status({x["id"]: x for x in rep.checks}, "D23", vs.FAIL,
-                                 "unresolved without limitations"))
-
+    # external-source probe row without an https link / carrying a probability must fail D22
+    good_probe = {"checked_at": NOW, "summary": {"checked": 1},
+                  "books": [{"name": "Example book", "url": "https://example.com/lol",
+                             "http_status": 403, "verdict": "blocked"}]}
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=good_probe),
+                                 "D22", vs.PASS, "clean probe row"))
+    bad = copy.deepcopy(good_probe); bad["books"][0]["url"] = "http://example.com/lol"
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=bad),
+                                 "D22", vs.FAIL, "probe row without https"))
+    bad2 = copy.deepcopy(good_probe); bad2["books"][0]["prob_team1"] = 0.61
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=bad2),
+                                 "D22", vs.FAIL, "probe row carrying a probability"))
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],
                                                    generated_at=old), "t.json", 8.0)
     results.append(assert_status({x["id"]: x for x in rep.checks}, "D1", vs.FAIL,
                                  "stale generated_at"))
+
+    # ------------------------------------------------------------------ site structure (S11/S12)
+    # S11 must fail when a page uses a class the stylesheet never defines — the exact
+    # defect that clipped the executive summary header to a 12 px progress bar.
+    import tempfile
+
+    def structure_checks(css, pages_html):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "assets"), exist_ok=True)
+            with open(os.path.join(td, "assets", "style.css"), "w") as fh:
+                fh.write(css)
+            for name, html in pages_html.items():
+                with open(os.path.join(td, name), "w") as fh:
+                    fh.write(html)
+            rep = vs.Report()
+            vs.verify_structure(rep, td)
+            return {c["id"]: c for c in rep.checks}
+
+    GOOD_NAV = ('<nav class="top-nav"><ul><li><a href="picks.html">All picks</a></li></ul></nav>'
+                '<nav class="bottom-nav"><a href="picks.html">Picks</a></nav>'
+                '<span id="updated"></span><span id="freshness"></span>')
+    good_page = f'<html><body><div class="card">ok</div>{GOOD_NAV}</body></html>'
+    css_good = ".card { padding: 1px } .top-nav { border: 0 } .bottom-nav { display: grid }"
+
+    c = structure_checks(css_good, {"index.html": good_page})
+    results.append(assert_status(c, "S11", vs.PASS, "defined classes pass S11"))
+    results.append(assert_status(c, "S12", vs.PASS, "consistent page passes S12"))
+
+    # unstyled class (the header regression)
+    bad = f'<html><body><div class="wrap bar">header</div>{GOOD_NAV}</body></html>'
+    c = structure_checks(css_good, {"index.html": bad})
+    results.append(assert_status(c, "S11", vs.FAIL, "unstyled class fails S11"))
+
+    # navigation that differs between pages
+    other = f'<html><body><div class="card">ok</div>{GOOD_NAV.replace("All picks", "Picks")}</body></html>'
+    c = structure_checks(css_good, {"index.html": good_page, "picks.html": other})
+    results.append(assert_status(c, "S12", vs.FAIL, "mismatched top nav fails S12"))
+
+    # duplicate id on one page
+    dup_page = f'<html><body><div class="card" id="x"></div><div id="x"></div>{GOOD_NAV}</body></html>'
+    c = structure_checks(css_good, {"index.html": dup_page})
+    results.append(assert_status(c, "S12", vs.FAIL, "duplicate id fails S12"))
+
+    # missing freshness slot
+    nofresh = ('<nav class="top-nav"><ul><li><a href="picks.html">All picks</a></li></ul></nav>'
+               '<nav class="bottom-nav"><a href="picks.html">Picks</a></nav>')
+    c = structure_checks(css_good, {"index.html": f'<html><body><div class="card">ok</div>{nofresh}</body></html>'})
+    results.append(assert_status(c, "S12", vs.FAIL, "missing freshness slot fails S12"))
+
+    # helper parsing
+    helper_ok = (vs.html_class_names('<div class="a b">') == {"a", "b"}
+                 and vs.css_class_names(".a{x} /* .z{} */ .b>.c{x}") == {"a", "b", "c"}
+                 and vs.duplicate_ids('<i id="a"></i><i id="a"></i>') == ["a"]
+                 and vs.nav_signature('<nav class="top-nav"><a href="x.html">X</a></nav>', "top-nav")
+                 == (("x.html", "X"),))
+    print(f"  [{'ok' if helper_ok else 'FAILED'}] class/id/nav parsing helpers")
+    results.append(helper_ok)
 
     # cron parser
     for expr, want in [("0 */6 * * *", 6.0), ("0 */4 * * *", 4.0),

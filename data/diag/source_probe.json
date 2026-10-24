@@ -1,510 +1,533 @@
 {
- "checked_at": "2026-10-24T18:04:34.719315Z",
- "candidates": [
+ "checked_at": "2026-10-24T17:47:54.076115Z",
+ "books": [
   {
-   "category": "Established sportsbooks",
-   "name": "Pinnacle guest leagues",
+   "name": "Pinnacle (guest JSON)",
    "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
-   "kind": "sportsbook-json",
+   "kind": "bookmaker-api",
+   "category": "market",
    "http_status": 200,
+   "is_json": true,
    "bytes": 5580,
-   "is_json": true,
    "lol_mentions": 1,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "item_count": 10,
-    "vs_style_questions": 0,
-    "question_sample": [
-     "",
-     "",
-     ""
-    ]
-   },
-   "verdict": "reachable structured JSON (5580 bytes); LoL mentions: 1",
-   "error": null
+   "vs_style_items": 0,
+   "verdict": "reachable JSON with League of Legends references — candidate for an adapter only after a human verifies a sample price; not used in any probability yet",
+   "reachable": true,
+   "structured": true
   },
   {
-   "category": "Established sportsbooks",
-   "name": "Unibet (Kambi) LoL matches",
-   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true",
-   "kind": "sportsbook-json",
-   "http_status": 200,
-   "bytes": 12461,
-   "is_json": true,
-   "lol_mentions": 0,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "top_level_keys": [
-     "activeCategories",
-     "activeEventTypes",
-     "activeTermIds",
-     "categoryGroups",
-     "defaultEventType",
-     "eventTypes",
-     "events",
-     "soonMode",
-     "terms"
-    ],
-    "event_count": 7
-   },
-   "verdict": "reachable structured JSON (12455 bytes); LoL mentions: 0",
-   "error": null
-  },
-  {
-   "category": "Established sportsbooks",
-   "name": "Bovada LoL coupon",
-   "url": "https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends",
-   "kind": "sportsbook-json",
-   "http_status": 200,
-   "bytes": 2,
-   "is_json": true,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "top_level_keys": []
-   },
-   "verdict": "reachable but returned an empty JSON body (2 bytes) — no market content",
-   "error": null
-  },
-  {
-   "category": "Established sportsbooks",
-   "name": "DraftKings LoL page",
-   "url": "https://sportsbook.draftkings.com/leagues/esports/league-of-legends",
-   "kind": "sportsbook-page",
-   "http_status": 200,
-   "bytes": 1660627,
-   "is_json": false,
-   "lol_mentions": 9,
-   "vs_pairs": 60,
-   "signals": [
-    "forbidden"
-   ],
-   "detail": {
-    "title": "E-Sports Betting Odds &amp; Lines | DraftKings Sportsbook"
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 9, 'vs' occurrences: 60); signals: forbidden",
-   "error": null
-  },
-  {
-   "category": "Established sportsbooks",
-   "name": "BetOnline LoL page",
-   "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
-   "kind": "sportsbook-page",
-   "http_status": 200,
-   "bytes": 366116,
-   "is_json": false,
-   "lol_mentions": 0,
-   "vs_pairs": 2,
-   "signals": [],
-   "detail": {
-    "title": "Welcome to Sportsbook."
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 0, 'vs' occurrences: 2)",
-   "error": null
-  },
-  {
-   "category": "Established sportsbooks",
-   "name": "Betway LoL page",
-   "url": "https://www.betway.com/en/esports/league-of-legends",
-   "kind": "sportsbook-page",
-   "http_status": 404,
-   "bytes": 9,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 404)",
-   "error": "HTTP 404"
-  },
-  {
-   "category": "Esportsbooks",
-   "name": "Thunderpick LoL",
-   "url": "https://thunderpick.io/esports/league-of-legends",
-   "kind": "esportsbook-page",
-   "http_status": 403,
-   "bytes": 5789,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [
-    "cloudflare-challenge"
-   ],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 403); signals: cloudflare-challenge",
-   "error": "HTTP 403"
-  },
-  {
-   "category": "Esportsbooks",
-   "name": "GG.Bet LoL",
-   "url": "https://gg.bet/en/esports/lol",
-   "kind": "esportsbook-page",
-   "http_status": 403,
-   "bytes": 126,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [
-    "region-blocked"
-   ],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 403); signals: region-blocked",
-   "error": "HTTP 403"
-  },
-  {
-   "category": "Esportsbooks",
-   "name": "Rivalry LoL",
-   "url": "https://www.rivalry.com/lol",
-   "kind": "esportsbook-page",
-   "http_status": 503,
-   "bytes": 1591,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [
-    "cloudflare-challenge"
-   ],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 503); signals: cloudflare-challenge",
-   "error": "HTTP 503"
-  },
-  {
-   "category": "Esportsbooks",
-   "name": "Midnite LoL",
-   "url": "https://www.midnite.com/esports/league-of-legends",
-   "kind": "esportsbook-page",
-   "http_status": 200,
-   "bytes": 33885,
-   "is_json": false,
-   "lol_mentions": 0,
-   "vs_pairs": 0,
-   "signals": [],
-   "detail": {
-    "title": "Sports Betting, Casino Games, &amp; Live Dealer - Midnite"
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 0, 'vs' occurrences: 0)",
-   "error": null
-  },
-  {
-   "category": "Esports lines/aggregators",
-   "name": "OddsPortal LoL",
-   "url": "https://www.oddsportal.com/lol/",
-   "kind": "odds-comparison-page",
-   "http_status": 503,
-   "bytes": 0,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 503)",
-   "error": "HTTP 503"
-  },
-  {
-   "category": "Esports lines/aggregators",
-   "name": "OddsPortal Prime League",
-   "url": "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/",
-   "kind": "odds-comparison-page",
-   "http_status": 503,
-   "bytes": 0,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 503)",
-   "error": "HTTP 503"
-  },
-  {
-   "category": "Esports lines/aggregators",
-   "name": "BetExplorer LoL",
-   "url": "https://www.betexplorer.com/lol/",
-   "kind": "odds-comparison-page",
-   "http_status": 404,
-   "bytes": 0,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 404)",
-   "error": "HTTP 404"
-  },
-  {
-   "category": "Esports lines/aggregators",
-   "name": "eGamersWorld LoL",
-   "url": "https://egamersworld.com/lol/bets",
-   "kind": "odds-comparison-page",
-   "http_status": 403,
-   "bytes": 5740,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [
-    "cloudflare-challenge"
-   ],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 403); signals: cloudflare-challenge",
-   "error": "HTTP 403"
-  },
-  {
-   "category": "Esports lines/aggregators",
-   "name": "OddsPapi LoL (no key configured)",
-   "url": "https://oddspapi.io/sports/esports/lol",
-   "kind": "aggregator-page",
-   "http_status": 200,
-   "bytes": 74066,
-   "is_json": false,
-   "lol_mentions": 36,
-   "vs_pairs": 0,
-   "signals": [
-    "cloudflare-challenge",
-    "forbidden"
-   ],
-   "detail": {
-    "title": "League of Legends Odds API | OddsPapi"
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 36, 'vs' occurrences: 0); signals: cloudflare-challenge, forbidden",
-   "error": null
-  },
-  {
-   "category": "Prediction markets",
-   "name": "Polymarket Gamma (LoL tag)",
-   "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&closed=false&limit=5",
-   "kind": "prediction-market-json",
-   "http_status": 200,
-   "bytes": 81223,
-   "is_json": true,
-   "lol_mentions": 95,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "item_count": 5,
-    "vs_style_questions": 0,
-    "question_sample": [
-     "",
-     "",
-     ""
-    ]
-   },
-   "verdict": "reachable structured JSON (81207 bytes); LoL mentions: 95",
-   "error": null
-  },
-  {
-   "category": "Prediction markets",
-   "name": "Kalshi esports series",
-   "url": "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
-   "kind": "prediction-market-json",
-   "http_status": 200,
-   "bytes": 16,
-   "is_json": true,
-   "lol_mentions": 0,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "top_level_keys": [
-     "series"
-    ],
-    "series_count": 0,
-    "series_null": true
-   },
-   "verdict": "reachable structured JSON (16 bytes); series is null (no esports market); LoL mentions: 0",
-   "error": null
-  },
-  {
-   "category": "Prediction markets",
-   "name": "Manifold Markets (LoL search)",
-   "url": "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
-   "kind": "prediction-market-json",
-   "http_status": 200,
-   "bytes": 4025,
-   "is_json": true,
-   "lol_mentions": 5,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "item_count": 5,
-    "vs_style_questions": 1,
-    "question_sample": [
-     "League of Legends Worlds 2026 Matches Megamarket",
-     "League of Legends Worlds 2026 Prop Bets [Add answers!]",
-     "Who will win the 2026 League of Legends World Championship?"
-    ]
-   },
-   "verdict": "reachable structured JSON (4025 bytes); LoL mentions: 5",
-   "error": null
-  },
-  {
-   "category": "Prediction markets",
-   "name": "Smarkets API (popular esports)",
-   "url": "https://api.smarkets.com/v3/popular/events/sport/esports/",
-   "kind": "exchange-api",
-   "http_status": 404,
-   "bytes": 82,
-   "is_json": true,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "top_level_keys": [
-     "data",
-     "error_type"
-    ]
-   },
-   "verdict": "not usable from CI (HTTP 404)",
-   "error": "HTTP 404"
-  },
-  {
-   "category": "Prediction markets",
    "name": "Betfair Exchange",
    "url": "https://www.betfair.com/exchange/plus/",
    "kind": "exchange-page",
+   "category": "market",
    "http_status": 403,
-   "bytes": 3646,
    "is_json": false,
+   "bytes": 3646,
    "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [
-    "cloudflare-challenge"
-   ],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 403); signals: cloudflare-challenge",
-   "error": "HTTP 403"
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
   },
   {
-   "category": "Results & verification",
-   "name": "Leaguepedia CargoExport (Standings sample)",
-   "url": "https://lol.fandom.com/wiki/Special:CargoExport?tables=Standings&fields=OverviewPage,Team&limit=1&format=json",
-   "kind": "wiki-json",
-   "http_status": 200,
+   "name": "Smarkets API (sports index)",
+   "url": "https://api.smarkets.com/v3/sports/",
+   "kind": "exchange-api",
+   "category": "market",
+   "http_status": 404,
+   "is_json": false,
    "bytes": 82,
-   "is_json": true,
-   "lol_mentions": 0,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "item_count": 1,
-    "vs_style_questions": 0,
-    "question_sample": [
-     ""
-    ]
-   },
-   "verdict": "reachable structured JSON (82 bytes); LoL mentions: 0",
-   "error": null
-  },
-  {
-   "category": "Results & verification",
-   "name": "Liquipedia API siteinfo",
-   "url": "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json",
-   "kind": "wiki-json",
-   "http_status": 200,
-   "bytes": 2352,
-   "is_json": true,
    "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {
-    "top_level_keys": [
-     "batchcomplete",
-     "query"
-    ]
-   },
-   "verdict": "reachable structured JSON (2352 bytes)",
-   "error": null
+   "vs_style_items": null,
+   "verdict": "endpoint not found (HTTP 404) — path may have moved; nothing used",
+   "reachable": false,
+   "structured": false
   },
   {
-   "category": "Results & verification",
-   "name": "Riot LoLESports schedule",
+   "name": "Betway Esports LoL",
+   "url": "https://www.betway.com/en/esports/league-of-legends",
+   "kind": "sportsbook-page",
+   "category": "market",
+   "http_status": 404,
+   "is_json": false,
+   "bytes": 9,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "endpoint not found (HTTP 404) — path may have moved; nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "BetOnline LoL",
+   "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
+   "kind": "sportsbook-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 366118,
+   "lol_mentions": 0,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "SportsBetting.ag LoL",
+   "url": "https://www.sportsbetting.ag/sportsbook/esports/league-of-legends",
+   "kind": "sportsbook-page",
+   "category": "market",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 5870,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "TonyBet LoL",
+   "url": "https://tonybet.com/en/esports/league-of-legends",
+   "kind": "sportsbook-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 47248,
+   "lol_mentions": 0,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Unibet LoL (HTML shell)",
+   "url": "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
+   "kind": "sportsbook-page",
+   "category": "market",
+   "http_status": 503,
+   "is_json": false,
+   "bytes": 190,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "not reachable from CI this run (HTTP 503) — nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "GG.Bet LoL",
+   "url": "https://gg.bet/en/esports/lol",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 126,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Thunderpick LoL",
+   "url": "https://thunderpick.io/esports/league-of-legends",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 5789,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Rivalry LoL",
+   "url": "https://www.rivalry.com/lol",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 503,
+   "is_json": false,
+   "bytes": 1591,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "not reachable from CI this run (HTTP 503) — nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Midnite LoL",
+   "url": "https://www.midnite.com/esports/league-of-legends",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 33885,
+   "lol_mentions": 0,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "BC.Game LoL",
+   "url": "https://bc.game/sports/esports/league-of-legends",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 11871,
+   "lol_mentions": 0,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Stake LoL",
+   "url": "https://stake.com/sports/esports/league-of-legends",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 5805,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "1xBet line feed (sports index)",
+   "url": "https://1xbet.com/LineFeed/GetSportsShortZip?lng=en&country=1",
+   "kind": "esportsbook-api",
+   "category": "market",
+   "http_status": 203,
+   "is_json": false,
+   "bytes": 2646,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "served an interstitial/redirect page (HTTP 203) instead of the feed — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "OddsPapi (API — no key configured)",
+   "url": "https://api.oddspapi.io/v1/sports",
+   "kind": "aggregator-api",
+   "category": "market",
+   "http_status": 404,
+   "is_json": false,
+   "bytes": 103,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "endpoint not found (HTTP 404) — path may have moved; nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "odds-api.io (API — no key configured)",
+   "url": "https://api.odds-api.io/v3/sports",
+   "kind": "aggregator-api",
+   "category": "market",
+   "http_status": 200,
+   "is_json": true,
+   "bytes": 1351,
+   "lol_mentions": 0,
+   "vs_style_items": 0,
+   "verdict": "endpoint answers without a key, but the payload carries no League of Legends match market — its data needs a paid API key that is not configured here; nothing used",
+   "reachable": true,
+   "structured": true
+  },
+  {
+   "name": "PandaScore LoL upcoming (API — no token configured)",
+   "url": "https://api.pandascore.co/lol/matches/upcoming",
+   "kind": "aggregator-api",
+   "category": "market",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 28,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "OddsPortal LoL",
+   "url": "https://www.oddsportal.com/lol/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 503,
+   "is_json": false,
+   "bytes": 0,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "not reachable from CI this run (HTTP 503) — nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "BetExplorer LoL",
+   "url": "https://www.betexplorer.com/lol/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 404,
+   "is_json": false,
+   "bytes": 0,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "endpoint not found (HTTP 404) — path may have moved; nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "eGamersWorld LoL odds",
+   "url": "https://egamersworld.com/lol/bets",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 5740,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Betmonitor — Prime League 2nd Division comparison",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 404667,
+   "lol_mentions": 5,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Betmonitor — esports odds hub",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 404567,
+   "lol_mentions": 5,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "EsportBet — LoL odds board",
+   "url": "https://esportbet.com/odds/league-of-legends/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 407421,
+   "lol_mentions": 442,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "EsportsBets — LoL betting guide",
+   "url": "https://www.esportsbets.com/betting/league-of-legends/",
+   "kind": "odds-guide",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 178373,
+   "lol_mentions": 129,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Oddspedia — generic LoL odds path (410 as of 2026-10-24)",
+   "url": "https://oddspedia.com/league-of-legends/odds",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 410,
+   "is_json": false,
+   "bytes": 341179,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "endpoint not found (HTTP 410) — path may have moved; nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "BMBets — LoL Prime League (book-by-book comparison)",
+   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 1053224,
+   "lol_mentions": 1,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Strafe — LoL odds (Oddspedia feed)",
+   "url": "https://www.strafe.com/esports-betting/odds/league-of-legends/",
+   "kind": "aggregator-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 194928,
+   "lol_mentions": 101,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Unibet DE Kambi brand feed (control)",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+   "kind": "sportsbook-api",
+   "category": "market",
+   "http_status": 400,
+   "is_json": false,
+   "bytes": 87,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "HTTP 400 — nothing used",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Unibet Kambi feed with market=DE (coverage control)",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+   "kind": "sportsbook-api",
+   "category": "market",
+   "http_status": 200,
+   "is_json": true,
+   "bytes": 12353,
+   "lol_mentions": 16,
+   "vs_style_items": 0,
+   "verdict": "reachable JSON with League of Legends references — candidate for an adapter only after a human verifies a sample price; not used in any probability yet",
+   "reachable": true,
+   "structured": true
+  },
+  {
+   "name": "Kalshi esports series",
+   "url": "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
+   "kind": "prediction-market-api",
+   "category": "market",
+   "http_status": 200,
+   "is_json": true,
+   "bytes": 16,
+   "lol_mentions": 0,
+   "vs_style_items": null,
+   "verdict": "reachable JSON without any League of Legends match market in the response — nothing used",
+   "reachable": true,
+   "structured": true
+  },
+  {
+   "name": "Manifold Markets LoL search",
+   "url": "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
+   "kind": "prediction-market-api",
+   "category": "market",
+   "http_status": 200,
+   "is_json": true,
+   "bytes": 4025,
+   "lol_mentions": 5,
+   "vs_style_items": 1,
+   "verdict": "reachable JSON with League of Legends references — candidate for an adapter only after a human verifies a sample price; not used in any probability yet",
+   "reachable": true,
+   "structured": true
+  },
+  {
+   "name": "gol.gg tournament index",
+   "url": "https://gol.gg/tournament/list/",
+   "kind": "results-page",
+   "category": "results",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 568902,
+   "lol_mentions": 4,
+   "vs_style_items": null,
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "bo3.gg LoL matches",
+   "url": "https://bo3.gg/lol/matches",
+   "kind": "results-page",
+   "category": "results",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 192035,
+   "lol_mentions": 177,
+   "vs_style_items": null,
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Oracle's Elixir downloads (community CSVs)",
+   "url": "https://oracleselixir.com/tools/downloads",
+   "kind": "results-page",
+   "category": "results",
+   "http_status": 403,
+   "is_json": false,
+   "bytes": 5783,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Riot LoLESports official schedule",
    "url": "https://esports-api.lolesports.com/persisted/gw/getSchedule?hl=en-US",
    "kind": "official-api",
+   "category": "results",
    "http_status": 403,
+   "is_json": false,
    "bytes": 23,
+   "lol_mentions": null,
+   "vs_style_items": null,
+   "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
+   "reachable": false,
+   "structured": false
+  },
+  {
+   "name": "Liquipedia LoL API",
+   "url": "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json",
+   "kind": "wiki-api",
+   "category": "results",
+   "http_status": 200,
    "is_json": true,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [
-    "forbidden"
-   ],
-   "detail": {
-    "top_level_keys": [
-     "message"
-    ]
-   },
-   "verdict": "not usable from CI (HTTP 403); signals: forbidden",
-   "error": "HTTP 403"
-  },
-  {
-   "category": "Results & verification",
-   "name": "LoL Esports official site",
-   "url": "https://lolesports.com/",
-   "kind": "official-page",
-   "http_status": 200,
-   "bytes": 3033540,
-   "is_json": false,
-   "lol_mentions": 20,
-   "vs_pairs": 57,
-   "signals": [
-    "forbidden"
-   ],
-   "detail": {
-    "title": "LoL Esports | SCHEDULE"
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 20, 'vs' occurrences: 57); signals: forbidden",
-   "error": null
-  },
-  {
-   "category": "Results & verification",
-   "name": "Prime League organizer",
-   "url": "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627",
-   "kind": "organizer-page",
-   "http_status": 403,
-   "bytes": 2182,
-   "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 403)",
-   "error": "HTTP 403"
-  },
-  {
-   "category": "Results & verification",
-   "name": "RIVALS LEAGUE organizer",
-   "url": "https://www.rivalsleague.gg/",
-   "kind": "organizer-page",
-   "http_status": 200,
-   "bytes": 3506,
-   "is_json": false,
-   "lol_mentions": 3,
-   "vs_pairs": 0,
-   "signals": [],
-   "detail": {
-    "title": "RIVALS LEAGUE"
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 3, 'vs' occurrences: 0)",
-   "error": null
-  },
-  {
-   "category": "Results & verification",
-   "name": "Komplettligaen organizer",
-   "url": "https://www.komplettligaen.no/lol/",
-   "kind": "organizer-page",
-   "http_status": 200,
-   "bytes": 3932,
-   "is_json": false,
-   "lol_mentions": 6,
-   "vs_pairs": 0,
-   "signals": [
-    "cloudflare-challenge"
-   ],
-   "detail": {
-    "title": "League of Legends - Komplettligaen - Norsk e-sport"
-   },
-   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 6, 'vs' occurrences: 0); signals: cloudflare-challenge",
-   "error": null
+   "bytes": 2352,
+   "lol_mentions": 5,
+   "vs_style_items": null,
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
+   "reachable": true,
+   "structured": true
   }
- ]
+ ],
+ "summary": {
+  "checked": 37,
+  "reachable": 18,
+  "structured_json": 6,
+  "structured_with_lol": 4,
+  "market_sources_checked": 32,
+  "market_sources_reachable": 15,
+  "results_sources_reachable": 3,
+  "note": "Probe only: no probed value is used in any probability. Only the four production feeds (Pinnacle, Unibet/Kambi, Bovada, Polymarket) produce market probabilities."
+ }
 }

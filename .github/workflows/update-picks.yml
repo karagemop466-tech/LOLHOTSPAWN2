@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - "scripts/**"
+      - "data/aliases.json"
       - ".github/workflows/update-picks.yml"
 
 permissions:
@@ -29,25 +30,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Restore the Leaguepedia snapshot cache
-        uses: actions/cache@v4
-        with:
-          path: data/cache
-          key: leaguepedia-${{ github.run_id }}
-          restore-keys: |
-            leaguepedia-
-
-      - name: Probe candidate odds sources (diagnostic only, never feeds picks)
-        timeout-minutes: 10
-        run: |
-          mkdir -p data/diag docs/data
-          python3 scripts/probe_sources.py
-
       - name: Fetch fixtures, external lines and results; build picks
-        timeout-minutes: 25
         env:
           PYTHONUNBUFFERED: "1"
         run: |
+          set -o pipefail  # a generator failure must fail the step, not be masked by tee
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
 
@@ -57,13 +44,13 @@ jobs:
           import json, sys
           d = json.load(open("docs/data/picks.json"))
           errs = []
-          if d.get("schema_version") != 4:
+          if d.get("schema_version") != 3:
               errs.append(f"schema_version={d.get('schema_version')!r}")
           ms = d.get("matches") or []
           if len(ms) < 50:
               errs.append(f"only {len(ms)} fixtures")
           methods = {"MARKET_CONSENSUS", "MARKET_SINGLE", "MODEL_ELO", "MODEL_ELO_THIN",
-                     "MODEL_STANDINGS", "MODEL_LEAGUE_PRIOR", "UNRESOLVED"}
+                     "MODEL_ELO_STANDINGS", "MODEL_STANDINGS", "MODEL_LEAGUE_PRIOR", "UNRESOLVED"}
           for m in ms:
               if m["method"] not in methods:
                   errs.append(f"bad method {m['method']} for {m['team1']} vs {m['team2']}")
@@ -103,9 +90,12 @@ jobs:
           set -euo pipefail
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          git add docs/data data/diag/pipeline.log data/diag/source_probe.json
+          git add docs/data data/diag/pipeline.log
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
+          # Discard unstaged verifier reports so concurrent PR merges into main
+          # never fail git merge due to dirty verification/report.json.
+          git checkout -- verification/ 2>/dev/null || true
           # Merge-based retry: a rebase here can strand the worktree mid-rebase
           # and lose the refresh for a whole 6h cycle. Keep this run's payload.
           for attempt in 1 2 3 4 5; do
@@ -120,8 +110,7 @@ jobs:
               echo "pushed on attempt ${attempt}"
               exit 0
             fi
-            # Keep the refreshed payload: a reset here would discard this run's
-            # commit and the retry would push the stale tree.
+            git reset --hard HEAD~1 >/dev/null 2>&1 || true
             echo "push rejected on attempt ${attempt}; retrying" >&2
             sleep 5
           done

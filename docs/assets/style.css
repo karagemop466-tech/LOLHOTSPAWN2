@@ -42,6 +42,49 @@
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);
   }
 }
+/* Explicit theme choice — the header toggle sets data-theme on <html> and must
+   beat both the default :root block and the OS preference in both directions. */
+:root[data-theme="light"] {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef2f9;
+  --text: #0f172a;
+  --muted: #5b6478;
+  --line: #dfe5ef;
+  --brand: #1d4ed8;
+  --brand-ink: #ffffff;
+  --green: #15803d;
+  --green-soft: #dcfce7;
+  --amber: #b45309;
+  --amber-soft: #fef3c7;
+  --red: #b91c1c;
+  --red-soft: #fee2e2;
+  --blue-soft: #dbeafe;
+  --violet: #6d28d9;
+  --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .06);
+  --radius: 16px;
+  --max: 1180px;
+  --nav-h: 60px;
+}
+:root[data-theme="dark"] {
+    --bg: #0b1020;
+    --surface: #131a2e;
+    --surface-2: #1b2440;
+    --text: #eef2ff;
+    --muted: #a7b0c8;
+    --line: #27324f;
+    --brand: #7aa2ff;
+    --brand-ink: #0b1020;
+    --green: #4ade80;
+    --green-soft: #12351f;
+    --amber: #fbbf24;
+    --amber-soft: #3a2b08;
+    --red: #f87171;
+    --red-soft: #3b1212;
+    --blue-soft: #16233f;
+    --violet: #c4b5fd;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
@@ -75,13 +118,14 @@ img { max-width: 100%; }
 .dot.stale { background: var(--amber); }
 .dot.bad { background: var(--red); }
 
-/* top nav */
+/* top nav — lives inside the sticky header so the picks navigation stays reachable */
 .top-nav { border-bottom: 1px solid var(--line); background: var(--surface); }
+.site-header .top-nav { border-bottom: 0; }
 .top-nav ul { display: flex; gap: 6px; list-style: none; margin: 0; padding: 8px 16px; overflow-x: auto; scrollbar-width: none; max-width: var(--max); margin: 0 auto; }
 .top-nav ul::-webkit-scrollbar { display: none; }
 .top-nav a {
   white-space: nowrap; text-decoration: none; color: var(--text); font-weight: 700; font-size: 14px;
-  padding: 8px 12px; border-radius: 999px; border: 1px solid transparent; min-height: 40px; display: inline-flex; align-items: center;
+  padding: 8px 12px; border-radius: 999px; border: 1px solid transparent; min-height: 44px; display: inline-flex; align-items: center;
 }
 .top-nav a:hover { background: var(--surface-2); }
 .top-nav a[aria-current="page"] { background: var(--brand); color: var(--brand-ink); }
@@ -178,9 +222,9 @@ p { margin: 8px 0; }
 .src-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .src-links a { font-size: 12px; padding: 4px 8px; border-radius: 8px; background: var(--surface-2); text-decoration: none; font-weight: 700; }
 
-/* filters */
-.filters { position: sticky; top: 55px; z-index: 30; background: var(--bg); padding: 8px 0 10px; border-bottom: 1px solid var(--line); }
-@media (min-width: 860px) { .filters { top: 57px; } }
+/* filters — not sticky on phones (they would eat the screen); sticky under the header on desktop */
+.filters { position: static; background: var(--bg); padding: 8px 0 10px; border-bottom: 1px solid var(--line); }
+@media (min-width: 860px) { .filters { position: sticky; top: 118px; z-index: 30; } }
 .searchrow { display: flex; gap: 8px; }
 .searchrow input { flex: 1 1 auto; min-width: 0; }
 input[type="search"], select {
@@ -191,7 +235,7 @@ input[type="search"]:focus, select:focus, a:focus-visible, button:focus-visible 
 .chips { display: flex; gap: 7px; overflow-x: auto; padding: 9px 0 2px; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chipbtn {
-  white-space: nowrap; min-height: 40px; padding: 8px 13px; border-radius: 999px; border: 1px solid var(--line);
+  white-space: nowrap; min-height: 44px; padding: 8px 13px; border-radius: 999px; border: 1px solid var(--line);
   background: var(--surface); color: var(--text); font-weight: 700; font-size: 13px; cursor: pointer;
 }
 .chipbtn[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
@@ -288,76 +332,100 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
 .cat-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
 .cat-section { margin: 22px 0; scroll-margin-top: 90px; }
 
-/* ------------------------------------------------------------------ unified header */
-.site-header .topbar {
-  display: flex; align-items: center; gap: 14px; padding: 10px 16px; min-height: 64px;
+/* ------------------------------------------------------------------ */
+/* v3 executive-summary additions (2026-10-24)                         */
+/* ------------------------------------------------------------------ */
+
+/* header: keep the brand and the freshness line readable on a phone */
+@media (max-width: 430px) {
+  .header-inner { gap: 8px; padding: 8px 12px; }
+  .logo-mark { width: 30px; height: 30px; font-size: 14px; }
+  .logo-text { font-size: 14px; }
+  .logo-text small { display: none; }
+  .header-meta { font-size: 11px; }
+  .top-nav ul { padding: 6px 10px; gap: 4px; }
+  .top-nav a { font-size: 13px; padding: 7px 10px; min-height: 44px; }
 }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); flex: 0 0 auto; min-width: 0; }
-.brand .mark {
-  width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center;
-  background: linear-gradient(135deg, #1d4ed8, #7c3aed); color: #fff; font-weight: 900; font-size: 14px; flex: 0 0 auto;
+
+/* links to anchors must clear the sticky header */
+:target, section[id], div[id].card { scroll-margin-top: 118px; }
+
+/* one-line refresh status under the hero */
+.statusline {
+  display: block; font-size: 13px; color: var(--muted); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0 4px;
 }
-.brand-text { font-weight: 800; font-size: 15px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.brand-text small { display: block; color: var(--muted); font-size: 11px; font-weight: 600; }
-.site-header .top-nav {
-  display: flex; gap: 4px; margin-left: auto; border: 0; background: transparent;
-  overflow-x: auto; scrollbar-width: none; padding: 0;
+.statusline b { color: var(--text); }
+
+/* "where the updated picks are" cards: big tap targets, counts inline */
+.linkgrid .linkcard { min-height: 76px; }
+.linkcard .n { color: var(--brand); font-weight: 900; }
+.linkcard span span { display: block; }
+.linkcard b + span { margin-top: 2px; }
+
+/* coverage bar on the executive summary (was an unstyled div) */
+.covbar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--surface-2); margin: 6px 0 8px; border: 1px solid var(--line); }
+.covbar i { display: block; background: var(--green); height: 100%; }
+.covbar b { display: block; background: color-mix(in srgb, var(--red) 55%, var(--surface-2)); height: 100%; }
+
+/* stat tiles: the v2 markup used <b>/<span> without the .n/.l classes */
+.stat .n { display: block; margin: 0; font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -.02em; }
+.stat .l { display: block; margin-top: 5px; font-size: 12px; color: var(--muted); font-weight: 700; }
+
+/* phone: keep the two-column tiling from becoming unreadable */
+@media (max-width: 380px) {
+  .stats { grid-template-columns: 1fr; }
+  .linkcard { padding: 12px; }
+  .linkcard .ico { width: 32px; font-size: 21px; }
 }
-.site-header .top-nav::-webkit-scrollbar { display: none; }
-.site-header .top-nav a {
-  white-space: nowrap; text-decoration: none; color: var(--text); font-weight: 700; font-size: 14px;
-  padding: 9px 12px; border-radius: 999px; min-height: 44px; display: inline-flex; align-items: center;
+
+/* long probe tables on a phone: let verdicts wrap instead of scrolling sideways */
+#probe-body td, #exec-probe-strip .chip { overflow-wrap: anywhere; }
+
+/* phone: make the two win probabilities and the pick the loudest things in a row */
+@media (max-width: 760px) {
+  .probcell .p1 { font-size: 16px; }
+  .probcell .p2 { font-size: 15px; }
+  .pick-pill { font-size: 14px; padding: 7px 12px; }
+  tbody tr { padding: 12px 13px; }
+  h1 { font-size: clamp(23px, 6.2vw, 34px); }
+  .lede { font-size: 16px; }
 }
-.site-header .top-nav a:hover { background: var(--surface-2); }
-.site-header .top-nav a[aria-current="page"] { background: var(--brand); color: var(--brand-ink); }
-.bar-end { display: flex; align-items: center; gap: 6px; margin-left: 8px; }
+
+/* header colour-theme control (present on every page, persisted in localStorage) */
 .icon-btn {
-  min-width: 44px; min-height: 44px; border-radius: 12px; border: 1px solid var(--line);
-  background: var(--surface); color: var(--text); font-size: 18px; cursor: pointer; display: grid; place-items: center;
+  flex: 0 0 auto; margin-left: 8px; width: 42px; height: 42px; min-height: 42px;
+  display: inline-grid; place-items: center; cursor: pointer;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 12px; font-size: 17px; line-height: 1;
 }
-.icon-btn:hover { background: var(--surface-2); }
-.status-strip { background: var(--surface-2); border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); font-size: 12px; color: var(--muted); }
-.status-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 6px 16px; }
-.status-inner b { color: var(--text); }
-.status-sep { opacity: .5; }
-@media (max-width: 859px) {
-  .site-header .top-nav { display: none; }
-  .site-header .topbar { min-height: 56px; }
-  .brand-text { font-size: 14px; }
-  .brand-text small { display: none; }
-  .status-inner { font-size: 11.5px; }
+.icon-btn:active { transform: translateY(1px); }
+@media (max-width: 420px) {
+  .header-meta { font-size: 11px; }
+  .logo-text { font-size: 14px; }
+  .logo-text small { font-size: 10px; }
 }
-@media (max-width: 360px) {
-  .bottom-nav a { font-size: 10px; }
-  .bottom-nav .ico { font-size: 18px; }
+/* ---- hero "find the picks" buttons (session arena/e6f33fe9) ---- */
+.btn.big { font-size: 16px; min-height: 54px; }
+.btn-n { font-weight: 800; opacity: .85; }
+.hero-details { margin: 8px 0 0; }
+.hero-details > summary { cursor: pointer; padding: 8px 0; min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 620px) {
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
 }
-
-/* explicit theme choice must beat the OS media query in both directions */
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #0b1020; --surface: #131a2e; --surface-2: #1b2440; --text: #eef2ff; --muted: #a7b0c8;
-  --line: #27324f; --brand: #7aa2ff; --brand-ink: #0b1020; --green: #4ade80; --green-soft: #12351f;
-  --amber: #fbbf24; --amber-soft: #3a2b08; --red: #f87171; --red-soft: #3b1212; --blue-soft: #16233f;
-  --violet: #c4b5fd; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);
-}
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: #f5f7fb; --surface: #ffffff; --surface-2: #eef2f9; --text: #0f172a; --muted: #5b6478;
-  --line: #dfe5ef; --brand: #1d4ed8; --brand-ink: #ffffff; --green: #15803d; --green-soft: #dcfce7;
-  --amber: #b45309; --amber-soft: #fef3c7; --red: #b91c1c; --red-soft: #fee2e2; --blue-soft: #dbeafe;
-  --violet: #6d28d9; --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .06);
+@media (min-width: 860px) { .hero-details > summary { min-height: 0; } }
+/* Touch targets + phone-only full-width primary actions (2026-10-24) */
+details > summary { min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 640px) {
+  .hero-actions .btn { flex: 1 1 100%; }
+  .hero-actions { gap: 8px; }
 }
 
-/* "where are the picks" hub + verified source ladder */
-.find-picks { border: 2px solid color-mix(in srgb, var(--brand) 32%, var(--line)); }
-.find-picks h2 { margin-top: 0; }
-.find-picks .linkgrid { margin-top: 10px; }
-.src-cat { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin: 10px 0; background: var(--surface); }
-.src-cat h4 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.src-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 9px; }
-.src-list li { border-top: 1px solid var(--line); padding-top: 9px; }
-.src-list li:first-child { border-top: 0; padding-top: 0; }
-.src-main { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.src-main a { font-weight: 800; }
-.src-meta { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
-.src-note { font-size: 12.5px; color: var(--muted); margin: 4px 0 0; }
+/* ---- plain-language legend for the method chips on the executive summary ---- */
+.legend { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 12px; align-items: center; margin: 12px 0 4px; }
+.legend-t { font-size: 13px; color: var(--muted); line-height: 1.4; }
+@media (max-width: 560px) {
+  .legend { grid-template-columns: 1fr; gap: 2px; }
+  .legend-t { margin: 0 0 8px; }
+}

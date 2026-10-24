@@ -31,23 +31,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Restore the Leaguepedia snapshot cache
-        uses: actions/cache@v4
-        with:
-          path: data/cache
-          key: leaguepedia-${{ github.run_id }}
-          restore-keys: |
-            leaguepedia-
-
-      - name: Probe candidate odds sources (diagnostic only, never feeds picks)
-        timeout-minutes: 10
-        run: |
-          mkdir -p data/diag docs/data
-          python3 scripts/probe_sources.py
-
       - name: Run the live pipeline
-        timeout-minutes: 25
         run: |
+          set -o pipefail  # a generator failure must fail the step, not be masked by tee
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
 
@@ -68,15 +54,42 @@ jobs:
           print("\nSources:", json.dumps(d["sources_status"], indent=2))
           PY
 
+      - uses: actions/setup-node@v4
+        if: always()
+        with:
+          node-version: "20"
+
+      - name: Render checks (jsdom renders every page from this run's payload)
+        if: always()
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund jsdom
+          node verification/render_check.cjs
+          node verification/check_dom_render.js
+
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
         run: |
           python3 verification/check_dom_contract.py
+          python3 verification/test_dom_contract.py
           python3 verification/test_verifier.py
           python3 verification/test_standings_model.py
           python3 verification/test_entity_and_books.py
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
+          set +e
+          python3 verification/check_source_pages.py 2>&1 | tee data/diag/source_pages.log
+          src_rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$src_rc" = "2" ]; then
+            echo "::warning title=Source page check skipped::Leaguepedia API was unreachable; page existence not verified in this run"
+          elif [ "$src_rc" != "0" ]; then
+            echo "::error title=Cited source page missing::a tournament page cited by a pick row does not exist on Leaguepedia"
+            exit "$src_rc"
+          fi
+
+      - name: Probe candidate odds sources (diagnostic only, never feeds picks)
+        if: always()
+        run: python3 scripts/probe_sources.py
 
       - name: Commit outputs for review
         if: always()
@@ -101,7 +114,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json docs/data/source_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json data/diag/source_pages.log verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?
@@ -123,24 +136,25 @@ jobs:
               echo "$out"
             else
               rc=$?
-              last_push_error="fetch on attempt ${attempt} (${rc}): ${out}"
-              echo "fetch failed: ${last_push_error}" >&2
-              sleep 5
-              continue
+              fail_publish "git fetch failed on attempt ${attempt} (${rc}): ${out}"
             fi
-            # Rebase in a detached-HEAD checkout can fail before it starts, which
-            # makes `git rebase --abort` exit 128 and the whole publish step fail.
-            # A merge keeps this run's payload (`-X ours`) and is idempotent when
-            # the branch has not moved.
-            if out=$(git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" 2>&1); then
+            if out=$(git rebase -X theirs "origin/${GITHUB_REF_NAME}" 2>&1); then
               echo "$out"
             else
               rc=$?
-              git merge --abort >/dev/null 2>&1 || true
-              last_push_error="merge on attempt ${attempt} (${rc}): ${out}"
-              echo "merge failed: ${last_push_error}" >&2
-              sleep 5
-              continue
+              echo "rebase needs fallback merge: ${out}" >&2
+              if abort_out=$(git rebase --abort 2>&1); then
+                echo "$abort_out"
+              else
+                abort_rc=$?
+                fail_publish "could not abort failed output rebase (${abort_rc}): ${abort_out}"
+              fi
+              if merge_out=$(git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" 2>&1); then
+                echo "$merge_out"
+              else
+                merge_rc=$?
+                fail_publish "fallback merge failed (${merge_rc}): ${merge_out}"
+              fi
             fi
             if out=$(git push origin "HEAD:${GITHUB_REF_NAME}" 2>&1); then
               echo "$out"
@@ -152,7 +166,7 @@ jobs:
               echo "push failed on ${last_push_error}" >&2
             fi
             if [ "${attempt}" -lt 3 ]; then
-              echo "retrying after the remote branch moved" >&2
+              echo "fetching latest branch and retrying" >&2
               sleep 5
             fi
           done

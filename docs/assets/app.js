@@ -6,6 +6,14 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const pct = (x) => (x == null ? "—" : `${Math.round(x * 100)}%`);
   const pct1 = (x) => (x == null ? "—" : `${(x * 100).toFixed(1)}%`);
+  // Two-way display that always sums to exactly 100.0%: rounding each side
+  // independently can print 68.5% + 31.6% = 100.1% for p=0.6845/0.3155.
+  const pctPair = (a) => {
+    if (a == null) return ["—", "—"];
+    const x = Math.round(a * 1000) / 10;
+    const y = Math.round((100 - x) * 10) / 10;
+    return [`${x.toFixed(1)}%`, `${y.toFixed(1)}%`];
+  };
   const slugify = (s) => String(s || "league").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const METHOD = {
@@ -13,6 +21,7 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
+    MODEL_ELO_STANDINGS: { label: "Elo + split standings", cls: "blue", ico: "📊" },
     MODEL_STANDINGS: { label: "Split standings", cls: "blue", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved 50/50", cls: "red", ico: "⚠️" },
@@ -21,7 +30,7 @@
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
   const METHOD_RANK = {
     MARKET_CONSENSUS: 6, MARKET_SINGLE: 5, MODEL_ELO: 4,
-    MODEL_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
+    MODEL_STANDINGS: 3, MODEL_ELO_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
   };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
@@ -87,113 +96,16 @@
     return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
   }
 
-  function roleChip(role) {
-    const map = {
-      probability_input: ["green", "Probability input"],
-      model_input: ["blue", "Model input (results)"],
-      context: ["amber", "Reference only"],
-      unavailable: ["red", "Not usable"],
-    };
-    return map[role] || ["", role || "unknown"];
-  }
-
-  function renderSourceLadder(box, src) {
-    if (!box) return;
-    if (!src || !Array.isArray(src.categories)) {
-      box.innerHTML = `<div class="card">No verified source-research snapshot is present in this payload.</div>`;
-      return;
-    }
-    box.innerHTML = src.categories.map((cat) => {
-      const items = (cat.sources || []).map((x) => {
-        const chip = roleChip(x.role);
-        const notes = [];
-        if (x.observed) notes.push(esc(x.observed));
-        if (x.run_status) notes.push(`latest run: ${esc(x.run_status)}${x.count != null ? ` · ${esc(x.count)}` : ""}`);
-        if (x.probe_http_status != null) notes.push(`CI probe HTTP ${esc(x.probe_http_status)}`);
-        return `<li>
-          <div class="src-main">
-            <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>
-            <span class="chip ${chip[0]}">${esc(chip[1])}</span>
-            ${x.count != null && x.role === "probability_input" ? `<span class="chip">${esc(x.count)} price(s)</span>` : ""}
-          </div>
-          <p class="src-note">${notes.join(" · ")}</p>
-          ${x.limitation ? `<p class="src-meta"><b>Limit:</b> ${esc(x.limitation)}</p>` : ""}
-          <p class="src-meta">Checked ${esc(x.verified_on || "—")}${x.feed ? ` · <a href="${esc(x.feed)}" target="_blank" rel="noopener">feed ↗</a>` : ""}</p>
-        </li>`;
-      }).join("");
-      return `<section class="src-cat">
-        <h4>${esc(cat.step)}. ${esc(cat.title)} <span class="chip">${(cat.sources || []).length}</span></h4>
-        <p class="src-note">${esc(cat.note || "")}</p>
-        <ul class="src-list">${items}</ul>
-      </section>`;
-    }).join("");
-  }
-
-  function renderSourceCompact(box, src) {
-    if (!box) return;
-    if (!src || !Array.isArray(src.categories)) {
-      box.innerHTML = `<p class="small">No source-research snapshot is present in this payload.</p>`;
-      return;
-    }
-    const used = [];
-    src.categories.forEach((cat) => (cat.sources || []).forEach((x) => {
-      if (x.role === "probability_input" || x.role === "model_input") used.push(x);
-    }));
-    box.innerHTML = `
-      <div class="src-list">
-        ${src.categories.map((cat) => `<p class="src-note" style="margin:6px 0"><b>${esc(cat.step)}. ${esc(cat.title)}</b> — ${cat.counts.probability_input} probability input(s) · ${cat.counts.context} reference only · ${cat.counts.unavailable} not usable</p>`).join("")}
-      </div>
-      <p class="small" style="margin-top:10px"><b>Actually used for probabilities in this build:</b></p>
-      <div class="src-links">${used.map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`).join("") || '<span class="small">None.</span>'}</div>
-      <p class="src-meta">Verified ${esc(src.verified_on || "—")}. Sources marked reference-only or not usable were checked and are never counted as a price.</p>`;
-  }
-
-  function renderProbe(box, probe) {
-    if (!box) return;
-    if (!probe || !Array.isArray(probe.candidates)) {
-      box.innerHTML = `<p>No automated probe is present in this payload.</p>`;
-      return;
-    }
-    const rows = probe.candidates.map((c) => `<tr>
-      <td data-label="Source"><b>${esc(c.name)}</b><span class="sub"><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.url)}</a></span></td>
-      <td data-label="HTTP">${c.http_status == null ? "—" : `<span class="chip ${c.http_status === 200 ? "green" : "red"}">${esc(c.http_status)}</span>`}</td>
-      <td data-label="JSON">${c.is_json ? "yes" : "no"}</td>
-      <td data-label="Observation">${esc(c.verdict || "")}</td>
-    </tr>`).join("");
-    box.innerHTML = `<p>Probe ${esc(probe.checked_at || "—")}. ${esc(probe.vantage || "")}</p>
-      <div class="table-wrap"><table><thead><tr><th scope="col">Source</th><th scope="col">HTTP</th><th scope="col">JSON</th><th scope="col">Observed</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }
-
-  function wireTheme() {
-    const btn = $("#theme-toggle");
-    const KEY = "lolpicks-theme";
-    const root = document.documentElement;
-    try { const saved = localStorage.getItem(KEY); if (saved) root.dataset.theme = saved; } catch (e) { /* storage may be blocked */ }
-    const isDark = () => root.dataset.theme === "dark" ||
-      (!root.dataset.theme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    function paint() {
-      if (!btn) return;
-      btn.textContent = isDark() ? "☀️" : "🌙";
-      btn.setAttribute("aria-label", isDark() ? "Switch to light theme" : "Switch to dark theme");
-      btn.setAttribute("title", isDark() ? "Switch to light theme" : "Switch to dark theme");
-    }
-    if (btn) btn.addEventListener("click", () => {
-      root.dataset.theme = isDark() ? "light" : "dark";
-      try { localStorage.setItem(KEY, root.dataset.theme); } catch (e) { /* ignore */ }
-      paint();
-    });
-    paint();
-  }
-
   function matchCard(m, opts = {}) {
     const cls = matchClass(m);
     const t = whenLocal(m.start_utc);
     const mi = methodInfo(m);
+    const pair = pctPair(m.prob_team1);
     return `<article class="match ${cls}">
       <div class="match-top"><span class="when" title="${esc(t.title)}">${esc(t.text)}</span><span>·</span><span>${esc(m.tournament || "Tournament TBC")}</span>${m.best_of ? `<span>· Bo${esc(m.best_of)}</span>` : ""}<span class="chip ${cls === "unres" ? "red" : cls === "partial" ? "amber" : cls === "market" ? "green" : "blue"}">${mi.ico} ${esc(mi.label)}</span></div>
       <div class="teams"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a></div>
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
-      <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
+      <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
       <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
@@ -202,6 +114,7 @@
 
   function row(m) {
     const t = whenLocal(m.start_utc);
+    const pair = pctPair(m.prob_team1);
     const mi = methodInfo(m);
     const cls = matchClass(m);
     const srcCount = (m.sources || []).filter((s) => s.url).length;
@@ -210,7 +123,7 @@
     return `<tr class="${cls}">
       <td data-label="Start" title="${esc(t.title)}"><b>${esc(t.text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span><span class="sub">${esc(relative(m.start_utc))}</span></td>
       <td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}${m.best_of ? ` · Bo${esc(m.best_of)}` : ""}${m.tier && !/^WAITING/i.test(m.tier) ? ` · Tier ${esc(m.tier)}` : ""}</span></td>
-      <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pct1(m.prob_team1)}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pct1(m.prob_team2)}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
+      <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pair[0]}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pair[1]}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
       <td class="pickcell" data-label="Pick">${pickPill(m)}</td>
       <td data-label="Method"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="sub"><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")}</span></span></td>
       <td data-label="Sources"><span class="sub">${srcCount} verified link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
@@ -229,7 +142,7 @@
       const lpUrl = (ms.find((x) => x.leaguepedia_url) || {}).leaguepedia_url || "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule";
       const mkt = ms.filter((x) => x.market).length;
       const elo = ms.filter((x) => x.method === "MODEL_ELO" || x.method === "MODEL_ELO_THIN").length;
-      const st = ms.filter((x) => x.method === "MODEL_STANDINGS").length;
+      const st = ms.filter((x) => x.method === "MODEL_STANDINGS" || x.method === "MODEL_ELO_STANDINGS").length;
       const prior = ms.filter((x) => x.method === "MODEL_LEAGUE_PRIOR").length;
       const unres = ms.filter((x) => x.method === "UNRESOLVED").length;
       const t = tour.toLowerCase();
@@ -241,7 +154,10 @@
       return {
         tournament: tour, category: cat, fixtures: ms.length, market: mkt, elo, standings: st,
         league_prior: prior, unresolved: unres, leaguepedia_url: lpUrl,
-        limitation: mkt ? "Priced by external bookmaker/prediction-market consensus." : "No external sportsbook line; priced via Leaguepedia recorded results & split standings.",
+        limitation: mkt
+          ? "Priced by external bookmaker/prediction-market consensus."
+          : ("No external sportsbook line; priced via Leaguepedia recorded results"
+             + (st ? " & current-split standings records." : ".")),
       };
     });
   }
@@ -266,11 +182,6 @@
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
       fresh.title = `Next scheduled update: ${whenUTC(d.next_update_utc)}`;
     }
-    const strip = $("#status-strip");
-    if (strip) {
-      const c = d.counts || {};
-      strip.innerHTML = `<b>${c.fixtures ?? 0}</b> fixtures · <b>${c.market ?? 0}</b> with book lines · <b>${c.model ?? 0}</b> model-priced · <b>${c.unresolved ?? 0}</b> unresolved · next refresh ${esc(whenUTC(d.next_update_utc))} · <a href="picks.html">open All picks →</a>`;
-    }
     const warn = $("#freshness-warning");
     if (warn && !isFresh(d)) {
       warn.className = "warnbox";
@@ -278,11 +189,105 @@
     }
   }
 
+  /* Colour theme: the header button is the only control, it persists, and it
+     overrides the OS preference in both directions (see [data-theme] in style.css). */
+  const THEME_KEY = "lolpicks-theme";
+  function osPrefersDark() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+  function applyTheme(theme) {
+    if (theme === "dark" || theme === "light") document.documentElement.dataset.theme = theme;
+    else document.documentElement.removeAttribute("data-theme");
+    const btn = $("#theme-toggle");
+    if (!btn) return;
+    const dark = theme ? theme === "dark" : osPrefersDark();
+    btn.textContent = dark ? "☀️" : "🌙";
+    const label = dark ? "Switch to light theme" : "Switch to dark theme";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+    btn.setAttribute("aria-pressed", dark ? "true" : "false");
+  }
+  function wireTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+    applyTheme(saved);
+    const btn = $("#theme-toggle");
+    if (btn) btn.addEventListener("click", () => {
+      const cur = document.documentElement.dataset.theme;
+      const dark = cur ? cur === "dark" : osPrefersDark();
+      const next = dark ? "light" : "dark";
+      try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* private mode */ }
+      applyTheme(next);
+    });
+  }
+
   function setActiveNav() {
     $$("[data-nav]").forEach((a) => {
       if (a.getAttribute("data-nav") === PAGE) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     });
+  }
+
+
+  function probeBooks(d) {
+    const p = d.market_probe || {};
+    return Array.isArray(p.books) ? p.books : [];
+  }
+
+  function probeSummaryLine(d) {
+    const p = d.market_probe || {};
+    const s = p.summary || {};
+    if (!p.checked_at) return "No external-source probe ran in this refresh.";
+    const when = whenUTC(p.checked_at);
+    return `<b>${s.checked ?? 0}</b> external sources were requested once on ${esc(when)}: `
+      + `<b>${s.reachable ?? 0}</b> answered, <b>${s.structured_json ?? 0}</b> returned structured JSON, `
+      + `<b>${s.structured_with_lol ?? 0}</b> contained any League of Legends match market. `
+      + `Market sources checked: <b>${s.market_sources_checked ?? 0}</b>, reachable: <b>${s.market_sources_reachable ?? 0}</b>. `
+      + `Only Pinnacle, Unibet (Kambi), Bovada and Polymarket can produce a market probability, and only when they publish a full-match line.`;
+  }
+
+  function probeRows(d, opts = {}) {
+    const books = probeBooks(d);
+    if (!books.length) return `<tr><td colspan="4" class="small">No external-source probe ran in this refresh.</td></tr>`;
+    return books.map((b) => `<tr>
+      <td data-label="Source"><b>${esc(b.name)}</b><span class="sub"><a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.url)} ↗</a></span></td>
+      <td data-label="Type"><span class="chip">${b.category === "results" ? "Results" : "Market"}</span><span class="sub">${esc(b.kind || "")}</span></td>
+      <td data-label="HTTP"><span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}">${esc(b.http_status ?? "no response")}</span></td>
+      <td data-label="Verdict" class="small">${esc(b.verdict || "")}</td>
+    </tr>`).join("");
+  }
+
+  function probeStrip(d) {
+    const books = probeBooks(d);
+    if (!books.length) return `<span class="chip">No probe ran</span>`;
+    return books.map((b) => `<span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}" title="${esc(b.verdict || "")}" role="listitem">${esc(b.name)} · ${esc(b.http_status ?? "—")}</span>`).join(" ");
+  }
+
+  function leagueLimitRows(lbs, withCategory) {
+    if (!lbs.length) return `<tr><td colspan="${withCategory ? 6 : 5}">No competitions in this refresh.</td></tr>`;
+    return lbs.map((lb) => `<tr>
+      <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(lb.tournament))}"><b>${esc(lb.tournament)}</b></a>${withCategory ? `<span class="sub">${esc(lb.category || "")}</span>` : ""}</td>
+      <td data-label="Fixtures"><b>${lb.fixtures}</b></td>
+      <td data-label="Pricing mix" class="small">💰 ${lb.market} · 🧮 ${lb.elo} · 📊 ${lb.standings || 0} · 📐 ${lb.league_prior} · ⚠️ ${lb.unresolved}</td>
+      <td data-label="Limitation" class="small">${esc(lb.limitation || "")}</td>
+      <td data-label="Source">${leagueSourceLinks(lb)}</td>
+    </tr>`).join("");
+  }
+
+  // One source of truth for "how was each fixture priced" (used by the summary and the
+  // unresolved page so the two can never disagree again).
+  function pricingMix(d) {
+    const rows = d.matches || [];
+    const n = (f) => rows.filter(f).length;
+    const mix = {
+      total: rows.length,
+      market: n((m) => !!m.market),
+      elo: n((m) => m.method === "MODEL_ELO" || m.method === "MODEL_ELO_THIN"),
+      standings: n((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS"),
+      prior: n((m) => m.method === "MODEL_LEAGUE_PRIOR"),
+      unresolved: n((m) => m.method === "UNRESOLVED"),
+    };
+    return mix;
   }
 
   function renderIndex(d) {
@@ -293,9 +298,25 @@
     set("#stat-model", c.model ?? "—");
     set("#stat-unresolved", c.unresolved ?? "—");
 
-    const fp = $("#find-picks-counts");
-    if (fp) {
-      fp.innerHTML = `Current snapshot <b>${esc(whenUTC(d.generated_at))}</b> · <b>${c.fixtures ?? 0}</b> fixtures · <b>${c.market ?? 0}</b> with external book lines · <b>${c.model ?? 0}</b> priced by our Elo/standings model · <b>${c.unresolved ?? 0}</b> unresolved 50/50 placeholders · next automatic refresh <b>${esc(whenUTC(d.next_update_utc))}</b>.`;
+    const cov0 = d.coverage || {};
+    const all0 = d.matches || [];
+    const n24 = all0.filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= Date.now() - 300000 && t <= Date.now() + 86400000; }).length;
+    set("#here-all-count", all0.length);
+    set("#here-24-count", n24);
+    set("#here-leagues-count", computeLeagueBreakdown(d).length);
+    set("#here-unresolved-count", cov0.unresolved ?? 0);
+    set("#here-low-count", cov0.low_confidence ?? c.low_confidence ?? 0);
+    // hero "find the picks" buttons carry the same counts, so a phone visitor sees
+    // the size of each list before tapping it
+    set("#hero-count-picks", all0.length ? `(${all0.length})` : "");
+    set("#hero-count-next24", `(${n24})`);
+    set("#hero-count-unresolved", `(${cov0.unresolved ?? c.unresolved ?? 0})`);
+    const hs = $("#hero-status");
+    if (hs) {
+      hs.innerHTML = `<b>Updated ${esc(whenLocal(d.generated_at).text)}</b> (${esc(whenUTC(d.generated_at))}) · `
+        + `next refresh ${esc(whenUTC(d.next_update_utc))} · `
+        + `<b>${cov0.resolved ?? 0}/${cov0.fixtures ?? 0}</b> listed matches priced `
+        + `(${cov0.resolved_pct ?? 0}%) · <a href="picks.html">open the picks →</a>`;
     }
 
     const rb = $("#recon-body");
@@ -318,11 +339,38 @@
     }
 
     const cov = d.coverage || {};
-    const stCount = cov.with_standings_model ?? c.standings ?? 0;
+    // Count the pricing mix from the rows themselves. The coverage fields are a
+    // summary written by the generator and mixing them with method counts produced a
+    // breakdown that did not add up to the fixture total (e.g. 9 + 41 + 55 = 105 of 160).
+    const mix = pricingMix(d);
+    const stCount = mix.standings;
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external betting lines, <b>${(cov.with_team_specific_model ?? 0) - stCount}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${cov.with_prior_only ?? 0}</b> from competition priors, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
+
+    // Measured, out-of-sample track record of the model that prices the rows no
+    // bookmaker covers. Published as-is (including weak bands) so the reader can
+    // judge a tier-3 pick instead of taking a percentage on faith.
+    const track = $("#model-track-record");
+    const bt = (d.model && d.model.backtest) || null;
+    if (track) {
+      const bands = (bt && bt.by_band) || [];
+      const worst = bands.slice().sort((a, b) => b.log_loss - a.log_loss)[0];
+      const best = bands.slice().sort((a, b) => a.log_loss - b.log_loss)[0];
+      track.innerHTML = bt
+        ? `<b>Model track record (out-of-sample, last ${bt.window_days} days):</b> ${bt.n} completed matches,
+           log-loss <b>${bt.log_loss}</b> vs 0.6931 coin-flip, Brier <b>${bt.brier}</b>, accuracy
+           <b>${(bt.accuracy * 100).toFixed(1)}%</b>.
+           ${best && worst && bands.length > 1
+             ? `Best band: ${esc(best.band)} — log-loss ${best.log_loss} on ${best.n};
+                weakest: ${esc(worst.band)} — log-loss ${worst.log_loss} on ${worst.n}. `
+             : ""}
+           ${bt.calibration && bt.calibration.length ? `Calibration is published per confidence bucket.` : ""}
+           <a href="methodology.html#backtest">See the tables →</a>`
+        : "";
+      if (!bt) track.innerHTML = "";
+    }
 
     const sortedAll = (d.matches || []).slice().sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const quickBody = $("#quick-picks-body");
@@ -362,22 +410,68 @@
       : `<div class="card">No external market lines are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
 
     const u = d.unresolved || {};
-    const unresRows = (d.matches || []).filter((m) => m.method === "UNRESOLVED");
-    const reasons = [...(u.reasons || []).map((r) => ({ ...r, kind: "Unresolved" })),
-                     ...(u.low_confidence_reasons || []).map((r) => ({ ...r, kind: "Low confidence" }))]
-      .map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)} <span class="chip ${r.kind === "Unresolved" ? "red" : "amber"}">${esc(r.kind)}</span></li>`).join("");
-    const allLims = u.limitations || [];
-    const lims = allLims.slice(0, 3).map((x) => `<li>${esc(x)}</li>`).join("");
-    const src = d.source_research;
+    const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
+    const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const uCount = u.count ?? 0;
+    const lcCount = u.low_confidence_count ?? 0;
     const ubox = $("#unresolved-summary");
-    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; limitations for generating picks</h3>
-      <p><b>${u.count ?? 0}</b> of <b>${c.fixtures ?? 0}</b> fixtures in this snapshot are unresolved. An unresolved row is published strictly as an explicit <b>50.0% / 50.0% placeholder</b> — never an edge, never derived from Hotspawn's crowd percentage. <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows do have a pick but rely on thin history (&lt;8 games), split standings, or a single debut side priced against the competition prior, so they are capped at Low confidence.</p>
-      ${unresRows.length ? `<div class="stack">${unresRows.slice(0, 6).map((m) => matchCard(m, { sources: 3 })).join("")}</div>` : `<div class="okbox"><b>0 explicit 50/50 placeholders right now.</b> Every listed fixture has an external book line, recorded Leaguepedia match history, or a split-standings record. The limitations below still apply to the low-confidence rows and to any future fixture with no verifiable signal.</div>`}
-      ${reasons ? `<p class="small"><b>Why rows are unresolved or low confidence</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      <p class="small"><b>Key limitations</b></p><ul class="clean small">${lims}</ul>
-      <details style="margin:6px 0 10px"><summary class="small" style="cursor:pointer"><b>All ${allLims.length} documented limitations for generating picks</b></summary><ol class="small">${allLims.map((x) => `<li>${esc(x)}</li>`).join("")}</ol></details>
-      ${src ? `<p class="small"><b>Source research:</b> ${src.totals.probability_input} probability input(s), ${src.totals.model_input} model input(s), ${src.totals.context} reference-only link(s) and ${src.totals.unavailable} source(s) marked not usable after direct checks — <a href="methodology.html#source-research">every link and observation →</a></p>` : ""}
-      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a> <a class="btn" href="picks.html?filter=low">⚠️ Low-confidence picks →</a></p></div>`;
+    if (ubox) {
+      // The headline sentence has to read correctly whether or not anything is
+      // currently unresolved: "0 fixtures lack ..." is confusing on its own.
+      const headline = uCount > 0
+        ? `<b>${uCount}</b> fixture${uCount === 1 ? "" : "s"} lack external lines, recorded team
+           matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b>
+           (never an edge).`
+        : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
+           external betting line, our Elo model, or a current-split standings record. Anything that later
+           loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
+      // Per-league limitations are part of the executive summary, not only on
+      // the separate Unresolved page, so the reader sees which signal prices
+      // each competition without leaving this page.
+      const bl = d.unresolved?.by_league || [];
+      const perLeague = bl.length ? `
+        <p class="small"><b>Per-league limitations — which signal prices each competition</b></p>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Competition</th><th scope="col">Fixtures</th><th scope="col">Pricing mix</th><th scope="col">Limitation</th></tr></thead>
+          <tbody>${bl.map((b) => `<tr>
+            <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(b.tournament))}"><b>${esc(b.tournament)}</b></a></td>
+            <td data-label="Fixtures"><b>${b.fixtures}</b></td>
+            <td data-label="Pricing mix" class="small">💰 ${b.market ?? 0} mkt · 🧮 ${b.elo ?? 0} Elo · 📊 ${b.standings ?? 0} st · 📐 ${b.prior_only ?? 0} prior · ⚠️ ${b.unresolved ?? 0} unres</td>
+            <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
+          </tr>`).join("")}</tbody>
+        </table></div>` : "";
+      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
+      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
+      ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
+      ${perLeague}
+      <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
+      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; full per-league limitations page →</a></p></div>`;
+    }
+
+    const exLimBody = $("#exec-league-limits-body");
+    if (exLimBody) exLimBody.innerHTML = leagueLimitRows(computeLeagueBreakdown(d), false);
+
+    const exProbeStrip = $("#exec-probe-strip");
+    if (exProbeStrip) exProbeStrip.innerHTML = probeStrip(d);
+    const exProbeSummary = $("#probe-summary");
+    if (exProbeSummary) exProbeSummary.innerHTML = probeSummaryLine(d);
+
+    const exLimits = $("#exec-limitations");
+    if (exLimits) {
+      const list = (u.limitations || []);
+      exLimits.innerHTML = list.length ? list.map((x) => `<li>${esc(x)}</li>`).join("")
+        : "<li>No limitations recorded in this refresh.</li>";
+    }
+
+    // every unresolved fixture, on the executive summary itself (not just a count)
+    const uList = $("#unresolved-list");
+    if (uList) {
+      const un = all0.filter((m) => m.method === "UNRESOLVED")
+        .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+      uList.innerHTML = un.length
+        ? un.map((m) => matchCard(m, { sources: 3 })).join("")
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>.</div>`;
+    }
 
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
@@ -433,7 +527,7 @@
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
-    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS") return false;
+    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS" && m.method !== "MODEL_ELO_STANDINGS") return false;
     if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
@@ -473,7 +567,7 @@
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
       market: all.filter((m) => m.market).length,
       model: all.filter((m) => m.model && !m.market).length,
-      standings: all.filter((m) => m.method === "MODEL_STANDINGS").length,
+      standings: all.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length,
       low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
     };
@@ -501,35 +595,44 @@
     const un = all.filter((m) => m.method === "UNRESOLVED");
     const low = all.filter((m) => m.method !== "UNRESOLVED" && (m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low"));
     const ub = $("#unresolved-body");
-    if (ub) ub.innerHTML = un.length
-      ? un.slice(0, 20).map((m) => matchCard(m, { sources: 3 })).join("") + (un.length > 20 ? `<p class="small">${un.length - 20} more unresolved rows are listed in <a href="picks.html?filter=unresolved">All picks →</a>.</p>` : "")
-      : `<div class="okbox"><b>0 unresolved placeholders right now.</b> Every listed fixture has either external bookmaker odds, recorded Leaguepedia match history, or split standings. If a future fixture has no verifiable signal, it appears here as a labelled 50/50 placeholder instead of a fabricated pick.</div>`;
+    if (ub) ub.innerHTML = un.length ? un.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="okbox">0 unresolved placeholders right now — every listed fixture has either external bookmaker odds, recorded Leaguepedia match history, or split standings.</div>`;
     const lb = $("#lowconf-body");
-    if (lb) lb.innerHTML = low.length
-      ? low.slice(0, 12).map((m) => matchCard(m, { sources: 3 })).join("") + (low.length > 12 ? `<p class="small"><b>${low.length - 12} more low-confidence rows</b> — <a href="picks.html?filter=low">open them in All picks →</a></p>` : "")
-      : `<div class="card">No low-confidence rows.</div>`;
-    renderSourceCompact($("#source-research-compact"), d.source_research);
+    if (lb) lb.innerHTML = low.length ? low.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No low-confidence rows.</div>`;
     const limBody = $("#league-limitations-body");
     if (limBody) {
       const lbs = computeLeagueBreakdown(d);
       limBody.innerHTML = lbs.map((x) => `<tr>
         <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(x.tournament))}"><b>${esc(x.tournament)}</b></a></td>
         <td data-label="Fixtures"><b>${x.fixtures}</b></td>
-        <td data-label="Breakdown" class="small">💰 ${x.market} · 🧮 ${x.elo} · 📊 ${x.standings || 0} · 📐 ${x.league_prior} · ⚠️ ${x.unresolved} · low ${x.low_confidence ?? 0}</td>
+        <td data-label="Breakdown" class="small">💰 ${x.market} · 🧮 ${x.elo} · 📊 ${x.standings || 0} · 📐 ${x.league_prior} · ⚠️ ${x.unresolved}</td>
         <td data-label="Limitation" class="small">${esc(x.limitation || "")}</td>
         <td data-label="Sources">${leagueSourceLinks(x)}</td>
       </tr>`).join("");
     }
-    const reasons = [...(d.unresolved?.reasons || []).map((r) => ({ ...r, kind: "Unresolved" })),
-                     ...(d.unresolved?.low_confidence_reasons || []).map((r) => ({ ...r, kind: "Low confidence" }))]
-      .map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)} <span class="chip ${r.kind === "Unresolved" ? "red" : "amber"}">${esc(r.kind)}</span></li>`).join("");
+    const reasons = (d.unresolved?.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const rbox = $("#reasons");
     if (rbox) rbox.innerHTML = reasons || "<li>None.</li>";
     const lim = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const lbox = $("#limitations");
     if (lbox) lbox.innerHTML = lim;
+    const mix = $("#resolution-mix");
+    if (mix) {
+      const cov = d.coverage || {};
+      const counts = pricingMix(d);
+      mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
+        + `<b>${counts.market}</b> priced by external betting lines · `
+        + `<b>${counts.elo}</b> by our Elo model · `
+        + `<b>${counts.standings}</b> by split standings · `
+        + `<b>${counts.prior}</b> by a competition prior · `
+        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}). `
+        + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
+    }
+    const psum = $("#probe-summary");
+    if (psum) psum.innerHTML = probeSummaryLine(d);
+    const pbody = $("#probe-body");
+    if (pbody) pbody.innerHTML = probeRows(d);
     const stat = $("#unresolved-counts");
-    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows` + (d.source_research ? ` · <b>${d.source_research.totals.probability_input}</b> verified probability inputs` : "");
+    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
   }
 
   function flagLabel(f) {
@@ -551,6 +654,7 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
+      STANDINGS_BLEND_APPLIED: "Current-split standings record blended into the rating",
     };
     return map[f] || f;
   }
@@ -630,8 +734,9 @@
       return;
     }
     const mi = methodInfo(m);
+    const pair = pctPair(m.prob_team1);
     const t = whenLocal(m.start_utc);
-    const marketRows = (m.market?.sources || []).map((s) => `<tr><td><b>${esc(s.source)}</b></td><td>${pct1(s.prob_team1)}</td><td>${pct1(s.prob_team2)}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`).join("");
+    const marketRows = (m.market?.sources || []).map((s) => { const p = pctPair(s.prob_team1); return `<tr><td><b>${esc(s.source)}</b></td><td>${p[0]}</td><td>${p[1]}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`; }).join("");
     const model = m.model || {};
     const h2h = model.h2h ? `${model.h2h.team1_wins}/${model.h2h.games} head-to-head wins for ${esc(m.team1)}` : "No head-to-head sample in the last 24 months.";
     box.innerHTML = `
@@ -640,14 +745,14 @@
         <h1>${esc(m.team1)} <span style="color:var(--muted);font-weight:600;font-size:.6em">vs</span> ${esc(m.team2)}</h1>
         <p class="small">${esc(m.tournament || "")} · ${esc(t.text)} <span title="${esc(t.title)}">· ${esc(whenUTC(m.start_utc))}</span> · ${esc(relative(m.start_utc))}</p>
         <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
-        <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
+        <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
         <div class="pickline">${pickPill(m)}</div>
         <p class="small">${esc(m.evidence || "")}</p>
       </div>
       <div class="two-col">
         <div>
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
-            ${m.market ? `<p class="small">Consensus: <b>${pct1(m.market.consensus_team1)}</b> ${esc(m.team1)} · <b>${pct1(1 - m.market.consensus_team1)}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
+            ${m.market ? `<p class="small">Consensus: <b>${pctPair(m.market.consensus_team1)[0]}</b> ${esc(m.team1)} · <b>${pctPair(m.market.consensus_team1)[1]}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
             <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
             : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>`}
           </div>
@@ -673,19 +778,14 @@
   }
 
   function renderMethodology(d) {
-    const src = d.source_research;
-    const intro = $("#source-research-intro");
-    if (intro) {
-      intro.innerHTML = src
-        ? `Checked ${esc(src.verified_on || "—")}: <b>${src.totals.sources}</b> source pages in five steps — <b>${src.totals.probability_input}</b> used as a probability input, <b>${src.totals.model_input}</b> used for results, <b>${src.totals.context}</b> reference only, <b>${src.totals.unavailable}</b> not usable. ${esc(src.method || "")}`
-        : "No source-research snapshot is present in this payload.";
-    }
-    renderSourceLadder($("#source-research-body"), src);
-    renderProbe($("#source-probe-body"), src && src.probe);
     const ss = $("#sources-status");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
     if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+    const mProbe = $("#market-probe-body");
+    if (mProbe) mProbe.innerHTML = probeRows(d);
+    const mProbeSum = $("#probe-summary");
+    if (mProbeSum) mProbeSum.innerHTML = probeSummaryLine(d);
     const lims = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const lbox = $("#limitations");
     if (lbox && lims) lbox.innerHTML = lims;
@@ -705,12 +805,39 @@
     if (g) g.textContent = `${whenLocal(d.generated_at).text} · next update ${whenUTC(d.next_update_utc)}`;
     const ft = $("#backtest");
     const b = d.model && d.model.backtest;
+    const bandRows = (b && b.by_band || []).map((r) => `<tr>
+        <td data-label="Competition band">${esc(r.band)}</td>
+        <td data-label="Matches">${r.n}</td>
+        <td data-label="Log-loss">${r.log_loss} <span class="tiny">vs 0.6931</span></td>
+        <td data-label="Brier">${r.brier} <span class="tiny">vs 0.2500</span></td>
+        <td data-label="Accuracy">${(r.accuracy * 100).toFixed(1)}%</td></tr>`).join("");
+    const calRows = (b && b.calibration || []).map((r) => `<tr>
+        <td data-label="We said">${esc(r.bucket)}</td>
+        <td data-label="Matches">${r.n}</td>
+        <td data-label="Average stated">${(r.predicted * 100).toFixed(1)}%</td>
+        <td data-label="Favoured side won">${(r.actual * 100).toFixed(1)}%</td>
+        <td data-label="Gap">${r.gap > 0 ? "+" : ""}${(r.gap * 100).toFixed(1)} pts</td></tr>`).join("");
     if (ft) ft.innerHTML = b ? `<dl class="kv">
         <dt>Test window</dt><dd>Last ${b.window_days} days (${b.n} matches)</dd>
         <dt>Log-loss</dt><dd><b>${b.log_loss}</b> <span class="small">(coin-flip baseline ${b.baseline_log_loss})</span></dd>
         <dt>Brier score</dt><dd><b>${b.brier}</b> <span class="small">(baseline ${b.baseline_brier})</span></dd>
         <dt>Accuracy</dt><dd>${(b.accuracy * 100).toFixed(1)}%</dd>
-      </dl><p class="tiny">Out-of-sample: ratings fitted before the window and frozen; only matches where both teams were already rated are scored.</p>`
+      </dl><p class="tiny">Out-of-sample: ratings fitted before the window and frozen; only matches where both teams were already rated are scored.</p>
+      ${bandRows ? `<h4 style="margin:14px 0 4px">How the model scores by competition strength</h4>
+      <p class="tiny">Same frozen ratings, same window, split by the competition prior the model itself assigns.
+        ${esc((b.band_note || ""))} Low-tier rows are the ones we price without a bookmaker line, so this is the
+        realistic accuracy to expect from them — not an estimate.</p>
+      <div class="table-wrap"><table><thead><tr>
+        <th scope="col">Competition band</th><th scope="col">Matches</th><th scope="col">Log-loss</th>
+        <th scope="col">Brier</th><th scope="col">Accuracy</th></tr></thead>
+        <tbody>${bandRows}</tbody></table></div>` : ""}
+      ${calRows ? `<h4 style="margin:14px 0 4px">Calibration — when we say X%, how often does it happen?</h4>
+      <p class="tiny">Out-of-sample only. "Average stated" is the confidence we published; "favoured side won" is the
+        measured hit rate. A positive gap means we were overconfident in that bucket.</p>
+      <div class="table-wrap"><table><thead><tr>
+        <th scope="col">We said</th><th scope="col">Matches</th><th scope="col">Average stated</th>
+        <th scope="col">Favoured side won</th><th scope="col">Gap</th></tr></thead>
+        <tbody>${calRows}</tbody></table></div>` : ""}`
       : `<p>No backtest available for this run.</p>`;
   }
 
@@ -734,8 +861,8 @@
   }
 
   async function main() {
-    setActiveNav();
     wireTheme();
+    setActiveNav();
     try {
       DATA = await load();
       setHeader(DATA);
