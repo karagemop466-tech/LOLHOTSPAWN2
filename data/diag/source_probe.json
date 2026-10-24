@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-23T16:36:28.713565Z",
+ "checked_at": "2026-10-24T16:30:27.059554Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -37,16 +37,16 @@
    "url": "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
    "kind": "prediction-market-api",
    "http_status": 200,
-   "bytes": 4002,
+   "bytes": 4025,
    "is_json": true,
    "lol_mentions_in_first_items": 5,
    "detail": {
     "item_count": 5,
     "vs_style_questions": 1,
     "question_sample": [
-     "NA vs EU - League of Legends Worlds 2026",
-     "Who will win the 2026 League of Legends World Championship?",
-     "T1 wins League of Legends Worlds 2026?"
+     "League of Legends Worlds 2026 Matches Megamarket",
+     "League of Legends Worlds 2026 Prop Bets [Add answers!]",
+     "Who will win the 2026 League of Legends World Championship?"
     ]
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
@@ -56,7 +56,7 @@
    "url": "https://egamersworld.com/lol/bets",
    "kind": "odds-comparison-page",
    "http_status": 403,
-   "bytes": 5718,
+   "bytes": 5740,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -160,6 +160,88 @@
    "lol_mentions_in_first_items": null,
    "detail": {},
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "Oddspedia LoL odds comparison",
+   "url": "https://oddspedia.com/league-of-legends/odds",
+   "kind": "odds-comparison-page",
+   "http_status": 410,
+   "bytes": 341179,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "not usable from CI (HTTP 410)"
+  },
+  {
+   "name": "Betmonitor Prime League 2nd Division (bet365/Unibet/efbet/novibet lines)",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+   "kind": "odds-comparison-page",
+   "http_status": 200,
+   "bytes": 416391,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "BMBets LoL Prime League",
+   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league/",
+   "kind": "odds-comparison-page",
+   "http_status": 200,
+   "bytes": 1044592,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "Strafe LoL odds (Oddspedia feed)",
+   "url": "https://www.strafe.com/esports-betting/odds/league-of-legends/",
+   "kind": "odds-comparison-page",
+   "http_status": 200,
+   "bytes": 194928,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "Unibet DE Kambi brand feed (control probe)",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+   "kind": "sportsbook-api",
+   "http_status": 400,
+   "bytes": 87,
+   "is_json": true,
+   "lol_mentions_in_first_items": null,
+   "detail": {
+    "top_level_keys": [
+     "error"
+    ]
+   },
+   "verdict": "not usable from CI (HTTP 400)"
+  },
+  {
+   "name": "Unibet Kambi feed with market=DE (coverage control)",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+   "kind": "sportsbook-api",
+   "http_status": 200,
+   "bytes": 14032,
+   "is_json": true,
+   "lol_mentions_in_first_items": null,
+   "detail": {
+    "top_level_keys": [
+     "activeCategories",
+     "activeEventTypes",
+     "activeTermIds",
+     "categoryGroups",
+     "defaultEventType",
+     "eventTypes",
+     "events",
+     "soonMode",
+     "terms"
+    ]
+   },
+   "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
   }
  ]
 }
