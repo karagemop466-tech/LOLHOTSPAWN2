@@ -149,6 +149,18 @@ def main() -> int:
         ],
     }
     results.append(assert_status(run([r]), "D20", vs.FAIL, "prop market leaked into market.sources"))
+    # external-source probe row without an https link / carrying a probability must fail D22
+    good_probe = {"checked_at": NOW, "summary": {"checked": 1},
+                  "books": [{"name": "Example book", "url": "https://example.com/lol",
+                             "http_status": 403, "verdict": "blocked"}]}
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=good_probe),
+                                 "D22", vs.PASS, "clean probe row"))
+    bad = copy.deepcopy(good_probe); bad["books"][0]["url"] = "http://example.com/lol"
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=bad),
+                                 "D22", vs.FAIL, "probe row without https"))
+    bad2 = copy.deepcopy(good_probe); bad2["books"][0]["prob_team1"] = 0.61
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=bad2),
+                                 "D22", vs.FAIL, "probe row carrying a probability"))
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],

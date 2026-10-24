@@ -48,9 +48,11 @@ const firstId = (payload.matches || [])[0] ? String(payload.matches[0].id) : "";
 const PAGES = [
   {
     page: "index.html",
-    expect: { "#quick-picks-body tr": 5, "#summary-leagues-body tr": 1, ".match": 3, "#starting-soon .match": 1 },
-    text: ["picks-cta", "coverage-text", "updated", "freshness", "stat-fixtures", "soon-count", "unresolved-summary"],
-    count: ["stat-fixtures"],
+    expect: { "#quick-picks-body tr": 5, "#summary-leagues-body tr": 1, ".match": 3,
+              "#starting-soon .match": 1, "#picks-here": 1, "#unresolved-section": 1 },
+    text: ["hero-status", "coverage-text", "updated", "freshness", "stat-fixtures", "soon-count",
+           "unresolved-summary", "picks-here-heading", "exec-league-limits-body", "sources-strip"],
+    count: ["stat-fixtures", "here-all-count", "here-24-count", "here-leagues-count"],
   },
   {
     page: "picks.html",
