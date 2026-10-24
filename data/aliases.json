@@ -26,6 +26,7 @@
     "Team Gromp": "Team Gromp (Australian Team)",
     "Infinity Gaming": "Infinity Gaming (Brazilian Team)",
     "Neon eSports": "Neon eSports (Brazilian Team)",
+    "Inari Esports": "Inari Esports (British Team)",
     "REH Gaming": "REH Gaming"
   },
   "competition_scoped_aliases": {
@@ -35,6 +36,14 @@
         "flag": "HOTSPAWN_NAME_COLLISION",
         "source_url": "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split",
         "note": "Hotspawn expands the 'PVB' tag to defunct Vietnamese team Phong Vũ Buffalo; official Prime League 2nd Division 26-27 Fall participant is PvB (Swiss Team)."
+      }
+    },
+    "4 Nations 2026 Halloween Heist": {
+      "Inari Esports": {
+        "canonical": "Inari Esports (British Team)",
+        "flag": "HOTSPAWN_NAME_COLLISION",
+        "source_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+        "note": "Hotspawn lists bare 'Inari Esports' (which collides with the German Prime Pokal team on Leaguepedia); official 4 Nations 2026 Halloween Heist participant is Inari Esports (British Team)."
       }
     }
   },
@@ -76,11 +85,16 @@
     "Worlds 2026 Main Event": "2026 Season World Championship/Main Event",
     "LGC Rising 2026 Playoffs": "LoL Game Changers/2026 Season/Playoffs",
     "LCP 2027 Promotion": "LCP/2027 Season/Promotion",
+    "PRM 1st Division 26-27 Fall": "Prime League 1st Division/2027 Season/Fall Split",
     "PRM 2nd Division 26-27 Fall": "Prime League 2nd Division/2027 Season/Fall Split",
     "PRM 3rd Division 26-27 Fall": "Prime League 3rd Division/2027 Season/Fall Split",
     "Arabian League 2nd Division 2026 Summer": "Arabian League 2nd Division/2026 Season/Summer Split",
+    "Arabian League 2nd Division 2026 Fall Playoffs": "Arabian League 2nd Division/2026 Season/Fall Playoffs",
     "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": "Arabian Regional Championship 2026/Qualifiers/LB-Li-SY-PS",
+    "Arabian Regional Championship 2026: Qatar-Bahrain-Kuwait": "Arabian Regional Championship 2026/Qualifiers/QA-BH-KW",
+    "4 Nations 2026 Halloween Heist": "4 Nations/2026 Season/Halloween Heist",
     "Komplettligaen 2026 Autumn": "Komplettligaen/2026 Season/Autumn Split",
+    "Komplettligaen 2026 Autumn Playoffs": "Komplettligaen/2026 Season/Autumn Playoffs",
     "RIVALS LEAGUE Season 2": "RIVALS LEAGUE/2026 Season/Season 2",
     "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
     "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
