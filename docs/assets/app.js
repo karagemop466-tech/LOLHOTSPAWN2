@@ -662,7 +662,13 @@
     const mi = methodInfo(m);
     const pair = pctPair(m.prob_team1);
     const t = whenLocal(m.start_utc);
-    const marketRows = (m.market?.sources || []).map((s) => { const p = pctPair(s.prob_team1); return `<tr><td><b>${esc(s.source)}</b></td><td>${p[0]}</td><td>${p[1]}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`; }).join("");
+    const feedStart = (s) => {
+      if (!s.start_utc) return `<span class="small">not published</span>`;
+      const d = Number(s.start_delta_hours);
+      const delta = Number.isFinite(d) && Math.abs(d) >= 0.05 ? `${d > 0 ? "+" : ""}${d.toFixed(1)} h vs lock` : "matches lock";
+      return `${esc(whenUTC(s.start_utc))}<span class="sub">${esc(delta)}</span>`;
+    };
+    const marketRows = (m.market?.sources || []).map((s) => { const p = pctPair(s.prob_team1); return `<tr><td><b>${esc(s.source)}</b></td><td>${p[0]}</td><td>${p[1]}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td>${feedStart(s)}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`; }).join("");
     const model = m.model || {};
     const h2h = model.h2h ? `${model.h2h.team1_wins}/${model.h2h.games} head-to-head wins for ${esc(m.team1)}` : "No head-to-head sample in the last 24 months.";
     box.innerHTML = `
@@ -679,7 +685,8 @@
         <div>
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
             ${m.market ? `<p class="small">Consensus: <b>${pctPair(m.market.consensus_team1)[0]}</b> ${esc(m.team1)} · <b>${pctPair(m.market.consensus_team1)[1]}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
-            <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
+            <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Feed start (UTC)</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table>
+              <p class="small">Each row shows the kickoff time that source itself publishes; a delta appears when it differs from the Hotspawn lock time used for this pick. Only the Hotspawn timestamp decides when the pick locks.</p></div>`
             : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>`}
           </div>
           <div class="card"><h3>Our model &amp; standings inputs</h3>
