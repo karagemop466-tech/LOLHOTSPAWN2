@@ -1,6 +1,6 @@
 {
- "checked_at": "2026-10-24T17:09:15.157110Z",
- "books": [
+ "checked_at": "2026-10-24T17:14:38.961696Z",
+ "candidates": [
   {
    "name": "Pinnacle (guest JSON)",
    "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
@@ -30,10 +30,20 @@
    "structured": false
   },
   {
-   "name": "Smarkets API (sports index)",
-   "url": "https://api.smarkets.com/v3/sports/",
-   "kind": "exchange-api",
-   "category": "market",
+   "name": "OddsPortal LoL",
+   "url": "https://www.oddsportal.com/lol/",
+   "kind": "odds-comparison-page",
+   "http_status": 503,
+   "bytes": 0,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "not usable from CI (HTTP 503)"
+  },
+  {
+   "name": "BetExplorer LoL",
+   "url": "https://www.betexplorer.com/lol/",
+   "kind": "odds-comparison-page",
    "http_status": 404,
    "is_json": false,
    "bytes": 82,
@@ -105,6 +115,7 @@
    "kind": "esportsbook-page",
    "category": "market",
    "http_status": 403,
+   "bytes": 5767,
    "is_json": false,
    "bytes": 5789,
    "lol_mentions": null,
@@ -117,15 +128,12 @@
    "name": "Rivalry LoL",
    "url": "https://www.rivalry.com/lol",
    "kind": "esportsbook-page",
-   "category": "market",
    "http_status": 404,
-   "is_json": false,
    "bytes": 65054,
-   "lol_mentions": null,
-   "vs_style_items": null,
-   "verdict": "endpoint not found (HTTP 404) — path may have moved; nothing used",
-   "reachable": false,
-   "structured": false
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "not usable from CI (HTTP 404)"
   },
   {
    "name": "Midnite LoL",
