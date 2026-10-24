@@ -715,3 +715,28 @@ the exact source link so a human can repeat it.
 | Post-merge live 6h refresh on `main` | **success** — run `39989184592` (`9d65409`, `generated_at = 2026-10-23T16:52:07.057868Z`): **172 / 172 upcoming fixtures resolved (`100.0%`)**, `9` market (`8` 3-book consensus + `1` single), `163` Elo model (`88` `MODEL_ELO` + `75` `MODEL_ELO_THIN`), `0` unresolved, `12` cancelled fixtures excluded, `10` per-league breakdown rows & all 8 `sources_status` entries published |
 | Post-refresh Pages deploy #2 | **success** — run `39990334025` deployed fresh `9d65409` payload to https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
 | Follow-up verifier hardening PR (#28 + #29) | Merged `wait_for_http()` + `http_status_retry()` in `scripts/verify_site.py` (PR **#28**, Pages deploy `39990798461` **success**), and replaced US-geoblocked SPA route `www.pinnacle.com/en/esports/league-of-legends` (HTTP `404` on US-East CI runners) in `docs/methodology.html`'s manual check log with the public `200 OK` JSON feeds actually queried by CI (`guest.api.arcadia.pinnacle.com` & `gamma-api.polymarket.com`) so `verify.yml` passes `X1`–`X3` cleanly on `main`. |
+
+---
+
+## Session `arena/26d1e778-lolhotspawn2` — 2026-10-24 (claim: full-coverage pick resolution, mobile exec-summary navigation, fresh source research)
+
+> Branch note: Arena fixes this session to `arena/26d1e778-lolhotspawn2`; the system branch stands in for the
+> `session-<id>/<task>` convention and no other branch may be created or pushed.
+
+**Baseline at claim (main `72c9b5a`, payload `generated_at` 2026-10-24T15:28:56Z):** 169 upcoming Hotspawn LoL
+fixtures, 169 resolved (0 `UNRESOLVED`), 9 market (8 `MARKET_CONSENSUS` + 1 `MARKET_SINGLE`), 160 Elo model
+(93 `MODEL_ELO` + 67 `MODEL_ELO_THIN`), 0 `MODEL_STANDINGS`, 0 `MODEL_LEAGUE_PRIOR`, 73 low-confidence,
+14 cancelled fixtures excluded, lobby reconciliation 241 listed / 169 upcoming / 72 past-not-priced /
+0 upcoming missing a pick. `src` verifier at claim: 36 PASS / 0 FAIL / 1 SKIP locally (no external network in
+this sandbox; CI performs the external checks).
+
+| Task | Status | Owner | Exclusive file scope |
+|---|---|---|---|
+| T21 Data integrity: fix missing `standings_pages` count (published note currently says "2880 standings rows across 0 competitions"), keep every-row source provenance, and publish a machine-readable `source_research` ladder with observed status + official link | in progress | arena/26d1e778 | `scripts/fetch_leaguepedia.py`, `scripts/update_picks.py` |
+| T22 Fresh source research: re-probe established sportsbooks → esportsbooks → esports-lines/aggregators → prediction markets → official/community results, record exactly what is reachable and what each source can/cannot price, and promote an adapter only if structured per-match prices are verified | in progress | arena/26d1e778 | `scripts/probe_sources.py`, `research/betting-sources.md`, `data/diag/source_probe.json` (generated) |
+| T23 Mobile-first executive summary & consistent navigation: unify header/nav/status strip across all 7 pages, fix the `.bar` CSS collision that clips the header, working theme toggle, "Find the picks" link hub, always-present unresolved-and-limitations section in the exec summary | in progress | arena/26d1e778 | `docs/*.html`, `docs/assets/style.css`, `docs/assets/app.js` |
+| T24 Verification: extend `verify_site.py` + `check_dom_contract.py` for header/nav consistency, the exec-summary pick hub, the always-present unresolved section, and per-row source links; run all unit/verifier tests | in progress | arena/26d1e778 | `scripts/verify_site.py`, `verification/**` |
+| T25 Integration: live pipeline run on this branch, line-by-line re-verification, PR to `main`, merge without waiting, confirm GitHub Pages deploy, record PR + deploy evidence here | pending | arena/26d1e778 | `COORDINATION.md`, `README.md`, generated payload |
+
+No other session is active on these paths; if a future session needs one of them, log a request here instead of
+editing. Small commits will be pushed to this branch only. Claim pushed before any code change.
