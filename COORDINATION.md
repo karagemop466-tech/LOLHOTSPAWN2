@@ -1408,3 +1408,20 @@ Fixed by one shared `methodMix()` helper in `docs/assets/app.js` that reads the 
 the unresolved page, so the two can no longer drift. `verification/check_dom_render.js` now asserts the
 reported standings/Elo counts match the payload **and** that they equal the sum of the per-league standings
 column (3 new checks, 53/53). Verified non-vacuous: restoring the old `app.js` fails exactly the standings check.
+
+---
+
+### T26 — pricing-breakdown fix + published model track record (`arena/ac089f33-lolhotspawn2`, 2026-10-24 17:20–17:40 UTC)
+
+| Item | Result & evidence |
+|---|---|
+| **PR #47** (fix) | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/47 — **MERGED** 17:20:24Z, merge commit `94e6da4` |
+| Bug | Exec summary read "9 external, 41 Elo, 55 standings" = **105 of 160**, and the unresolved page read "**0** by split standings" while its own per-league table showed 44. Cause: `stCount` read a coverage field the generator never emits, so Elo was computed by *subtracting* standings (`96 − 55`), and `nStand` only counted `MODEL_STANDINGS`, never the `MODEL_ELO_STANDINGS` rows the pipeline actually emits. |
+| Fix | One `pricingMix(d)` helper counts the mix from the rows themselves (market / `MODEL_ELO`+`MODEL_ELO_THIN` / `MODEL_STANDINGS`+`MODEL_ELO_STANDINGS` / `MODEL_LEAGUE_PRIOR` / `UNRESOLVED`) and both pages print the total, so a mismatch is visible at a glance. |
+| Live proof | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ → "**159 of 159** … **8** from external betting lines, **96** from our chronological Elo model, **55** from split standings, **0** priors, **0** placeholders (total 159)"; `unresolved.html` reads the same triple and "total 159". |
+| **PR #54** (feature) | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/54 — **MERGED** 17:35:51Z, merge commit `29d15c6`; branch pipeline run `40116032467` success; post-merge `Verify picks and site` `40116844699` success; Pages `built` for `29d15c6` |
+| What it adds | `model.backtest()` now also returns `by_band` (log-loss / Brier / accuracy per competition strength band) and `calibration` (stated confidence bucket vs measured hit rate + gap), from the **same frozen ratings and the same 30-day holdout** — no refitting, no new data. Rendered as two tables on `methodology.html` and one line in the executive summary that names **both** the best and weakest band, so the number cannot be read as cherry-picked. |
+| Measured (2026-10-24T17:30Z run, n=651) | bands: national/amateur `0.6020` (n=469), regional `0.6659` (n=34), major `0.6807` (n=148); calibration: 50-59% stated 54.4% → won 57.4% (−3.0 pts), 60-69% 64.1% → 74.7% (−10.7), 70-79% 73.5% → 85.4% (−11.9), 80%+ 81.8% → 95.0% (−13.2). Every bucket came out *under*-confident in this window; published as-is, including the small buckets (n=20, n=34). |
+| Local gates | `check_dom_render.js` **50/50** (real payload and a band-injected payload); `verify_site.py` 44 PASS · 0 FAIL · 0 WARN · 1 SKIP; `check_dom_contract.py` PASS; `test_verifier.py` 45/45; `backtest()` unit-checked so band and calibration rows sum to `n` exactly. |
+| Notes for the next session | `verification/report.json`, `last_report.md`, `docs/data/picks.json`, `data/diag/*` are CI-generated: always resolve to **theirs**, never hand-merge. The branch also receives `pipeline: test run [skip ci]` commits from `pipeline-test.yml` while a run is in flight, so a push can be rejected as non-fast-forward mid-run — re-fetch the branch and merge it before pushing. |
+| Line coverage (unchanged, re-stated) | 151 of 159 rows have **no** reachable bookmaker line; the source field was re-read this session and still returns: Pinnacle = Worlds only; nine Kambi/Unibet country markets = the same 8 Worlds matches (DE does not carry Prime League); bmbets = Worlds / LCP / Game Changers Rising only; everything else 403/410/404/429/geo-stub/client-rendered. No new line source was found, so no pick changed on market grounds. |
