@@ -113,25 +113,24 @@ jobs:
               echo "$out"
             else
               rc=$?
-              fail_publish "git fetch failed on attempt ${attempt} (${rc}): ${out}"
+              last_push_error="fetch on attempt ${attempt} (${rc}): ${out}"
+              echo "fetch failed: ${last_push_error}" >&2
+              sleep 5
+              continue
             fi
-            if out=$(git rebase -X theirs "origin/${GITHUB_REF_NAME}" 2>&1); then
+            # Rebase in a detached-HEAD checkout can fail before it starts, which
+            # makes `git rebase --abort` exit 128 and the whole publish step fail.
+            # A merge keeps this run's payload (`-X ours`) and is idempotent when
+            # the branch has not moved.
+            if out=$(git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" 2>&1); then
               echo "$out"
             else
               rc=$?
-              echo "rebase needs fallback merge: ${out}" >&2
-              if abort_out=$(git rebase --abort 2>&1); then
-                echo "$abort_out"
-              else
-                abort_rc=$?
-                fail_publish "could not abort failed output rebase (${abort_rc}): ${abort_out}"
-              fi
-              if merge_out=$(git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" 2>&1); then
-                echo "$merge_out"
-              else
-                merge_rc=$?
-                fail_publish "fallback merge failed (${merge_rc}): ${merge_out}"
-              fi
+              git merge --abort >/dev/null 2>&1 || true
+              last_push_error="merge on attempt ${attempt} (${rc}): ${out}"
+              echo "merge failed: ${last_push_error}" >&2
+              sleep 5
+              continue
             fi
             if out=$(git push origin "HEAD:${GITHUB_REF_NAME}" 2>&1); then
               echo "$out"
@@ -143,7 +142,7 @@ jobs:
               echo "push failed on ${last_push_error}" >&2
             fi
             if [ "${attempt}" -lt 3 ]; then
-              echo "fetching latest branch and retrying" >&2
+              echo "retrying after the remote branch moved" >&2
               sleep 5
             fi
           done

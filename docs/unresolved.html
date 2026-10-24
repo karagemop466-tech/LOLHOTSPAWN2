@@ -111,7 +111,7 @@
     <ul class="clean small">
       <li><b>External betting lines first:</b> When Pinnacle, Unibet (Kambi), Bovada, or Polymarket list a full-match two-way market, we use the de-vigged consensus.</li>
       <li><b>Chronological Tier-Anchored Elo:</b> When no sportsbook prices a competition, our Elo model rates both teams from recorded Leaguepedia series anchored to competition tier.</li>
-      <li><b>Official standings record (<span class="flag">MODEL_STANDINGS</span> 📊):</b> When Elo cannot rate a side yet both teams have current-split records in Leaguepedia's <code>Standings</code> table, smoothed Bradley–Terry series/game rates produce a bounded estimate capped at Low/Medium confidence.</li>
+      <li><b>Official standings record (<span class="flag">MODEL_STANDINGS</span> 📊):</b> When Elo cannot rate a side yet both teams have current-split records in Leaguepedia's <code>Standings</code> table, a Laplace-smoothed series/game win-rate is converted to an Elo offset from the competition prior (<code>prior + 400·log10(wr/(1−wr))</code>, <code>wr</code> clamped to 0.15–0.85) and shrunk by games played. Always capped at <b>Low</b> confidence.</li>
       <li><b>One side unknown (<span class="flag">MODEL_LEAGUE_PRIOR</span>):</b> The competition's median rating stands in for the missing side, shrunk toward 50/50 and flagged <span class="flag">ONE_TEAM_NO_HISTORY</span>.</li>
       <li><b>Both sides unknown (<span class="flag">UNRESOLVED</span>):</b> Stays strictly 50.0% / 50.0% placeholder and never masquerades as a model edge.</li>
     </ul>
