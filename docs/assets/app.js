@@ -291,9 +291,17 @@
     }
 
     const cov = d.coverage || {};
-    const stCount = cov.with_standings_model ?? c.standings ?? 0;
+    // Method buckets must sum to the fixture count: Elo-only rows are
+    // MODEL_ELO(_THIN); the standings bucket is MODEL_STANDINGS +
+    // MODEL_ELO_STANDINGS (== counts.standings). Deriving the Elo number by
+    // subtracting the standings bucket from with_team_specific_model
+    // double-subtracted once the blend method existed (live text read
+    // "41 from Elo" for 94 MODEL_ELO + 2 thin rows).
+    const byMethod = cov.counts_by_method || {};
+    const eloCount = (byMethod.MODEL_ELO || 0) + (byMethod.MODEL_ELO_THIN || 0);
+    const stCount = (byMethod.MODEL_STANDINGS || 0) + (byMethod.MODEL_ELO_STANDINGS || 0);
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external betting lines, <b>${(cov.with_team_specific_model ?? 0) - stCount}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${cov.with_prior_only ?? 0}</b> from competition priors, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external betting lines, <b>${eloCount}</b> from our chronological Elo model, <b>${stCount}</b> from Elo blended with split standings, <b>${cov.with_prior_only ?? 0}</b> from competition priors, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -544,11 +552,12 @@
     if (mix) {
       const cov = d.coverage || {};
       const nPrior = (d.matches || []).filter((m) => m.method === "MODEL_LEAGUE_PRIOR").length;
-      const nStand = (d.matches || []).filter((m) => m.method === "MODEL_STANDINGS").length;
+      const nStand = (d.matches || []).filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length;
+      const nElo = (d.matches || []).filter((m) => m.method === "MODEL_ELO" || m.method === "MODEL_ELO_THIN").length;
       mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
         + `<b>${cov.with_external_market ?? 0}</b> priced by external betting lines · `
-        + `<b>${(cov.with_team_specific_model ?? 0) - nStand}</b> by our Elo model · `
-        + `<b>${nStand}</b> by split standings · <b>${nPrior}</b> by a competition prior · `
+        + `<b>${nElo}</b> by our Elo model · `
+        + `<b>${nStand}</b> by Elo blended with split standings · <b>${nPrior}</b> by a competition prior · `
         + `<b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. `
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }
