@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-23T16:36:28.713565Z",
+ "checked_at": "2026-10-24T16:31:58.793566Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -37,16 +37,16 @@
    "url": "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
    "kind": "prediction-market-api",
    "http_status": 200,
-   "bytes": 4002,
+   "bytes": 4025,
    "is_json": true,
    "lol_mentions_in_first_items": 5,
    "detail": {
     "item_count": 5,
     "vs_style_questions": 1,
     "question_sample": [
-     "NA vs EU - League of Legends Worlds 2026",
-     "Who will win the 2026 League of Legends World Championship?",
-     "T1 wins League of Legends Worlds 2026?"
+     "League of Legends Worlds 2026 Matches Megamarket",
+     "League of Legends Worlds 2026 Prop Bets [Add answers!]",
+     "Who will win the 2026 League of Legends World Championship?"
     ]
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
@@ -100,7 +100,7 @@
    "url": "https://thunderpick.io/esports/league-of-legends",
    "kind": "esportsbook-page",
    "http_status": 403,
-   "bytes": 5789,
+   "bytes": 5767,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -110,12 +110,12 @@
    "name": "Rivalry LoL",
    "url": "https://www.rivalry.com/lol",
    "kind": "esportsbook-page",
-   "http_status": 503,
-   "bytes": 1591,
+   "http_status": 404,
+   "bytes": 65054,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "not usable from CI (HTTP 404)"
   },
   {
    "name": "Midnite LoL",
