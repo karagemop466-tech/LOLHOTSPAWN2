@@ -341,7 +341,6 @@ def probe_onexbet(host):
 # 5. Status-only probes (documented, never parsed)
 # --------------------------------------------------------------------------- #
 STATUS_ONLY = [
-    ("bmbets LoL odds comparison", "https://www.bmbets.com/e-sports/world/lol---world-championship/", "aggregator-page"),
     ("Prime League official (organizer)", "https://www.primeleague.gg/en/liga2", "organizer-results"),
     ("RIVALS LEAGUE official (organizer)", "https://www.rivalsleague.gg/", "organizer-results"),
     ("BetOnline LoL", "https://www.betonline.ag/sportsbook/esports/league-of-legends", "established-sportsbook"),
@@ -525,6 +524,11 @@ def summarise(res, index: FixtureIndex) -> dict:
     res["fixtures_matched_and_previously_unpriced"] = unpriced_hits
     res["samples"] = samples
     res.pop("records", None)
+    sched = res.get("schedule_records") or 0
+    if res.get("http_status") == 200 and not unpriced_hits and not recs and sched:
+        res["verdict"] = (f"reachable; lists {sched} LoL match(es), but none in a competition we "
+                          "cannot already price from a book")
+        return res
     if res.get("http_status") == 200 and unpriced_hits:
         res["verdict"] = ("usable: structured two-way prices that cover fixtures we currently price "
                           "with the model — verify the samples by hand before adding an adapter")
