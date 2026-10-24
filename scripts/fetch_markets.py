@@ -26,7 +26,7 @@ from lib_common import (clamp, decimal_from_american, devig_two, get_json, log,
 OUT = "data/cache/markets.json"
 PIN_KEY = {"x-api-key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R", "Accept": "application/json"}
 PIN_BASE = "https://guest.api.arcadia.pinnacle.com/0.1"
-PIN_PAGE = "https://www.pinnacle.com/en/esports/league-of-legends"
+PIN_PAGE = "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues?all=false"
 
 UNIBET_APIS = (
     ("https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/"
@@ -39,11 +39,11 @@ UNIBET_EVENT_URL = "https://www.unibet.com.au/betting/sports/event/"
 
 BOVADA_APIS = (
     ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
+     "esports?marketFilterId=def&preMatchOnly=true&lang=en"),
+    ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
      "esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en"),
     ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
-     "esports/league-of-legends?marketFilterId=def&lang=en"),
-    ("https://www.bovada.lv/services/sports/event/coupon/events/A/description/"
-     "esports/league-of-legends"),
+     "esports?marketFilterId=def&lang=en"),
 )
 BOVADA_PAGE = "https://www.bovada.lv/sports/esports/league-of-legends"
 POLY_PAGE = "https://polymarket.com/event/"
@@ -185,10 +185,11 @@ def fetch_pinnacle() -> dict:
                 dv = devig_two(da, db)
                 if not dv:
                     continue
+                pin_url = f"{PIN_BASE}/matchups/{mid}/markets/related/straight" if mid else PIN_PAGE
                 rec = _record(
                     "Pinnacle", "pinnacle", name, start_dt,
                     p_home.get("name"), p_away.get("name"), dv[0], dv[1],
-                    PIN_PAGE, da, db,
+                    pin_url, da, db,
                     note=f"Pinnacle series moneyline (matchup {mid})",
                     raw={"matchup_id": mid, "league_id": lid,
                          "american_home": prices.get("home"), "american_away": prices.get("away"),
@@ -343,6 +344,8 @@ def _bovada_series_moneyline(mk: dict) -> bool:
     """
     if str(mk.get("description", "")).strip().lower() != "moneyline":
         return False
+    if mk.get("status") not in (None, "O", "OPEN"):
+        return False
     if len(mk.get("outcomes") or []) != 2:
         return False
     period = mk.get("period") or {}
@@ -365,8 +368,15 @@ def _parse_bovada_groups(groups: list) -> tuple[list, list, int]:
         if not isinstance(group, dict):
             continue
         path = group.get("path") or []
-        comp = path[0].get("description") if path else ""
-        comps.append(comp)
+        if path and not any(
+            "/league-of-legends" in str(p.get("link") or "").lower()
+            or "league of legends" in str(p.get("description") or "").lower()
+            for p in path if isinstance(p, dict)
+        ):
+            continue
+        comp = path[0].get("description") if path and isinstance(path[0], dict) else "League of Legends"
+        if comp and comp not in comps:
+            comps.append(comp)
         for ev in group.get("events") or []:
             events_seen += 1
             if ev.get("live"):
@@ -394,10 +404,22 @@ def _parse_bovada_groups(groups: list) -> tuple[list, list, int]:
             dv = devig_two(da, db)
             if not dv:
                 continue
+            ev_link = str(ev.get("link") or "").strip()
+            if ev_link:
+                if ev_link.startswith("http"):
+                    bov_url = ev_link
+                elif ev_link.startswith("/sports/"):
+                    bov_url = "https://www.bovada.lv" + ev_link
+                elif ev_link.startswith("/"):
+                    bov_url = "https://www.bovada.lv/sports" + ev_link
+                else:
+                    bov_url = "https://www.bovada.lv/sports/" + ev_link
+            else:
+                bov_url = BOVADA_PAGE
             rec = _record(
                 "Bovada", "bovada", comp, start_dt,
                 outs[0].get("description"), outs[1].get("description"), dv[0], dv[1],
-                "https://www.bovada.lv" + (ev.get("link") or ""), da, db,
+                bov_url, da, db,
                 note=f"Bovada moneyline (event {ev.get('id')})",
                 raw={"event_id": ev.get("id"), "market_type": "series",
                      "american_a": outs[0].get("price", {}).get("american"),
@@ -428,10 +450,11 @@ def fetch_bovada() -> dict:
     status["feed"] = used or BOVADA_APIS[0]
     records, comps, events_seen = _parse_bovada_groups(groups)
     status.update({"status": "ok" if records else "no_data", "count": len(records),
-                   "competitions": comps, "events_seen": events_seen})
-    if not records:
-        status["note"] = (f"Coupon feed reachable ({events_seen} LoL event(s) listed) but no "
-                          "pre-match full-series moneyline was open/parsed; no Bovada price used.")
+                   "competitions": comps, "events_seen": events_seen,
+                   "note": ("Public Bovada pre-match League of Legends coupon JSON (2-way main moneyline only)."
+                            if records else
+                            f"Bovada coupon feed reachable ({events_seen} LoL event(s) listed); "
+                            "0 open pre-match full-series moneylines parsed; no Bovada price used.")})
     return {"status": status, "records": records}
 
 
@@ -546,8 +569,12 @@ def fetch_polymarket() -> dict:
             if dk not in seen:
                 seen.add(dk)
                 records.append(rec)
-    status.update({"status": "ok" if records else "no_data", "count": len(records),
-                   "events_seen": len(events)})
+    status.update({
+        "status": "ok" if records else "no_data",
+        "count": len(records),
+        "events_seen": len(events),
+        "note": "Public Polymarket Gamma API series/match-winner prices (view-only in US; reference data only).",
+    })
     return {"status": status, "records": records}
 
 

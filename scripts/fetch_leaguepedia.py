@@ -324,7 +324,8 @@ def main() -> int:
             "schedule": len(schedule),
             "unscheduled": len(unscheduled),
             "standings": len(standings),
-            "standings_pages": len({str(s.get("overview") or "") for s in standings if s.get("overview")}),
+            "standings_pages": len({str(x.get("overview") or "") for x in standings
+                                    if str(x.get("overview") or "").strip()}),
             "teams": len(teams),
             "redirects": len(redirects),
             "export_calls": calls,

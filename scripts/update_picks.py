@@ -16,6 +16,7 @@ import fetch_leaguepedia
 import fetch_markets
 import model
 from lib_common import load_json, log, now_utc, utc_iso, write_json
+from source_probe import probe_sources
 from standings_and_books import probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
@@ -67,22 +68,63 @@ LIMITATIONS = [
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
-    "The standings fallback (MODEL_STANDINGS) converts a team's current-split win-loss record in that competition into a smoothed Elo offset from the competition prior. It ignores strength of schedule inside the league, roster changes since those games, and any cross-league form, so it is capped at Low confidence and only used when there is no market line and Elo cannot rate that side.",
+    "Split standings are used in two ways. When Elo cannot rate a side at all, the team's current-split win-loss record in that competition becomes a smoothed Elo offset from the competition prior (MODEL_STANDINGS, Low confidence). When a side has only a thin Elo history but a current-split standings record for this same competition, that record is blended into the rating (MODEL_ELO_STANDINGS, Medium confidence, flagged STANDINGS_BLEND_APPLIED). Both ignore strength of schedule inside the league, roster changes since those games, and any cross-league form.",
+    "A standings record is only blended in when it belongs to the row's own competition page. A record from a different tournament is not treated as evidence about that fixture.",
     "Where a team has no recorded games, the model falls back to the median rating of its competition (or the global median). That is a prior, not evidence about the team.",
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
     "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
-    "Commercial esports odds/data APIs that do price some lower-tier LoL (OddsPapi, PandaScore Odds, Abios/Kambi direct, GRID) require a paid key, a licensed-sportsbook contract, or a sales agreement. No such key is configured in this repository, so matches only those vendors might price are resolved by our Elo/standings model instead (research log: research/betting-sources.md §13, checked 2026-10-24).",
+    "Commercial esports odds/data APIs that do price some lower-tier LoL (OddsPapi, PandaScore Odds, Abios/Kambi direct, GRID) require a paid key, a licensed-sportsbook contract, or a sales agreement. No such key is configured in this repository, so matches only those vendors might price are resolved by our Elo/standings model instead (research log: research/betting-sources.md §15, checked 2026-10-24).",
 ]
 
-ORGANIZER_LINKS = {
-    "PRM 2nd Division 26-27 Fall": ("Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
-    "PRM 3rd Division 26-27 Fall": ("Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
-    "RIVALS LEAGUE Season 2": ("RIVALS LEAGUE (organizer)", "https://www.rivalsleague.gg/"),
-    "Komplettligaen 2026 Autumn": ("Komplettligaen (organizer)", "https://www.komplettligaen.no/lol/"),
-    "Worlds 2026 Main Event": ("LoL Esports (official)", "https://lolesports.com/"),
-    "LGC Rising 2026 Playoffs": ("LoL Esports (official)", "https://lolesports.com/"),
+# Liquipedia MediaWiki `list=allpages` needs a *page title prefix*, not a Hotspawn
+# tournament label. Before 2026-10-24 this probe passed whole tournament names
+# ("PRM 3rd Division 26-27 Fall") as `apprefix`, so it always returned no_data.
+LIQUIPEDIA_PREFIXES = {
+    "prime league": "Prime_League",
+    "prm": "Prime_League",
+    "rivals": "RIVALS_LEAGUE",
+    "komplett": "Komplettligaen",
+    "4 nations": "4_Nations",
+    "tunisian": "Tunisian",
+    "lgc rising": "LGC_Rising",
+    "worlds": "2026_Season_World_Championship",
 }
+
+
+def liquipedia_prefixes_for(tournaments: list[str]) -> tuple[str, ...]:
+    """Map the active Hotspawn tournament labels to Liquipedia page prefixes."""
+    found: list[str] = []
+    for t in tournaments:
+        low = (t or "").lower()
+        for needle, prefix in LIQUIPEDIA_PREFIXES.items():
+            if needle in low and prefix not in found:
+                found.append(prefix)
+    return tuple(found) or ("Prime_League", "RIVALS_LEAGUE", "Komplettligaen")
+
+
+# Verified operator / official pages. Matched by substring so a split suffix
+# ("Komplettligaen 2026 Autumn Playoffs") still finds its league page.
+# Only pages a human opened and confirmed on 2026-10-24 are listed here;
+# competitions with no verified operator page are simply left without one.
+ORGANIZER_LINKS = (
+    ("PRM", "Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
+    ("RIVALS LEAGUE", "RIVALS LEAGUE (organizer)", "https://www.rivalsleague.gg/lol"),
+    ("Komplettligaen", "Komplettligaen (organizer)", "https://www.komplettligaen.no/lol/"),
+    ("Worlds", "LoL Esports (official)", "https://lolesports.com/"),
+    ("LGC Rising", "LoL Esports (official)", "https://lolesports.com/"),
+    ("LCP", "LoL Esports (official)", "https://lolesports.com/"),
+)
+
+
+def organizer_for(tournament: str):
+    """Return (name, url) for the first verified organizer page matching the label."""
+    low = (tournament or "").lower()
+    for needle, name, url in ORGANIZER_LINKS:
+        if needle.lower() in low:
+            return name, url
+    return None
+
 
 
 def classify_league_category(tournament: str) -> str:
@@ -102,23 +144,28 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     for tour, ms in sorted(by_tour.items(), key=lambda kv: (-len(kv[1]), kv[0])):
         lp_url = next((m.get("leaguepedia_url") for m in ms if m.get("leaguepedia_url")), None)
         lp_page = next((m.get("leaguepedia_page") for m in ms if m.get("leaguepedia_page")), None)
-        org = ORGANIZER_LINKS.get(tour)
+        org = organizer_for(tour)
         mkt = sum(1 for m in ms if m.get("market"))
         elo = sum(1 for m in ms if m.get("method") in ("MODEL_ELO", "MODEL_ELO_THIN"))
-        st = sum(1 for m in ms if m.get("method") == "MODEL_STANDINGS")
+        st = sum(1 for m in ms if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"))
         prior = sum(1 for m in ms if m.get("method") == "MODEL_LEAGUE_PRIOR")
         unres = sum(1 for m in ms if m.get("method") == "UNRESOLVED")
         low = sum(1 for m in ms if m.get("confidence") == "Low" or m.get("method") in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR"))
+        # Only mention the split-standings signal when it actually priced a
+        # fixture in this competition - otherwise the limitation text would
+        # claim evidence that was not used.
+        standings_note = (" and current-split standings records" if st else "")
         if mkt == len(ms):
             lim = "Covered by external bookmakers/markets (de-vigged consensus). Polymarket end-dates drift vs UTC lock times; Hotspawn epoch timestamps govern lock times."
         elif mkt > 0:
-            lim = f"{mkt}/{len(ms)} match(es) have external market odds; remaining matches rely on Leaguepedia recorded history and split standings."
+            lim = f"{mkt}/{len(ms)} match(es) have external market odds; remaining matches rely on Leaguepedia recorded history{standings_note}."
         elif unres > 0:
             lim = f"No external bookmaker prices this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
         elif prior > 0:
             lim = f"No bookmaker prices this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
         else:
-            lim = "No external sportsbook prices this division; 100% of fixtures resolved via Leaguepedia recorded match results and split standings."
+            lim = ("No external sportsbook prices this division; 100% of fixtures resolved via "
+                   f"Leaguepedia recorded match results{standings_note}.")
         rows.append({
             "tournament": tour,
             "category": classify_league_category(tour),
@@ -138,13 +185,14 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     return rows
 
 
-def build_payload(fixtures, markets, leaguepedia, picks):
+def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     now = now_utc()
     matches = picks["matches"]
     unresolved = [m for m in matches if m["method"] == "UNRESOLVED"]
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
     market_matches = [m for m in matches if m["market"]]
+    league_breakdown = build_league_breakdown(matches)
     reasons = Counter()
     for m in unresolved:
         if "NO_TEAM_HISTORY" in m["flags"]:
@@ -154,7 +202,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if m["method"] == "MODEL_STANDINGS":
+        if m["method"] in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
             reasons["Standings-based line (few decided series)"] += 1
         elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
             reasons["One team has no recorded history (league prior used)"] += 1
@@ -181,7 +229,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             b["market"] += 1
         elif m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN"):
             b["elo"] += 1
-        elif m["method"] == "MODEL_STANDINGS":
+        elif m["method"] in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
             b["standings"] += 1
         elif m["method"] == "MODEL_LEAGUE_PRIOR":
             b["prior_only"] += 1
@@ -189,12 +237,17 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             b["unresolved"] += 1
         if m in low_conf:
             b["low_confidence"] += 1
+    # Per-league limitation text, so the executive summary can state the limit
+    # for each competition without the reader having to open another page.
+    league_limits = {r["tournament"]: r.get("limitation") for r in league_breakdown}
     for b in by_league.values():
         b["best_signal"] = ("External betting lines" if b["market"]
+                            else "Elo + split standings" if b["elo"] and b["standings"]
                             else "Elo on recorded results" if b["elo"]
                             else "Official standings record" if b["standings"]
                             else "League prior only" if b["prior_only"]
                             else "No verified signal")
+        b["limitation"] = league_limits.get(b["tournament"])
     by_league_list = sorted(by_league.values(),
                              key=lambda b: (-b["unresolved"], -b["low_confidence"], -b["fixtures"]))
     source_status = []
@@ -202,6 +255,8 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         source_status.append({"name": s.get("source"), "url": s.get("url"), "status": s.get("status"),
                               "count": s.get("count"), "note": s.get("note") or s.get("error")})
     lp_degraded = bool(leaguepedia.get("degraded")) or leaguepedia["counts"]["results"] <= 1000
+    standings_pages = len({(x.get("overview") or "") for x in (leaguepedia.get("standings") or [])
+                           if x.get("overview")})
     source_status.append({"name": "Leaguepedia MatchSchedule",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
                           "status": "degraded" if lp_degraded else "ok",
@@ -209,13 +264,18 @@ def build_payload(fixtures, markets, leaguepedia, picks):
                           "note": (leaguepedia.get("degraded_reason")
                                    or ("Recorded results + schedules, exact UTC (CC BY-SA 3.0). "
                                        f"Standings rows: {leaguepedia['counts'].get('standings', 0)} "
-                                       f"across {leaguepedia['counts'].get('standings_pages') or len({str(s.get('overview') or '') for s in (leaguepedia.get('standings') or []) if s.get('overview')})} competitions."))})
+                                       f"across {standings_pages} competitions."))})
     st_count = leaguepedia["counts"].get("standings", len(leaguepedia.get("standings") or []))
+    st_pages = leaguepedia["counts"].get("standings_pages", 0)
+    st_used = sum(1 for m in matches if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"))
     source_status.append({"name": "Leaguepedia Standings",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
                           "status": "ok" if st_count > 0 else "no_data",
                           "count": st_count,
-                          "note": "Split series/game records for low-tier & amateur leagues (CC BY-SA 3.0)."})
+                          "note": (f"Split series/game records for low-tier & amateur leagues "
+                                   f"(CC BY-SA 3.0): {st_count} rows across {st_pages} competition page(s); "
+                                   f"used to price {st_used} fixture(s) "
+                                   f"(as a split-standings blend or as the rating source).")})
     liq_status = leaguepedia.get("liquipedia")
     if liq_status:
         source_status.append({"name": liq_status.get("name"), "url": liq_status.get("url"),
@@ -237,7 +297,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
             "next_24h": len(next_24h),
             "market": len(market_matches),
             "model": sum(1 for m in matches if m["method"].startswith("MODEL")),
-            "standings": sum(1 for m in matches if m["method"] == "MODEL_STANDINGS"),
+            "standings": sum(1 for m in matches if m["method"] in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS")),
             "resolved": picks["coverage"]["resolved"],
             "unresolved": picks["coverage"]["unresolved"],
             "low_confidence": len(low_conf),
@@ -247,8 +307,8 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         "coverage": picks["coverage"],
         "coverage_reconciliation": fixtures.get("reconciliation") or {},
         "excluded_fixtures": fixtures.get("excluded") or [],
-        "model": picks["model"],
-        "league_breakdown": build_league_breakdown(matches),
+        "model": {**picks["model"], "standings_pages": standings_pages},
+        "league_breakdown": league_breakdown,
         "unresolved": {
             "count": len(unresolved),
             "low_confidence_count": len(low_conf),
@@ -266,6 +326,9 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,
         "checked_unavailable": CHECKED_UNAVAILABLE,
+        # Live-measured reachability of the wider external source field. Diagnostic
+        # only: nothing here is used in a probability (see scripts/source_probe.py).
+        "market_probe": market_probe or {"checked_at": None, "books": [], "summary": {}},
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
         "next_24h": [m["id"] for m in next_24h[:8]],
@@ -292,9 +355,17 @@ def main() -> int:
     if not (fixtures and markets and leaguepedia):
         raise SystemExit("missing cache inputs; run without --use-cache")
     if not args.use_cache and not leaguepedia.get("liquipedia"):
-        leaguepedia["liquipedia"] = probe_liquipedia_pages([f.get("tournament") or "" for f in fixtures.get("fixtures") or []])
+        tournaments_seen = sorted({(f.get("tournament") or "") for f in fixtures.get("fixtures") or []})
+        leaguepedia["liquipedia"] = probe_liquipedia_pages(liquipedia_prefixes_for(tournaments_seen))
     picks = model.run(fixtures, leaguepedia, markets)
-    payload = build_payload(fixtures, markets, leaguepedia, picks)
+    market_probe = None
+    if not args.use_cache:
+        try:
+            market_probe = probe_sources()
+            write_json("data/diag/market_source_probe.json", market_probe)
+        except Exception as e:  # noqa: BLE001 - a probe must never break the pipeline
+            log(f"market source probe failed: {e!r}")
+    payload = build_payload(fixtures, markets, leaguepedia, picks, market_probe)
     write_json(DOCS_DATA, payload, compact=True)
     log(f"wrote {DOCS_DATA}: {payload['counts']}")
     return 0
