@@ -134,9 +134,12 @@ def probe(category: str, name: str, url: str, kind: str, headers: dict | None = 
         is_json = True
         if isinstance(data, dict):
             detail["top_level_keys"] = sorted(data.keys())[:12]
-            if isinstance(data.get("series"), list):  # Kalshi
-                detail["series_count"] = len(data["series"])
-                lol_hits = sum(1 for s in data["series"]
+            if "series" in data:  # Kalshi: {"series": null} when nothing is listed
+                series = data.get("series")
+                detail["series_count"] = len(series) if isinstance(series, list) else 0
+                if not isinstance(series, list):
+                    detail["series_null"] = True
+                lol_hits = sum(1 for s in (series if isinstance(series, list) else [])
                                if "league of legends" in json.dumps(s).lower()
                                or str(s.get("ticker", "")).upper().startswith("KXLOL"))
             if isinstance(data.get("events"), list):  # Polymarket
@@ -176,7 +179,8 @@ def probe(category: str, name: str, url: str, kind: str, headers: dict | None = 
                 verdict += (f"; {detail['group_count']} group(s), "
                             f"{detail.get('event_count', 0)} event(s)")
             if "series_count" in detail and not detail["series_count"]:
-                verdict += "; 0 series (no LoL market)"
+                verdict += ("; series is null (no esports market)" if detail.get("series_null")
+                            else "; 0 series (no LoL market)")
             if "event_count" in detail and not detail["event_count"]:
                 verdict += "; 0 events"
             if lol_hits is not None:

@@ -132,6 +132,7 @@ SOURCES = [
     {
         "category": "established",
         "name": "Betway Esports",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://www.betway.com/en/esports/league-of-legends",
         "feed": None,
         "role": "unavailable",
@@ -174,6 +175,7 @@ SOURCES = [
     {
         "category": "esportsbooks",
         "name": "Midnite",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://www.midnite.com/esports/league-of-legends",
         "feed": None,
         "role": "context",
@@ -196,6 +198,7 @@ SOURCES = [
     {
         "category": "lines",
         "name": "BetExplorer",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://www.betexplorer.com/lol/",
         "feed": None,
         "role": "unavailable",
@@ -205,6 +208,7 @@ SOURCES = [
     {
         "category": "lines",
         "name": "eGamersWorld",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://egamersworld.com/lol/bets",
         "feed": None,
         "role": "unavailable",
@@ -214,6 +218,7 @@ SOURCES = [
     {
         "category": "lines",
         "name": "OddsPapi",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://oddspapi.io/sports/esports/lol",
         "feed": "https://oddspapi.io/v4",
         "role": "unavailable",
@@ -225,6 +230,7 @@ SOURCES = [
     {
         "category": "lines",
         "name": "The Odds API",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://the-odds-api.com/liveapi/guides/v4/",
         "feed": "https://api.the-odds-api.com/v4",
         "role": "unavailable",
@@ -251,12 +257,14 @@ SOURCES = [
         "url": "https://kalshi.com/",
         "feed": "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
         "role": "unavailable",
-        "observed": "API reachable but returned an empty `series` list; no LoL series (2026-10-23).",
+        "observed": ("API reachable on 2026-10-24 but returned `{\"series\": null}` for the "
+                     "Esports category — no esports series are listed, so no LoL market exists."),
         "limitation": "No League of Legends market; not used.",
     },
     {
         "category": "prediction",
         "name": "Manifold Markets",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://manifold.markets/",
         "feed": "https://api.manifold.markets/v0/search-markets",
         "role": "unavailable",
@@ -266,6 +274,7 @@ SOURCES = [
     {
         "category": "prediction",
         "name": "Betfair Exchange",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://www.betfair.com/exchange/plus/",
         "feed": None,
         "role": "unavailable",
@@ -275,6 +284,7 @@ SOURCES = [
     {
         "category": "prediction",
         "name": "Smarkets",
+        "checked_on": "2026-10-23",   # observed in the 2026-10-23 probe; re-probed since
         "url": "https://smarkets.com/sport/esports/league-of-legends",
         "feed": "https://api.smarkets.com/v3",
         "role": "unavailable",
@@ -411,7 +421,7 @@ def build(markets: dict | None, leaguepedia: dict | None, probe: dict | None = N
                                f"{lp_counts.get('standings_pages', 0)} competitions.")
         _attach_probe(src, probe_idx)
         src["role_label"] = ROLE_LABEL.get(src.get("role"), src.get("role"))
-        src["verified_on"] = VERIFIED_ON
+        src["verified_on"] = src.get("checked_on") or VERIFIED_ON
         rows.append(src)
 
     categories = []
