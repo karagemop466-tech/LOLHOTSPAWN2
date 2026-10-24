@@ -820,14 +820,16 @@ Branch note: fixed branch `arena/047af680-lolhotspawn2`, branched from `main` at
 | Leaguepedia Cargo Export | Recorded results, schedule, standings, canonical names (CC BY-SA 3.0) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API | Compliant tournament metadata index only (CC BY-SA 3.0, gzip, ≥2.2s pacing, HTML never scraped) | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
 
-PR/merge record — to be completed after `gh pr merge <N> --merge`:
+PR/merge record — completed 2026-10-24:
 
 | Item | Value |
 |---|---|
-| PR number | pending |
-| PR URL | pending |
-| Merge method | `gh pr merge <N> --merge` |
-| Merge commit | pending |
-| Pages build run | pending |
-| Pages status | pending |
+| PR number | 32 |
+| PR URL | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/32 |
+| Merge method | `gh pr merge 32 --merge` |
+| Merge commit | `7b2bab5` (Merge pull request #32 from karagemop466-tech/arena/047af680-lolhotspawn2) |
+| Pages build run | latest build created 2026-10-24T16:26:33Z, status `built` (source: main, path `/`) |
+| Pages status | **built** — live |
+| Live site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ (serving the merged payload: 169 fixtures, 169 resolved, 0 unresolved; live dashboard render confirmed) |
+
 | Live site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
