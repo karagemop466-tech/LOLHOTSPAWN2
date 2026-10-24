@@ -161,6 +161,24 @@ async function renderPage(spec) {
   }
   const navCurrent = document.querySelectorAll('.top-nav a[aria-current="page"]').length;
   if (navCurrent !== 1) fail(`${spec.page}: ${navCurrent} active primary-nav items (expected 1)`);
+
+  // The header colour-theme button must be live on every page: it flips
+  // <html data-theme>, relabels itself and persists the choice.
+  const toggle = document.getElementById("theme-toggle");
+  if (!toggle) fail(`${spec.page}: no #theme-toggle in the header`);
+  else {
+    const before = document.documentElement.getAttribute("data-theme");
+    toggle.dispatchEvent(new dom.window.Event("click", { bubbles: true }));
+    const after = document.documentElement.getAttribute("data-theme");
+    if (!after || after === before) fail(`${spec.page}: theme button did not flip data-theme (${before} -> ${after})`);
+    else ok(`${spec.page}: theme button flipped to ${after}`);
+    let stored = null;
+    try { stored = dom.window.localStorage.getItem("lolpicks-theme"); } catch (e) { stored = "unavailable"; }
+    if (stored !== after) fail(`${spec.page}: theme choice not persisted (stored ${stored})`);
+    if (!/Switch to (light|dark) theme/.test(toggle.getAttribute("aria-label") || "")) {
+      fail(`${spec.page}: theme button aria-label not updated`);
+    }
+  }
   dom.window.close();
 }
 

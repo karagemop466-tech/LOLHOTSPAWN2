@@ -85,15 +85,23 @@ published list **and** a human has verified a sample row — neither probe ever 
 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
-python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-npm install --no-save jsdom && node verification/check_dom_render.js   # jsdom render checks (all pages)
-node verification/render_check.cjs            # executes the real JS on all 7 pages
-python3 verification/test_verifier.py           # verifier rule self-tests (incl. D22 probe + S11-S15 structure)
-python3 verification/test_entity_and_books.py   # 17/17 entity & bookmaker unit tests (incl. Bovada period regression)
-python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11-S15)
+python3 verification/check_dom_contract.py      # C1–C7: ids, header/nav skeleton, class coverage, dead controls, mobile rules
+python3 verification/test_dom_contract.py       # negative self-tests — every rule must fail on a broken page
+python3 verification/test_verifier.py           # verifier rule self-tests (incl. D22 probe + S11–S15 structure)
+python3 verification/test_entity_and_books.py   # entity & bookmaker unit tests (incl. Bovada period regression)
+python3 verification/check_source_pages.py      # every cited Leaguepedia tournament page must exist (needs network)
+python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11–S15)
 python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)
-npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
+npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all pages (incl. the theme toggle)
+node verification/check_dom_render.js           # jsdom render checks (all pages)
 ```
+
+The header carries a working colour-theme button on every page (`<html data-theme>`, persisted in
+`localStorage`, overriding the OS preference in both directions). `check_source_pages.py` exists because
+Leaguepedia answers **HTTP 200 with an empty body** for a title that does not exist, so a 200 from
+`verify_site.py --check-external` is not proof that a cited tournament page is real; the script asks the
+MediaWiki API in one batched read-only request. `verification/mobile_audit.md` records the 2026-10-24 audit
+of the pages against their stylesheet.
 
 `scripts/verify_site.py` includes **S11** (every CSS class a page uses must have a rule in `style.css` — the
 check that catches an unstyled or clipped header) and **S12** (all pages share one navigation, a visible
