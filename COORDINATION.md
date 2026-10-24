@@ -1302,6 +1302,31 @@ entry in `scripts/update_picks.py`, `research/betting-sources.md` §15, and the 
 | Line-probe evidence | committed; 39 requests / 30 sites / 0 with coverage | `data/diag/line_probe.json`, `research/betting-sources.md` §15 |
 | Next automatic refresh | 6-hour schedule (`0 */6 * * *`) continues on `main`; no manual input required | `.github/workflows/update-picks.yml` |
 
+### Irregularity found on the live site after the #42 deploy (session `arena/ac089f33-lolhotspawn2`)
+
+**What:** the executive summary and the unresolved page reported a pricing breakdown that did not add up.
+Live text on `633a273`: "9 from external betting lines, 41 from our chronological Elo model, 55 from split
+standings, 0 from competition priors, 0 placeholders" — 105 of 160 fixtures. The unresolved page separately
+said "**0** by split standings" while its own per-league table showed 19 + 4 + 18 … standings rows.
+
+**Cause (verified against the payload and `docs/assets/app.js`):**
+1. `stCount` read `cov.with_standings_model`, which the generator does not emit, so it fell back to
+   `counts.standings`; the Elo figure was then computed as `with_team_specific_model - stCount`
+   (96 − 55 = 41) — subtracting one signal from another.
+2. `nStand` counted only `MODEL_STANDINGS` and ignored `MODEL_ELO_STANDINGS`, the method the current
+   generator actually emits for 55 fixtures (`{"MARKET_CONSENSUS": 8, "MARKET_SINGLE": 1, "MODEL_ELO": 94,
+   "MODEL_ELO_THIN": 2, "MODEL_ELO_STANDINGS": 55}`).
+
+**Fix:** a single `pricingMix()` helper in `docs/assets/app.js` counts the mix from the rows themselves
+(market / `MODEL_ELO`+`MODEL_ELO_THIN` / `MODEL_STANDINGS`+`MODEL_ELO_STANDINGS` / `MODEL_LEAGUE_PRIOR` /
+`UNRESOLVED`), and both pages render from it, printing the total so a mismatch is visible immediately.
+Rendered result with the current payload: **9 + 96 + 55 + 0 + 0 = 160**.
+
+**Verified:** `node verification/check_dom_render.js` → all pages render; `python3 scripts/verify_site.py` →
+40 PASS · 0 FAIL · 0 WARN · 1 SKIP; `test_verifier.py` 45/45; `check_dom_contract.py` PASS.
+
+---
+
 **Second merge reconciliation (2026-10-24, `arena/66e731b3`):** merged `origin/main` again after PR #41 (`arena/e6f33fe9`: fixture-matched `probe_lines.py`, S13–S15, jsdom render gate) + scheduled refresh `6017b92`. Kept both sessions' `checked_unavailable` additions (their 9 fixture-matched entries + this session's 3 official-doc entries); research renumbered to **§17** and appended after main's §15/§16; generated files took main's pending CI regeneration. Twice-merged tree locally: `verify_site.py` **43 PASS/0 FAIL/0 WARN/1 SKIP**, verifier 45/45, DOM PASS, entity/books 17/17, standings ALL PASS, audit 23/23, JS syntax OK. Branch pipeline on the first merged tree (run `40114283132`, payload 2026-10-24T17:05Z) was **success**: 159/159 resolved, 0 unresolved, `checked_unavailable` 18 published, `market_probe` 32 sources (this session's 6 new candidates measured live: TonyBet/BC.Game 200 HTML-only; SportsBetting.ag/Stake/PandaScore/Oracle's Elixir 403).
 
 ---
