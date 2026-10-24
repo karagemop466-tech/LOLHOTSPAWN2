@@ -740,6 +740,128 @@ Baseline at claim (main `215656b`, payload generated 2026-10-24T15:28:56Z): 169 
 
 ---
 
+---
+
+## Session `arena/e6f33fe9-lolhotspawn2` — 2026-10-24 (executive-summary findability, on-page unresolved section, mobile UX, source re-probe, jsdom render check)
+
+> Branch note: Arena fixes this session to `arena/e6f33fe9-lolhotspawn2`; branch switching/creation is not permitted, so it stands in for `session-<id>/<task>`. Claim pushed before any edit.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| E1 Exec-summary restructure: picks first on mobile, big in-site pick links, "where are the picks" block; separate unresolved section **inside the executive summary** listing every unresolved fixture + per-league signal/limitation table | done | arena/e6f33fe9 | `docs/index.html`, `docs/assets/app.js`, `docs/assets/style.css` |
+| E2 Mobile readability pass: tap targets ≥44px, no horizontal overflow, viewport meta on every page, readable pick/probability at 360-390px | done | arena/e6f33fe9 | `docs/assets/style.css`, `docs/*.html` (markup only) |
+| E3 Live re-probe of lower-tier odds sources (established books → esportsbooks → aggregators) and publish findings with source links; add candidates to the CI probe | done | arena/e6f33fe9 | `scripts/probe_sources.py`, `research/betting-sources.md` |
+| E4 Automated DOM render check with jsdom against the real payload (all 7 pages) + verifier assertions for the new exec-summary anchors | done | arena/e6f33fe9 | `verification/check_dom_render.js`, `scripts/verify_site.py`, `.github/workflows/pipeline-test.yml`, `.github/workflows/verify.yml` |
+| E5 Line-by-line spot verification of live rows against Leaguepedia/Polymarket + integration, PR, merge, Pages deploy confirmation | done | arena/e6f33fe9 | `COORDINATION.md`, `verification/*.md` |
+
+Baseline at claim (branch == `main` @ `72c9b5a`): payload `generated_at` 2026-10-24T15:28:56Z — **169 fixtures, 169 priced, 9 market, 160 model, 0 unresolved, 73 low-confidence**, 14 cancelled exclusions; `scripts/verify_site.py` **36 PASS / 0 FAIL / 0 WARN / 1 SKIP**; `test_verifier.py` 35/35; `check_dom_contract.py` PASS. Open PRs #20 and #26 belong to other sessions and are not touched. No other session has claimed `docs/**`, `scripts/probe_sources.py`, `scripts/verify_site.py` or `verification/**` today.
+
+### Results (session `arena/e6f33fe9`, 2026-10-24)
+
+**What was wrong before this session (verified, not assumed).**
+
+1. `docs/index.html` and `docs/unresolved.html` — the two pages a phone visitor lands on first — used
+   `<div class="wrap bar">` for their header. `.bar` is the **12px probability bar** rule in
+   `style.css`, so the header was clipped to a 12px strip with `overflow:hidden`; the classes used
+   for that header (`.brand`, `.mark`, `.bar-end`, `.status-strip`, `.icon-btn`) had **no CSS at all**,
+   and `.covbar`, `.nav-list` and `.stat b/.stat span` were likewise unstyled. Both pages now use the
+   same `.header-inner` / `.logo` header as the other five, and every class a page uses now has a rule.
+2. The executive summary's "unresolved" section only rendered counts, a reason list and four
+   limitation bullets — it **did not list a single unresolved fixture**, and the per-league
+   limitation table existed only on `unresolved.html`.
+3. Nothing verified that the pages actually *render*: `check_dom_contract.py` only checks that the
+   ids the script references exist.
+
+**What changed.** Picks-first executive summary (one 54px "Find every pick" button → "Where the
+picks are" card grid with live counts → matches locking soonest + quick-scan table → coverage →
+separate unresolved section listing **every** unresolved fixture plus a per-league limitation table
+→ per-competition breakdown → market picks → sources). Mobile: full-width hero buttons under 620px,
+≥44px tap targets, `scroll-margin-top` on anchored sections so in-page jumps clear the sticky
+header. Every page keeps the six-item bottom nav.
+
+**Verification performed on this branch**
+
+| Check | Result |
+|---|---|
+| `node verification/check_dom_render.js` (new, jsdom, real payload) | **43/43 pass** — renders all 7 pages, asserts row counts vs payload, pick ∈ {team1, team2}, probabilities sum to 100%, a source link on every row, the summary's in-site pick links, and that a synthetic 2-fixture unresolved payload is listed |
+| `python3 scripts/verify_site.py` | **39 PASS · 0 FAIL · 0 WARN · 1 SKIP** (new checks S11 exec-summary unresolved section + ordering, S12 every CSS class styled, S13 render harness wired into CI) |
+| `python3 verification/check_dom_contract.py` | PASS |
+| `test_verifier.py` / `test_standings_model.py` / `test_entity_and_books.py` / `audit/test_model.py` | 35/35 · ALL PASS · 10/10 · 20/20 |
+| Live pipeline on branch, run [`40111948960`](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111948960) | **success** — 160 fixtures, 160 priced, 0 unresolved, 9 market rows (Pinnacle 8 · Unibet 8 · Polymarket 9), 18 cancelled excluded, `verify_site.py` PASS 39 / 0 fail |
+| First run [`40111240395`](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111240395) | **failure, fixed** — X1 found one dead external link: the methodology page pointed at `github.com/.../blob/main/verification/check_dom_render.js`, which does not exist on `main` yet (the harness was new on this branch). The link was removed rather than left broken. |
+
+**Source research (E3), all re-measured from CI on 2026-10-24** — `data/diag/source_probe.json`,
+written up in `research/betting-sources.md` §13:
+
+| Candidate | Observed | Used? |
+|---|---|---|
+| Betmonitor — PRM 2nd Division comparison | HTTP 200, HTML only; page shows bet365 1.98/1.92, Unibet 2.50, efbet 3.38, novibet 5.25/12.25 for a real fixture | No (no API, Cloudflare/ToS) |
+| BMBets — LoL Prime League | HTTP 200, HTML only | No |
+| OddsPortal — LoL Prime League | bot-protected comparison page | No |
+| Strafe LoL odds | HTTP 200, HTML only | No |
+| Oddspedia generic LoL odds | **HTTP 410 permanently deleted** (CI + direct fetch) | No |
+| eGamersWorld LoL odds | 200; board carried only 2026 World Championship fixtures on 2026-10-24 | Human cross-check only |
+| Kambi `ubca` / `ub` (in production) | 8–9 World Championship events; `market=DE`/`SE` return the same set; `…/ubde/…` answers HTTP 400 | Already used; cannot widen coverage |
+
+Conclusion recorded on the site: tier-2/3 fixtures have **no accessible licensed feed**, so their
+picks stay on our own Elo/standings line, and their limits are now stated in the executive summary
+itself rather than buried on a subpage. No scraper was built.
+
+**Line-by-line spot verification against official sources (2026-10-24)**
+
+| Row checked | Source opened | Observed | Result |
+|---|---|---|---|
+| Top Esports vs Anyone's Legend (`MARKET_CONSENSUS`, published 0.365) | [Polymarket event](https://polymarket.com/event/lol-tes-al-2026-10-24) · [Kambi feed](https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true) | Polymarket 37¢ / 64¢; Kambi 2.65 / 1.42 | Matches (median 0.365 between books) |
+| JSK Esports vs El Menzah Esports (`MODEL_ELO_THIN`, Tunisian Super League 2026, 24 Oct 16:00) | [Hotspawn match page](https://www.hotspawn.com/matches/jsk-esports-vs-el-menzah-esports-tunisian-super-league-2026-1080924) · [Leaguepedia competition](https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season) | Both teams, tournament and start time confirmed; Leaguepedia page exists with the split's results | Matches |
+| Hotspawn lobby vs payload | [Lobby](https://play.hotspawn.com/lol-pickems) · [live payload](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json) | Lobby lists 241 LoL rows (169 upcoming at 15:28Z); payload carries `lobby_upcoming = priced` with 0 missing | Matches |
+
+**Flagged irregularities for human review (non-blocking)**
+
+- Tier-2/3 line existence vs access: Betmonitor shows bet365 pricing Prime League 2nd Division, so
+  "no bookmaker prices these leagues" is **too strong** — the accurate statement, now used on the
+  site, is "no bookmaker feed we may legally use prices them". A human may want to license one.
+- Oddspedia's generic LoL odds paths return HTTP 410; older research (session `arena/92bfcdd3`, §12)
+  cited eGamersWorld/OddsPortal as human cross-checks only — that remains true.
+- D18 stays WARN by design: it compares against a 2026-10-21 diagnostic snapshot that is now ~68h
+  old; the verifier labels it stale rather than pretending it verifies the current schedule.
+
+---
+
+## Session `arena/ac089f33-lolhotspawn2` — 2026-10-24 (coverage for low-tier fixtures, mobile executive summary)
+
+Branch note: Arena fixes this session to `arena/ac089f33-lolhotspawn2`; that branch stands in for `session-<id>/<task>`.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T21 Line-source expansion: probe established books → esportsbooks → esports aggregators for per-match LoL prices that cover the 160 fixtures currently priced only by our model; implement an adapter only for a source that actually returns structured per-match prices, otherwise publish the evidence | done — 39 requests / 30 sites, **0 with new coverage** (evidence in `data/diag/line_probe.json`, table on Method & Sources, summary card on the exec summary) | arena/ac089f33-lolhotspawn2 | scripts/probe_lines.py (new), scripts/update_picks.py, .github/workflows/line-probe.yml (new), .github/workflows/pipeline-test.yml, data/diag/line_probe.json, docs/methodology.html, research/betting-sources.md §13 |
+| T22 Executive summary: explicit in-site "where the picks are" links, a separate unresolved-picks section (counts, per-league limitations, jump links to the filtered rows) | done — header/stats/coverage-meter CSS that was missing is added; separate section now lists every unpriced match, its signal and its limit, with direct links | arena/ac089f33-lolhotspawn2 | docs/index.html, docs/unresolved.html, docs/assets/app.js, docs/assets/style.css |
+| T23 Mobile readability pass on the picks views (tap targets ≥44px, full-width primary actions, card layout under 760px, wrapping long league names) | done | arena/ac089f33-lolhotspawn2 | docs/assets/style.css, docs/assets/app.js, docs/*.html |
+| T24 Verification, PR to main, merge, Pages deploy confirmation | in progress | arena/ac089f33-lolhotspawn2 | COORDINATION.md, README.md, research/betting-sources.md |
+
+No other session is active. Read-only check before claiming (2026-10-24): `main` = `72c9b5a`, payload 169 fixtures / 169 priced / 9 external-market / 160 model / 0 unresolved; Pinnacle `leagues_seen` contains only `League of Legends - World Championship`, so no accessible book currently prices PRM 2nd/3rd Division, Tunisian Super League, RIVALS LEAGUE, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG.
+
+
+### T21–T23 results (session `arena/ac089f33-lolhotspawn2`, 2026-10-24)
+
+**Starting state (main `72c9b5a`, payload 15:28 UTC):** 169 fixtures · 169 priced · 9 external-market · 160 model · 0 unresolved · 73 low confidence. Pinnacle's own league index contained one LoL league (World Championship), so nothing on the open market priced PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Live pipeline on branch | success; payload regenerated (164 fixtures at 16:26 UTC) | Actions run 40110923198 (`data/diag/pipeline.log`) |
+| Line probe (full) | 39 requests / 30 sites, **0 candidates with new coverage** | run 40110923198 step 8, `data/diag/line_probe.json` |
+| Line probe (fast workflow) | success; Kambi country sweep GB/DE/SE/IT/NL/FR/PL/AU/ZZ all return the same 8 World Championship matches | run 40111672023 |
+| Verifier | 36 PASS · 0 FAIL · 0 WARN · 1 SKIP | local `python3 scripts/verify_site.py`, CI step 6 |
+| Unit tests | verifier 35/35 · entity/books 10/10 · standings PASS · model checks 20/20 | local runs, CI step 6 |
+| DOM contract | PASS (43 js ids, 58 page ids) | local + CI |
+| jsdom render of all 7 pages | all assertions pass (exec summary: 12 quick rows, 12 league rows, 12 unresolved-league rows, 9 featured cards; unresolved: 12 league rows, 73 low-confidence cards; picks: 169 rows; flagged: 167 rows) | local harness with the real payload |
+| New payload field | `line_probe` (checked_at, 30 sites, 39 requests, 0 with coverage, per-candidate verdicts) exposed for the exec summary and Method page | `scripts/update_picks.py` |
+
+**Site defects fixed (found while reviewing the markup against `style.css`):** `docs/index.html` and `docs/unresolved.html` were still using the legacy header markup (`.brand`, `.mark`, `.bar-end`, `.icon-btn`, `.status-strip`), none of which existed in the stylesheet — so the landing page had an unstyled header, a permanently "Loading latest picks…" strip, no freshness indicator, an invisible coverage meter and a dead theme-toggle button. Both pages now use the same styled header as the other five pages, `#updated`/`#freshness` are populated, `.covbar` and `.stat b/span` are styled, and the "Site sections" list is replaced by tappable `linkcard` blocks.
+
+**Flagged (non-blocking, published on Method & Sources and the exec summary):** no accessible source prices the low-tier competitions (the separate Unresolved section states this per competition); Prime League's own rules prohibit betting-operator sponsors, so the organizer page is never an odds source; SofaScore/eGamersWorld/Oddspedia/GGScore/Winamax/Marathonbet/Betano/Stake/GG.Bet/Thunderpick/Rainbet/Rivalry/SportsBetting.ag block CI (403/404/410/503) and are listed with their observed status.
+
+---
+
 ## Session `arena/ea9a3e15-lolhotspawn2` — 2026-10-24 (final integration verification)
 
 | Task | Status | Owner | Files (claimed scope) |
@@ -1109,6 +1231,28 @@ append-only); the resolver is committed at `scripts/resolve_coordination_conflic
 was discarded at any point. `research/betting-sources.md` §13 (session `arena/26fa1cec`) and §14 (this
 session) are both present and renumbered so the section numbers stay unique.
 
+### T24 merge reconciliation (session `arena/ac089f33-lolhotspawn2`, 2026-10-24 ~17:0x UTC)
+
+While this session was running, `main` advanced (`72c9b5a` → `a5f1c8a`, PRs #36–#39 and three scheduled
+refreshes). Two of those sessions solved the same two problems independently, so this session reconciled
+rather than duplicated:
+
+| Overlap | Resolution |
+|---|---|
+| Session `arena/a21e3910` / `26fa1cec` built `scripts/source_probe.py` + the `market_probe` payload key and rendered a source-by-source table (`#sources-status`, `unresolved.html#sources-checked`) — a reachability probe that runs in every 6-hour production refresh | **Adopted as the single production probe.** This session's `line_probe` payload field, its exec-summary card and its Method-page table were removed to avoid two competing probe surfaces; `scripts/probe_lines.py` is kept as the deeper **fixture-matched coverage** probe (it is the only thing that answers "would this source price a row we currently price ourselves"), runs from its own `.github/workflows/line-probe.yml`, and is no longer part of `pipeline-test.yml`. |
+| Session `arena/c38ce482` + `26fa1cec` already delivered the "Where the updated picks are" cards with counts (`#picks-here`), the per-league limitations table on the exec summary (`#exec-league-limits-body`), the fixed `.covbar`/`.stat` styling and the jsdom render check (`verification/check_dom_render.js`) | **Adopted `main`'s `docs/**` wholesale.** This session's equivalent markup/JS was dropped, not merged, to keep one implementation. Two additive mobile rules that `main` still lacked were kept: `details > summary { min-height: 44px }` and full-width `.hero-actions .btn` under 640 px. |
+
+Unique contributions kept from this session: `scripts/probe_lines.py` + `data/diag/line_probe.json`,
+`.github/workflows/line-probe.yml`, the 11 new `CHECKED_UNAVAILABLE` rows and the re-test `LIMITATIONS`
+entry in `scripts/update_picks.py`, `research/betting-sources.md` §15, and the README line-source section.
+
+**Verified on the merged tree (local):** `scripts/verify_site.py` → 40 PASS · 0 FAIL · 0 WARN · 1 SKIP;
+`check_dom_contract.py` → PASS; `test_verifier.py` → 45/45; `test_standings_model.py` → PASS;
+`test_entity_and_books.py` → 10/10; `audit/test_model.py` → 23/23;
+`node verification/check_dom_render.js` → all 6 pages render with content (0 containers left loading).
+
+---
+
 ---
 
 ## Session `arena/f0a8380a-lolhotspawn2` — 2026-10-24 (structural `Resolver` short-tag & disambiguation hardening + full line-by-line verification)
@@ -1131,3 +1275,31 @@ session) are both present and renumbered so the section numbers stay unique.
 
 
 **Merge reconciliation (2026-10-24, `arena/66e731b3`):** `main` advanced through PRs #32–#43 (sessions `26fa1cec`/`c38ce482`/`a21e3910`/`f0a8380a`: shared-header fix + S11/S12, `MODEL_ELO_STANDINGS` blend, `market_probe`/`source_probe.py`, Resolver hardening, DOM render tests) while this branch was in flight. Merged `origin/main` (`f5734a8`) into this branch, 18 conflicts resolved without discarding any session's work: generated payloads/reports took main's (CI regenerates); site pages/`app.js` adopted main's newer render-tested versions (this session's header diagnosis matched flagged S4/S5; its exec-summary rewrite was superseded by main's `#picks-here` cards + per-league limits + probe strip); Bovada kept this session's stricter `_bovada_series_moneyline` + snapshot-replay tests grafted with main's LoL-path filter, open-status guard and URL builder (both sessions fixed the same period-`Game` bug independently; merged replay 9/9); probe candidates from this session (SportsBetting.ag, TonyBet, BC.Game, Stake, PandaScore no-token, Oracle's Elixir) migrated into `scripts/source_probe.py` (32 candidates), `probe_sources.py` kept as main's wrapper; `checked_unavailable` +3 official-doc entries and the key-only-vendor limitation (now citing §15) kept; research section renumbered **§15** (main already used §13/§14) with the standings-blend item rewritten as reconciled + flagged U4; CI `pipefail` retained in all three generator workflows. Merged tree locally: `verify_site.py` **40 PASS/0 FAIL/0 WARN/1 SKIP**, verifier 45/45, DOM contract PASS, entity/books **17/17**, standings ALL PASS, audit 23/23, jsdom `render_check.cjs` PASS (all 7 pages).
+
+---
+
+### PR & GitHub Pages Deployment Record (`arena/f0a8380a-lolhotspawn2`)
+| Item | Value |
+|---|---|
+| Pull Request | [PR #43](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/43) (`arena/f0a8380a-lolhotspawn2` → `main`) — **MERGED** (`2026-10-24T16:53:05Z`, merge commit `5a7d73f6ffc51194d58548c44f50e0e6f77597d0`) |
+| Post-merge pipeline refresh on `main` | `update-picks.yml` run [40113603161](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40113603161) — **success** (`1m41s`), commit `f5734a89986d9276bbc3a08dedb01e96c89a241c`, payload `2026-10-24T16:54:25.197732Z`: **160 upcoming fixtures · 160 resolved (`100.0%`) · 0 unresolved · 9 external market rows · 151 model rows** |
+| GitHub Pages deployment | `pages-build-deployment` run [40113723631](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40113723631) — **success**, Pages API `status: "built"` for commit `f5734a89986d9276bbc3a08dedb01e96c89a241c` (`2026-10-24T16:56:49Z`, duration `123.8s`) at <https://karagemop466-tech.github.io/LOLHOTSPAWN2/> |
+
+
+
+### T24 PR & deployment record (session `arena/ac089f33-lolhotspawn2`)
+
+| Item | Result | Evidence |
+|---|---|---|
+| Pull request | **PR [#42](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/42)** — `arena/ac089f33-lolhotspawn2` → `main` | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/42 |
+| Merge | `gh pr merge 42 --merge` → **MERGED** 2026-10-24T16:58:59Z, merge commit `633a273` | GitHub PR record |
+| Branch CI before merge | **success** — live pipeline, unit suites, `verify_site.py --check-external`, DOM contract, probe (`Pipeline test (branch verification)` run 40113728002, head `f1506ac`) | Actions run 40113728002 |
+| Post-merge verify on `main` | **success** | Actions run 40114030726 |
+| Pages deployment | **built** for `633a273c7c5a2dd0288c758460a3925c7d2c4293` at 2026-10-24T16:59:46Z | `GET /repos/.../pages/builds/latest` |
+| Live executive summary | renders the freshness line ("Updated Sat, Oct 24, 12:54 PM · next refresh 22:54 UTC · 160/160 listed matches priced"), the four "Where the updated picks are" cards with counts (160 matches / 25 next-24h / 12 competitions / 0 unresolved · 9 low confidence), the coverage reconciliation block and the separate unresolved/limitations section with per-competition limits | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ |
+| Live payload | `generated_at` 2026-10-24T16:58:27Z · 160 fixtures · 160 priced · 9 external-market · 151 model (55 blended with split standings) · 0 unresolved · 9 low-confidence · `market_probe` 26 sources · `checked_unavailable` 24 rows (11 added here) · 11 limitations (1 added here) | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json |
+| Live stylesheet | serves this session's final mobile rules (`details > summary { min-height: 44px }`, full-width `.hero-actions .btn` under 640 px) | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/assets/style.css |
+| Line-probe evidence | committed; 39 requests / 30 sites / 0 with coverage | `data/diag/line_probe.json`, `research/betting-sources.md` §15 |
+| Next automatic refresh | 6-hour schedule (`0 */6 * * *`) continues on `main`; no manual input required | `.github/workflows/update-picks.yml` |
+
+**Second merge reconciliation (2026-10-24, `arena/66e731b3`):** merged `origin/main` again after PR #41 (`arena/e6f33fe9`: fixture-matched `probe_lines.py`, S13–S15, jsdom render gate) + scheduled refresh `6017b92`. Kept both sessions' `checked_unavailable` additions (their 9 fixture-matched entries + this session's 3 official-doc entries); research renumbered to **§17** and appended after main's §15/§16; generated files took main's pending CI regeneration. Twice-merged tree locally: `verify_site.py` **43 PASS/0 FAIL/0 WARN/1 SKIP**, verifier 45/45, DOM PASS, entity/books 17/17, standings ALL PASS, audit 23/23, JS syntax OK. Branch pipeline on the first merged tree (run `40114283132`, payload 2026-10-24T17:05Z) was **success**: 159/159 resolved, 0 unresolved, `checked_unavailable` 18 published, `market_probe` 32 sources (this session's 6 new candidates measured live: TonyBet/BC.Game 200 HTML-only; SportsBetting.ag/Stake/PandaScore/Oracle's Elixir 403).

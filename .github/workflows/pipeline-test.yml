@@ -54,6 +54,18 @@ jobs:
           print("\nSources:", json.dumps(d["sources_status"], indent=2))
           PY
 
+      - uses: actions/setup-node@v4
+        if: always()
+        with:
+          node-version: "20"
+
+      - name: Render checks (jsdom renders every page from this run's payload)
+        if: always()
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund jsdom
+          node verification/render_check.cjs
+          node verification/check_dom_render.js
+
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
         run: |
