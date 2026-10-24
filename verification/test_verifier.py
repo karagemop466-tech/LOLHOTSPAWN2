@@ -174,6 +174,9 @@ def main() -> int:
     }
     results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=copy.deepcopy(wired_probe)),
                                  "D23", vs.PASS, "wired feeds counted consistently"))
+    # the word "production" contains "prob": it must not be mistaken for a probability field
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=copy.deepcopy(wired_probe)),
+                                 "D23", vs.PASS, "wired rows mentioning \"production\" still pass"))
     lied = copy.deepcopy(wired_probe); lied["summary"]["wired_feeds_reachable"] = 2
     results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=lied),
                                  "D23", vs.FAIL, "summary claims a dead feed is reachable"))

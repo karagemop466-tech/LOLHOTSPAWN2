@@ -528,7 +528,9 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             for b in wired:
                 if not str(b.get("name") or "").strip():
                     problems.append("wired row without a name")
-                if "prob" in json.dumps(b).lower():
+                # Only real probability fields count: the word "production" contains "prob"
+                # and must not trip this check (regression fixed 2026-10-24).
+                if any(k in b for k in ("prob_team1", "prob_team2", "probability", "prob_a", "prob_b")):
                     problems.append(f"{b.get('name')}: wired row carries a probability")
         rep.add("D23", "probe separates the production feeds from checked-only sources",
                 PASS if not problems else FAIL,

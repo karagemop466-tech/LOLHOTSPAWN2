@@ -554,3 +554,58 @@ external sources were requested and that none of them listed the fixture.
 | `python3 verification/test_entity_and_books.py` | 10/10 |
 | `python3 verification/test_standings_model.py` | ALL PASS |
 | Deployed site (GitHub Pages) | summary, picks, leagues, unresolved, flagged, methodology, match — all fetched and rendered |
+
+### 13.7 Probe snapshot — every source requested once during the 2026-10-24 16:57 refreshZ
+
+`market_probe` published in the page payload: **37 sources checked · 17 reachable · 9 returned JSON · 6 JSON with a League of Legends market · 10/29 market sources reachable · 3 results pages reachable · 4/4 production feeds reachable**.
+
+| Source | Type | HTTP | What it returned |
+|---|---|---|---|
+| Pinnacle (guest JSON) | market | 200 | reachable JSON with League of Legends references — candidate for an adapter only after a human verifies a sample price; not used in any probability yet |
+| Betfair Exchange | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| Smarkets API (sports index) | market | 404 | endpoint not found (HTTP 404) — path may have moved; nothing used |
+| Betway Esports LoL | market | 404 | endpoint not found (HTTP 404) — path may have moved; nothing used |
+| BetOnline LoL | market | 200 | reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability |
+| Unibet LoL (HTML shell) | market | 503 | not reachable from CI this run (HTTP 503) — nothing used |
+| GG.Bet LoL | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| Thunderpick LoL | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| Rivalry LoL | market | 503 | not reachable from CI this run (HTTP 503) — nothing used |
+| Midnite LoL | market | 200 | reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability |
+| 1xBet line feed (sports index) | market | 203 | served an interstitial/redirect page (HTTP 203) instead of the feed — no line can be read |
+| OddsPapi (API — no key configured) | market | 404 | endpoint not found (HTTP 404) — path may have moved; nothing used |
+| odds-api.io (API — no key configured) | market | 200 | endpoint answers without a key, but the payload carries no League of Legends match market — its data needs a paid API key that is not configured here; nothing used |
+| OddsPortal LoL | market | 200 | reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability |
+| BetExplorer LoL | market | 404 | endpoint not found (HTTP 404) — path may have moved; nothing used |
+| eGamersWorld LoL odds | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| DraftKings LoL | market | 404 | endpoint not found (HTTP 404) — path may have moved; nothing used |
+| FanDuel LoL | market | 200 | reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability |
+| BetMGM LoL | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| bet365 esports | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| Betsson esports | market | 202 | served an interstitial/redirect page (HTTP 202) instead of the feed — no line can be read |
+| Paf esports | market | 404 | endpoint not found (HTTP 404) — path may have moved; nothing used |
+| Betano esports | market | 200 | reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability |
+| Betspawn LoL (Hotspawn's own book) | market | 200 | reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability |
+| Sportsbetting.ag LoL | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| BetUS esports | market | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| Oddspedia LoL | market | 410 | endpoint not found (HTTP 410) — path may have moved; nothing used |
+| Pinnacle LoL matchups (wired feed) | production | 200 | production feed, reachable this run with League of Legends markets in the response — one of the four sources that may contribute a probability (subject to the de-vig and dedup rules in Methodology) |
+| Unibet/Kambi LoL listView (wired feed) | production | 200 | production feed, reachable this run with League of Legends markets in the response — one of the four sources that may contribute a probability (subject to the de-vig and dedup rules in Methodology) |
+| Bovada esports coupon (wired feed) | production | 200 | production feed reachable, but no League of Legends market in this response — it contributed no probability this run |
+| Polymarket LoL tag (wired feed) | production | 200 | production feed, reachable this run with League of Legends markets in the response — one of the four sources that may contribute a probability (subject to the de-vig and dedup rules in Methodology) |
+| Kalshi esports series | market | 200 | reachable JSON without any League of Legends match market in the response — nothing used |
+| Manifold Markets LoL search | market | 200 | reachable JSON with League of Legends references — candidate for an adapter only after a human verifies a sample price; not used in any probability yet |
+| gol.gg tournament index | results | 200 | reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only |
+| bo3.gg LoL matches | results | 200 | reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only |
+| Riot LoLESports official schedule | results | 403 | blocked to automated requests (HTTP 403) — no line can be read |
+| Liquipedia LoL API | results | 200 | reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only |
+
+**Irregularity found by this probe and fixed:** the Unibet/Kambi health check first returned **HTTP 400** because it
+used the bare `listView` path. The production adapter requests `?lang=en_GB&market=ZZ&useCombined=true`, so a 400
+there would have looked like a dead feed next to a healthy set of Unibet picks. The health check now uses the exact
+production URL (the Pinnacle check also sends the same public guest key as `fetch_markets.py`); after the fix all four
+production feeds answer, and Bovada correctly reports “reachable but no League of Legends market in this response”
+when its coupon is empty between rounds.
+
+Eleven of the 37 sources returned 401/402/403/202/203 (key required, blocked or interstitial); that is recorded as
+observed and is the evidence behind the site's statement that no reachable book publishes a verifiable line for 95% of
+the fixtures. Nothing in this table can contribute a probability.
