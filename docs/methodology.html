@@ -145,6 +145,55 @@
     </div>
   </section>
 
+  <section class="card" id="low-tier-sources">
+    <h3>Where the non-featured matches were searched (re-checked 2026-10-24)</h3>
+    <p class="small">
+      The fixtures without a featured bookmaker line were re-checked in the order the brief requires:
+      established sportsbooks → esportsbooks / esports betting lines → community results. Every row below is a live
+      observation made on 2026-10-24, at the link shown; nothing is inferred. Full notes with the same links:
+      <a href="../research/betting-sources.md">research/betting-sources.md §14</a> (served from this repository).
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Source</th><th scope="col">Observed</th><th scope="col">Consequence for our line</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest leagues feed ↗</a></td>
+            <td>The only League of Legends competition in the feed is <b>League of Legends – World Championship</b> (id 9587, 10 matchups). No PRM, RIVALS, Tunisian, Arabian, 4 Nations, Komplettligaen or LigaGG league is listed.</td>
+            <td><span class="chip amber">No line</span> — those rows keep our own Elo/standings model.</td>
+          </tr>
+          <tr>
+            <td><a href="https://polymarket.com/event/lol-tes-al-2026-10-24" target="_blank" rel="noopener">Polymarket — Top Esports vs Anyone's Legend ↗</a></td>
+            <td>37¢ / 64¢ at 16:19 UTC on 2026-10-24; published consensus was 0.365 / 0.635 (same direction).</td>
+            <td><span class="chip green">Cross-checked</span> — featured row confirmed live.</td>
+          </tr>
+          <tr>
+            <td><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">Betmonitor — Prime League 2nd Division comparison ↗</a></td>
+            <td>The league page exists and indexing exposes bet365 / ggbet prices for its fixtures, but the page body is rendered client-side and the fetched HTML contains no per-fixture price.</td>
+            <td><span class="chip amber">Manual review</span> — no machine-readable feed; flagged F14.1.</td>
+          </tr>
+          <tr>
+            <td><a href="https://oddspapi.io/sports/esports/lol" target="_blank" rel="noopener">OddsPapi — LoL odds API ↗</a></td>
+            <td>133 bookmakers quoted on the last measured tier-1 fixture, 184 market families, <b>0 fixtures scheduled</b> at 04:15 UTC on 2026-10-24; every request needs an <code>apiKey</code>.</td>
+            <td><span class="chip amber">Key-gated</span> — no key is configured, so no price from it is used anywhere.</td>
+          </tr>
+          <tr>
+            <td><a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia MatchSchedule / Standings ↗</a></td>
+            <td>31,752 schedule rows and 2,880 standings rows fetched in the current snapshot; every model row links its competition page.</td>
+            <td><span class="chip green">Used for our own line</span> (CC BY-SA 3.0).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">
+      <b>Limitation this creates:</b> a model line is not a market line. It carries no bookmaker margin and no
+      roster/injury news, and it must not be read as an edge against a bookmaker price. 73 of 169 rows are capped at
+      Low confidence for thin samples (&lt;8 games in 365 days) or cross-league comparisons; 0 rows are unresolved in
+      the current snapshot. The per-league version of this table is on
+      <a href="unresolved.html">Unresolved &amp; limitations</a>.
+    </p>
+  </section>
+
   <section class="card">
     <h3>Known limitations</h3>
     <ol class="small" id="limitations"><li>See <a href="unresolved.html">Unresolved &amp; low confidence</a>.</li></ol>
@@ -162,7 +211,7 @@
     <p class="small">Each row below was checked by hand on 2026-10-23, at the link shown, against the value this site
     published at that moment. Nothing in this table is inferred: if a check had failed, the row would say so.</p>
     <div class="table-wrap">
-      <table class="table">
+      <table>
         <thead><tr><th>What was checked</th><th>Source used (opens in a new tab)</th><th>Observed</th><th>Result</th></tr></thead>
         <tbody>
           <tr>

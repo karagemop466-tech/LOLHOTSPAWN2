@@ -61,6 +61,20 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("OddsPortal LoL", "https://www.oddsportal.com/lol/", "aggregator-page", "market"),
     ("BetExplorer LoL", "https://www.betexplorer.com/lol/", "aggregator-page", "market"),
     ("eGamersWorld LoL odds", "https://egamersworld.com/lol/bets", "aggregator-page", "market"),
+    # --- comparison pages that name a specific low-tier league (2026-10-24) ---
+    # Betmonitor exposes a Prime League 2nd Division comparison page whose search
+    # indexing shows bet365 / ggbet prices, but the page body is client-rendered;
+    # EsportBet / EsportsBets are affiliate guides. Probed as market sources so the
+    # site can state they were tried; none is ever used in a probability.
+    ("Betmonitor — Prime League 2nd Division comparison",
+     "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+     "aggregator-page", "market"),
+    ("Betmonitor — esports odds hub", "https://www.betmonitor.com/odds-comparison/esports/",
+     "aggregator-page", "market"),
+    ("EsportBet — LoL odds board", "https://esportbet.com/odds/league-of-legends/",
+     "aggregator-page", "market"),
+    ("EsportsBets — LoL betting guide", "https://www.esportsbets.com/betting/league-of-legends/",
+     "odds-guide", "market"),
     # --- prediction markets --------------------------------------------------
     ("Kalshi esports series", "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
      "prediction-market-api", "market"),

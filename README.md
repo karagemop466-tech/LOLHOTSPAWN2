@@ -55,10 +55,15 @@ its verified sources, and any upstream irregularity is surfaced on *Flagged for 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-python3 verification/test_verifier.py           # includes the D22 external-source-probe self-tests
-python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
+python3 verification/test_verifier.py           # verifier rule self-tests (D22 probe + S11/S12 structure)
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
-python3 scripts/verify_site.py                  # full schema + link + page audit
+python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11/S12)
+npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
 ```
+
+`scripts/verify_site.py` includes **S11** (every CSS class a page uses must have a rule in `style.css` — the
+check that catches an unstyled or clipped header) and **S12** (all pages share one navigation, a visible
+freshness slot and unique ids). `verification/render_check.cjs` loads each page in jsdom with the committed
+payload and asserts that the picks, tables and counts actually render.
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.

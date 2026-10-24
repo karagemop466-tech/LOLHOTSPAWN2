@@ -76,7 +76,12 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
                  "rivalsleague.gg", "komplettligaen.no")
-ALL_HOSTS = FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + ("github.com", "creativecommons.org")
+# Research/manual-review links published on the Methodology page. They are never a
+# probability input (no row cites them); they are listed so a reader can repeat the
+# search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
+             + ("github.com", "creativecommons.org"))
 
 PASS, FAIL, WARN, SKIP = "PASS", "FAIL", "WARN", "SKIP"
 
@@ -173,6 +178,51 @@ def pages() -> list[str]:
     if os.path.exists(root_index):
         out.append(root_index)
     return sorted(out)
+
+
+def pages_in(docs_dir: str) -> list[str]:
+    """Every HTML page inside a docs directory (used by the structure rules)."""
+    out = []
+    for base, _dirs, files in os.walk(docs_dir):
+        for f in files:
+            if f.endswith(".html"):
+                out.append(os.path.join(base, f))
+    return sorted(out)
+
+
+def css_class_names(css_text: str) -> set[str]:
+    """Every class selector defined in a stylesheet (comments stripped)."""
+    css = re.sub(r"/\*.*?\*/", " ", css_text or "", flags=re.S)
+    return {m.group(1) for m in re.finditer(r"\.([A-Za-z_][-\w]*)", css)}
+
+
+def html_class_names(html_text: str) -> set[str]:
+    """Every class token used by a page."""
+    used: set[str] = set()
+    for m in re.finditer(r'class\s*=\s*"([^"]*)"', html_text or ""):
+        used.update(t for t in m.group(1).split() if t)
+    return used
+
+
+def nav_signature(html_text: str, nav_class: str) -> tuple[tuple[str, str], ...]:
+    """Ordered (href, label) pairs of the <nav class="..."> block, for cross-page comparison."""
+    m = re.search(r'<nav[^>]*class="[^"]*\b' + re.escape(nav_class) + r'\b[^"]*"[^>]*>(.*?)</nav>',
+                  html_text or "", re.S)
+    if not m:
+        return ()
+    sig: list[tuple[str, str]] = []
+    for a in re.finditer(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', m.group(1), re.S):
+        label = " ".join(re.sub(r"<[^>]+>", " ", a.group(2)).split())
+        sig.append((a.group(1), label))
+    return tuple(sig)
+
+
+def duplicate_ids(html_text: str) -> list[str]:
+    """Ids that appear more than once on a page (invalid HTML; JS targets the first one)."""
+    seen: dict[str, int] = {}
+    for m in re.finditer(r'\bid\s*=\s*"([^"]+)"', html_text or ""):
+        seen[m.group(1)] = seen.get(m.group(1), 0) + 1
+    return sorted(k for k, v in seen.items() if v > 1)
 
 
 # --------------------------------------------------------------------------- data
@@ -748,7 +798,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     except OSError:
         pass
     mcol = re.search(r"\.bottom-nav\s*\{[^}]*grid-template-columns:\s*repeat\((\d+)", css_text)
-    nav_bad = []
+    bottom_bad = []
     for pg in pages():
         if not pg.startswith(DOCS + os.sep):
             continue  # root index.html is a redirect shell, not a dashboard page
@@ -759,14 +809,17 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             continue
         nav = re.search(r'<nav class="bottom-nav".*?</nav>', html_text, re.S)
         if not nav:
-            nav_bad.append(f"{pg}: no bottom nav")
+            bottom_bad.append(f"{pg}: no bottom nav")
             continue
         links = len(re.findall(r"<a ", nav.group(0)))
         if not mcol or int(mcol.group(1)) != links:
-            nav_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
+            bottom_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
     rep.add("S10", "phone bottom nav has one grid column per link on every page",
-            PASS if not nav_bad else FAIL,
-            "; ".join(nav_bad[:5]) if nav_bad else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
+            PASS if not bottom_bad else FAIL,
+            "; ".join(bottom_bad[:5]) if bottom_bad
+            else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
+    # S10 deliberately uses its own variable: it used to overwrite S3's `nav_bad`,
+    # which silently turned S3 ("every page links the shared picks navigation") green.
 
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
@@ -901,6 +954,76 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     if unverified_hosts:
         rep.add("S9b", "external link hosts on the trust allowlist", WARN,
                 f"{len(unverified_hosts)} host(s) need manual review", unverified_hosts[:12])
+
+    verify_structure(rep, DOCS)
+
+
+# --------------------------------------------------------------------------- structure
+def verify_structure(rep: Report, docs_dir: str) -> None:
+    """S11/S12: the rendering contract of the static pages.
+
+    S11 every CSS class used by a page must have a rule in that page's stylesheet.
+        (A class with no rule renders as nothing — e.g. the executive summary's
+        header used `class="wrap bar"` and inherited a 12 px, overflow-hidden
+        progress bar, clipping the title and the whole navigation on a phone.)
+    S12 every dashboard page ships the same primary navigation (same targets, same
+        order), the same phone bottom navigation, no duplicate ids, and a visible
+        data-freshness slot (#updated / #freshness) so a reader can always see how
+        old the picks are.
+    """
+    css_path = os.path.join(docs_dir, "assets", "style.css")
+    css_text = ""
+    if os.path.exists(css_path):
+        with open(css_path, encoding="utf-8", errors="replace") as fh:
+            css_text = fh.read()
+    defined = css_class_names(css_text)
+
+    gap_pages: dict[str, list[str]] = {}
+    dup_bad: list[str] = []
+    header_bad: list[str] = []
+    tops: dict[str, tuple] = {}
+    bottoms: dict[str, tuple] = {}
+    for pg in pages_in(docs_dir):
+        try:
+            with open(pg, encoding="utf-8", errors="replace") as fh:
+                html = fh.read()
+        except OSError:
+            continue
+        name = os.path.basename(pg)
+        for cls in sorted(html_class_names(html) - defined):
+            gap_pages.setdefault(cls, []).append(name)
+        for i in duplicate_ids(html):
+            dup_bad.append(f"{name}#{i}")
+        if 'id="updated"' not in html or 'id="freshness"' not in html:
+            header_bad.append(name)
+        tops[name] = nav_signature(html, "top-nav")
+        bottoms[name] = nav_signature(html, "bottom-nav")
+
+    if not gap_pages:
+        rep.add("S11", "every CSS class used by a page is defined in style.css", PASS,
+                f"{len(pages_in(docs_dir))} page(s), no unstyled class")
+    else:
+        rep.add("S11", "every CSS class used by a page is defined in style.css", FAIL,
+                f"{len(gap_pages)} class(es) used with no CSS rule (they render as nothing)",
+                [f".{c} on {', '.join(sorted(set(v)))}" for c, v in sorted(gap_pages.items())][:12])
+
+    nav_problems = []
+    if len(set(tops.values())) > 1:
+        nav_problems.append("primary navigation differs between pages")
+    if any(not sig for sig in tops.values()):
+        nav_problems.append("a page has no primary navigation")
+    if len(set(bottoms.values())) > 1:
+        nav_problems.append("phone bottom navigation differs between pages")
+    if any(not sig for sig in bottoms.values()):
+        nav_problems.append("a page has no phone bottom navigation")
+    if dup_bad:
+        nav_problems.append(f"duplicate id(s): {', '.join(sorted(dup_bad)[:6])}")
+    if header_bad:
+        nav_problems.append(f"missing freshness slot (#updated/#freshness): {', '.join(sorted(header_bad)[:6])}")
+    rep.add("S12", "all pages share one navigation, freshness slot and unique ids",
+            PASS if not nav_problems else FAIL,
+            f"{len(tops)} pages, identical nav with {len(next(iter(tops.values()), ()))} "
+            f"primary targets" if not nav_problems else "; ".join(nav_problems))
 
 
 # --------------------------------------------------------------------------- workflow
