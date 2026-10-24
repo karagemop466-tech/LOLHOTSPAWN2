@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:27:59.451424Z",
+ "checked_at": "2026-10-24T16:30:55.009997Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -66,12 +66,12 @@
    "name": "OddsPortal LoL",
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 200,
-   "bytes": 491898,
+   "http_status": 0,
+   "bytes": 0,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+   "verdict": "not usable from CI (HTTP 0)"
   },
   {
    "name": "BetExplorer LoL",
@@ -110,12 +110,12 @@
    "name": "Rivalry LoL",
    "url": "https://www.rivalry.com/lol",
    "kind": "esportsbook-page",
-   "http_status": 503,
-   "bytes": 1591,
+   "http_status": 404,
+   "bytes": 65054,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "not usable from CI (HTTP 404)"
   },
   {
    "name": "Midnite LoL",
@@ -166,7 +166,7 @@
    "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 416371,
+   "bytes": 416391,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -177,7 +177,7 @@
    "url": "https://www.betmonitor.com/odds-comparison/esports/",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 416271,
+   "bytes": 416291,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -210,7 +210,7 @@
    "url": "https://bo3.gg/lol/matches",
    "kind": "results-page",
    "http_status": 200,
-   "bytes": 190915,
+   "bytes": 190904,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
