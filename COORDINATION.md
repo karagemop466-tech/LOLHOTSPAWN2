@@ -715,3 +715,19 @@ the exact source link so a human can repeat it.
 | Post-merge live 6h refresh on `main` | **success** — run `39989184592` (`9d65409`, `generated_at = 2026-10-23T16:52:07.057868Z`): **172 / 172 upcoming fixtures resolved (`100.0%`)**, `9` market (`8` 3-book consensus + `1` single), `163` Elo model (`88` `MODEL_ELO` + `75` `MODEL_ELO_THIN`), `0` unresolved, `12` cancelled fixtures excluded, `10` per-league breakdown rows & all 8 `sources_status` entries published |
 | Post-refresh Pages deploy #2 | **success** — run `39990334025` deployed fresh `9d65409` payload to https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
 | Follow-up verifier hardening PR (#28 + #29) | Merged `wait_for_http()` + `http_status_retry()` in `scripts/verify_site.py` (PR **#28**, Pages deploy `39990798461` **success**), and replaced US-geoblocked SPA route `www.pinnacle.com/en/esports/league-of-legends` (HTTP `404` on US-East CI runners) in `docs/methodology.html`'s manual check log with the public `200 OK` JSON feeds actually queried by CI (`guest.api.arcadia.pinnacle.com` & `gamma-api.polymarket.com`) so `verify.yml` passes `X1`–`X3` cleanly on `main`. |
+
+---
+
+## Session `arena/e6f33fe9-lolhotspawn2` — 2026-10-24 (executive-summary findability, on-page unresolved section, mobile UX, source re-probe, jsdom render check)
+
+> Branch note: Arena fixes this session to `arena/e6f33fe9-lolhotspawn2`; branch switching/creation is not permitted, so it stands in for `session-<id>/<task>`. Claim pushed before any edit.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| E1 Exec-summary restructure: picks first on mobile, big in-site pick links, "where are the picks" block; separate unresolved section **inside the executive summary** listing every unresolved fixture + per-league signal/limitation table | in progress | arena/e6f33fe9 | `docs/index.html`, `docs/assets/app.js`, `docs/assets/style.css` |
+| E2 Mobile readability pass: tap targets ≥44px, no horizontal overflow, viewport meta on every page, readable pick/probability at 360-390px | in progress | arena/e6f33fe9 | `docs/assets/style.css`, `docs/*.html` (markup only) |
+| E3 Live re-probe of lower-tier odds sources (established books → esportsbooks → aggregators) and publish findings with source links; add candidates to the CI probe | in progress | arena/e6f33fe9 | `scripts/probe_sources.py`, `research/betting-sources.md` |
+| E4 Automated DOM render check with jsdom against the real payload (all 7 pages) + verifier assertions for the new exec-summary anchors | in progress | arena/e6f33fe9 | `verification/check_dom_render.js`, `scripts/verify_site.py`, `.github/workflows/pipeline-test.yml`, `.github/workflows/verify.yml` |
+| E5 Line-by-line spot verification of live rows against Leaguepedia/Polymarket + integration, PR, merge, Pages deploy confirmation | in progress | arena/e6f33fe9 | `COORDINATION.md`, `verification/*.md` |
+
+Baseline at claim (branch == `main` @ `72c9b5a`): payload `generated_at` 2026-10-24T15:28:56Z — **169 fixtures, 169 priced, 9 market, 160 model, 0 unresolved, 73 low-confidence**, 14 cancelled exclusions; `scripts/verify_site.py` **36 PASS / 0 FAIL / 0 WARN / 1 SKIP**; `test_verifier.py` 35/35; `check_dom_contract.py` PASS. Open PRs #20 and #26 belong to other sessions and are not touched. No other session has claimed `docs/**`, `scripts/probe_sources.py`, `scripts/verify_site.py` or `verification/**` today.
