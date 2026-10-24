@@ -28,7 +28,7 @@ KAMBI_ENDPOINTS = (
 KAMBI_PAGE = "https://www.unibet.com/betting/sports/filter/esports/league_of_legends"
 
 LIQUIPEDIA_API = "https://liquipedia.net/leagueoflegends/api.php"
-LIQUIPEDIA_PAGE = "https://liquipedia.net/leagueoflegends/Main_Page"
+LIQUIPEDIA_PAGE = "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json"
 
 PROP_SUFFIX_RE = re.compile(
     r"(\(\s*(?:kills?|towers?|turrets?|barons?|dragons?|inhibitors?|first\b[^)]*|map\s*\d+|game\s*\d+|handicap|total)\s*\))"
@@ -273,7 +273,50 @@ def standings_probability(rec1: dict | None, rec2: dict | None) -> tuple[float, 
     return p1, meta
 
 
-def probe_liquipedia_pages(prefixes: tuple[str, ...] = ("Prime_League", "RIVALS_LEAGUE", "Komplettligaen")) -> dict:
+_LIQUIPEDIA_PREFIX_RULES: tuple[tuple[str, str], ...] = (
+    ("worlds", "World_Championship/2026"),
+    ("world championship", "World_Championship/2026"),
+    ("prm ", "Prime_League"),
+    ("prime league", "Prime_League"),
+    ("arabian", "Arabian_League"),
+    ("komplettligaen", "Komplettligaen"),
+    ("lcp", "LCP/2027"),
+    ("lgc", "Game_Changers"),
+    ("game changers", "Game_Changers"),
+    ("em ", "EMEA_Masters"),
+    ("emea masters", "EMEA_Masters"),
+)
+
+
+def _normalise_liquipedia_prefixes(prefixes) -> list[str]:
+    """Map raw tournament labels to deduplicated canonical Liquipedia page prefixes (max 8)."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in prefixes or ():
+        s = str(raw or "").strip()
+        if not s:
+            continue
+        low = s.lower()
+        mapped = None
+        for needle, target in _LIQUIPEDIA_PREFIX_RULES:
+            if needle in low:
+                mapped = target
+                break
+        if mapped is None:
+            # Keep explicit MediaWiki prefixes (e.g. Prime_League), otherwise take first title token
+            if "_" in s or "/" in s:
+                mapped = s.replace(" ", "_")
+            else:
+                continue
+        if mapped not in seen:
+            seen.add(mapped)
+            out.append(mapped)
+        if len(out) >= 8:
+            break
+    return out or ["World_Championship/2026", "Prime_League", "Arabian_League", "Komplettligaen"]
+
+
+def probe_liquipedia_pages(prefixes: tuple[str, ...] = ("Prime_League", "World_Championship/2026", "Komplettligaen")) -> dict:
     """Compliant read-only check via Liquipedia's official MediaWiki API (CC-BY-SA 3.0).
 
     Strictly obeys https://liquipedia.net/api-terms-of-use:
@@ -281,10 +324,12 @@ def probe_liquipedia_pages(prefixes: tuple[str, ...] = ("Prime_League", "RIVALS_
       * Accept-Encoding: gzip (handled by lib_common.fetch)
       * Custom contact User-Agent (LOLHOTSPAWN2 bot UA)
       * >= 2.2s spacing between requests
+      * Deduplicated to <=8 canonical prefixes per run
     """
+    norm_prefixes = _normalise_liquipedia_prefixes(prefixes)
     found = {}
     errors = []
-    for pfx in prefixes:
+    for pfx in norm_prefixes:
         params = urllib.parse.urlencode({
             "action": "query",
             "list": "allpages",
@@ -300,7 +345,8 @@ def probe_liquipedia_pages(prefixes: tuple[str, ...] = ("Prime_League", "RIVALS_
         try:
             body = json.loads(r["text"])
             pages = [x.get("title") for x in (body.get("query", {}).get("allpages") or []) if x.get("title")]
-            found[pfx] = pages
+            if pages:
+                found[pfx] = pages
         except Exception:
             errors.append(f"{pfx}: parse error")
     total = sum(len(v) for v in found.values())

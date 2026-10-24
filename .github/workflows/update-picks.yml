@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - "scripts/**"
+      - "data/aliases.json"
       - ".github/workflows/update-picks.yml"
 
 permissions:
@@ -91,6 +92,9 @@ jobs:
           git add docs/data data/diag/pipeline.log
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
+          # Discard unstaged verifier reports so concurrent PR merges into main
+          # never fail git merge due to dirty verification/report.json.
+          git checkout -- verification/ 2>/dev/null || true
           # Merge-based retry: a rebase here can strand the worktree mid-rebase
           # and lose the refresh for a whole 6h cycle. Keep this run's payload.
           for attempt in 1 2 3 4 5; do
