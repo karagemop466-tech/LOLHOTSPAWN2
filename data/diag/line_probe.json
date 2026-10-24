@@ -1,0 +1,656 @@
+{
+ "checked_at": "2026-10-24T16:26:44.808717Z",
+ "fixture_count": 164,
+ "fixtures_without_external_line": 155,
+ "candidates_with_new_coverage": [],
+ "candidates": [
+  {
+   "name": "Pinnacle (control)",
+   "kind": "established-sportsbook",
+   "url": "https://www.pinnacle.com/en/esports/league-of-legends",
+   "http_status": 200,
+   "bytes": 0,
+   "is_json": true,
+   "competitions": [
+    "League of Legends - World Championship"
+   ],
+   "schedule_records": 8,
+   "detail": {
+    "leagues": [
+     "League of Legends - World Championship"
+    ]
+   },
+   "error": null,
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "reachable, but no two-way per-match price was extracted"
+  },
+  {
+   "name": "Polymarket (control)",
+   "kind": "prediction-market",
+   "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
+   "http_status": 200,
+   "bytes": 4361569,
+   "is_json": true,
+   "schedule_records": 17,
+   "detail": {
+    "match_markets": 17,
+    "sample": [
+     "LoL: Caldya Esport vs Lausanne-Sport Esports (BO1) - Nexus League Regular Season",
+     "LoL: Lille Esport vs Galions Sharks (BO1) - Nexus League Regular Season",
+     "LoL: Onion Team vs BRUTE (BO3) - Hitpoint Masters Regular Season",
+     "LoL: Contingent Esports vs University of Mississippi (BO5) - North American Chal",
+     "LoL: The Bandits vs Dynasty (BO3) - Road Of Legends Regular Season",
+     "LoL: Onetricks vs The Secret Man (BO3) - FLASH Oceania Playoffs",
+     "LoL: Project Conquerors vs Galions Sharks (BO5) - Nexus League Playoffs",
+     "LoL: Karmine Corp Blue Stars vs Project Conquerors (BO5) - Nexus League Playoffs"
+    ]
+   },
+   "error": null,
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "reachable, but no two-way per-match price was extracted"
+  },
+  {
+   "name": "Kambi / Unibet",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true",
+   "http_status": 200,
+   "bytes": 14026,
+   "is_json": true,
+   "competitions": [
+    "World Championship"
+   ],
+   "error": null,
+   "priced_records": 8,
+   "records_matched_to_fixtures": 8,
+   "fixtures_matched": 8,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [
+    {
+     "team_a": "TOP Esports",
+     "team_b": "Anyone's Legend",
+     "competition": "World Championship",
+     "start": "2026-10-24T17:10:00Z",
+     "decimal_a": 2.65,
+     "decimal_b": 1.42,
+     "matched_fixture": {
+      "id": "1067688",
+      "team1": "Top Esports",
+      "team2": "Anyone's Legend",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T17:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "CTBC Flying Oyster",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-24T18:10:00Z",
+     "decimal_a": 2.95,
+     "decimal_b": 1.36,
+     "matched_fixture": {
+      "id": "1067881",
+      "team1": "Movistar KOI",
+      "team2": "CTBC Flying Oyster",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "G2 Esports",
+     "team_b": "LØS",
+     "competition": "World Championship",
+     "start": "2026-10-24T19:10:00Z",
+     "decimal_a": 1.18,
+     "decimal_b": 4.4,
+     "matched_fixture": {
+      "id": "1067686",
+      "team1": "G2 Esports",
+      "team2": "LØS",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T19:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "Lyon Gaming",
+     "team_b": "Karmine Corp",
+     "competition": "World Championship",
+     "start": "2026-10-24T20:10:00Z",
+     "decimal_a": 2.02,
+     "decimal_b": 1.7,
+     "matched_fixture": {
+      "id": "1067684",
+      "team1": "LYON",
+      "team2": "Karmine Corp",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T20:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "Invictus Gaming",
+     "team_b": "Team Secret Whales",
+     "competition": "World Championship",
+     "start": "2026-10-24T21:10:00Z",
+     "decimal_a": 1.33,
+     "decimal_b": 3.05,
+     "matched_fixture": {
+      "id": "1067687",
+      "team1": "Invictus Gaming",
+      "team2": "Team Secret Whales",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T21:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Gen.G Esports",
+     "competition": "World Championship",
+     "start": "2026-10-24T22:00:00Z",
+     "decimal_a": 2.2,
+     "decimal_b": 1.6,
+     "matched_fixture": {
+      "id": "1067683",
+      "team1": "Hanwha Life Esports",
+      "team2": "Gen.G",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-24T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    }
+   ],
+   "verdict": "structured prices found but they only duplicate fixtures we already price from a book"
+  },
+  {
+   "name": "Kambi / Betsson",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/betsson/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true",
+   "http_status": 429,
+   "bytes": 9,
+   "is_json": false,
+   "competitions": [],
+   "error": "HTTP 429",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 429)"
+  },
+  {
+   "name": "Kambi / NordicBet",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/nordicbet/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true",
+   "http_status": 429,
+   "bytes": 9,
+   "is_json": false,
+   "competitions": [],
+   "error": "HTTP 429",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 429)"
+  },
+  {
+   "name": "Kambi / LeoVegas",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/leovegas/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true",
+   "http_status": 400,
+   "bytes": 91,
+   "is_json": false,
+   "competitions": [],
+   "error": "HTTP 400",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 400)"
+  },
+  {
+   "name": "Kambi / Unibet FR",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubfr/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true",
+   "http_status": 400,
+   "bytes": 87,
+   "is_json": false,
+   "competitions": [],
+   "error": "HTTP 400",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 400)"
+  },
+  {
+   "name": "Kambi / Unibet IT",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubit/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true",
+   "http_status": 200,
+   "bytes": 633,
+   "is_json": true,
+   "competitions": [],
+   "error": "no two-way Match Odds market found",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "reachable, but no two-way per-match price was extracted (no two-way Match Odds market found)"
+  },
+  {
+   "name": "Kambi / Betcity",
+   "kind": "established-sportsbook",
+   "url": "https://eu-offering-api.kambicdn.com/offering/v2018/betcity/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true",
+   "http_status": 400,
+   "bytes": 90,
+   "is_json": false,
+   "competitions": [],
+   "error": "HTTP 400",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 400)"
+  },
+  {
+   "name": "SofaScore (esports schedule + odds)",
+   "kind": "odds-aggregator",
+   "url": "https://www.sofascore.com/esports/league-of-legends",
+   "http_status": 403,
+   "bytes": 144,
+   "is_json": false,
+   "competitions": [],
+   "schedule_records": 0,
+   "detail": {
+    "odds_events_checked": 0,
+    "odds_events_with_prices": 0
+   },
+   "error": "0 scheduled LoL events read, no two-way prices returned",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "bo3.gg (esports match DB + odds)",
+   "kind": "esports-aggregator",
+   "url": "https://api.bo3.gg/api/v1/matches",
+   "http_status": 200,
+   "bytes": 201453,
+   "is_json": true,
+   "schedule_records": 0,
+   "detail": {
+    "attempts": [
+     {
+      "url": "https://api.bo3.gg/api/v1/matches?page[limit]=100&sort=-start_date&filter[matches.discipline_id][$eq]=2",
+      "status": 200,
+      "is_json": true
+     },
+     {
+      "url": "https://api.bo3.gg/api/v1/matches?page[limit]=100&sort=start_date",
+      "status": 200,
+      "is_json": true
+     },
+     {
+      "url": "https://api.bo3.gg/api/v1/disciplines",
+      "status": 200,
+      "is_json": true
+     }
+    ]
+   },
+   "error": "no odds fields in the public match payload",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "reachable, but no two-way per-match price was extracted (no odds fields in the public match payload)"
+  },
+  {
+   "name": "1xBet-family / 1xbet.com",
+   "kind": "esportsbook",
+   "url": "https://1xbet.com/en/line/",
+   "http_status": 203,
+   "bytes": 0,
+   "is_json": true,
+   "detail": {
+    "sport_attempts": [
+     {
+      "sport_id": 3,
+      "status": 203
+     },
+     {
+      "sport_id": 12,
+      "status": 203
+     },
+     {
+      "sport_id": 70,
+      "status": 203
+     },
+     {
+      "sport_id": 85,
+      "status": 203
+     },
+     {
+      "sport_id": 109,
+      "status": 203
+     }
+    ]
+   },
+   "error": "no League of Legends two-way prices in the LineFeed payload",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 203)"
+  },
+  {
+   "name": "1xBet-family / betwinner.com",
+   "kind": "esportsbook",
+   "url": "https://betwinner.com/en/line/",
+   "http_status": 203,
+   "bytes": 0,
+   "is_json": true,
+   "detail": {
+    "sport_attempts": [
+     {
+      "sport_id": 3,
+      "status": 203
+     },
+     {
+      "sport_id": 12,
+      "status": 203
+     },
+     {
+      "sport_id": 70,
+      "status": 203
+     },
+     {
+      "sport_id": 85,
+      "status": 203
+     },
+     {
+      "sport_id": 109,
+      "status": 203
+     }
+    ]
+   },
+   "error": "no League of Legends two-way prices in the LineFeed payload",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 203)"
+  },
+  {
+   "name": "1xBet-family / melbet.com",
+   "kind": "esportsbook",
+   "url": "https://melbet.com/en/line/",
+   "http_status": 203,
+   "bytes": 0,
+   "is_json": true,
+   "detail": {
+    "sport_attempts": [
+     {
+      "sport_id": 3,
+      "status": 203
+     },
+     {
+      "sport_id": 12,
+      "status": 203
+     },
+     {
+      "sport_id": 70,
+      "status": 203
+     },
+     {
+      "sport_id": 85,
+      "status": 203
+     },
+     {
+      "sport_id": 109,
+      "status": 203
+     }
+    ]
+   },
+   "error": "no League of Legends two-way prices in the LineFeed payload",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 203)"
+  },
+  {
+   "name": "eGamersWorld LoL odds",
+   "kind": "aggregator-page",
+   "url": "https://egamersworld.com/lol/bets",
+   "http_status": 403,
+   "bytes": 5740,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "Oddspedia LoL",
+   "kind": "aggregator-page",
+   "url": "https://oddspedia.com/esports/league-of-legends",
+   "http_status": 410,
+   "bytes": 341184,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 410",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 410)"
+  },
+  {
+   "name": "GGScore LoL",
+   "kind": "aggregator-page",
+   "url": "https://ggscore.com/en/lol/matches",
+   "http_status": 403,
+   "bytes": 5714,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "BetExplorer esports",
+   "kind": "aggregator-page",
+   "url": "https://www.betexplorer.com/esports/",
+   "http_status": 404,
+   "bytes": 0,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 404",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 404)"
+  },
+  {
+   "name": "Winamax LoL",
+   "kind": "established-sportsbook",
+   "url": "https://www.winamax.fr/paris-sportifs/sports/2/57",
+   "http_status": 403,
+   "bytes": 919,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "Marathonbet esports",
+   "kind": "established-sportsbook",
+   "url": "https://www.marathonbet.com/en/betting/Esports/",
+   "http_status": 403,
+   "bytes": 5849,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "Betano esports",
+   "kind": "established-sportsbook",
+   "url": "https://www.betano.de/esports/",
+   "http_status": 403,
+   "bytes": 1657,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "Vave esports",
+   "kind": "esportsbook",
+   "url": "https://vave.com/sports/esports",
+   "http_status": 200,
+   "bytes": 41471,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": null,
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "reachable, but no two-way per-match price was extracted"
+  },
+  {
+   "name": "Rainbet esports",
+   "kind": "esportsbook",
+   "url": "https://rainbet.com/esports/league-of-legends",
+   "http_status": 403,
+   "bytes": 110741,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "Thunderpick LoL",
+   "kind": "esportsbook",
+   "url": "https://thunderpick.io/esports/league-of-legends",
+   "http_status": 403,
+   "bytes": 5789,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "GG.Bet LoL",
+   "kind": "esportsbook",
+   "url": "https://gg.bet/en/esports/lol",
+   "http_status": 403,
+   "bytes": 126,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 403",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 403)"
+  },
+  {
+   "name": "Rivalry LoL",
+   "kind": "esportsbook",
+   "url": "https://www.rivalry.com/lol",
+   "http_status": 503,
+   "bytes": 1591,
+   "is_json": false,
+   "lol_mentions": null,
+   "error": "HTTP 503",
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "not usable from CI (HTTP 503)"
+  }
+ ],
+ "rule": "A candidate is promoted into scripts/fetch_markets.py only when it returns structured two-way per-match prices for fixtures in the published list and the sample rows are re-checked by hand. Status-only probes never contribute a price."
+}
