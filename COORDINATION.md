@@ -1384,104 +1384,15 @@ time regardless.
    and fails only on genuinely dead links — that is how the dead `github.com/.../blob/main/...` link was
    caught during this session.
 
-## Session `arena/9d523943-lolhotspawn2` — 2026-10-24 (T20–T23: exec-summary/mobile defect repair, verified source research, full verification, PR)
+### Fix `arena/e6f33fe9` — unresolved page contradicted itself on split-standings counts
 
-> Claimed at 2026-10-24 (branch `arena/9d523943-lolhotspawn2`, based on `main` @ `72c9b5a`). No other session holds these files. Open PRs from earlier sessions (#20 `arena/b132c242`, #26 `arena/e76bc0ae`) are **not** touched by this session; if either merges, this session rebases rather than overwrites.
+The "How this snapshot was resolved" line on `unresolved.html` reported **0 by split standings** while the
+league table further down the same page showed **55**, and the executive summary showed 55 as well. Cause: the
+line counted `m.method === "MODEL_STANDINGS"`, an id the pipeline never emits — the real id is
+`MODEL_ELO_STANDINGS` — so it fell back to 0, and "by our Elo model" absorbed those 55 by subtraction.
 
-| Task | Status | Owner | File scope (exclusive to this session) |
-|---|---|---|---|
-| T20 Fix the executive-summary + unresolved page header/nav defects and dead controls found by reading `docs/*.html` against `docs/assets/style.css`; standardise all 7 pages on one mobile header/nav and add the missing CSS the pages actually use | in progress | arena/9d523943 | `docs/index.html`, `docs/unresolved.html`, `docs/assets/style.css`, `docs/assets/app.js` |
-| T21 Verification hardening: fail the build on unstyled classes, a non-standard header, a dead control, or a page missing the JS-populated timestamp/freshness ids; publish the mobile audit | in progress | arena/9d523943 | `verification/check_dom_contract.py`, `verification/mobile_audit.md` |
-| T22 Fresh, dated source research for the *unresolved/low-confidence* bucket: established LoL betting sites → esportsbooks → community, checked with a real page fetch (not assumed) and recorded with links; extend the CI probe list | in progress | arena/9d523943 | `research/betting-sources.md`, `scripts/probe_sources.py` |
-| T23 Line-by-line verification of the combined payload/site, PR to `main`, merge, confirm the Pages deploy, record the PR/deploy here | pending | arena/9d523943 | `COORDINATION.md`, `README.md` |
-
-**Baseline at claim** (`main` `72c9b5a`, 2026-10-24T15:28:56Z payload): 169 fixtures · 169 priced (100%) · 9 market · 160 model · 0 unresolved · 73 low-confidence · 14 cancelled excluded. `scripts/verify_site.py` passes but the DOM contract does **not** check markup/CSS agreement, so the defects in T20 shipped green.
-
-### T20 — executive-summary / mobile UX repair: **done**
-
-Found by reading every page's markup against `docs/assets/style.css` and `docs/assets/app.js` (no browser needed).
-Full write-up with the reasoning for each item: **`verification/mobile_audit.md`**.
-
-| # | Defect (shipped) | Consequence on a phone | Fix | Check that now catches it |
-|---|---|---|---|---|
-| D1 | `index.html` + `unresolved.html` header wrapper was `<div class="wrap bar">`, and `.bar` is the probability progress bar (`height:12px; overflow:hidden`) | the landing page's logo, title and nav were clipped to a 12 px strip | standard `.site-header > .header-inner` skeleton on every page | `C3` |
-| D2 | those two pages had `<nav class="top-nav"><a>` with no `<ul>` | nav lost its 40 px scroll strip and tap targets | six-section `<ul>` nav everywhere | `C2` |
-| D3 | `#updated` / `#freshness` missing on those pages; an unscripted `#status-strip` sat there instead | summary displayed "Loading latest picks…" forever | header meta block added to all pages | `C5` |
-| D4 | `<button id="theme-toggle">` with **no handler** anywhere in `app.js` | a dead control | real toggle: `<html data-theme>`, icon/`aria-label` swap, `localStorage`, overrides OS preference both ways | `C4` + render smoke |
-| D5 | `.brand`, `.mark`, `.bar-end`, `.icon-btn`, `.nav-list`, `.covbar`, `.status-strip` had **no CSS rule** | the four section cards and the coverage bar rendered as bare text | `.nav-list`, `.covbar`, `.icon-btn` added, legacy classes removed | `C1` |
-| D6 | stat tiles used `<b>`/`<span>` but CSS sizes `.stat .n/.l` | headline counts rendered at body size | markup aligned with CSS | render smoke |
-| D7 | `methodology.html` used `class="table"` (undefined) | cosmetic | class removed | `C1` |
-| D8 | the picks list was only reachable through the (broken) nav | brief requires the summary to link to the picks | new `#where` card: all picks · next 24 h · by league · unresolved/limits, each with a live count, plus a hero chip | `S4`/`REQ7` + render smoke |
-
-### T21 — verification hardening: **done**
-
-* `verification/check_dom_contract.py` rewritten: `C1` class↔CSS coverage, `C2` header/nav skeleton + six sections,
-  `C3` no non-header class inside the header, `C4` no handler-less `<button id>`, `C5` ids `app.js` writes on every
-  page, `C6` mobile contracts (viewport, theme-color, table→card rule, ≥16 px body), plus the original id/bottom-nav checks.
-  **PASS** on this branch.
-* `verification/test_dom_contract.py` (new): **7/7** negative self-tests — each rule must fail on an injected defect.
-* `verification/render_smoke.js` (new): jsdom, real `app.js` + real payload, all 7 pages — **63/63** checks
-  (no JS errors, timestamp/freshness populated, counters, one picks row per fixture with an outbound source link,
-  match detail, theme toggle flips/persists/re-applies). Injecting two defects produced exactly 2 failures, so the
-  harness is not vacuous.
-* Both runners are wired into `.github/workflows/verify.yml` and `.github/workflows/pipeline-test.yml`.
-
-### T22 — fresh source research for the unresolved/low-confidence bucket: **done**
-
-Recorded as `research/betting-sources.md` **§13** (established books → esportsbooks → community, in that order).
-`scripts/probe_sources.py` rebuilt: **28** candidates tagged by tier, browser-UA where needed, per-tier roll-up in
-`data/diag/source_probe.json` (snapshot 2026-10-24T16:26:27Z). Headline results:
-
-* Established books: Pinnacle / Unibet (Kambi) / Bovada / Polymarket all **200 JSON** (production); Kalshi 200 but
-  no LoL series; Manifold futures only; The Odds API **401** (no key); BetExplorer **404**; Smarkets **404**;
-  OddsPortal LoL is a **404 page** when read directly today despite a 200 to the CI GET → not citable.
-* Esportsbooks: eGamersWorld / GG.Bet / Thunderpick / Coolbet / Stake **403**; Rivalry / Midnite / Betano HTML shells;
-  Betway **404**; 1xBet **203**. Read as a page, eGamersWorld *does* show a real 5-book board (Vave, Thunderpick,
-  Rainbet, Underdog, CocoBet) — but **only for the 2026 World Championship**, i.e. the matches we already price.
-* Community/organisers: Leaguepedia `MatchSchedule`/`Standings` **200 JSON**, Liquipedia API **200 JSON**,
-  Komplettligaen and RIVALS organiser pages 200, Prime League organiser **403 to CI** (readable as a page; no odds).
-  Riot LoLESports **403**.
-* Net effect: **no new market adapter was justified**, and no probability changed. What the tier-3 rows get is the
-  model plus an honest per-league limitation; Polymarket remains the only source that reaches below tier 2 (it prices
-  the LGC Rising BO5 decider).
-* New `verification/check_source_pages.py`: every cited Leaguepedia tournament page must **exist** (Leaguepedia answers
-  HTTP 200 with an empty body for a missing title). All **12** cited pages verified to exist on 2026-10-24; the result
-  is written to `data/diag/source_pages.log` by the branch pipeline.
-* Accuracy fix in `scripts/update_picks.py::build_league_breakdown`: the generated per-league limitation no longer
-  claims "split standings" for competitions where the standings signal priced nothing; it now names only the signals
-  actually used, with the Low-confidence count.
-
-### Session conflicts / handoffs
-* No other session is active on this branch's files. Open PRs #20 (`arena/b132c242`) and #26 (`arena/e76bc0ae`) were
-  inspected as branch refs only; nothing of theirs was edited. If either merges first, this branch rebases.
-* `scripts/update_picks.py` and `scripts/probe_sources.py` were edited by this session (not owned by any live claim);
-  the edit is the limitation-wording fix above, plus probe expansion. No model formula changed.
-
-### Merge reconciliation (2026-10-24, `arena/9d523943`) — main moved to `b0cb3e8`
-
-While T20–T22 were open, session `arena/c38ce482` merged PR #38 (`94758db`) with **overlapping** work: the shared
-header/nav skeleton, a “📌 Where the updated picks are” card, a jsdom harness (`verification/check_dom_render.js`,
-`verification/render_check.cjs`), `S11`/`S12` class-and-nav checks in `scripts/verify_site.py`, a production
-`scripts/source_probe.py` (22 candidates, published to the site as `market_probe`) with `scripts/probe_sources.py`
-demoted to a wrapper, a truthful standings-note fix in `build_league_breakdown`, and betting-sources §13/§14.
-
-Resolution (nothing discarded silently; nothing duplicated in the merged tree):
-
-| Item | Resolution |
-|---|---|
-| `docs/index.html`, `unresolved.html`, `style.css`, `app.js` | **Theirs** as the base (their header, `#picks-here` card, `statusline`, `covbar`, link cards). This session's *unique* delta re-applied on top: the working colour-theme button on all 7 pages, `:root[data-theme]` + `.icon-btn` CSS, and the theme controller in `app.js`. This session's duplicate `#where` card and `.nav-list`/`.covbar` CSS were dropped. |
-| `scripts/probe_sources.py`, `scripts/update_picks.py` | **Theirs** — the probe wrapper and the standings-note fix supersede this session's edits. This session's 28-candidate tier probe evidence is recorded in research §15 instead. |
-| `verification/render_smoke.js` (this session) | **Deleted** — `render_check.cjs` covers the same ground; this session instead added the theme-toggle assertions to it. |
-| `verification/check_dom_contract.py`, `test_dom_contract.py`, `check_source_pages.py`, `mobile_audit.md` | **Kept** (unique). `C2` was relaxed to require the six destinations by href, because `match.html` intentionally uses `data-nav="match"` on its picks link. |
-| `research/betting-sources.md` | Their §13/§14 kept; this session's pass added as **§15** with only the evidence they did not already record. |
-| Generated artifacts (`docs/data/picks.json`, `data/diag/*`, `verification/report.json`, `last_report.md`) | **Theirs** — regenerated by the next pipeline run. |
-
-Post-merge local state: `check_dom_contract.py` **PASS**, `test_dom_contract.py` **7/7**, `render_check.cjs`
-**PASS** (with the new theme assertions), `check_source_pages.py` **12/12 pages exist** (verified in run 40112604014).
-
-**CI failure found and fixed during the merge (2026-10-24):** the first post-merge pipeline-test run
-([40113550733](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40113550733)) failed because the
-automatic merge of `pipeline-test.yml` left a stale step still calling this session's deleted
-`verification/render_smoke.js` (and duplicated the verify block). The step list was rewritten to a single verify
-block plus the project's existing `render_check.cjs`; no check was dropped. This is recorded rather than hidden
-because the run is red in the Actions history.
+Fixed by one shared `methodMix()` helper in `docs/assets/app.js` that reads the pipeline's own
+`coverage.counts_by_method` tally (falling back to scanning `matches`) and is used by **both** the summary and
+the unresolved page, so the two can no longer drift. `verification/check_dom_render.js` now asserts the
+reported standings/Elo counts match the payload **and** that they equal the sum of the per-league standings
+column (3 new checks, 53/53). Verified non-vacuous: restoring the old `app.js` fails exactly the standings check.
