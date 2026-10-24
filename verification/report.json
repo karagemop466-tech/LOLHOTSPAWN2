@@ -1,37 +1,37 @@
 {
- "verified_at": "2026-10-24T17:01:00.783305+00:00",
+ "verified_at": "2026-10-24T17:09:35.236370+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 44,
+  "PASS": 45,
   "FAIL": 0,
   "WARN": 1,
   "SKIP": 0
  },
- "data_matches": 160,
+ "data_matches": 159,
  "methods": {
   "MODEL_ELO_STANDINGS": 55,
   "MODEL_ELO_THIN": 2,
-  "MARKET_SINGLE": 1,
-  "MODEL_STANDINGS": 0,
+  "MARKET_BOOKS": 0,
   "MARKET_POLYMARKET": 0,
   "MODEL_LEAGUE_PRIOR": 0,
   "MODEL_ELO": 94,
   "UNRESOLVED": 0,
-  "MARKET_CONSENSUS": 8,
-  "MARKET_BOOKS": 0
+  "MODEL_STANDINGS": 0,
+  "MARKET_SINGLE": 1,
+  "MARKET_CONSENSUS": 7
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "160 matches, generated_at=2026-10-24T17:00:25.226328Z (0.0h old)"
+   "detail": "159 matches, generated_at=2026-10-24T17:09:15.157724Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 160 rows have team1, team2 and a start time"
+   "detail": "all 159 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -73,7 +73,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 160 rows carry at least one source URL"
+   "detail": "all 159 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -127,7 +127,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=160, rows=160"
+   "detail": "declared=159, rows=159"
   },
   {
    "id": "D20",
@@ -139,7 +139,7 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0"
+   "detail": "lobby upcoming=159, priced=159, missing=0, extra=0, excluded=11, leaked=0"
   },
   {
    "id": "D22",
@@ -157,13 +157,19 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "139/139 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T16:57:13.406754+00:00 (0.1h old)."
+   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:07:40.260440+00:00 (0.0h old)."
   },
   {
    "id": "D14",
    "title": "single published data file (site copy)",
    "status": "PASS",
    "detail": "only docs/data/picks.json exists — site copy is the single source"
+  },
+  {
+   "id": "D23",
+   "title": "no committed artifact contains git conflict markers",
+   "status": "PASS",
+   "detail": "no conflict markers in docs/, data/, verification/, research/, scripts/, .github/"
   },
   {
    "id": "S1",
@@ -289,9 +295,8 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "15/18 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "detail": "15/18 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
    "items": [
-    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
     "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
    ]
