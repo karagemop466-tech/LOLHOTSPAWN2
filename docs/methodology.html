@@ -82,7 +82,7 @@
 
   <section class="card">
     <h3>4. Out-of-sample validation</h3>
-    <p class="small">Ratings are fitted strictly prior to a 30-day holdout window, frozen, and scored out-of-sample on completed matches against coin-flip log-loss (0.6931) and Brier (0.2500) baselines.</p>
+    <p class="small">Ratings are fitted strictly prior to a 30-day holdout window, frozen, and scored out-of-sample on completed matches against coin-flip log-loss (0.6931) and Brier (0.2500) baselines. The same frozen scores are then split two ways, because a single headline number hides the part that matters here: <b>by competition band</b> (the tier-3 rows are exactly the ones we price without a bookmaker line, so their measured accuracy — not the pooled figure — is what a low-tier pick should be judged on) and <b>by stated confidence</b> (when we publish 70%, how often the favoured side actually won). Bands come from the model's own competition priors; the calibration table publishes the gap even when it shows overconfidence.</p>
     <div id="backtest" class="small">Loading validation…</div>
   </section>
 

@@ -482,6 +482,11 @@ def backtest(results, now, priors, days=30):
     ratings = rd["ratings"]
     n = 0
     ll = br = acc = 0.0
+    # Same-window breakdowns: how the model scores in each competition strength
+    # band, and how often a stated probability actually happens. Both are
+    # computed from the frozen ratings above, never from the live model.
+    bands: dict[str, dict] = {}
+    calib: dict[str, dict] = {}
     for r in results:
         if r.get("winner") not in (1, 2):
             continue
@@ -493,15 +498,76 @@ def backtest(results, now, priors, days=30):
             continue
         p = clamp(prob_from_elo(r1, r2), 0.02, 0.98)
         y = 1.0 if r["winner"] == 1 else 0.0
-        ll += -(y * math.log(p) + (1 - y) * math.log(1 - p))
-        br += (p - y) ** 2
-        acc += 1.0 if (p >= 0.5) == bool(y) else 0.0
+        loss = -(y * math.log(p) + (1 - y) * math.log(1 - p))
+        sq = (p - y) ** 2
+        hit = 1.0 if (p >= 0.5) == bool(y) else 0.0
+        ll += loss
+        br += sq
+        acc += hit
         n += 1
+
+        base = competition_base(r.get("overview"))
+        band = band_label(base)
+        b = bands.setdefault(band, {"band": band, "n": 0, "log_loss": 0.0, "brier": 0.0, "accuracy": 0.0})
+        b["n"] += 1
+        b["log_loss"] += loss
+        b["brier"] += sq
+        b["accuracy"] += hit
+
+        conf = max(p, 1.0 - p)
+        label = calib_label(conf)
+        c = calib.setdefault(label, {"bucket": label, "n": 0, "predicted": 0.0, "actual": 0.0})
+        c["n"] += 1
+        c["predicted"] += conf
+        # "actual" = did the side we favoured win at the rate we claimed
+        c["actual"] += 1.0 if (p >= 0.5) == bool(y) else 0.0
     if not n:
         return None
+    by_band = []
+    for b in sorted(bands.values(), key=lambda x: -x["n"]):
+        m = b["n"]
+        by_band.append({
+            "band": b["band"], "n": m,
+            "log_loss": round(b["log_loss"] / m, 4),
+            "brier": round(b["brier"] / m, 4),
+            "accuracy": round(b["accuracy"] / m, 4),
+        })
+    calibration = []
+    for c in sorted(calib.values(), key=lambda x: x["bucket"]):
+        m = c["n"]
+        calibration.append({
+            "bucket": c["bucket"], "n": m,
+            "predicted": round(c["predicted"] / m, 4),
+            "actual": round(c["actual"] / m, 4),
+            "gap": round(c["predicted"] / m - c["actual"] / m, 4),
+        })
     return {"window_days": days, "n": n, "log_loss": round(ll / n, 4),
             "brier": round(br / n, 4), "accuracy": round(acc / n, 4),
-            "baseline_log_loss": 0.6931, "baseline_brier": 0.25}
+            "baseline_log_loss": 0.6931, "baseline_brier": 0.25,
+            "by_band": by_band, "calibration": calibration,
+            "band_note": "Bands are the model's own competition strength priors "
+                         "(major >=1620, regional 1520-1619, national/amateur <1520), not a judgement about a league."}
+
+
+def band_label(base: float | None) -> str:
+    """Competition strength band used only to report backtest scores."""
+    b = 1490.0 if base is None else float(base)
+    if b >= 1620:
+        return "Major & international (prior >= 1620)"
+    if b >= 1520:
+        return "Regional (prior 1520-1619)"
+    return "National & amateur (prior < 1520)"
+
+
+def calib_label(conf: float) -> str:
+    """Confidence bucket for the calibration table, by stated win probability."""
+    if conf >= 0.80:
+        return "80%+"
+    if conf >= 0.70:
+        return "70-79%"
+    if conf >= 0.60:
+        return "60-69%"
+    return "50-59%"
 
 
 def build_matches(hotspawn, leaguepedia, markets, aliases):
