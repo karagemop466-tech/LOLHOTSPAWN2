@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-24T17:16:59.260940+00:00_
-159 matches · MODEL_STANDINGS: 0 · MARKET_POLYMARKET: 0 · MODEL_ELO_STANDINGS: 55 · MODEL_ELO: 94 · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 2 · UNRESOLVED: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_BOOKS: 0 · MARKET_CONSENSUS: 7
+_2026-10-24T17:23:35.796485+00:00_
+159 matches · MARKET_BOOKS: 0 · MARKET_POLYMARKET: 0 · UNRESOLVED: 0 · MARKET_CONSENSUS: 7 · MODEL_ELO: 94 · MODEL_ELO_STANDINGS: 55 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 2 · MODEL_LEAGUE_PRIOR: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 159 matches, generated_at=2026-10-24T17:16:39.555223Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 159 matches, generated_at=2026-10-24T17:23:17.378291Z (0.0h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 159 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -24,9 +24,9 @@ _2026-10-24T17:16:59.260940+00:00_
 | D11 declared count equals number of rows | PASS | declared=159, rows=159 |
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=159, priced=159, missing=0, extra=0, excluded=9, leaked=0 |
-| D22 external-source probe rows are sourced and never carry a probability | PASS | 31 probed source(s), each with an https link, HTTP status and verdict |
+| D22 external-source probe rows are sourced and never carry a probability | PASS | 37 probed source(s), each with an https link, HTTP status and verdict |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 41 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:15:04.138630+00:00 (0.0h old). |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 137/137 matched fixture times agree with Leaguepedia; 22 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:21:45.794283+00:00 (0.0h old). |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | D23 no committed artifact contains git conflict markers | PASS | no conflict markers in docs/, data/, verification/, research/, scripts/, .github/ |
 | S1 all required site files exist | PASS | 10 files present |
