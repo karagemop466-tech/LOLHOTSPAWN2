@@ -1285,3 +1285,56 @@ entry in `scripts/update_picks.py`, `research/betting-sources.md` §15, and the 
 | Live stylesheet | serves this session's final mobile rules (`details > summary { min-height: 44px }`, full-width `.hero-actions .btn` under 640 px) | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/assets/style.css |
 | Line-probe evidence | committed; 39 requests / 30 sites / 0 with coverage | `data/diag/line_probe.json`, `research/betting-sources.md` §15 |
 | Next automatic refresh | 6-hour schedule (`0 */6 * * *`) continues on `main`; no manual input required | `.github/workflows/update-picks.yml` |
+
+### Hotfix `arena/e6f33fe9` — conflicted generated artifacts reached `main` (2026-10-24 17:0x UTC)
+
+**What happened.** While integrating `origin/main` twice (twice within minutes, because other sessions were
+merging concurrently), three machine-written files were committed with git conflict markers still in them:
+`docs/data/picks.json`, `data/diag/source_probe.json` and `data/diag/pipeline.log`. `picks.json` was the
+serious one: the dashboard's payload was unparsable, so `verify_site.py` **D1** failed and the post-merge
+`Verify picks and site` run on `main` (**40114322258**) went red in 7s; the Pages deployment that followed
+published a dashboard that could not load its data.
+
+**How it was detected.** The failing run had no retrievable log (the job-log blob endpoint returned EOF, the
+same limitation earlier sessions hit), so the merged tree was reconstructed with `git archive origin/main`
+and the verifier suite was run locally against it — that reproduced D1 immediately.
+
+**How it was fixed.** The 6-hour `update-picks` run (**40114322196**, success) regenerated `picks.json` and
+`pipeline.log` from the live pipeline, which healed both. `data/diag/source_probe.json` is *not* rewritten
+when a probe newer than 30 minutes already exists, so it stayed broken; this branch restores it from the last
+clean commit (`9ad7c10`) and adds a permanent guard.
+
+**New guard — verifier check `D23`.** Every file under `docs/`, `data/`, `verification/`, `research/`,
+`scripts/` and `.github/` is scanned for `<<<<<<<` / `=======` / `>>>>>>>` markers, and the check **fails the
+run** if any is found. Verified non-vacuous: planting a marker file turns D23 red, removing it turns it green.
+
+**Lesson recorded for future integration sessions.** Generated artifacts (`docs/data/picks.json`,
+`data/diag/*.json|log`, `verification/report.json`, `verification/last_report.md`) must never be hand-merged.
+Resolve them by taking one complete side (`git checkout --theirs <file>`), then confirm with
+`python3 -c "import json;json.load(open('<file>'))"` before committing. `D23` now catches the mistake at CI
+time regardless.
+
+### PR #41 merged + deploy verified (session `arena/e6f33fe9`, 2026-10-24)
+
+| Item | Value |
+|---|---|
+| Pull request | [#41](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/41) — **MERGED** 2026-10-24T17:02:38Z, merge commit `173a8d6` |
+| Integration work | Merged `origin/main` three times while other sessions landed concurrently; every collision was resolved without discarding either side. Two generated artefacts (`docs/data/picks.json`, `data/diag/pipeline.log`) ended up committed with conflict markers at that moment — see the hotfix record below |
+| Hotfix pull request | [#49](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/49) — **MERGED**, merge commit `872418f`; new verifier check **D23** blocks any future commit that ships conflict markers |
+| Post-merge verify on `main` (before hotfix) | **failure** [40114322258](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40114322258) — D1 could not parse the payload |
+| Post-merge verify on `main` (after hotfix) | **success** [40114894011](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40114894011) — 25 s |
+| Six-hour refresh after the merge | **success** [40114322196](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40114322196) — regenerated the payload and healed `picks.json` / `pipeline.log` |
+| Pages deployment | **success** [40114893488](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40114893488); Pages API `status: built` for `872418f` at 17:10:52Z |
+| Live dashboard (fetched 17:1xZ) | `docs/index.html?v=872418f` renders: hero **Find every pick (159)**, **Next 24 hours (31)**, **Unresolved (0)**; "Where the updated picks are" cards with 159 / 31 / 12 / 0 counts; coverage 159/159 priced, 8 market, 41 Elo, **55 Elo + split standings**, 0 priors, 0 placeholders; 11 cancelled fixtures excluded |
+| Live payload | `docs/data/picks.json?v=872418f` parses; `generated_at 2026-10-24T17:09:15Z`, `counts.fixtures 159`, `unresolved 0`, `lobby_upcoming 159 = priced 159`, `lobby_upcoming_missing_from_priced []` |
+
+**Flagged for review (non-blocking, published on the site):**
+
+1. `excluded_fixtures` currently mixes two reasons — *cancelled by Hotspawn* (10 rows) and *not listed in
+   the lobby* (1 row: `Top Esports vs Anyone's Legend`, id 1067688, which had already started at 17:00Z).
+   The row is honestly labelled with its own reason and source, but a reader may expect "excluded" to mean
+   cancelled only. Worth a wording change by whoever next touches `scripts/update_picks.py`.
+2. D18 remains a WARN by design (stale 2026-10-21 Leaguepedia diagnostic snapshot, not a current check).
+3. The X1 external-link check tolerates host-blocked links (Polymarket/Unibet geoblocks from US runners)
+   and fails only on genuinely dead links — that is how the dead `github.com/.../blob/main/...` link was
+   caught during this session.
