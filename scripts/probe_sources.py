@@ -36,6 +36,20 @@ CANDIDATES = [
     ("Betway LoL", "https://www.betway.com/en/esports/league-of-legends", "sportsbook-page"),
     ("Unibet LoL", "https://www.unibet.com/betting/sports/filter/esports/league_of_legends", "sportsbook-page"),
     ("OddsPapi LoL (no key configured)", "https://oddspapi.io/sports/esports/lol", "aggregator-page"),
+    # Added 2026-10-24 (session arena/a21e3910) while re-checking where the low-tier
+    # leagues are actually quoted: an odds-comparison page that names Prime League
+    # 2nd Division, an esportsbook odds board, two affiliate odds guides, a community
+    # results site and the official Riot schedule API. Diagnostics only: a candidate
+    # is promoted only after a human verifies a per-match price at the link.
+    ("Betmonitor — Prime League 2nd Division odds comparison",
+     "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464", "odds-comparison-page"),
+    ("Betmonitor — esports odds hub", "https://www.betmonitor.com/odds-comparison/esports/", "odds-comparison-page"),
+    ("EsportBet — LoL odds board", "https://esportbet.com/odds/league-of-legends/", "odds-comparison-page"),
+    ("EsportsBets — LoL betting guide (US books)", "https://www.esportsbets.com/betting/league-of-legends/", "odds-guide"),
+    ("bo3.gg — LoL matches (community results)", "https://bo3.gg/lol/matches", "results-page"),
+    ("gol.gg — Games of Legends (community stats)", "https://gol.gg/esports/home/", "results-page"),
+    ("Riot LoL Esports schedule API (no key)",
+     "https://esports-api.lolesports.com/persisted/gw/getLeagues?hl=en-US", "official-schedule-api"),
 ]
 
 

@@ -349,3 +349,65 @@ Standings ignore strength of schedule; Elo tiers across leagues are priors, not 
 | 2026-10-23 | Live pipeline (Actions 39980317947) | Standings fetched: 167 rows / 14 competitions; 4 fixtures → `MODEL_STANDINGS`; 188/188 picks, 0 unresolved | `data/diag/pipeline.log`, `docs/data/picks.json` |
 | 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
 
+
+---
+
+## 13. Refresh 2026-10-24 — where the non-featured (low-tier) matches are quoted (session `arena/a21e3910`)
+
+Goal of this pass: for the 160 fixtures that have **no** featured external line (PRM 2nd/3rd Division,
+Tunisian Super League, RIVALS LEAGUE, Arabian League 2nd, 4 Nations, Komplettligaen, LigaGG, LCP Promotion,
+LGC Rising), re-check **established books → esportsbooks / esports betting lines → community** in that order,
+and record only what was actually observed. Every statement below is a live observation made on
+2026-10-24 between 16:10 and 16:30 UTC, with the link that shows it.
+
+### 13.1 Established sportsbooks — observed coverage
+
+| Source (link) | What was observed 2026-10-24 | Consequence for our lines |
+|---|---|---|
+| [Pinnacle guest esports leagues feed](https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues) | The feed's **only** League of Legends competition is `League of Legends - World Championship` (league id 9587, 10 matchups). No PRM, RIVALS, Tunisian, Arabian, 4 Nations, Komplettligaen or LigaGG league object exists in it. | Pinnacle can only price the featured Worlds rows; the low-tier rows cannot be priced from it. This is the upstream reason those rows use our own Elo/standings line. |
+| [Pinnacle Worlds matchups](https://guest.api.arcadia.pinnacle.com/0.1/leagues/9587/matchups) | Live payload contains `LYON vs Karmine Corp` with `startTime 2026-10-24T20:00:00Z`, matching the published row's 20:00 UTC. | Confirms the book's own start time where a market exists; used as a cross-check, not as the lock time (Hotspawn governs). |
+| [Polymarket — Top Esports vs Anyone's Legend](https://polymarket.com/event/lol-tes-al-2026-10-24) | Page showed **Top Esports 37¢ / Anyone's Legend 64¢** at ~16:19 UTC; the published payload has TES 0.365 / AL 0.635 (same market, same direction). Its page text still says "initially scheduled … 7:00 PM ET" (23:00 UTC) while its own countdown showed ~42 minutes, consistent with the 17:00 UTC Hotspawn/Leaguepedia start. | Adds a second live verification of a featured row, and confirms the `START_TIME_DISAGREES_WITH_BOOKS` flag on this row is driven by a stale book start field, not by our time. |
+| [Unibet event page (Kambi)](https://www.unibet.com.au/betting/sports/event/1029609648) | The HTML is an application shell; no prices are readable without the Kambi JSON feed the pipeline already uses. | Unibet rows stay on the Kambi CDN feed; the public page is a human cross-check only. |
+| [Betmonitor — Prime League 2nd Division odds comparison](https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464) | The league page exists and search indexing exposes bet365 / ggbet prices for Prime League 2nd Division fixtures, but the page body is rendered client-side — the fetched HTML contains a generic highlights shell, not per-fixture prices. | Strongest evidence yet that **bet365 and ggbet do quote this league**, but it is only reachable through a browser or an unverified internal API, so it cannot feed the pipeline automatically. Flagged for manual review (F13.1). |
+| [EsportBet LoL odds board](https://esportbet.com/odds/league-of-legends/) | Reachable affiliate odds page; the odds block served in HTML lists other titles (Overwatch in this fetch) and no low-tier LoL fixtures. | Human cross-check only; not a feed. |
+| [EsportsBets LoL guide](https://www.esportsbets.com/betting/league-of-legends/) | US-regulated books (BetMGM, Caesars, FanDuel) are recommended for "major tournament coverage" only. | No low-tier pricing; consistent with the earlier probes. |
+
+### 13.2 Esportsbooks and esports betting lines — observed coverage
+
+| Source (link) | What was observed | Consequence |
+|---|---|---|
+| [OddsPapi LoL board](https://oddspapi.io/sports/esports/lol) | Live page measured 2026-10-24 04:15 UTC: **0 fixtures scheduled** between LoL tournaments, 133 bookmakers quoted on the last measured tier-1 fixture, 184 market families, sportId 18. The documented tournament ids are tier-1 events; every request needs an `apiKey`. | The only API that could aggregate 100+ books for LoL, but it is **key-gated**: a free key must be created manually (`/us/sign-up`). There is no key in this repo, so it is not used. This is the single highest-value upgrade if the owner ever supplies a key as a repository secret. |
+| [Betmonitor esports hub](https://www.betmonitor.com/odds-comparison/esports/) | Reachable comparison hub; same client-side rendering limit as 13.1. | Needs a headless browser; out of scope for a 6-hourly Actions job. |
+| [bo3.gg LoL matches](https://bo3.gg/lol/matches) | Community match/results site (not a bookmaker). Probed by CI; result recorded in `data/diag/source_probe.json`. | Possible future results cross-check, never a price source. |
+
+### 13.3 Community / results sources (used for our own line where no book exists)
+
+| Source (link) | Role | Verified |
+|---|---|---|
+| [Leaguepedia `MatchSchedule`](https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule) | Series results, schedules and team identities behind every `MODEL_ELO` / `MODEL_STANDINGS` row (CC BY-SA 3.0) | Live in this snapshot: 31,752 schedule rows used by the model, 2,880 standings rows |
+| [Leaguepedia Standings](https://lol.fandom.com/wiki/Special:CargoTables/Standings) | Current-split win-loss records for the amateur splits | Fetched (`Leaguepedia Standings: ok, count 2880`) |
+| [Riot LoL Esports schedule API](https://esports-api.lolesports.com/persisted/gw/getLeagues?hl=en-US) | Official Riot schedule (fixture/time verification only, never a probability) | Probed by CI; result in `data/diag/source_probe.json` |
+
+### 13.4 What this means for the 160 non-featured rows (published on the site)
+
+- **No reachable sportsbook names any of our low-tier leagues** in a machine-readable feed. The one
+  comparison page that does expose such leagues (Betmonitor, bet365 + ggbet) is browser-rendered.
+- The rows therefore keep **our own line**: chronological tier-anchored Elo on Leaguepedia results, plus
+  split standings when Elo cannot rate a side, plus a shrunk competition prior as the last resort.
+  73 of 169 rows are capped at **Low confidence** because the sample is thin (<8 games in 365 days) or
+  the comparison crosses leagues; 0 rows are `UNRESOLVED` in the current snapshot.
+- **Honest limitation** (unchanged, now re-verified): a model line is not a market line. It carries no
+  bookmaker margin, no injury/roster news and no betting-market information; it must not be treated as
+  an edge over a bookmaker price.
+
+### 13.5 Flagged for review
+
+- **F13.1** Betmonitor's [Prime League 2nd Division page](https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464)
+  appears to price fixtures from bet365 and ggbet. Whether the numbers are real-time, delayed, or
+  affiliate-supplied cannot be confirmed from the fetched HTML. **Do not use until a human checks a
+  specific fixture against the bookmaker's own site.**
+- **F13.2** OddsPapi is key-gated; no key is configured, so the "133 bookmakers" claim is **not** verified
+  for our fixtures — only for the tier-1 sample the vendor reports. No price from it is used anywhere.
+- **F13.3** Polymarket's resolution text for `lol-tes-al-2026-10-24` says 7:00 PM ET while its own
+  countdown and the Hotspawn/Leaguepedia schedule say 17:00 UTC. The published lock time follows
+  Hotspawn (source of truth for pick'em locks); the discrepancy is already flagged per row.
