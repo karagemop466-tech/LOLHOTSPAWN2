@@ -427,7 +427,12 @@ fabrication. Any reachable-HTML result is recorded as "human cross-check only".
   `docs/unresolved.html#by-league` and in the executive summary's unresolved section.
 - New `checked_unavailable` entries (PandaScore, Abios/Kambi direct, Oracle's Elixir) and one new
   published limitation were added in `scripts/update_picks.py` so the site itself carries this log.
-- Probe table for the 8 new candidates is committed by CI to `data/diag/source_probe.json`; the
-  observed statuses replace this paragraph's "pending" state in the session record in `COORDINATION.md`
-  after the branch pipeline run — no status is asserted here before it is measured.
+- **Probe measured 2026-10-24T16:40Z** (Actions run `40112009538`, `data/diag/source_probe.json`,
+  21 candidates): BetOnline 200 HTML, TonyBet 200 HTML, BC.Game 200 HTML, gol.gg 200 HTML — all
+  *human cross-check only* (no structured per-match prices parsed); SportsBetting.ag 403, Stake 403,
+  PandaScore no-token 403 (JSON error body), Oracle's Elixir downloads 403 from CI (the page itself
+  was fetched and read via a browser-grade fetch for §13.4). **No new source qualified for an
+  adapter.** Same run, live: **Bovada `ok` (8 records)** — all 8 Worlds consensus rows are now
+  4-book (Pinnacle/Unibet/Bovada/Polymarket) with max cross-book dispersion 0.046; payload
+  160/160 resolved, 0 unresolved; standings note now reads *"2,880 rows across 209 competitions"*.
 
