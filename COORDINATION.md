@@ -1482,3 +1482,19 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+### PR #58 merged — deployment and the 6-hour publisher confirmed (2026-10-24 18:19–18:25Z)
+
+| Item | Evidence |
+|---|---|
+| Pull request | **PR #58** — https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/58 (`arena/26d1e778-lolhotspawn2` → `main`) |
+| Merge | **MERGED** 2026-10-24T18:19:41Z, merge commit `fa170ce` |
+| Pre-merge branch run | `40119821486` — green: live pipeline, jsdom render checks, DOM contract, unit tests, `verify_site.py --check-external`, publish. Payload 18:18:14Z, 155 fixtures, 0 unresolved, Bovada `ok`. |
+| Post-merge **scheduled publisher** | `40120187890` — **success**, 1m47s (the Leaguepedia cache made it fast), committed `ac4bfe8` “picks: scheduled refresh”; new payload `generated_at 2026-10-24T18:21:35Z`, 155 fixtures, **155/155 resolved**, 0 unresolved, 7 market rows (6 consensus + 1 single), 53 `MODEL_ELO_STANDINGS`, 9 cancelled exclusions |
+| Post-merge verify | `40120187904` — **success** on `fa170ce` |
+| GitHub Pages | `40120187557` (**success**, `fa170ce`) and `40120337035` (**success**, `ac4bfe8`) |
+| Live check | `https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json?v=1821` serves the `18:21:35Z` payload (155 fixtures, 0 unresolved); the unversioned URL was still serving the previous copy from the CDN cache, which is why the app uses `cache: "no-store"` when it fetches |
+| Acceptance for I11/I12 | The publisher finished in **1m47s** and committed on the **first attempt**; no rebase, no reset, no lost run. Leaguepedia fetch stayed well under the 25-minute step timeout. |
+
+No pricing, source or page-design behaviour changed in this PR: `origin/main` already contained those fixes from
+other sessions, so the diff is limited to the two reliability changes above plus the generated logs/payload.
