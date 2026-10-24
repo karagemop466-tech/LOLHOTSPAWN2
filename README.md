@@ -48,22 +48,25 @@ its verified sources, and any upstream irregularity is surfaced on *Flagged for 
 | Polymarket Gamma API | Public prediction-market reference probabilities | https://gamma-api.polymarket.com |
 | Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) — page-prefix probe fixed 2026-10-24 | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
-| External-source probe (22 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
+| External-source probe (26 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
 
 ## Local verification
 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-python3 verification/test_verifier.py           # verifier rule self-tests (D22 probe + S11/S12 structure)
-python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
-python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11/S12)
+python3 verification/test_verifier.py           # verifier rule self-tests (52: schema, probe, S11–S14)
+python3 verification/test_entity_and_books.py   # 13/13 entity & bookmaker unit tests
+python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11–S14)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
 ```
 
 `scripts/verify_site.py` includes **S11** (every CSS class a page uses must have a rule in `style.css` — the
-check that catches an unstyled or clipped header) and **S12** (all pages share one navigation, a visible
-freshness slot and unique ids). `verification/render_check.cjs` loads each page in jsdom with the committed
+check that catches an unstyled or clipped header), **S12** (all pages share one navigation, a visible
+freshness slot and unique ids), **S13** (the executive summary's coverage numbers are computed from
+`coverage.counts_by_method`, so the buckets must add up to the fixture count) and **S14** (the methodology's
+sample counts are filled at runtime and never hard-coded). **D23** asserts the same partition on the payload
+itself: market + model + unresolved rows equal the number of fixtures published. `verification/render_check.cjs` loads each page in jsdom with the committed
 payload and asserts that the picks, tables and counts actually render.
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.

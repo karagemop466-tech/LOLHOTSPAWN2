@@ -188,9 +188,12 @@
     </div>
     <p class="small">
       <b>Limitation this creates:</b> a model line is not a market line. It carries no bookmaker margin and no
-      roster/injury news, and it must not be read as an edge against a bookmaker price. 73 of 169 rows are capped at
-      Low confidence for thin samples (&lt;8 games in 365 days) or cross-league comparisons; 0 rows are unresolved in
-      the current snapshot. The per-league version of this table is on
+      roster/injury news, and it must not be read as an edge against a bookmaker price.
+      <span id="meth-lowconf">—</span> of <span id="meth-fixtures">—</span> published rows are capped at
+      Low confidence for thin samples (&lt;8 games in 365 days) or cross-league comparisons,
+      <span id="meth-unresolved">—</span> rows are unresolved, and
+      <span id="meth-market">—</span> rows carry an external bookmaker line in the current snapshot
+      (counts are read live from the published data on every refresh). The per-league version of this table is on
       <a href="unresolved.html">Unresolved &amp; limitations</a>.
     </p>
   </section>

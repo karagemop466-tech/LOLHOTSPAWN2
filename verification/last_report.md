@@ -1,15 +1,15 @@
 # Verification report — PASS
-_2026-10-24T16:46:38.412004+00:00_
-160 matches · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 57 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0 · MARKET_BOOKS: 0 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · UNRESOLVED: 0 · MODEL_ELO: 94
+_2026-10-24T16:59:25.731337+00:00_
+160 matches · MODEL_ELO_STANDINGS: 55 · UNRESOLVED: 0 · MARKET_CONSENSUS: 8 · MARKET_SINGLE: 1 · MODEL_ELO: 94 · MARKET_POLYMARKET: 0 · MARKET_BOOKS: 0 · MODEL_ELO_THIN: 2 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 160 matches, generated_at=2026-10-24T16:42:29.066048Z (0.1h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 160 matches, generated_at=2026-10-24T16:54:44.517542Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 160 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
-| D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
+| D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_STANDINGS', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D6b confidence labels are from the documented set | PASS | High/Medium/Low/None only |
 | D7c every source URL is absolute http(s) | PASS | all source URLs well formed |
 | D7 every row links at least one source URL | PASS | all 160 rows carry at least one source URL |
@@ -22,11 +22,12 @@ _2026-10-24T16:46:38.412004+00:00_
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 declared counts agree with the rows | PASS | counts.resolved/unresolved consistent |
 | D11 declared count equals number of rows | PASS | declared=160, rows=160 |
+| D23 coverage buckets partition the fixture list (the summary numbers add up) | PASS | 9 market + 151 model + 0 unresolved = 160 row(s) |
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0 |
-| D22 external-source probe rows are sourced and never carry a probability | PASS | 22 probed source(s), each with an https link, HTTP status and verdict |
-| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 63 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.0h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D22 external-source probe rows are sourced and never carry a probability | PASS | 26 probed source(s), each with an https link, HTTP status and verdict |
+| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 41 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.2h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 10 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 6 links, 6 columns on every page |
@@ -42,6 +43,8 @@ _2026-10-24T16:46:38.412004+00:00_
 | S9 all external links use https | PASS | 15 external link(s) collected for manual review; 0 plain-http |
 | S11 every CSS class used by a page is defined in style.css | PASS | 7 page(s), no unstyled class |
 | S12 all pages share one navigation, freshness slot and unique ids | PASS | 7 pages, identical nav with 6 primary targets |
+| S13 exec-summary coverage numbers are derived from the payload method counts | PASS | app.js buckets come from coverage.counts_by_method |
+| S14 methodology sample counts are read live from the payload, never hard-coded | PASS | 4 live count slots wired to app.js |
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |

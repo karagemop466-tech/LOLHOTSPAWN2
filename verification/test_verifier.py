@@ -117,6 +117,28 @@ def main() -> int:
     rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
     results.append(assert_status({x["id"]: x for x in rep.checks}, "D10", vs.FAIL,
                                  "counts_by_method mismatch"))
+    # coverage buckets that do not add up to the row count must fail D23 (the exec summary
+    # printed "9 + 41 + 55 = 105" of 160 fixtures before this rule existed)
+    r = copy.deepcopy(BASE_ROW)
+    p = payload([r])
+    p["coverage"] = {"fixtures": 1, "resolved": 1, "unresolved": 0,
+                     "with_external_market": 1, "with_model": 0,
+                     "counts_by_method": {"MARKET_POLYMARKET": 1}}
+    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D23", vs.PASS,
+                                 "coverage buckets that add up"))
+    p2 = copy.deepcopy(p)
+    p2["coverage"]["with_external_market"] = 1
+    p2["coverage"]["counts_by_method"] = {"MARKET_POLYMARKET": 1, "MODEL_ELO": 1}
+    rep = vs.Report(); vs.verify_data(rep, p2, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D23", vs.FAIL,
+                                 "coverage buckets that over-count the fixtures"))
+    p3 = copy.deepcopy(p)
+    p3["coverage"]["with_model"] = 4
+    rep = vs.Report(); vs.verify_data(rep, p3, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D23", vs.FAIL,
+                                 "coverage.with_model that disagrees with the rows"))
+
     # Game-1 market used as a series price
     r = copy.deepcopy(BASE_ROW)
     r["evidence"] = "Polymarket: LoL: Team A vs Team B - Game 1 Winner"
@@ -173,7 +195,7 @@ def main() -> int:
     # defect that clipped the executive summary header to a 12 px progress bar.
     import tempfile
 
-    def structure_checks(css, pages_html):
+    def structure_checks(css, pages_html, extra_files=None):
         with tempfile.TemporaryDirectory() as td:
             os.makedirs(os.path.join(td, "assets"), exist_ok=True)
             with open(os.path.join(td, "assets", "style.css"), "w") as fh:
@@ -181,6 +203,9 @@ def main() -> int:
             for name, html in pages_html.items():
                 with open(os.path.join(td, name), "w") as fh:
                     fh.write(html)
+            for name, text in (extra_files or {}).items():
+                with open(os.path.join(td, name), "w") as fh:
+                    fh.write(text)
             rep = vs.Report()
             vs.verify_structure(rep, td)
             return {c["id"]: c for c in rep.checks}
@@ -215,6 +240,31 @@ def main() -> int:
                '<nav class="bottom-nav"><a href="picks.html">Picks</a></nav>')
     c = structure_checks(css_good, {"index.html": f'<html><body><div class="card">ok</div>{nofresh}</body></html>'})
     results.append(assert_status(c, "S12", vs.FAIL, "missing freshness slot fails S12"))
+
+    # S13/S14: the summary numbers must come from the payload, never from a stale constant.
+    good_app = ('const cm = d.coverage.counts_by_method || {};'
+                'set("#meth-fixtures", 1); set("#meth-lowconf", 1);'
+                'set("#meth-unresolved", 1); set("#meth-market", 1);')
+    good_meth = ('<html><body><div class="card">x</div>'
+                 '<span id="meth-fixtures"></span><span id="meth-lowconf"></span>'
+                 '<span id="meth-unresolved"></span><span id="meth-market"></span>'
+                 f'{GOOD_NAV}</body></html>')
+    c = structure_checks(css_good, {"index.html": good_page, "methodology.html": good_meth},
+                         {"assets/app.js": good_app})
+    results.append(assert_status(c, "S13", vs.PASS, "count-derived coverage passes S13"))
+    results.append(assert_status(c, "S14", vs.PASS, "live methodology counts pass S14"))
+
+    stale_app = ("const st = d.coverage.with_standings_model || 0;"
+                 "const elo = (d.coverage.with_team_specific_model ?? 0) - st;")
+    c = structure_checks(css_good, {"index.html": good_page, "methodology.html": good_meth},
+                         {"assets/app.js": stale_app})
+    results.append(assert_status(c, "S13", vs.FAIL, "bucket-subtracting header fails S13"))
+
+    stale_meth = good_meth.replace('<span id="meth-fixtures"></span><span id="meth-lowconf"></span>',
+                                   '73 of 169 rows are capped at Low confidence')
+    c = structure_checks(css_good, {"index.html": good_page, "methodology.html": stale_meth},
+                         {"assets/app.js": good_app})
+    results.append(assert_status(c, "S14", vs.FAIL, "hard-coded sample count fails S14"))
 
     # helper parsing
     helper_ok = (vs.html_class_names('<div class="a b">') == {"a", "b"}

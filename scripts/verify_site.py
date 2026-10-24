@@ -19,6 +19,7 @@ Checks the published data and site against the project requirements:
   D11 data/picks.json and docs/data/picks.json are both present and identical
   D20 reserved (unique source_key per fixture: requested by arena/0fb2d0c7 as R16)
   D21 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
+  D22 external-source probe rows link an https page and never carry a probability
   S1  every page exists and has a mobile viewport meta
   S2  every page has the shared navigation with links to all site sections
   S3  executive summary (docs/index.html) links in-site to the picks list and the
@@ -474,6 +475,40 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
     rep.add("D11", "declared count equals number of rows",
             PASS if int(declared or 0) == len(rows) else FAIL,
             f"declared={declared}, rows={len(rows)}")
+
+    # D23: the published coverage buckets must be a real partition of the rows, so the
+    # exec-summary sentence ("N from lines + M from our model = every fixture") adds up.
+    cov = payload.get("coverage") or {}
+    counts_obj0 = payload.get("counts") or {}
+    if isinstance(cov, dict) and (cov.get("counts_by_method") or payload.get("counts_by_method")):
+        cbm = {str(k): int(v or 0)
+               for k, v in (cov.get("counts_by_method") or payload.get("counts_by_method") or {}).items()}
+        market_n = sum(n for k, n in cbm.items() if k.startswith("MARKET_"))
+        model_n = sum(n for k, n in cbm.items() if k.startswith("MODEL_"))
+        unres_n = cbm.get("UNRESOLVED", 0)
+        other_n = sum(n for k, n in cbm.items()
+                      if not k.startswith(("MARKET_", "MODEL_")) and k != "UNRESOLVED")
+        problems = []
+        if sum(cbm.values()) != len(rows):
+            problems.append(f"method buckets total {sum(cbm.values())} != {len(rows)} rows")
+        if other_n:
+            problems.append(f"{other_n} row(s) in an undocumented method bucket")
+        for key, want in (("fixtures", len(rows)), ("published_picks", len(rows)),
+                          ("with_external_market", market_n), ("with_model", model_n),
+                          ("unresolved", unres_n), ("resolved", len(rows) - unres_n)):
+            if cov.get(key) is not None and int(cov.get(key) or 0) != want:
+                problems.append(f"coverage.{key}={cov.get(key)} != {want}")
+        low_rows = sum(1 for r in rows if str(r.get("confidence") or "").lower() == "low")
+        if counts_obj0.get("low_confidence") is not None \
+                and int(counts_obj0.get("low_confidence") or 0) != low_rows:
+            problems.append(f"counts.low_confidence={counts_obj0.get('low_confidence')} != {low_rows}")
+        rep.add("D23", "coverage buckets partition the fixture list (the summary numbers add up)",
+                PASS if not problems else FAIL,
+                f"{market_n} market + {model_n} model + {unres_n} unresolved = {len(rows)} row(s)"
+                if not problems else "; ".join(problems))
+    else:
+        rep.add("D23", "coverage buckets partition the fixture list (the summary numbers add up)",
+                SKIP, "payload publishes no coverage.counts_by_method")
 
     # D19: coverage against the feed's own advertised future-fixture count, when exposed
     dbg = payload.get("debug") or {}
@@ -1050,6 +1085,50 @@ def verify_structure(rep: Report, docs_dir: str) -> None:
             PASS if not nav_problems else FAIL,
             f"{len(tops)} pages, identical nav with {len(next(iter(tops.values()), ()))} "
             f"primary targets" if not nav_problems else "; ".join(nav_problems))
+
+
+    # S13: the exec-summary coverage sentence must be derived from the payload's method
+    # counts. It used to subtract a bucket from `with_team_specific_model`, which made the
+    # printed buckets add up to 105 of 160 fixtures.
+    app_path = os.path.join(docs_dir, "assets", "app.js")
+    app_text = ""
+    if os.path.exists(app_path):
+        with open(app_path, encoding="utf-8", errors="replace") as fh:
+            app_text = fh.read()
+    app_problems = []
+    if "counts_by_method" not in app_text:
+        app_problems.append("app.js never reads coverage.counts_by_method")
+    if "with_standings_model" in app_text:
+        app_problems.append("app.js reads coverage.with_standings_model, which the payload "
+                            "does not publish (the count silently falls back)")
+    if re.search(r"with_team_specific_model[^\n]{0,120}?\)\s*\?-?\s*[^\n]{0,40}?-\s", app_text):
+        app_problems.append("app.js subtracts one bucket from with_team_specific_model, so the "
+                            "printed buckets cannot add up to the fixture count")
+    rep.add("S13", "exec-summary coverage numbers are derived from the payload method counts",
+            PASS if not app_problems else FAIL,
+            "app.js buckets come from coverage.counts_by_method" if not app_problems
+            else "; ".join(app_problems))
+
+    # S14: methodology sample counts must be read from the payload, never hard-coded, so
+    # they cannot go stale when the fixture list changes (it said "73 of 169" for a 160-row
+    # payload before this check existed).
+    meth_path = os.path.join(docs_dir, "methodology.html")
+    meth_problems = []
+    if os.path.exists(meth_path):
+        with open(meth_path, encoding="utf-8", errors="replace") as fh:
+            meth_html = fh.read()
+        for anchor_id in ("meth-fixtures", "meth-lowconf", "meth-unresolved", "meth-market"):
+            if f'id="{anchor_id}"' not in meth_html:
+                meth_problems.append(f"methodology.html has no #{anchor_id} slot")
+            elif f"#{anchor_id}" not in app_text:
+                meth_problems.append(f"app.js never fills #{anchor_id}")
+        for m in re.finditer(r"\b(\d{1,3})\s+of\s+(\d{1,3})\s+rows are capped at", meth_html):
+            meth_problems.append(f"hard-coded sample count '{m.group(0)}' on methodology.html")
+    else:
+        meth_problems.append("methodology.html missing")
+    rep.add("S14", "methodology sample counts are read live from the payload, never hard-coded",
+            PASS if not meth_problems else FAIL,
+            "4 live count slots wired to app.js" if not meth_problems else "; ".join(meth_problems))
 
 
 # --------------------------------------------------------------------------- workflow

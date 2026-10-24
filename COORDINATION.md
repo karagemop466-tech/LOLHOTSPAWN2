@@ -1105,3 +1105,75 @@ session) are both present and renumbered so the section numbers stay unique.
     - `python3 verification/test_standings_model.py`: **18/18** passed
     - `python3 verification/test_entity_and_books.py`: **13/13** passed
 
+
+---
+
+## Session `arena/a21e3910-lolhotspawn2` — 2026-10-24 (continued: exec-summary arithmetic + live-count checks)
+
+### Claimed tasks (`T26`)
+- **T26 — Exec-summary coverage sentence must reconcile with the published payload** (`docs/assets/app.js`,
+  `docs/unresolved.html` render path, `docs/methodology.html`, `scripts/verify_site.py`,
+  `verification/test_verifier.py`, `README.md`, this file). Scope is read-only with respect to
+  `scripts/model.py`, `scripts/fetch_*.py`, `data/aliases.json` and `.github/workflows/**`.
+
+### What was wrong
+The executed site printed, on the executive summary and on Unresolved:
+
+> 160 of 160 fixtures have a verified pick (100%): **9** from external betting lines, **41** from our chronological
+> Elo model, **55** from split standings …
+
+9 + 41 + 55 = **105**, not 160. Cause: `app.js` read `coverage.with_standings_model`, a field the payload never
+publishes, so `stCount` fell back to `counts.standings` (55) and was then **subtracted** from
+`coverage.with_team_specific_model` (96) → 41, and the same 55 rows were added again as a separate bucket.
+The payload's own buckets (`coverage.counts_by_method`: `MARKET_CONSENSUS` 8 + `MARKET_SINGLE` 1,
+`MODEL_ELO` 94 + `MODEL_ELO_THIN` 2, `MODEL_ELO_STANDINGS` 55) already partition the 160 rows exactly.
+
+Separately, `docs/methodology.html` carried a hard-coded "73 of 169 rows are capped at Low confidence" — stale for
+the current 160-row / 9-low-confidence payload.
+
+### What was changed
+- `docs/assets/app.js`: new `methodBreakdown(d)` helper derives every bucket from `coverage.counts_by_method`;
+  the exec-summary sentence now reads 9 market + 151 model (96 team-Elo, 55 standings-blended, 0 prior-only,
+  0 placeholders) = 160, and states that the buckets total the fixture count. `#resolution-mix` on
+  `docs/unresolved.html` uses the same helper. `setHeader()` also fills four new live counters.
+- `docs/methodology.html`: the stale constants became `#meth-fixtures`, `#meth-lowconf`, `#meth-unresolved`,
+  `#meth-market`, filled from the payload on every page load (rendered: **9 of 160** rows Low confidence,
+  **0** unresolved, **9** market rows).
+- `scripts/verify_site.py`: **D23** (payload: method buckets must equal the published fixture count; `coverage.*`
+  fields must agree with the rows; `counts.low_confidence` must equal the number of Low rows), **S13** (`app.js`
+  must derive buckets from `counts_by_method`, must not reference the non-existent `with_standings_model`, and must
+  not subtract a bucket from `with_team_specific_model`), **S14** (methodology counts must be live slots filled by
+  `app.js`; no `N of M rows are capped at` constant may remain).
+- `verification/test_verifier.py`: +7 self-tests (D23 pass / over-count / wrong `with_model`; S13 pass / fail;
+  S14 pass / fail) → **52/52**.
+- `README.md`: probe candidate count 22 → 26, self-test count, S13/S14/D23 documented.
+
+### Verification on this branch (payload `2026-10-24T16:54:44Z`, 160 fixtures)
+- `scripts/verify_site.py --leaguepedia-schedule data/diag` → **43 PASS · 0 FAIL · 1 WARN · 0 SKIP**
+  (the WARN is the documented D18 stale Leaguepedia snapshot).
+- `verification/test_verifier.py` → **52/52**; `audit/test_model.py` → 23/23;
+  `verification/test_entity_and_books.py` → 13/13; `verification/check_dom_contract.py` → PASS;
+  `node --check docs/assets/app.js` → OK; `verification/render_check.cjs` → PASS on all 7 pages.
+- jsdom execution of the real `app.js` against the real payload printed
+  `9 from external betting lines and 151 from our own model — 96 … 55 … 0 … 0 … total 160 rows, one per fixture.`
+  and, on `unresolved.html`, `… buckets total 160 rows.`
+
+### PR / merge record for the previous task (`T25`)
+- PR **#39** "site: fix the clipped exec-summary nav, verify every page renders, re-probe low-tier sources"
+  (base `main` ← `arena/a21e3910-lolhotspawn2`) — **merged 2026-10-24T16:47:29Z**, merge commit
+  **`fa6b8a6`** (`git log origin/main`: `fa6b8a6 Merge pull request #39 …`). Merged only after
+  `verify.yml` on the PR branch passed and, post-merge, `verify_site.py` reported 40 PASS / 0 FAIL / 1 WARN and
+  `render_check.cjs` passed on all 7 pages.
+- GitHub Pages: `pages build and deployment` run **40113185280** completed `success`; the Pages API reported
+  `status: built` for `f5734a8`, and the live site at
+  <https://karagemop466-tech.github.io/LOLHOTSPAWN2/> served the 160-fixture payload
+  (`updated 2026-10-24 16:54 UTC`, 9 market rows, 151 model rows, 0 unresolved) with the picks block, the
+  Unresolved section and the Flagged page all rendering.
+- Concurrent sessions merged PRs **#41** and **#43** while this record was being written; `origin/main` was
+  merged again before pushing and no other session's work was discarded (append-only board preserved).
+
+**Sources / verification / irregularities:** no new external source was needed for T26 — every number is computed
+from the already-published payload, whose provenance is recorded in the T25 block and in
+`research/betting-sources.md` §14. The reconciliation rule (D23/S13) is exactly what stopped the mismatch, and
+`coverage.counts_by_method` remains the single source of truth for the coverage sentence. Hotspawn is still never a
+probability input.

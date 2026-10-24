@@ -177,6 +177,15 @@
     if (upd) upd.innerHTML = `<b>Updated</b> ${esc(t.text)} <span class="small">your local time</span>`;
     const fu = $("#footer-updated");
     if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · automatic refresh every 6 hours.`;
+    // Methodology states its sample counts without hard-coding them: read them from this payload.
+    const covM = d.coverage || {};
+    const cM = d.counts || {};
+    const mbM = methodBreakdown(d);
+    const stat = (id, v) => { const el = $(id); if (el) el.textContent = String(v); };
+    stat("#meth-fixtures", covM.fixtures ?? cM.fixtures ?? "—");
+    stat("#meth-lowconf", covM.low_confidence ?? cM.low_confidence ?? "—");
+    stat("#meth-unresolved", covM.unresolved ?? cM.unresolved ?? "—");
+    stat("#meth-market", covM.with_external_market ?? mbM.market ?? "—");
     if (fresh) {
       const ok = isFresh(d);
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
@@ -242,6 +251,20 @@
     </tr>`).join("");
   }
 
+  // Method counts are the only exact partition of the fixture list: every row has
+  // exactly one method, so these buckets must add up to coverage.fixtures.
+  function methodBreakdown(d) {
+    const cm = (d.coverage && d.coverage.counts_by_method) || {};
+    const g = (k) => Number(cm[k] || 0);
+    return {
+      market: g("MARKET_CONSENSUS") + g("MARKET_SINGLE") + g("MARKET_CONSENSUS_BLEND"),
+      elo: g("MODEL_ELO") + g("MODEL_ELO_THIN"),
+      standings: g("MODEL_ELO_STANDINGS") + g("MODEL_STANDINGS"),
+      prior: g("MODEL_LEAGUE_PRIOR"),
+      unresolved: g("UNRESOLVED"),
+    };
+  }
+
   function renderIndex(d) {
     const c = d.counts || {};
     const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
@@ -286,9 +309,9 @@
     }
 
     const cov = d.coverage || {};
-    const stCount = cov.with_standings_model ?? c.standings ?? 0;
+    const mb = methodBreakdown(d);
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${cov.with_external_market ?? 0}</b> from external betting lines, <b>${(cov.with_team_specific_model ?? 0) - stCount}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${cov.with_prior_only ?? 0}</b> from competition priors, and <b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mb.market}</b> from external betting lines and <b>${mb.elo + mb.standings + mb.prior + mb.unresolved}</b> from our own model — <b>${mb.elo}</b> from team Elo on recorded results, <b>${mb.standings}</b> from current-split standings blended with the competition prior, <b>${mb.prior}</b> from a competition prior only, and <b>${mb.unresolved}</b> explicit 50/50 placeholders. These five buckets add up to <b>${mb.market + mb.elo + mb.standings + mb.prior + mb.unresolved}</b> rows, one per fixture. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -528,13 +551,14 @@
     const mix = $("#resolution-mix");
     if (mix) {
       const cov = d.coverage || {};
-      const nPrior = (d.matches || []).filter((m) => m.method === "MODEL_LEAGUE_PRIOR").length;
-      const nStand = (d.matches || []).filter((m) => m.method === "MODEL_STANDINGS").length;
+      const mb = methodBreakdown(d);
       mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
-        + `<b>${cov.with_external_market ?? 0}</b> priced by external betting lines · `
-        + `<b>${(cov.with_team_specific_model ?? 0) - nStand}</b> by our Elo model · `
-        + `<b>${nStand}</b> by split standings · <b>${nPrior}</b> by a competition prior · `
-        + `<b>${cov.unresolved ?? 0}</b> explicit 50/50 placeholders. `
+        + `<b>${mb.market}</b> priced by external betting lines · `
+        + `<b>${mb.elo}</b> by team Elo on recorded results · `
+        + `<b>${mb.standings}</b> by current-split standings blended with the competition prior · `
+        + `<b>${mb.prior}</b> by a competition prior only · `
+        + `<b>${mb.unresolved}</b> explicit 50/50 placeholders · `
+        + `buckets total <b>${mb.market + mb.elo + mb.standings + mb.prior + mb.unresolved}</b> rows. `
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }
     const psum = $("#probe-summary");
