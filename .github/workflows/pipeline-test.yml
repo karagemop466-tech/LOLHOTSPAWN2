@@ -67,6 +67,10 @@ jobs:
         if: always()
         run: python3 scripts/probe_sources.py
 
+      - name: Probe betting lines for fixtures we price with the model (diagnostic only)
+        if: always()
+        run: python3 scripts/probe_lines.py
+
       - name: Commit outputs for review
         if: always()
         run: |
@@ -90,7 +94,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json data/diag/line_probe.json verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?
