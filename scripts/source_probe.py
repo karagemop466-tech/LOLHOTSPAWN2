@@ -37,6 +37,9 @@ from lib_common import fetch, log, now_utc, utc_iso
 # It is used only to test whether the official schedule endpoint is reachable.
 RIOT_PUBLIC_KEY = "0TvQnueqKa5mxJntVWt0w4LpLssiF19a8wLoPLD"
 
+# Public guest key used by Pinnacle's own web client (same value as scripts/fetch_markets.py).
+PINNACLE_PUBLIC_KEY = "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R"
+
 # (name, url, kind, category)
 # category: market  = bookmaker / exchange / prediction market / odds aggregator
 #           results = community or official results & schedule source
@@ -81,9 +84,11 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("Oddspedia LoL", "https://oddspedia.com/esports/league-of-legends", "aggregator-page", "market"),
     # --- the four feeds that actually produce probabilities (live health check) --
     ("Pinnacle LoL matchups (wired feed)",
-     "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/matchups", "bookmaker-api", "wired"),
+     "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues?all=false", "bookmaker-api", "wired"),
+    # exactly the first production URL (market=ZZ / useCombined=true), so a health check
+    # failure means the production feed is really failing
     ("Unibet/Kambi LoL listView (wired feed)",
-     "https://eu-offering-api.kambicdn.com/offering/v2018/ubau/listView/esports/league_of_legends/all/all/matches.json",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true",
      "bookmaker-api", "wired"),
     ("Bovada esports coupon (wired feed)",
      "https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports?marketFilterId=def&preMatchOnly=true&lang=en",
@@ -109,8 +114,19 @@ LOL_RE = re.compile(r"league\s*of\s*legends|\blol\b|leagueoflegends", re.I)
 VS_RE = re.compile(r"\bvs\.?\b|\bv\b", re.I)
 
 
-def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str) -> str:
+def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str,
+             category: str = "market") -> str:
     results_kind = kind in ("results-page", "wiki-api", "official-api")
+    if category == "wired":
+        if status == 200:
+            if lol_hits:
+                return ("production feed, reachable this run with League of Legends markets in the response — "
+                        "one of the four sources that may contribute a probability (subject to the de-vig and "
+                        "dedup rules in Methodology)")
+            return ("production feed reachable, but no League of Legends market in this response — "
+                    "it contributed no probability this run")
+        return (f"production feed FAILED this run (HTTP {status or 'network error'}) — any market probability "
+                "from this source is missing from the picks until it recovers")
     if status == 401 or status == 402:
         return "requires an API key / paid plan — no key is configured, so nothing is used"
     if status == 403:
@@ -140,6 +156,8 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
     headers = None
     if "lolesports.com" in url:
         headers = {"x-api-key": RIOT_PUBLIC_KEY}
+    elif "arcadia.pinnacle.com" in url:
+        headers = {"x-api-key": PINNACLE_PUBLIC_KEY, "Accept": "application/json"}
     row = {"name": name, "url": url, "kind": kind, "category": category, "wired": category == "wired",
            "http_status": None, "is_json": False, "bytes": 0,
            "lol_mentions": None, "vs_style_items": None, "verdict": ""}
@@ -172,10 +190,7 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
                 lol_hits = len(LOL_RE.findall(text[:400000]))
         row["lol_mentions"] = lol_hits
         row["vs_style_items"] = vs_items
-        row["verdict"] = _verdict(status, row["is_json"], lol_hits, kind)
-        if category == "wired" and status == 200:
-            row["verdict"] = ("production feed, reachable this run — it is one of the four sources that may "
-                              "contribute a probability, subject to the de-vig and dedup rules in Methodology")
+        row["verdict"] = _verdict(status, row["is_json"], lol_hits, kind, category)
         if "no key configured" in name.lower() and status == 200:
             row["verdict"] = ("endpoint answers without a key, but the payload carries no League of Legends "
                               "match market — its data needs a paid API key that is not configured here; nothing used")
