@@ -1162,7 +1162,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             "with_external_market": sum(1 for m in out if m["market"]),
             "with_model": sum(1 for m in out if m["method"].startswith("MODEL")),
             "with_team_specific_model": sum(
-                1 for m in out if m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN", "MODEL_STANDINGS")
+                1 for m in out if m["method"] in ("MODEL_ELO", "MODEL_ELO_THIN", "MODEL_STANDINGS", "MODEL_ELO_STANDINGS")
             ),
             "with_prior_only": counts.get("MODEL_LEAGUE_PRIOR", 0),
             "published_picks": len(out),

@@ -189,6 +189,38 @@
     }
   }
 
+  /* Colour theme: the header button is the only control, it persists, and it
+     overrides the OS preference in both directions (see [data-theme] in style.css). */
+  const THEME_KEY = "lolpicks-theme";
+  function osPrefersDark() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+  function applyTheme(theme) {
+    if (theme === "dark" || theme === "light") document.documentElement.dataset.theme = theme;
+    else document.documentElement.removeAttribute("data-theme");
+    const btn = $("#theme-toggle");
+    if (!btn) return;
+    const dark = theme ? theme === "dark" : osPrefersDark();
+    btn.textContent = dark ? "☀️" : "🌙";
+    const label = dark ? "Switch to light theme" : "Switch to dark theme";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+    btn.setAttribute("aria-pressed", dark ? "true" : "false");
+  }
+  function wireTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+    applyTheme(saved);
+    const btn = $("#theme-toggle");
+    if (btn) btn.addEventListener("click", () => {
+      const cur = document.documentElement.dataset.theme;
+      const dark = cur ? cur === "dark" : osPrefersDark();
+      const next = dark ? "light" : "dark";
+      try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* private mode */ }
+      applyTheme(next);
+    });
+  }
+
   function setActiveNav() {
     $$("[data-nav]").forEach((a) => {
       if (a.getAttribute("data-nav") === PAGE) a.setAttribute("aria-current", "page");
@@ -829,6 +861,7 @@
   }
 
   async function main() {
+    wireTheme();
     setActiveNav();
     try {
       DATA = await load();

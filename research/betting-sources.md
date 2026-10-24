@@ -778,3 +778,56 @@ fabrication. Any reachable-HTML result is recorded as "human cross-check only".
   adapter.** Same run, live: **Bovada `ok` (8 records)** — all 8 Worlds consensus rows are now
   4-book (Pinnacle/Unibet/Bovada/Polymarket) with max cross-book dispersion 0.046; payload
   160/160 resolved, 0 unresolved; standings note now reads *"2,880 rows across 209 competitions"*.
+
+## 18. Refresh 2026-10-24 (later pass) — tier probe with browser UA, plus proof that cited pages exist — tier probe with browser UA, plus proof that cited pages exist
+(session `arena/9d523943`)
+
+§13–§17 above already establish the landscape (sections are numbered in merge order, so §14 appears twice —
+that is upstream, not a typo). This pass adds three things they do not cover and does not repeat their measurements. Evidence: a tier-tagged probe (28 candidates, browser-like User-Agent for the sites that
+block bots), run in CI on 2026-10-24 and **preserved as a dated snapshot** —
+`data/diag/source_probe_2026-10-24_arena-9d523943.json` @ **2026-10-24T16:48:11Z** (older snapshot
+16:26:27Z from run [40110891210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40110891210);
+later one from run [40112604014](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112604014)).
+The live `data/diag/source_probe.json` is regenerated on every run by `scripts/source_probe.py`, so the dated copy
+is the one to cite. Per-tier roll-up at 16:48:11Z: established-book 11 probed / 7 × HTTP 200 / 6 JSON;
+esportsbook 10 probed / 3 × 200 / 0 JSON; community 7 probed / 5 × 200 / 3 JSON. Direct page reads on 2026-10-24
+follow.
+
+### 18.1 Does a browser User-Agent get us into the esportsbooks? No.
+
+| Source | Plain bot UA | Browser UA | Reading it as a page |
+|---|---|---|---|
+| eGamersWorld `/lol/bets` | 403 | **403** | **Reads fine** — and shows a genuine 5-book board (Vave, Thunderpick, Rainbet, Underdog, CocoBet). Every listed match is **2026 World Championship**; the “recent predictions” block is Worlds too. No PRM, Tunisian, RIVALS, Komplettligaen, LigaGG or Arabian fixture appears. |
+| GG.Bet / Thunderpick / Coolbet / Stake | 403 | **403** | n/a |
+| Rivalry / Midnite / Betano | 200 | 200 | HTML shell, no server-rendered prices |
+| Betway / BetExplorer / Smarkets | 404 | 404 | n/a |
+| 1xBet line index | 203 | 203 | non-authoritative status, not parsed |
+| The Odds API | 401 (no key) | 401 | n/a |
+| OddsPortal `/lol/` | 200 then **503** on the next CI run | 200 to CI | **404 “Offside — page not found”** when opened — a 200 from a bot-facing edge is not evidence the board exists, so it is not cited |
+
+Tier 3 of the fixture list stays unpriced by books. The one production source that reaches below tier 2 remains
+**Polymarket**, which prices the *LGC Rising* BO5 decider (`MARKET_SINGLE`, 39.0 / 61.0 in the 16:47Z payload).
+
+### 18.2 Organiser pages: reachable or not, they carry no prices
+
+* **Komplettligaen** (`https://www.komplettligaen.no/lol/`) and **RIVALS LEAGUE**
+  (`https://www.rivalsleague.gg/`) — HTTP 200, HTML results only; Leaguepedia remains the programmatic source.
+* **Prime League** (`https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627`) — **403 from CI** (Bunny
+  Shield) but readable as a page: it publishes the Fall Split 2026/27 structure (group stage 24.09 → 04.12,
+  playoffs 05.–13.12.) and 1,293 registered participants. **No odds anywhere**, so being able to read it would
+  improve division metadata, never a line. Adapter still blocked by the 403.
+
+### 18.3 A 200 from Leaguepedia does not prove the cited page exists
+
+Leaguepedia returns **HTTP 200 with the body “There is currently no text in this page”** for a missing title
+(checked 2026-10-24 against `/wiki/Prime_League/2026_Season/Fall_Split`). `scripts/verify_site.py
+--check-external` therefore cannot certify a citation. New
+`verification/check_source_pages.py` extracts every distinct `leaguepedia_url` from the payload and asks
+`api.php?action=query&titles=…` (one batched, read-only request) whether each page exists. Result on the
+2026-10-24 payload: **12 cited pages, 12 exist, 0 missing**, written to `data/diag/source_pages.log` by the branch
+pipeline and wired into `verify.yml` (an unreachable API is a warning, a missing page is a failure).
+
+### 18.4 What changed in production as a result
+**Nothing.** No new adapter was promoted, no formula changed, no probability moved. The evidence supports what the
+site already says: above the World Championship, no reachable book prices these competitions, so those rows are our
+own line, disclosed per league with the Low-confidence count.

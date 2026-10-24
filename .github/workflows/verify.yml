@@ -48,8 +48,22 @@ jobs:
             --out verification/leaguepedia_coverage.json \
             --md verification/leaguepedia_coverage.md
 
-      - name: DOM contract (every id the JS uses exists in the pages)
+      - name: DOM/mobile contract (ids, header skeleton, class coverage, no dead controls)
         run: python3 verification/check_dom_contract.py
+
+      - name: DOM contract negative self-tests (each rule must fail on a broken page)
+        run: python3 verification/test_dom_contract.py
+
+      - name: Cited Leaguepedia source pages must exist (HTTP 200 is not enough)
+        run: |
+          set +e
+          python3 verification/check_source_pages.py
+          rc=$?
+          if [ "$rc" = "2" ]; then
+            echo "::warning title=Source page check skipped::Leaguepedia API was unreachable; page existence not verified in this run"
+            exit 0
+          fi
+          exit "$rc"
 
       - name: Render checks (jsdom executes the real pages against the payload)
         run: |

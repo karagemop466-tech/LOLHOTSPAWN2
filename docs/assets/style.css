@@ -42,6 +42,49 @@
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);
   }
 }
+/* Explicit theme choice — the header toggle sets data-theme on <html> and must
+   beat both the default :root block and the OS preference in both directions. */
+:root[data-theme="light"] {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef2f9;
+  --text: #0f172a;
+  --muted: #5b6478;
+  --line: #dfe5ef;
+  --brand: #1d4ed8;
+  --brand-ink: #ffffff;
+  --green: #15803d;
+  --green-soft: #dcfce7;
+  --amber: #b45309;
+  --amber-soft: #fef3c7;
+  --red: #b91c1c;
+  --red-soft: #fee2e2;
+  --blue-soft: #dbeafe;
+  --violet: #6d28d9;
+  --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .06);
+  --radius: 16px;
+  --max: 1180px;
+  --nav-h: 60px;
+}
+:root[data-theme="dark"] {
+    --bg: #0b1020;
+    --surface: #131a2e;
+    --surface-2: #1b2440;
+    --text: #eef2ff;
+    --muted: #a7b0c8;
+    --line: #27324f;
+    --brand: #7aa2ff;
+    --brand-ink: #0b1020;
+    --green: #4ade80;
+    --green-soft: #12351f;
+    --amber: #fbbf24;
+    --amber-soft: #3a2b08;
+    --red: #f87171;
+    --red-soft: #3b1212;
+    --blue-soft: #16233f;
+    --violet: #c4b5fd;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
@@ -349,6 +392,19 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
   .lede { font-size: 16px; }
 }
 
+/* header colour-theme control (present on every page, persisted in localStorage) */
+.icon-btn {
+  flex: 0 0 auto; margin-left: 8px; width: 42px; height: 42px; min-height: 42px;
+  display: inline-grid; place-items: center; cursor: pointer;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 12px; font-size: 17px; line-height: 1;
+}
+.icon-btn:active { transform: translateY(1px); }
+@media (max-width: 420px) {
+  .header-meta { font-size: 11px; }
+  .logo-text { font-size: 14px; }
+  .logo-text small { font-size: 10px; }
+}
 /* ---- hero "find the picks" buttons (session arena/e6f33fe9) ---- */
 .btn.big { font-size: 16px; min-height: 54px; }
 .btn-n { font-weight: 800; opacity: .85; }
@@ -364,4 +420,12 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
 @media (max-width: 640px) {
   .hero-actions .btn { flex: 1 1 100%; }
   .hero-actions { gap: 8px; }
+}
+
+/* ---- plain-language legend for the method chips on the executive summary ---- */
+.legend { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 12px; align-items: center; margin: 12px 0 4px; }
+.legend-t { font-size: 13px; color: var(--muted); line-height: 1.4; }
+@media (max-width: 560px) {
+  .legend { grid-template-columns: 1fr; gap: 2px; }
+  .legend-t { margin: 0 0 8px; }
 }
