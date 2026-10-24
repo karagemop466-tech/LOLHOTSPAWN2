@@ -1179,3 +1179,10 @@ Resolution (nothing discarded silently; nothing duplicated in the merged tree):
 
 Post-merge local state: `check_dom_contract.py` **PASS**, `test_dom_contract.py` **7/7**, `render_check.cjs`
 **PASS** (with the new theme assertions), `check_source_pages.py` **12/12 pages exist** (verified in run 40112604014).
+
+**CI failure found and fixed during the merge (2026-10-24):** the first post-merge pipeline-test run
+([40113550733](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40113550733)) failed because the
+automatic merge of `pipeline-test.yml` left a stale step still calling this session's deleted
+`verification/render_smoke.js` (and duplicated the verify block). The step list was rewritten to a single verify
+block plus the project's existing `render_check.cjs`; no check was dropped. This is recorded rather than hidden
+because the run is red in the Actions history.

@@ -1,31 +1,31 @@
 {
- "verified_at": "2026-10-24T16:54:15.051030+00:00",
+ "verified_at": "2026-10-24T17:04:29.712967+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 41,
+  "PASS": 40,
   "FAIL": 0,
-  "WARN": 1,
-  "SKIP": 0
+  "WARN": 0,
+  "SKIP": 1
  },
  "data_matches": 160,
  "methods": {
+  "MODEL_ELO_STANDINGS": 55,
   "MODEL_STANDINGS": 0,
   "MODEL_ELO_THIN": 2,
-  "MARKET_BOOKS": 0,
-  "MARKET_SINGLE": 1,
-  "UNRESOLVED": 0,
   "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO_STANDINGS": 55,
-  "MARKET_CONSENSUS": 8,
   "MODEL_ELO": 94,
-  "MARKET_POLYMARKET": 0
+  "MARKET_BOOKS": 0,
+  "UNRESOLVED": 0,
+  "MARKET_POLYMARKET": 0,
+  "MARKET_SINGLE": 1,
+  "MARKET_CONSENSUS": 8
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "160 matches, generated_at=2026-10-24T16:54:11.631699Z (0.0h old)"
+   "detail": "160 matches, generated_at=2026-10-24T16:54:11.631699Z (0.2h old)"
   },
   {
    "id": "D2",
@@ -156,8 +156,8 @@
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "PASS",
-   "detail": "139/139 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T16:52:42.160820+00:00 (0.0h old)."
+   "status": "SKIP",
+   "detail": "no --leaguepedia-schedule snapshot supplied"
   },
   {
    "id": "D14",
@@ -266,16 +266,6 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
-  },
-  {
-   "id": "X1",
-   "title": "external links reachable (official-source links resolve)",
-   "status": "WARN",
-   "detail": "12/15 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
-   "items": [
-    "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues -> 401",
-    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403"
-   ]
   },
   {
    "id": "REQ",
