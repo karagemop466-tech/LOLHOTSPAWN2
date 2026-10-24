@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T17:46:40.241536Z",
+ "checked_at": "2026-10-24T17:55:38.660226Z",
  "candidates": [
   {
    "category": "Established sportsbooks",
@@ -58,7 +58,7 @@
    "url": "https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends",
    "kind": "sportsbook-json",
    "http_status": 200,
-   "bytes": 225206,
+   "bytes": 221312,
    "is_json": true,
    "lol_mentions": 1,
    "vs_pairs": null,
@@ -66,13 +66,13 @@
    "detail": {
     "item_count": 1,
     "group_count": 1,
-    "event_count": 8,
+    "event_count": 7,
     "vs_style_questions": 0,
     "question_sample": [
      ""
     ]
    },
-   "verdict": "reachable structured JSON (225206 bytes); 1 group(s), 8 event(s); LoL mentions: 1",
+   "verdict": "reachable structured JSON (221312 bytes); 1 group(s), 7 event(s); LoL mentions: 1",
    "error": null
   },
   {
@@ -81,7 +81,7 @@
    "url": "https://sportsbook.draftkings.com/leagues/esports/league-of-legends",
    "kind": "sportsbook-page",
    "http_status": 404,
-   "bytes": 257746,
+   "bytes": 257963,
    "is_json": false,
    "lol_mentions": null,
    "vs_pairs": null,
@@ -96,7 +96,7 @@
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "kind": "sportsbook-page",
    "http_status": 200,
-   "bytes": 366111,
+   "bytes": 366119,
    "is_json": false,
    "lol_mentions": 0,
    "vs_pairs": 2,
@@ -128,7 +128,7 @@
    "url": "https://thunderpick.io/esports/league-of-legends",
    "kind": "esportsbook-page",
    "http_status": 403,
-   "bytes": 5767,
+   "bytes": 5789,
    "is_json": false,
    "lol_mentions": null,
    "vs_pairs": null,
@@ -241,7 +241,7 @@
    "url": "https://egamersworld.com/lol/bets",
    "kind": "odds-comparison-page",
    "http_status": 403,
-   "bytes": 5718,
+   "bytes": 5740,
    "is_json": false,
    "lol_mentions": null,
    "vs_pairs": null,
@@ -278,7 +278,7 @@
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&closed=false&limit=5",
    "kind": "prediction-market-json",
    "http_status": 200,
-   "bytes": 81208,
+   "bytes": 81233,
    "is_json": true,
    "lol_mentions": 95,
    "vs_pairs": null,
@@ -292,7 +292,7 @@
      ""
     ]
    },
-   "verdict": "reachable structured JSON (81192 bytes); LoL mentions: 95",
+   "verdict": "reachable structured JSON (81217 bytes); LoL mentions: 95",
    "error": null
   },
   {
@@ -363,7 +363,7 @@
    "url": "https://www.betfair.com/exchange/plus/",
    "kind": "exchange-page",
    "http_status": 403,
-   "bytes": 3642,
+   "bytes": 3647,
    "is_json": false,
    "lol_mentions": null,
    "vs_pairs": null,
@@ -442,7 +442,7 @@
    "url": "https://lolesports.com/",
    "kind": "official-page",
    "http_status": 200,
-   "bytes": 3032649,
+   "bytes": 3032671,
    "is_json": false,
    "lol_mentions": 20,
    "vs_pairs": 57,
