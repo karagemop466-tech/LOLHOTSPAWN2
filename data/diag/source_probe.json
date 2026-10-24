@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:41:04.186319Z",
+ "checked_at": "2026-10-24T16:50:56.766178Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -66,12 +66,12 @@
    "name": "OddsPortal LoL",
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 503,
-   "bytes": 0,
+   "http_status": 200,
+   "bytes": 491898,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
   },
   {
    "name": "BetExplorer LoL",
@@ -110,12 +110,12 @@
    "name": "Rivalry LoL",
    "url": "https://www.rivalry.com/lol",
    "kind": "esportsbook-page",
-   "http_status": 404,
-   "bytes": 65054,
+   "http_status": 503,
+   "bytes": 1591,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 404)"
+   "verdict": "not usable from CI (HTTP 503)"
   },
   {
    "name": "Midnite LoL",
