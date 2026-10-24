@@ -885,6 +885,18 @@ PR/merge record — completed 2026-10-24:
 **Follow-up commit (same session):** probe verdict wording is now category-aware (results/metadata pages are no longer
 described in odds language) and the probe table labels the type as “Market”/“Results”. No data or probability behaviour changes.
 
+| Item (continued) | Value |
+|---|---|
+| Follow-up PR | [PR #34](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/34) — **MERGED** 2026-10-24T16:36:32Z, merge commit `5d71d0b`; `verify.yml` [40112346967](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112346967) success; Pages build [40112346904](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112346904) success |
+| Production refresh after #34 | `update-picks.yml` [40112346993](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112346993) — success, commit `fc1d438`, payload `2026-10-24T16:40:07Z`: 160 fixtures · 160 priced (100%) · 9 market · 151 model · 0 unresolved · 64 low confidence · 22 probe rows (8 reachable this run) |
+| Live checks on production | summary renders the 4 picks cards (160 / 25 / 12 / 0 unresolved · 64 low) + refresh line; `picks.html?filter=next24` renders 25 of 160 rows with both win probabilities, ✅ pick pill and source links; `unresolved.html#sources-checked` renders the 22-row probe table |
+
+**Irregularity 8 (fixed):** two-way percentages were rounded independently, so two rows displayed **99.9%**
+(e.g. JSK Academy 50.7% + New Era Team 49.2%) and market rows could display 100.1%. `pctPair()` in
+`docs/assets/app.js` now rounds the first side and derives the second from 100 − first, so every displayed pair
+sums to exactly 100.0%. Stored probabilities were always correct (`D4` tolerance) — this was display-only.
+Verified with a jsdom pass over all 160 rendered rows: 160/160 pairs sum to 100.0%.
+
 ---
 
 ## Session `arena/607dddb0-lolhotspawn2` — 2026-10-24 (live sportsbook & wiki forensic audit: Bovada 8-match restoration, `Inari Esports` entity repair, 404 URL elimination, Liquipedia API normalization & 6h CI hardening)

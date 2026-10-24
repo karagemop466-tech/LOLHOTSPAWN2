@@ -6,6 +6,14 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const pct = (x) => (x == null ? "—" : `${Math.round(x * 100)}%`);
   const pct1 = (x) => (x == null ? "—" : `${(x * 100).toFixed(1)}%`);
+  // Two-way display that always sums to exactly 100.0%: rounding each side
+  // independently can print 68.5% + 31.6% = 100.1% for p=0.6845/0.3155.
+  const pctPair = (a) => {
+    if (a == null) return ["—", "—"];
+    const x = Math.round(a * 1000) / 10;
+    const y = Math.round((100 - x) * 10) / 10;
+    return [`${x.toFixed(1)}%`, `${y.toFixed(1)}%`];
+  };
   const slugify = (s) => String(s || "league").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const METHOD = {
@@ -91,11 +99,12 @@
     const cls = matchClass(m);
     const t = whenLocal(m.start_utc);
     const mi = methodInfo(m);
+    const pair = pctPair(m.prob_team1);
     return `<article class="match ${cls}">
       <div class="match-top"><span class="when" title="${esc(t.title)}">${esc(t.text)}</span><span>·</span><span>${esc(m.tournament || "Tournament TBC")}</span>${m.best_of ? `<span>· Bo${esc(m.best_of)}</span>` : ""}<span class="chip ${cls === "unres" ? "red" : cls === "partial" ? "amber" : cls === "market" ? "green" : "blue"}">${mi.ico} ${esc(mi.label)}</span></div>
       <div class="teams"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a></div>
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
-      <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
+      <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
       <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
@@ -104,6 +113,7 @@
 
   function row(m) {
     const t = whenLocal(m.start_utc);
+    const pair = pctPair(m.prob_team1);
     const mi = methodInfo(m);
     const cls = matchClass(m);
     const srcCount = (m.sources || []).filter((s) => s.url).length;
@@ -112,7 +122,7 @@
     return `<tr class="${cls}">
       <td data-label="Start" title="${esc(t.title)}"><b>${esc(t.text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span><span class="sub">${esc(relative(m.start_utc))}</span></td>
       <td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}${m.best_of ? ` · Bo${esc(m.best_of)}` : ""}${m.tier && !/^WAITING/i.test(m.tier) ? ` · Tier ${esc(m.tier)}` : ""}</span></td>
-      <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pct1(m.prob_team1)}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pct1(m.prob_team2)}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
+      <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pair[0]}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pair[1]}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
       <td class="pickcell" data-label="Pick">${pickPill(m)}</td>
       <td data-label="Method"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="sub"><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")}</span></span></td>
       <td data-label="Sources"><span class="sub">${srcCount} verified link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
@@ -600,8 +610,9 @@
       return;
     }
     const mi = methodInfo(m);
+    const pair = pctPair(m.prob_team1);
     const t = whenLocal(m.start_utc);
-    const marketRows = (m.market?.sources || []).map((s) => `<tr><td><b>${esc(s.source)}</b></td><td>${pct1(s.prob_team1)}</td><td>${pct1(s.prob_team2)}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`).join("");
+    const marketRows = (m.market?.sources || []).map((s) => { const p = pctPair(s.prob_team1); return `<tr><td><b>${esc(s.source)}</b></td><td>${p[0]}</td><td>${p[1]}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`; }).join("");
     const model = m.model || {};
     const h2h = model.h2h ? `${model.h2h.team1_wins}/${model.h2h.games} head-to-head wins for ${esc(m.team1)}` : "No head-to-head sample in the last 24 months.";
     box.innerHTML = `
@@ -610,14 +621,14 @@
         <h1>${esc(m.team1)} <span style="color:var(--muted);font-weight:600;font-size:.6em">vs</span> ${esc(m.team2)}</h1>
         <p class="small">${esc(m.tournament || "")} · ${esc(t.text)} <span title="${esc(t.title)}">· ${esc(whenUTC(m.start_utc))}</span> · ${esc(relative(m.start_utc))}</p>
         <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
-        <div class="probrow"><span>${esc(m.team1)} <b>${pct1(m.prob_team1)}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pct1(m.prob_team2)}</b></span></div>
+        <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
         <div class="pickline">${pickPill(m)}</div>
         <p class="small">${esc(m.evidence || "")}</p>
       </div>
       <div class="two-col">
         <div>
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
-            ${m.market ? `<p class="small">Consensus: <b>${pct1(m.market.consensus_team1)}</b> ${esc(m.team1)} · <b>${pct1(1 - m.market.consensus_team1)}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
+            ${m.market ? `<p class="small">Consensus: <b>${pctPair(m.market.consensus_team1)[0]}</b> ${esc(m.team1)} · <b>${pctPair(m.market.consensus_team1)[1]}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
             <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
             : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>`}
           </div>
