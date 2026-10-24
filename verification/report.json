@@ -1,36 +1,36 @@
 {
- "verified_at": "2026-10-24T16:18:23.093356+00:00",
+ "verified_at": "2026-10-24T16:46:38.412004+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 36,
+  "PASS": 40,
   "FAIL": 0,
-  "WARN": 0,
-  "SKIP": 1
+  "WARN": 1,
+  "SKIP": 0
  },
- "data_matches": 169,
+ "data_matches": 160,
  "methods": {
+  "MARKET_SINGLE": 1,
+  "MODEL_ELO_THIN": 57,
   "MODEL_LEAGUE_PRIOR": 0,
-  "UNRESOLVED": 0,
-  "MARKET_CONSENSUS": 8,
-  "MARKET_POLYMARKET": 0,
-  "MARKET_BOOKS": 0,
   "MODEL_STANDINGS": 0,
-  "MODEL_ELO_THIN": 67,
-  "MODEL_ELO": 93,
-  "MARKET_SINGLE": 1
+  "MARKET_BOOKS": 0,
+  "MARKET_POLYMARKET": 0,
+  "MARKET_CONSENSUS": 8,
+  "UNRESOLVED": 0,
+  "MODEL_ELO": 94
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "169 matches, generated_at=2026-10-24T15:28:56.619239Z (0.8h old)"
+   "detail": "160 matches, generated_at=2026-10-24T16:42:29.066048Z (0.1h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 169 rows have team1, team2 and a start time"
+   "detail": "all 160 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -72,7 +72,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 169 rows carry at least one source URL"
+   "detail": "all 160 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -126,7 +126,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=169, rows=169"
+   "detail": "declared=160, rows=160"
   },
   {
    "id": "D20",
@@ -138,19 +138,37 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=169, priced=169, missing=0, extra=0, excluded=14, leaked=0"
+   "detail": "lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0"
+  },
+  {
+   "id": "D22",
+   "title": "external-source probe rows are sourced and never carry a probability",
+   "status": "PASS",
+   "detail": "22 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 69 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 63 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "SKIP",
-   "detail": "no --leaguepedia-schedule snapshot supplied"
+   "status": "WARN",
+   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.0h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
+   "items": [
+    "Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00",
+    "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
+    "Karolinerna vs Turbo Gaming: ours=2026-10-27 18:00 lp=2026-10-24 16:30",
+    "FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30",
+    "Babos Gaming Academy vs VfB x Engines Stuttgart: ours=2026-10-29 18:00 lp=2026-10-25 16:00",
+    "Playwell Rød Q vs Your Saviours: ours=2026-10-30 17:00 lp=2026-10-01 17:45",
+    "Volda E-Sport vs Ascent Gaming: ours=2026-10-30 17:00 lp=2026-09-26 17:00",
+    "Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00",
+    "Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30",
+    "2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30"
+   ]
   },
   {
    "id": "D14",
@@ -189,6 +207,12 @@
    "detail": "exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True}"
   },
   {
+   "id": "S4c",
+   "title": "executive summary has a dedicated in-site picks block",
+   "status": "PASS",
+   "detail": "4 in-site links, counts bound to ids; 0 missing"
+  },
+  {
    "id": "S5",
    "title": "separate unresolved section with limitations",
    "status": "PASS",
@@ -222,7 +246,19 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "10 external link(s) collected for manual review; 0 plain-http"
+   "detail": "15 external link(s) collected for manual review; 0 plain-http"
+  },
+  {
+   "id": "S11",
+   "title": "every CSS class used by a page is defined in style.css",
+   "status": "PASS",
+   "detail": "7 page(s), no unstyled class"
+  },
+  {
+   "id": "S12",
+   "title": "all pages share one navigation, freshness slot and unique ids",
+   "status": "PASS",
+   "detail": "7 pages, identical nav with 6 primary targets"
   },
   {
    "id": "W1",

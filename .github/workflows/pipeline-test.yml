@@ -63,6 +63,13 @@ jobs:
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
 
+      - name: Render check (jsdom runs the real pages against the payload)
+        if: always()
+        run: |
+          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
+            echo "jsdom not installed; render_check will SKIP"
+          node verification/render_check.cjs
+
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()
         run: python3 scripts/probe_sources.py

@@ -106,5 +106,49 @@ lp6 = dict(lp, results=results + [r for r in played if r["team1"] == "Alpha"])  
 out6 = M.build_matches(hotspawn, lp6, markets, ALIASES)["matches"][0]
 check("elo+standings blend resolves", out6["method"] == "MODEL_STANDINGS", out6["method"])
 
+# ---------------------------------------------------------------------------
+# 7) Thin Elo + an in-competition current-split standings record is blended
+#    into the rating (MODEL_ELO_STANDINGS). Before this branch existed the
+#    pure MODEL_STANDINGS path was unreachable in production, because Elo
+#    only needs one recorded game while standings needs one decided series.
+# ---------------------------------------------------------------------------
+# Alpha and Beta each have exactly 2 recorded games -> Elo is THIN.
+thin_results = [sched_row("Alpha", "Gamma", NOW - timedelta(days=20), winner=1, s1=2, s2=0),
+                sched_row("Alpha", "Gamma", NOW - timedelta(days=19), winner=2, s1=0, s2=2),
+                sched_row("Beta", "Delta", NOW - timedelta(days=20), winner=2, s1=0, s2=2),
+                sched_row("Beta", "Delta", NOW - timedelta(days=19), winner=1, s1=2, s2=0)]
+lp7 = dict(lp, results=thin_results,
+           standings=[standings_row("Alpha", 8, 1), standings_row("Beta", 1, 8)])
+out7 = M.build_matches(hotspawn, lp7, markets, ALIASES)["matches"][0]
+check("thin elo + split standings blends", out7["method"] == "MODEL_ELO_STANDINGS", out7["method"])
+check("blend favours the stronger split record", out7["prob_team1"] > 0.5, str(out7["prob_team1"]))
+check("blend is capped at Medium confidence", out7["confidence"] in ("Low", "Medium"), out7["confidence"])
+check("blend records the standings weight", (out7.get("model") or {}).get("standings_weight_team1", 0) > 0,
+      str((out7.get("model") or {}).get("standings_weight_team1")))
+check("blend is flagged", "STANDINGS_BLEND_APPLIED" in (out7.get("flags") or []), str(out7.get("flags")))
+check("blend evidence cites standings", "standings" in out7["evidence"].lower(), out7["evidence"][:120])
+
+# 8) Standings from a DIFFERENT competition must not be blended into a row
+lp8 = dict(lp7, standings=[{"overview": "Other League/2025 Season", "team": "Alpha", "place": None,
+                            "win_series": 20, "loss_series": 0, "tie_series": 0,
+                            "win_games": 40, "loss_games": 0},
+                           {"overview": "Other League/2025 Season", "team": "Beta", "place": None,
+                            "win_series": 0, "loss_series": 20, "tie_series": 0,
+                            "win_games": 0, "loss_games": 40}])
+out8 = M.build_matches(hotspawn, lp8, markets, ALIASES)["matches"][0]
+check("out-of-competition standings are not blended",
+      out8["method"] != "MODEL_ELO_STANDINGS", out8["method"])
+
+# 9) A deep Elo pair (>=8 games) is never overridden by standings
+deep_results = []
+for i in range(10):
+    deep_results.append(sched_row("Alpha", "Gamma", NOW - timedelta(days=60 - i), winner=1, s1=2, s2=0))
+    deep_results.append(sched_row("Beta", "Delta", NOW - timedelta(days=60 - i), winner=1, s1=2, s2=0))
+lp9 = dict(lp, results=deep_results,
+           standings=[standings_row("Alpha", 1, 9), standings_row("Beta", 9, 1)])
+out9 = M.build_matches(hotspawn, lp9, markets, ALIASES)["matches"][0]
+check("deep elo is not overridden by standings", out9["method"] in ("MODEL_ELO", "MODEL_ELO_THIN"),
+      out9["method"])
+
 print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
 raise SystemExit(1 if failures else 0)
