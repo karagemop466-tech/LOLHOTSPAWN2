@@ -380,8 +380,8 @@ fragile in exactly the way this project has been avoiding. **No adapter was adde
 | Source checked | What was observed | Verdict |
 |---|---|---|
 | eGamersWorld LoL odds ([link](https://egamersworld.com/lol/bets)) | Aggregates five books (Vave, Thunderpick, Rainbet, Underdog, CocoBet). On 2026-10-24 its entire "today's upcoming" board was **2026 World Championship** fixtures — no tier-2/3 event | Human cross-check only; nothing to add |
-| Oddspedia LoL odds ([link](https://oddspedia.com/league-of-legends/odds)) | Claims coverage of "hundreds" of LoL tournaments; its pages are geo-targeted comparison views with no public API | Not usable from CI |
-| Strafe LoL odds ([link](https://www.strafe.com/esports-betting/odds/league-of-legends/)) | Oddspedia-powered front end; same limitation | Not usable |
+| Oddspedia LoL odds (`oddspedia.com/league-of-legends/odds` and `oddspedia.com/us/league-of-legends/odds`) | **HTTP 410 "permanently deleted"** on 2026-10-24, both from CI (`data/diag/source_probe.json`) and from a direct fetch. League-scoped pages (e.g. `/league-of-legends/world/lec/odds`) appear in search results but are geo-targeted comparison views with no public API | Not usable — the generic LoL odds paths are gone |
+| Strafe LoL odds ([link](https://www.strafe.com/esports-betting/odds/league-of-legends/)) | HTTP 200, HTML only (probe `source_probe.json`); Oddspedia-powered front end | Not usable programmatically |
 | GG.Bet / Thunderpick / Rivalry / Midnite / Betway | Probe history from §11–§12 (403/404/503 or JS-only SPA boards) | Still not usable |
 
 ### 13.3 What this session changed as a result
@@ -404,5 +404,7 @@ fragile in exactly the way this project has been avoiding. **No adapter was adde
 | Kambi `ubca` LoL feed | 8 World Championship events only | https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true |
 | Kambi `ub` feed, `market=DE` | Identical World Championship event set — the market parameter does not widen LoL coverage | https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true |
 | Kambi `ubde` brand feed | HTTP 400, customer cannot be resolved — no German-brand feed available to us | https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true |
-| Betmonitor PRM 2nd Division | bet365 / Unibet / efbet / novibet publish Prime League 2nd Division lines | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| Betmonitor PRM 2nd Division | bet365 / Unibet / efbet / novibet publish Prime League 2nd Division lines; probe from CI returns **HTTP 200, HTML only** | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| BMBets LoL Prime League | Book-by-book Prime League comparison; probe from CI returns **HTTP 200, HTML only** | https://www.bmbets.com/e-sports/world/lol---prime-league/ |
+| Oddspedia generic LoL odds path | **HTTP 410 permanently deleted** (CI probe + direct fetch, 2026-10-24) — recorded so future sessions do not retry it | https://oddspedia.com/league-of-legends/odds |
 | OddsPortal Prime League | Established books carry the league and closing odds | https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ |

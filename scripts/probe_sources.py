@@ -40,7 +40,9 @@ CANDIDATES = [
     # lines, including DACH Prime League 2nd Division at bet365 / Unibet / efbet /
     # novibet. They are comparison pages behind Cloudflare/geo walls with no
     # published API, so they are probed for evidence only — never parsed into picks.
-    ("Oddspedia LoL odds comparison", "https://oddspedia.com/league-of-legends/odds", "odds-comparison-page"),
+    # Oddspedia's generic LoL odds paths answered HTTP 410 "permanently deleted" on
+    # 2026-10-24 (CI probe + direct fetch). Probed so the finding stays measured.
+    ("Oddspedia LoL odds comparison (410 as of 2026-10-24)", "https://oddspedia.com/league-of-legends/odds", "odds-comparison-page"),
     ("Betmonitor Prime League 2nd Division (bet365/Unibet/efbet/novibet lines)",
      "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
      "odds-comparison-page"),
