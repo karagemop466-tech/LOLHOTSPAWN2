@@ -87,6 +87,104 @@
     return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
   }
 
+  function roleChip(role) {
+    const map = {
+      probability_input: ["green", "Probability input"],
+      model_input: ["blue", "Model input (results)"],
+      context: ["amber", "Reference only"],
+      unavailable: ["red", "Not usable"],
+    };
+    return map[role] || ["", role || "unknown"];
+  }
+
+  function renderSourceLadder(box, src) {
+    if (!box) return;
+    if (!src || !Array.isArray(src.categories)) {
+      box.innerHTML = `<div class="card">No verified source-research snapshot is present in this payload.</div>`;
+      return;
+    }
+    box.innerHTML = src.categories.map((cat) => {
+      const items = (cat.sources || []).map((x) => {
+        const chip = roleChip(x.role);
+        const notes = [];
+        if (x.observed) notes.push(esc(x.observed));
+        if (x.run_status) notes.push(`latest run: ${esc(x.run_status)}${x.count != null ? ` · ${esc(x.count)}` : ""}`);
+        if (x.probe_http_status != null) notes.push(`CI probe HTTP ${esc(x.probe_http_status)}`);
+        return `<li>
+          <div class="src-main">
+            <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>
+            <span class="chip ${chip[0]}">${esc(chip[1])}</span>
+            ${x.count != null && x.role === "probability_input" ? `<span class="chip">${esc(x.count)} price(s)</span>` : ""}
+          </div>
+          <p class="src-note">${notes.join(" · ")}</p>
+          ${x.limitation ? `<p class="src-meta"><b>Limit:</b> ${esc(x.limitation)}</p>` : ""}
+          <p class="src-meta">Checked ${esc(x.verified_on || "—")}${x.feed ? ` · <a href="${esc(x.feed)}" target="_blank" rel="noopener">feed ↗</a>` : ""}</p>
+        </li>`;
+      }).join("");
+      return `<section class="src-cat">
+        <h4>${esc(cat.step)}. ${esc(cat.title)} <span class="chip">${(cat.sources || []).length}</span></h4>
+        <p class="src-note">${esc(cat.note || "")}</p>
+        <ul class="src-list">${items}</ul>
+      </section>`;
+    }).join("");
+  }
+
+  function renderSourceCompact(box, src) {
+    if (!box) return;
+    if (!src || !Array.isArray(src.categories)) {
+      box.innerHTML = `<p class="small">No source-research snapshot is present in this payload.</p>`;
+      return;
+    }
+    const used = [];
+    src.categories.forEach((cat) => (cat.sources || []).forEach((x) => {
+      if (x.role === "probability_input" || x.role === "model_input") used.push(x);
+    }));
+    box.innerHTML = `
+      <div class="src-list">
+        ${src.categories.map((cat) => `<p class="src-note" style="margin:6px 0"><b>${esc(cat.step)}. ${esc(cat.title)}</b> — ${cat.counts.probability_input} probability input(s) · ${cat.counts.context} reference only · ${cat.counts.unavailable} not usable</p>`).join("")}
+      </div>
+      <p class="small" style="margin-top:10px"><b>Actually used for probabilities in this build:</b></p>
+      <div class="src-links">${used.map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`).join("") || '<span class="small">None.</span>'}</div>
+      <p class="src-meta">Verified ${esc(src.verified_on || "—")}. Sources marked reference-only or not usable were checked and are never counted as a price.</p>`;
+  }
+
+  function renderProbe(box, probe) {
+    if (!box) return;
+    if (!probe || !Array.isArray(probe.candidates)) {
+      box.innerHTML = `<p>No automated probe is present in this payload.</p>`;
+      return;
+    }
+    const rows = probe.candidates.map((c) => `<tr>
+      <td data-label="Source"><b>${esc(c.name)}</b><span class="sub"><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.url)}</a></span></td>
+      <td data-label="HTTP">${c.http_status == null ? "—" : `<span class="chip ${c.http_status === 200 ? "green" : "red"}">${esc(c.http_status)}</span>`}</td>
+      <td data-label="JSON">${c.is_json ? "yes" : "no"}</td>
+      <td data-label="Observation">${esc(c.verdict || "")}</td>
+    </tr>`).join("");
+    box.innerHTML = `<p>Probe ${esc(probe.checked_at || "—")}. ${esc(probe.vantage || "")}</p>
+      <div class="table-wrap"><table><thead><tr><th scope="col">Source</th><th scope="col">HTTP</th><th scope="col">JSON</th><th scope="col">Observed</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function wireTheme() {
+    const btn = $("#theme-toggle");
+    const KEY = "lolpicks-theme";
+    const root = document.documentElement;
+    try { const saved = localStorage.getItem(KEY); if (saved) root.dataset.theme = saved; } catch (e) { /* storage may be blocked */ }
+    const isDark = () => root.dataset.theme === "dark" ||
+      (!root.dataset.theme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    function paint() {
+      if (!btn) return;
+      btn.textContent = isDark() ? "☀️" : "🌙";
+      btn.setAttribute("aria-label", isDark() ? "Switch to light theme" : "Switch to dark theme");
+      btn.setAttribute("title", isDark() ? "Switch to light theme" : "Switch to dark theme");
+    }
+    if (btn) btn.addEventListener("click", () => {
+      root.dataset.theme = isDark() ? "light" : "dark";
+      try { localStorage.setItem(KEY, root.dataset.theme); } catch (e) { /* ignore */ }
+      paint();
+    });
+    paint();
+  }
+
   function matchCard(m, opts = {}) {
     const cls = matchClass(m);
     const t = whenLocal(m.start_utc);
@@ -168,6 +266,11 @@
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
       fresh.title = `Next scheduled update: ${whenUTC(d.next_update_utc)}`;
     }
+    const strip = $("#status-strip");
+    if (strip) {
+      const c = d.counts || {};
+      strip.innerHTML = `<b>${c.fixtures ?? 0}</b> fixtures · <b>${c.market ?? 0}</b> with book lines · <b>${c.model ?? 0}</b> model-priced · <b>${c.unresolved ?? 0}</b> unresolved · next refresh ${esc(whenUTC(d.next_update_utc))} · <a href="picks.html">open All picks →</a>`;
+    }
     const warn = $("#freshness-warning");
     if (warn && !isFresh(d)) {
       warn.className = "warnbox";
@@ -189,6 +292,11 @@
     set("#stat-market", c.market ?? "—");
     set("#stat-model", c.model ?? "—");
     set("#stat-unresolved", c.unresolved ?? "—");
+
+    const fp = $("#find-picks-counts");
+    if (fp) {
+      fp.innerHTML = `Current snapshot <b>${esc(whenUTC(d.generated_at))}</b> · <b>${c.fixtures ?? 0}</b> fixtures · <b>${c.market ?? 0}</b> with external book lines · <b>${c.model ?? 0}</b> priced by our Elo/standings model · <b>${c.unresolved ?? 0}</b> unresolved 50/50 placeholders · next automatic refresh <b>${esc(whenUTC(d.next_update_utc))}</b>.`;
+    }
 
     const rb = $("#recon-body");
     if (rb) {
@@ -254,14 +362,22 @@
       : `<div class="card">No external market lines are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
 
     const u = d.unresolved || {};
-    const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
-    const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const unresRows = (d.matches || []).filter((m) => m.method === "UNRESOLVED");
+    const reasons = [...(u.reasons || []).map((r) => ({ ...r, kind: "Unresolved" })),
+                     ...(u.low_confidence_reasons || []).map((r) => ({ ...r, kind: "Low confidence" }))]
+      .map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)} <span class="chip ${r.kind === "Unresolved" ? "red" : "amber"}">${esc(r.kind)}</span></li>`).join("");
+    const allLims = u.limitations || [];
+    const lims = allLims.slice(0, 3).map((x) => `<li>${esc(x)}</li>`).join("");
+    const src = d.source_research;
     const ubox = $("#unresolved-summary");
-    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; Low-confidence picks (${u.low_confidence_count ?? 0})</h3>
-      <p><b>${u.count ?? 0}</b> fixture${(u.count ?? 0) === 1 ? "" : "s"} lack external lines, recorded team matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge). <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows rely on thin history (&lt;8 games), split standings, or a single debut side against the competition prior and are capped at Low confidence. Hotspawn's crowd % is never used.</p>
-      ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
-      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; limitations for generating picks</h3>
+      <p><b>${u.count ?? 0}</b> of <b>${c.fixtures ?? 0}</b> fixtures in this snapshot are unresolved. An unresolved row is published strictly as an explicit <b>50.0% / 50.0% placeholder</b> — never an edge, never derived from Hotspawn's crowd percentage. <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows do have a pick but rely on thin history (&lt;8 games), split standings, or a single debut side priced against the competition prior, so they are capped at Low confidence.</p>
+      ${unresRows.length ? `<div class="stack">${unresRows.slice(0, 6).map((m) => matchCard(m, { sources: 3 })).join("")}</div>` : `<div class="okbox"><b>0 explicit 50/50 placeholders right now.</b> Every listed fixture has an external book line, recorded Leaguepedia match history, or a split-standings record. The limitations below still apply to the low-confidence rows and to any future fixture with no verifiable signal.</div>`}
+      ${reasons ? `<p class="small"><b>Why rows are unresolved or low confidence</b></p><ul class="clean small">${reasons}</ul>` : ""}
+      <p class="small"><b>Key limitations</b></p><ul class="clean small">${lims}</ul>
+      <details style="margin:6px 0 10px"><summary class="small" style="cursor:pointer"><b>All ${allLims.length} documented limitations for generating picks</b></summary><ol class="small">${allLims.map((x) => `<li>${esc(x)}</li>`).join("")}</ol></details>
+      ${src ? `<p class="small"><b>Source research:</b> ${src.totals.probability_input} probability input(s), ${src.totals.model_input} model input(s), ${src.totals.context} reference-only link(s) and ${src.totals.unavailable} source(s) marked not usable after direct checks — <a href="methodology.html#source-research">every link and observation →</a></p>` : ""}
+      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a> <a class="btn" href="picks.html?filter=low">⚠️ Low-confidence picks →</a></p></div>`;
 
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
@@ -385,28 +501,35 @@
     const un = all.filter((m) => m.method === "UNRESOLVED");
     const low = all.filter((m) => m.method !== "UNRESOLVED" && (m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low"));
     const ub = $("#unresolved-body");
-    if (ub) ub.innerHTML = un.length ? un.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="okbox">0 unresolved placeholders right now — every listed fixture has either external bookmaker odds, recorded Leaguepedia match history, or split standings.</div>`;
+    if (ub) ub.innerHTML = un.length
+      ? un.slice(0, 20).map((m) => matchCard(m, { sources: 3 })).join("") + (un.length > 20 ? `<p class="small">${un.length - 20} more unresolved rows are listed in <a href="picks.html?filter=unresolved">All picks →</a>.</p>` : "")
+      : `<div class="okbox"><b>0 unresolved placeholders right now.</b> Every listed fixture has either external bookmaker odds, recorded Leaguepedia match history, or split standings. If a future fixture has no verifiable signal, it appears here as a labelled 50/50 placeholder instead of a fabricated pick.</div>`;
     const lb = $("#lowconf-body");
-    if (lb) lb.innerHTML = low.length ? low.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No low-confidence rows.</div>`;
+    if (lb) lb.innerHTML = low.length
+      ? low.slice(0, 12).map((m) => matchCard(m, { sources: 3 })).join("") + (low.length > 12 ? `<p class="small"><b>${low.length - 12} more low-confidence rows</b> — <a href="picks.html?filter=low">open them in All picks →</a></p>` : "")
+      : `<div class="card">No low-confidence rows.</div>`;
+    renderSourceCompact($("#source-research-compact"), d.source_research);
     const limBody = $("#league-limitations-body");
     if (limBody) {
       const lbs = computeLeagueBreakdown(d);
       limBody.innerHTML = lbs.map((x) => `<tr>
         <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(x.tournament))}"><b>${esc(x.tournament)}</b></a></td>
         <td data-label="Fixtures"><b>${x.fixtures}</b></td>
-        <td data-label="Breakdown" class="small">💰 ${x.market} · 🧮 ${x.elo} · 📊 ${x.standings || 0} · 📐 ${x.league_prior} · ⚠️ ${x.unresolved}</td>
+        <td data-label="Breakdown" class="small">💰 ${x.market} · 🧮 ${x.elo} · 📊 ${x.standings || 0} · 📐 ${x.league_prior} · ⚠️ ${x.unresolved} · low ${x.low_confidence ?? 0}</td>
         <td data-label="Limitation" class="small">${esc(x.limitation || "")}</td>
         <td data-label="Sources">${leagueSourceLinks(x)}</td>
       </tr>`).join("");
     }
-    const reasons = (d.unresolved?.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
+    const reasons = [...(d.unresolved?.reasons || []).map((r) => ({ ...r, kind: "Unresolved" })),
+                     ...(d.unresolved?.low_confidence_reasons || []).map((r) => ({ ...r, kind: "Low confidence" }))]
+      .map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)} <span class="chip ${r.kind === "Unresolved" ? "red" : "amber"}">${esc(r.kind)}</span></li>`).join("");
     const rbox = $("#reasons");
     if (rbox) rbox.innerHTML = reasons || "<li>None.</li>";
     const lim = (d.unresolved?.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const lbox = $("#limitations");
     if (lbox) lbox.innerHTML = lim;
     const stat = $("#unresolved-counts");
-    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
+    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows` + (d.source_research ? ` · <b>${d.source_research.totals.probability_input}</b> verified probability inputs` : "");
   }
 
   function flagLabel(f) {
@@ -550,6 +673,15 @@
   }
 
   function renderMethodology(d) {
+    const src = d.source_research;
+    const intro = $("#source-research-intro");
+    if (intro) {
+      intro.innerHTML = src
+        ? `Checked ${esc(src.verified_on || "—")}: <b>${src.totals.sources}</b> source pages in five steps — <b>${src.totals.probability_input}</b> used as a probability input, <b>${src.totals.model_input}</b> used for results, <b>${src.totals.context}</b> reference only, <b>${src.totals.unavailable}</b> not usable. ${esc(src.method || "")}`
+        : "No source-research snapshot is present in this payload.";
+    }
+    renderSourceLadder($("#source-research-body"), src);
+    renderProbe($("#source-probe-body"), src && src.probe);
     const ss = $("#sources-status");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
@@ -603,6 +735,7 @@
 
   async function main() {
     setActiveNav();
+    wireTheme();
     try {
       DATA = await load();
       setHeader(DATA);

@@ -13,10 +13,10 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="wrap bar">
+  <div class="wrap topbar">
     <a class="brand" href="index.html">
       <span class="mark" aria-hidden="true">LP</span>
-      <span>LoL Pick'em <small>Independent Hotspawn companion</small></span>
+      <span class="brand-text">LoL Pick'em <small>Independent Hotspawn companion</small></span>
     </a>
     <nav class="top-nav" aria-label="Primary">
       <a href="index.html" data-nav="summary">Executive summary</a>
@@ -27,10 +27,17 @@
       <a href="methodology.html" data-nav="methodology">Methodology</a>
     </nav>
     <div class="bar-end">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">☀️</button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">🌓</button>
     </div>
   </div>
-  <div class="status-strip"><div class="wrap" id="status-strip">Loading latest picks…</div></div>
+  <div class="status-strip">
+    <div class="wrap status-inner">
+      <span id="updated">Loading latest picks…</span>
+      <span id="freshness" class="freshness"><span class="dot"></span>checking freshness</span>
+      <span class="status-sep" aria-hidden="true">·</span>
+      <span id="status-strip">Every Hotspawn LoL fixture · automatic 6-hour refresh</span>
+    </div>
+  </div>
 </header>
 
 <main id="main" class="wrap">
@@ -64,6 +71,47 @@
       <a class="chipbtn" href="picks.html?filter=market">💰 Only market lines</a>
       <a class="chipbtn" href="picks.html?filter=standings">📊 Standings picks</a>
     </div>
+  </section>
+
+  <section id="find-picks" class="card find-picks" aria-labelledby="find-picks-heading">
+    <h2 id="find-picks-heading">📍 Find the picks</h2>
+    <p class="lede" style="font-size:15px">
+      The updated list lives on <a href="picks.html"><b>All picks</b></a> and is refreshed automatically every 6 hours.
+      Every match shows both teams' win probability, the pick, the method and its source links. Use these shortcuts on a phone:
+    </p>
+    <div class="linkgrid">
+      <a class="linkcard" href="#starting-soon">
+        <span class="ico" aria-hidden="true">⏰</span>
+        <span><b>Starting soon</b><span>The next matches locking on Hotspawn, with picks and both probabilities.</span></span>
+        <span class="arrow" aria-hidden="true">↓</span>
+      </a>
+      <a class="linkcard" href="picks.html?filter=next24">
+        <span class="ico" aria-hidden="true">📋</span>
+        <span><b>Next 24 hours — all picks</b><span>Filterable table: search, sort, market / model / low-confidence filters.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="leagues.html">
+        <span class="ico" aria-hidden="true">🏆</span>
+        <span><b>By league or tier</b><span>Tier 1 Worlds, tier 2 promotion, tier 3 national &amp; amateur divisions.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="unresolved.html">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span><b>Unresolved &amp; limitations</b><span>Explicit 50/50 placeholders, low-confidence rows and per-league limits.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="flagged.html">
+        <span class="ico" aria-hidden="true">🚩</span>
+        <span><b>Flagged for review</b><span>Cancelled fixtures, name collisions, time disagreements and source changes.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="methodology.html">
+        <span class="ico" aria-hidden="true">📐</span>
+        <span><b>Method &amp; verified sources</b><span>Where every price comes from, what was blocked, and the model's backtest.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <p class="small" id="find-picks-counts">Loading the current snapshot…</p>
   </section>
 
   <section aria-label="Coverage metrics">
@@ -188,7 +236,7 @@
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
   <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
-  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Limits</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>

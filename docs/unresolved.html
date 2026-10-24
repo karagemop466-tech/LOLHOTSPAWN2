@@ -13,10 +13,10 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="wrap bar">
+  <div class="wrap topbar">
     <a class="brand" href="index.html">
       <span class="mark" aria-hidden="true">LP</span>
-      <span>LoL Pick'em <small>Independent Hotspawn companion</small></span>
+      <span class="brand-text">LoL Pick'em <small>Independent Hotspawn companion</small></span>
     </a>
     <nav class="top-nav" aria-label="Primary">
       <a href="index.html" data-nav="summary">Executive summary</a>
@@ -27,10 +27,17 @@
       <a href="methodology.html" data-nav="methodology">Methodology</a>
     </nav>
     <div class="bar-end">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">☀️</button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">🌓</button>
     </div>
   </div>
-  <div class="status-strip"><div class="wrap" id="status-strip">Loading latest picks…</div></div>
+  <div class="status-strip">
+    <div class="wrap status-inner">
+      <span id="updated">Loading latest picks…</span>
+      <span id="freshness" class="freshness"><span class="dot"></span>checking freshness</span>
+      <span class="status-sep" aria-hidden="true">·</span>
+      <span id="status-strip">Every Hotspawn LoL fixture · automatic 6-hour refresh</span>
+    </div>
+  </div>
 </header>
 
 <main id="main" class="wrap">
@@ -70,6 +77,13 @@
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section class="card" id="source-research-limits">
+    <h3>Where we looked for an external line</h3>
+    <p class="small">Established sportsbooks first, then esportsbooks, then esports betting lines and prediction markets. A source is used only when the automated pipeline can read a structured two-way per-match price; blocked, empty and HTML-only sources are listed with what was observed and are never used.</p>
+    <div id="source-research-compact"><div class="loading"><span class="spinner"></span>Loading source checks…</div></div>
+    <p class="small"><a href="methodology.html#source-research">Full verified ladder with dates and links →</a></p>
   </section>
 
   <div class="two-col" style="margin-top:20px">
@@ -117,7 +131,7 @@
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
   <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
-  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Limits</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>

@@ -12,14 +12,29 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="header-inner">
-    <a class="logo" href="index.html">
-      <span class="logo-mark" aria-hidden="true">🎯</span>
-      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
+  <div class="wrap topbar">
+    <a class="brand" href="index.html">
+      <span class="mark" aria-hidden="true">LP</span>
+      <span class="brand-text">LoL Pick'em <small>Independent Hotspawn companion</small></span>
     </a>
-    <div class="header-meta">
-      <span id="updated">Loading…</span><br>
-      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
+    <nav class="top-nav" aria-label="Primary">
+      <a href="index.html" data-nav="summary">Executive summary</a>
+      <a href="picks.html" data-nav="picks">All picks</a>
+      <a href="leagues.html" data-nav="leagues">By league</a>
+      <a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a>
+      <a href="flagged.html" data-nav="flagged">Flagged</a>
+      <a href="methodology.html" data-nav="methodology">Methodology</a>
+    </nav>
+    <div class="bar-end">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">🌓</button>
+    </div>
+  </div>
+  <div class="status-strip">
+    <div class="wrap status-inner">
+      <span id="updated">Loading latest picks…</span>
+      <span id="freshness" class="freshness"><span class="dot"></span>checking freshness</span>
+      <span class="status-sep" aria-hidden="true">·</span>
+      <span id="status-strip">Every Hotspawn LoL fixture · automatic 6-hour refresh</span>
     </div>
   </div>
 </header>
@@ -137,6 +152,17 @@
     <a href="data/picks.json">data/picks.json</a>. Each run records its source status above; if a fetch fails the run is flagged rather than
     publishing partial or invented numbers. Every table row links the exact page used for its values.</p>
   </section>
+  <section class="card" id="source-research">
+    <h3>Where we looked for betting lines — verified source ladder</h3>
+    <p class="small" id="source-research-intro">Loading the verified source ladder…</p>
+    <div id="source-research-body"><div class="loading"><span class="spinner"></span>Loading sources…</div></div>
+    <details style="margin-top:12px">
+      <summary class="small" style="cursor:pointer"><b>Latest automated probe from GitHub Actions (separate vantage point)</b></summary>
+      <p class="small">The probe requests each source once and records the HTTP status, whether the response is structured JSON, and any explicit block/closure message. A browser may reach pages that CI cannot; both observations are published so neither is presented as the other.</p>
+      <div id="source-probe-body" class="small">Loading probe…</div>
+    </details>
+  </section>
+
   <section class="card" id="manual-checks">
     <h3>Manual verification log</h3>
     <p class="small">Each row below was checked by hand on 2026-10-23, at the link shown, against the value this site
@@ -170,10 +196,16 @@
             <td><span class="chip green">Matches</span> (13 rows have no match page and are flagged)</td>
           </tr>
           <tr>
-            <td>Published payload passes 36 structural checks</td>
-            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39988004265" target="_blank" rel="noopener">verify workflow ↗</a></td>
-            <td>PASS · 36 pass · 0 fail · 0 warn · 1 skip</td>
-            <td><span class="chip green">Pass</span></td>
+            <td>Low-tier match cross-checked against an esportsbook</td>
+            <td><a href="https://thunderpick.io/esports/league-of-legends/lgc-rising-2026-playoffs/11363" target="_blank" rel="noopener">Thunderpick — LGC Rising 2026 Playoffs ↗</a></td>
+            <td>2026-10-24: Thunderpick listed Vitality Rising Bees −238 / Mental Rush +162 (BO5, 27 Oct). De-vig ≈ 64.8% / 35.2%; this site published 61.5% / 38.5% from the Polymarket single source. Delta ≈ 3.3 pts. The Thunderpick page blocked GitHub Actions (HTTP 403), so it is a human cross-check and is not used as an automatic input.</td>
+            <td><span class="chip amber">Cross-check</span> within 4 pts</td>
+          </tr>
+          <tr>
+            <td>Every structural check passes on the published payload</td>
+            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions" target="_blank" rel="noopener">latest verify workflow ↗</a> · <code>python3 scripts/verify_site.py</code></td>
+            <td>structural, source-provenance, coverage, navigation and mobile checks; the exact pass/fail counts are printed in the run log and in <code>verification/last_report.md</code></td>
+            <td><span class="chip green">Must be 0 FAIL</span></td>
           </tr>
         </tbody>
       </table>
@@ -195,7 +227,7 @@
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
   <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
-  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Limits</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>
