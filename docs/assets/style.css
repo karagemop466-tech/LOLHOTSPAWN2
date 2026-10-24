@@ -421,3 +421,11 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   .hero-actions .btn { flex: 1 1 100%; }
   .hero-actions { gap: 8px; }
 }
+
+/* ---- plain-language legend for the method chips on the executive summary ---- */
+.legend { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 12px; align-items: center; margin: 12px 0 4px; }
+.legend-t { font-size: 13px; color: var(--muted); line-height: 1.4; }
+@media (max-width: 560px) {
+  .legend { grid-template-columns: 1fr; gap: 2px; }
+  .legend-t { margin: 0 0 8px; }
+}
