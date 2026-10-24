@@ -15,6 +15,14 @@ Every upcoming scheduled League of Legends fixture listed on
 probability (%) for both teams. Cancelled upstream fixtures are excluded and audited on Flagged.
 Rows are priced in a strict 5-tier cascade:
 
+> **Finding the picks on a phone.** The executive summary opens with one full-width
+> "Find every pick" button, then a *Where the picks are* card grid (counts included),
+> then the matches locking soonest, and only then the coverage and unresolved sections.
+> The fixed bottom bar repeats Summary · Picks · Leagues · Unresolved · Flagged · Method on
+> every page. **Unresolved picks and their limitations are a separate section on the
+> executive summary itself** — every unresolved fixture is listed there with its source
+> links, next to a per-league table of what prices that league and where its limit is.
+
 1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada and Polymarket (median if ≥3 sources, otherwise a fixed-quality weighted mean).
 2. **Chronological Tier-Anchored Elo (`MODEL_ELO` / `MODEL_ELO_THIN`)** — computed from 24 months of completed series on Leaguepedia (`MatchSchedule`), anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting, head-to-head smoothing, competition-scoped disambiguation, and deterministic UTC schedule bridging.
 3. **Standings model (`MODEL_STANDINGS` 📊)** — when there is no book line and a side has no Elo yet but has a current-split win-loss record on Leaguepedia *Standings*, the record becomes a smoothed Elo offset from the competition prior, capped at Low/Medium confidence because it ignores strength of schedule.
@@ -56,7 +64,8 @@ published list **and** a human has verified a sample row — neither probe ever 
 ## Automation & Verification
 
 - `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
-- `.github/workflows/verify.yml` runs every 6 hours (`30 */6 * * *`) against external links and the deployed GitHub Pages URL (`--check-external --live-url`).
+- `.github/workflows/verify.yml` runs every 6 hours (`30 */6 * * *`) against external links and the deployed GitHub Pages URL (`--check-external --live-url`), and runs the jsdom render harness so a page that fails to render cannot pass verification.
+- `verification/check_dom_render.js` renders all seven pages from the committed payload in jsdom and asserts the visible result: row counts, pick ∈ {team1, team2}, probabilities summing to 100%, a source link on every row, the summary's in-site pick links, and the separate unresolved section (including a synthetic payload with unresolved fixtures, so the section is never vacuous).
 - `.github/workflows/pipeline-test.yml` runs end-to-end live verification on `arena/**` branches (`check_dom_contract.py`, `test_verifier.py`, `test_entity_and_books.py`, `verify_site.py --leaguepedia-schedule data/diag --check-external`).
 
 ## Data sources
@@ -77,10 +86,12 @@ published list **and** a human has verified a sample row — neither probe ever 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-python3 verification/test_verifier.py           # verifier rule self-tests (D22 probe + S11/S12 structure)
+npm install --no-save jsdom && node verification/check_dom_render.js   # 50/50 jsdom render checks
+python3 verification/test_verifier.py           # verifier rule self-tests (D22 probe + S11/S12/S13-S15 structure)
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
+python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11-S15)
 python3 scripts/verify_site.py                  # full schema + link + page audit
-python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic) (incl. S11/S12)
+python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
 ```
 
