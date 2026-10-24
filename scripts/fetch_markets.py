@@ -314,24 +314,42 @@ def fetch_unibet() -> dict:
 
 
 def _bovada_groups(data):
-    """Accept a list of coupon groups, a bare event list, or a wrapped object."""
+    """Normalise every coupon shape Bovada has returned into group dicts.
+
+    Observed shapes: a list of {path, events}, a single {path, events} object,
+    and a bare event list. A previous version unwrapped {events: [...]} and lost
+    the ``path`` (the competition name), and returned [] for a single group
+    object, which made a 250 KB response look empty.
+    """
     if isinstance(data, dict):
-        for key in ("events", "data", "results"):
+        if isinstance(data.get("events"), list) and ("path" in data or "description" in data):
+            return [data]                       # one coupon group
+        if isinstance(data.get("events"), list) and not data["events"]:
+            return []
+        for key in ("events", "data", "results", "items"):
             if isinstance(data.get(key), list):
                 data = data[key]
                 break
-    if not isinstance(data, list):
+        else:
+            return []
+    if not isinstance(data, list) or not data:
         return []
-    if data and isinstance(data[0], dict) and "competitors" in data[0]:
-        return [{"path": [], "events": data}]
-    return data
+    if all(isinstance(x, dict) and isinstance(x.get("events"), list) for x in data):
+        return data                              # list of groups
+    if all(isinstance(x, dict) and "competitors" in x for x in data):
+        return [{"path": [], "events": data}]    # bare event list
+    # Mixed/unknown shape: keep only entries that carry events.
+    groups = [x for x in data if isinstance(x, dict) and isinstance(x.get("events"), list)]
+    return groups
 
 
 def fetch_bovada() -> dict:
     status = {"source": "Bovada", "key": "bovada", "url": BOVADA_PAGE, "status": "error", "count": 0}
     data, r, used = None, {}, None
     for url in BOVADA_APIS:
-        data, r = get_json(url, headers={"Referer": BOVADA_PAGE, "Origin": "https://www.bovada.lv"})
+        # No Origin header: with it the coupon endpoint has returned an empty
+        # body even when the same URL answers 250 KB without it.
+        data, r = get_json(url, headers={"Referer": BOVADA_PAGE})
         groups = _bovada_groups(data)
         if any(g.get("events") for g in groups if isinstance(g, dict)):
             used = url
@@ -339,7 +357,13 @@ def fetch_bovada() -> dict:
         time.sleep(0.5)
     groups = _bovada_groups(data)
     if not groups:
-        status["error"] = f"coupon feed HTTP {r.get('status')} (no event groups)"
+        shape = type(data).__name__
+        if isinstance(data, list):
+            shape += f"[{len(data)}]"
+        elif isinstance(data, dict):
+            shape += f"{{{','.join(sorted(data)[:5])}}}"
+        status["error"] = (f"coupon feed HTTP {r.get('status')} (no event groups; "
+                           f"shape={shape}, bytes={len(str(data))})")
         return {"status": status, "records": []}
     status["feed"] = used or BOVADA_APIS[0]
     records = []

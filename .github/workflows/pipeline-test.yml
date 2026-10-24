@@ -101,7 +101,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log docs/data/source_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json docs/data/source_probe.json verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?
