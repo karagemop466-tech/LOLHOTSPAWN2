@@ -32,17 +32,22 @@ from lib_common import norm
 TOURNAMENT_PAGE_SEEDS = {
     "Worlds 2026 Main Event": "2026 Season World Championship/Main Event",
     "EM 2026 Summer Main Event": "EMEA Masters/2026 Season/Summer Main Event",
+    "PRM 1st Division 26-27 Fall": "Prime League 1st Division/2027 Season/Fall Split",
     "PRM 2nd Division 26-27 Fall": "Prime League 2nd Division/2027 Season/Fall Split",
     "PRM 3rd Division 26-27 Fall": "Prime League 3rd Division/2027 Season/Fall Split",
     "RIVALS LEAGUE Season 2": "RIVALS LEAGUE/2026 Season/Season 2",
     "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
     "Komplettligaen 2026 Autumn": "Komplettligaen/2026 Season/Autumn Split",
+    "Komplettligaen 2026 Autumn Playoffs": "Komplettligaen/2026 Season/Autumn Playoffs",
     "4 Nations 2026 Halloween Heist": "4 Nations/2026 Season/Halloween Heist",
     "Arabian League 2nd Division 2026 Summer": "Arabian League 2nd Division/2026 Season/Summer Split",
-    "LigaGG CELOL B 2026 Split 2 Playoffs": "LigaGG/CELOL Série B/2026 Season/Split 2",
-    "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2",
+    "Arabian League 2nd Division 2026 Fall Playoffs": "Arabian League 2nd Division/2026 Season/Fall Playoffs",
+    "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": "Arabian Regional Championship 2026/Qualifiers/LB-Li-SY-PS",
+    "Arabian Regional Championship 2026: Qatar-Bahrain-Kuwait": "Arabian Regional Championship 2026/Qualifiers/QA-BH-KW",
+    "LigaGG CELOL B 2026 Split 2 Playoffs": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs",
+    "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
     "LCP 2027 Promotion": "LCP/2027 Season/Promotion",
-    "LGC Rising 2026 Playoffs": "LGC Rising/2026 Season/Playoffs",
+    "LGC Rising 2026 Playoffs": "LoL Game Changers/2026 Season/Playoffs",
 }
 
 PARENTHETICAL_RE = re.compile(r"\s*\([^)]*\)\s*$")

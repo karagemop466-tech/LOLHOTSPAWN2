@@ -59,6 +59,7 @@ DEFAULT_ALIASES = {
         "Team Gromp": "Team Gromp (Australian Team)",
         "Infinity Gaming": "Infinity Gaming (Brazilian Team)",
         "Neon eSports": "Neon eSports (Brazilian Team)",
+        "Inari Esports": "Inari Esports (British Team)",
         "REH Gaming": "REH Gaming",
     },
     "competition_scoped_aliases": {
@@ -108,6 +109,7 @@ DEFAULT_ALIASES = {
     },
     "tournament_pages": {
         "Worlds 2026 Main Event": "2026 Season World Championship/Main Event",
+        "EM 2026 Summer Main Event": "EMEA Masters/2026 Season/Summer Main Event",
         "LGC Rising 2026 Playoffs": "LoL Game Changers/2026 Season/Playoffs",
         "LCP 2027 Promotion": "LCP/2027 Season/Promotion",
         "PRM 2nd Division 26-27 Fall": "Prime League 2nd Division/2027 Season/Fall Split",
@@ -115,6 +117,8 @@ DEFAULT_ALIASES = {
         "Arabian League 2nd Division 2026 Summer": "Arabian League 2nd Division/2026 Season/Summer Split",
         "Arabian Regional Championship 2026: Lebanon-Libya-Syria-Palestine": "Arabian Regional Championship 2026/Qualifiers/LB-Li-SY-PS",
         "Komplettligaen 2026 Autumn": "Komplettligaen/2026 Season/Autumn Split",
+        "Komplettligaen 2026 Autumn Playoffs": "Komplettligaen/2026 Season/Autumn Playoffs",
+        "4 Nations 2026 Halloween Heist": "4 Nations/2026 Season/Halloween Heist",
         "RIVALS LEAGUE Season 2": "RIVALS LEAGUE/2026 Season/Season 2",
         "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
         "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
@@ -127,10 +131,17 @@ METHOD_LABELS = {
     "MARKET_SINGLE": "Single external market",
     "MODEL_ELO": "Own Elo model",
     "MODEL_ELO_THIN": "Own Elo model (thin history)",
+    "MODEL_ELO_STANDINGS": "Own Elo model + split standings",
     "MODEL_STANDINGS": "Leaguepedia split standings + Elo",
     "MODEL_LEAGUE_PRIOR": "League/overall prior (no team history)",
     "UNRESOLVED": "Unresolved - no verified signal",
 }
+
+_PAREN_RE = re.compile(r"\s*\([^)]*\)\s*$")
+
+
+def _strip_disambig(s: str) -> str:
+    return _PAREN_RE.sub("", str(s or "")).strip()
 
 
 def sim(a: str, b: str) -> float:
@@ -139,7 +150,14 @@ def sim(a: str, b: str) -> float:
 
 def contains(a: str, b: str) -> bool:
     na, nb = _norm_team(a), _norm_team(b)
-    return bool(na and nb) and (na in nb or nb in na)
+    if not na or not nb:
+        return False
+    short, long_ = (na, nb) if len(na) <= len(nb) else (nb, na)
+    if short == long_:
+        return True
+    if len(short) < 5:
+        return False
+    return short in long_
 
 
 def load_aliases(path="data/aliases.json"):
@@ -307,6 +325,9 @@ class Resolver:
             return self.by_norm.get(_norm_team(target), target), None
         if n in self.by_norm:
             return self.by_norm[n], None
+        stripped = [x for x in self.names if _norm_team(_strip_disambig(x)) == n]
+        if len(stripped) == 1:
+            return stripped[0], None
         cands = [x for x in self.names if contains(name, x)]
         if len(cands) == 1:
             return cands[0], None
@@ -709,7 +730,31 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         has_st_1 = st1 is not None and (int(st1.get("win_series") or 0) + int(st1.get("loss_series") or 0)) >= 1
         has_st_2 = st2 is not None and (int(st2.get("win_series") or 0) + int(st2.get("loss_series") or 0)) >= 1
 
-        if has_elo_1 and has_elo_2:
+        # A current-split standings record for the SAME competition is more
+        # relevant to this fixture than pooled lifetime Elo, because it is
+        # (a) in the identical competition, and (b) from the same split.
+        # We therefore blend it into a thin Elo rating instead of only using it
+        # when Elo is entirely absent (which almost never happens, so the pure
+        # MODEL_STANDINGS path was effectively unreachable in production).
+        # Only split standings that actually belong to this row's competition
+        # page are eligible - a record from a different tournament is not
+        # evidence about this fixture.
+        st_in_comp_1 = bool(has_st_1 and eff_page and _norm_team(st1.get("overview")) == _norm_team(eff_page))
+        st_in_comp_2 = bool(has_st_2 and eff_page and _norm_team(st2.get("overview")) == _norm_team(eff_page))
+        # The standings fallback may use a team-only record (any competition)
+        # when the side has no Elo at all; a split record in the same
+        # competition always outranks a team-only record.
+        st1 = st1 if (st_in_comp_1 or not has_elo_1) else None
+        st2 = st2 if (st_in_comp_2 or not has_elo_2) else None
+        has_st_1 = st1 is not None and (int(st1.get("win_series") or 0) + int(st1.get("loss_series") or 0)) >= 1
+        has_st_2 = st2 is not None and (int(st2.get("win_series") or 0) + int(st2.get("loss_series") or 0)) >= 1
+        # A split record in this competition is a strictly stronger signal.
+        st_split_1 = bool(has_st_1 and st_in_comp_1)
+        st_split_2 = bool(has_st_2 and st_in_comp_2)
+        # Thin Elo is where the standings blend adds the most value.
+        elo_thin = not (has_elo_1 and has_elo_2) or min(g1, g2) < 8
+
+        if has_elo_1 and has_elo_2 and not (elo_thin and (has_st_1 or has_st_2)):
             raw = prob_from_elo(r1, r2)
             shrink = min(g1, g2) / (min(g1, g2) + 8.0)
             p = 0.5 + (raw - 0.5) * shrink
@@ -732,6 +777,59 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                 "team1_competition_base": round(base1 or prior),
                 "team2_competition_base": round(base2 or prior),
             }
+            if cross_league:
+                flags.append("CROSS_LEAGUE_MODEL")
+        elif has_elo_1 and has_elo_2:
+            # Thin Elo, but a current-split standings record exists for at
+            # least one side. Blend the split record into the rating.
+            # The standings record is converted to an Elo offset from the same
+            # competition prior and averaged with the pooled Elo rating, with
+            # the weight driven by how many decided series the split contains.
+            def _blend(rating: float, st: dict | None, games: int) -> tuple[float, float, dict | None]:
+                if not st:
+                    return rating, 0.0, None
+                ws = int(st.get("win_series") or 0)
+                ls = int(st.get("loss_series") or 0)
+                played = ws + ls
+                st_r = _standings_elo(st, prior)
+                # More decided series in the split -> more weight on the split
+                # record; a single decided series still moves the estimate.
+                w_st = played / (played + 4.0)
+                # Never let a thin split record fully overwrite pooled Elo.
+                w_st = min(w_st, 0.6)
+                blended = rating * (1.0 - w_st) + st_r * w_st
+                return blended, w_st, st
+
+            b_r1, b_w1, b_st1 = _blend(r1, st1 if has_st_1 else None, g1)
+            b_r2, b_w2, b_st2 = _blend(r2, st2 if has_st_2 else None, g2)
+            raw = prob_from_elo(b_r1, b_r2)
+            shrink = min(g1, g2) / (min(g1, g2) + 8.0)
+            p = 0.5 + (raw - 0.5) * shrink
+            h2h = rating_data["h2h"].get(tuple(sorted((n_k1, n_k2))))
+            h2h_info = None
+            if h2h:
+                first_is_k1 = tuple(sorted((n_k1, n_k2)))[0] == n_k1
+                wins_k1 = h2h[0] if first_is_k1 else h2h[1]
+                p, h2h_info = blend_h2h(p, sum(h2h), wins_k1)
+            model_prob = p
+            model_method = "MODEL_ELO_STANDINGS"
+            model = {
+                "elo_team1": round(r1), "elo_team2": round(r2),
+                "blended_elo_team1": round(b_r1), "blended_elo_team2": round(b_r2),
+                "canonical_team1": k1, "canonical_team2": k2,
+                "games_team1_365d": g1, "games_team2_365d": g2,
+                "standings_team1": b_st1, "standings_team2": b_st2,
+                "standings_weight_team1": round(b_w1, 3),
+                "standings_weight_team2": round(b_w2, 3),
+                "shrink": round(shrink, 3), "h2h": h2h_info,
+                "prior_used": "split standings blend",
+                "tournament_page": eff_page,
+                "team1_recent_competition": comp1, "team2_recent_competition": comp2,
+                "cross_league": cross_league,
+                "team1_competition_base": round(base1 or prior),
+                "team2_competition_base": round(base2 or prior),
+            }
+            flags.append("STANDINGS_BLEND_APPLIED")
             if cross_league:
                 flags.append("CROSS_LEAGUE_MODEL")
         elif (has_elo_1 or has_st_1) and (has_elo_2 or has_st_2):
@@ -824,6 +922,12 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             if model_method == "MODEL_ELO":
                 confidence = ("Low" if cross_league else
                               "High" if min(g1, g2) >= 15 and abs(r1 - r2) >= 60 else "Medium")
+            elif model_method == "MODEL_ELO_STANDINGS":
+                # A thin Elo estimate corrected by the current split's own
+                # standings record is better evidence than thin Elo alone, but
+                # it is still not a deep-history estimate, so it stays at most
+                # Medium and is Low when the comparison is cross-league.
+                confidence = "Low" if cross_league else "Medium"
             else:
                 confidence = "Low"
         else:
@@ -885,6 +989,21 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             sources.append({"name": "Leaguepedia results",
                             "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
                             "claim": "Recorded match results used for the Elo model."})
+        if model_method in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
+            # Point at the competition's own standings page rather than the
+            # generic Cargo table index, so a human can read this exact
+            # team's split record on this exact competition page. When no
+            # competition page was matched we fall back to the table index
+            # and the row already carries GENERIC_RESULTS_SOURCE.
+            if eff_page:
+                sources.append({"name": "Leaguepedia split standings",
+                                "url": "https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_"),
+                                "claim": ("Current-split series/game record for this competition "
+                                          f"({eff_page}).")})
+            else:
+                sources.append({"name": "Leaguepedia Standings table",
+                                "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
+                                "claim": "Current-split series/game record used for this row."})
         for meta in (meta1, meta2):
             if meta and meta.get("source_url"):
                 u = meta["source_url"]
@@ -903,6 +1022,16 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                 s2_txt = (f"{st2['win_series']}-{st2['loss_series']} series" if st2 else f"{g2} games")
                 evidence_bits.append(f"Split standings + Elo {model['elo_team1']} vs {model['elo_team2']} "
                                      f"({s1_txt} vs {s2_txt} in {eff_page or 'split'}).")
+            elif model_method == "MODEL_ELO_STANDINGS":
+                s1_txt = (f"{st1['win_series']}-{st1['loss_series']} series"
+                          if (model.get("standings_team1") or st1) else f"{g1} games")
+                s2_txt = (f"{st2['win_series']}-{st2['loss_series']} series"
+                          if (model.get("standings_team2") or st2) else f"{g2} games")
+                evidence_bits.append(
+                    f"Elo {model['elo_team1']} vs {model['elo_team2']} blended with current-split "
+                    f"standings ({s1_txt} vs {s2_txt} in {eff_page or 'split'}) to "
+                    f"{model.get('blended_elo_team1')} vs {model.get('blended_elo_team2')} "
+                    f"({g1} / {g2} games in 365d).")
             elif model.get("elo_team1") is not None and model.get("elo_team2") is not None:
                 evidence_bits.append(f"Elo {model['elo_team1']} vs {model['elo_team2']} "
                                      f"({g1} / {g2} games in 365d; competition bases "
