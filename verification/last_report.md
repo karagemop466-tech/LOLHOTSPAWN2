@@ -1,6 +1,6 @@
 # Verification report — PASS
-_2026-10-24T16:46:38.412004+00:00_
-160 matches · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 57 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0 · MARKET_BOOKS: 0 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · UNRESOLVED: 0 · MODEL_ELO: 94
+_2026-10-24T16:48:18.053487+00:00_
+160 matches · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 58 · UNRESOLVED: 0 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MODEL_ELO: 93 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_POLYMARKET: 0
 
 | check | status | detail |
 |---|---|---|
@@ -26,7 +26,7 @@ _2026-10-24T16:46:38.412004+00:00_
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0 |
 | D22 external-source probe rows are sourced and never carry a probability | PASS | 22 probed source(s), each with an https link, HTTP status and verdict |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 63 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.0h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.1h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 10 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 6 links, 6 columns on every page |
@@ -45,6 +45,7 @@ _2026-10-24T16:46:38.412004+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
+| X1 external links reachable (official-source links resolve) | WARN | 13/15 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -75,6 +76,9 @@ _2026-10-24T16:46:38.412004+00:00_
 - Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00
 - Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30
 - 2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30
+
+**X1 items:**
+- https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
