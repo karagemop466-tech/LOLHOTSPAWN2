@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-23T16:36:28.713565Z",
+ "checked_at": "2026-10-24T16:27:59.451424Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -37,16 +37,16 @@
    "url": "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
    "kind": "prediction-market-api",
    "http_status": 200,
-   "bytes": 4002,
+   "bytes": 4025,
    "is_json": true,
    "lol_mentions_in_first_items": 5,
    "detail": {
     "item_count": 5,
     "vs_style_questions": 1,
     "question_sample": [
-     "NA vs EU - League of Legends Worlds 2026",
-     "Who will win the 2026 League of Legends World Championship?",
-     "T1 wins League of Legends Worlds 2026?"
+     "League of Legends Worlds 2026 Matches Megamarket",
+     "League of Legends Worlds 2026 Prop Bets [Add answers!]",
+     "Who will win the 2026 League of Legends World Championship?"
     ]
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
@@ -56,7 +56,7 @@
    "url": "https://egamersworld.com/lol/bets",
    "kind": "odds-comparison-page",
    "http_status": 403,
-   "bytes": 5718,
+   "bytes": 5740,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -66,12 +66,12 @@
    "name": "OddsPortal LoL",
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 503,
-   "bytes": 0,
+   "http_status": 200,
+   "bytes": 491898,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
   },
   {
    "name": "BetExplorer LoL",
@@ -160,6 +160,87 @@
    "lol_mentions_in_first_items": null,
    "detail": {},
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "Betmonitor — Prime League 2nd Division odds comparison",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+   "kind": "odds-comparison-page",
+   "http_status": 200,
+   "bytes": 416371,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "Betmonitor — esports odds hub",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/",
+   "kind": "odds-comparison-page",
+   "http_status": 200,
+   "bytes": 416271,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "EsportBet — LoL odds board",
+   "url": "https://esportbet.com/odds/league-of-legends/",
+   "kind": "odds-comparison-page",
+   "http_status": 200,
+   "bytes": 407411,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "EsportsBets — LoL betting guide (US books)",
+   "url": "https://www.esportsbets.com/betting/league-of-legends/",
+   "kind": "odds-guide",
+   "http_status": 200,
+   "bytes": 178373,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "bo3.gg — LoL matches (community results)",
+   "url": "https://bo3.gg/lol/matches",
+   "kind": "results-page",
+   "http_status": 200,
+   "bytes": 190915,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "gol.gg — Games of Legends (community stats)",
+   "url": "https://gol.gg/esports/home/",
+   "kind": "results-page",
+   "http_status": 200,
+   "bytes": 1130542,
+   "is_json": false,
+   "lol_mentions_in_first_items": null,
+   "detail": {},
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+  },
+  {
+   "name": "Riot LoL Esports schedule API (no key)",
+   "url": "https://esports-api.lolesports.com/persisted/gw/getLeagues?hl=en-US",
+   "kind": "official-schedule-api",
+   "http_status": 403,
+   "bytes": 23,
+   "is_json": true,
+   "lol_mentions_in_first_items": null,
+   "detail": {
+    "top_level_keys": [
+     "message"
+    ]
+   },
+   "verdict": "not usable from CI (HTTP 403)"
   }
  ]
 }
