@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:56:43.095697Z",
+ "checked_at": "2026-10-24T16:58:27.293500Z",
  "books": [
   {
    "name": "Pinnacle (guest JSON)",
@@ -106,7 +106,7 @@
    "category": "market",
    "http_status": 403,
    "is_json": false,
-   "bytes": 5789,
+   "bytes": 5767,
    "lol_mentions": null,
    "vs_style_items": null,
    "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
@@ -232,7 +232,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 411392,
+   "bytes": 411404,
    "lol_mentions": 5,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -246,7 +246,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 411292,
+   "bytes": 411304,
    "lol_mentions": 5,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -260,7 +260,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 407420,
+   "bytes": 407419,
    "lol_mentions": 442,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -330,7 +330,7 @@
    "category": "results",
    "http_status": 200,
    "is_json": false,
-   "bytes": 191868,
+   "bytes": 191871,
    "lol_mentions": 177,
    "vs_style_items": null,
    "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
@@ -368,12 +368,12 @@
  ],
  "summary": {
   "checked": 26,
-  "reachable": 12,
-  "structured_json": 4,
-  "structured_with_lol": 2,
+  "reachable": 13,
+  "structured_json": 5,
+  "structured_with_lol": 3,
   "market_sources_checked": 22,
   "market_sources_reachable": 10,
-  "results_sources_reachable": 2,
+  "results_sources_reachable": 3,
   "note": "Probe only: no probed value is used in any probability. Only the four production feeds (Pinnacle, Unibet/Kambi, Bovada, Polymarket) produce market probabilities."
  }
 }
