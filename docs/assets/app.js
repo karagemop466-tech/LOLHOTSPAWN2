@@ -325,11 +325,15 @@
     if (track) {
       const bands = (bt && bt.by_band) || [];
       const worst = bands.slice().sort((a, b) => b.log_loss - a.log_loss)[0];
+      const best = bands.slice().sort((a, b) => a.log_loss - b.log_loss)[0];
       track.innerHTML = bt
         ? `<b>Model track record (out-of-sample, last ${bt.window_days} days):</b> ${bt.n} completed matches,
            log-loss <b>${bt.log_loss}</b> vs 0.6931 coin-flip, Brier <b>${bt.brier}</b>, accuracy
            <b>${(bt.accuracy * 100).toFixed(1)}%</b>.
-           ${worst ? `Weakest band: ${esc(worst.band)} — log-loss ${worst.log_loss} on ${worst.n} matches.` : ""}
+           ${best && worst && bands.length > 1
+             ? `Best band: ${esc(best.band)} — log-loss ${best.log_loss} on ${best.n};
+                weakest: ${esc(worst.band)} — log-loss ${worst.log_loss} on ${worst.n}. `
+             : ""}
            ${bt.calibration && bt.calibration.length ? `Calibration is published per confidence bucket.` : ""}
            <a href="methodology.html#backtest">See the tables →</a>`
         : "";
