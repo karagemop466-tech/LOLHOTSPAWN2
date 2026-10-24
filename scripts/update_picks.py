@@ -92,14 +92,28 @@ def liquipedia_prefixes_for(tournaments: list[str]) -> tuple[str, ...]:
     return tuple(found) or ("Prime_League", "RIVALS_LEAGUE", "Komplettligaen")
 
 
-ORGANIZER_LINKS = {
-    "PRM 2nd Division 26-27 Fall": ("Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
-    "PRM 3rd Division 26-27 Fall": ("Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
-    "RIVALS LEAGUE Season 2": ("RIVALS LEAGUE (organizer)", "https://www.rivalsleague.gg/"),
-    "Komplettligaen 2026 Autumn": ("Komplettligaen (organizer)", "https://www.komplettligaen.no/lol/"),
-    "Worlds 2026 Main Event": ("LoL Esports (official)", "https://lolesports.com/"),
-    "LGC Rising 2026 Playoffs": ("LoL Esports (official)", "https://lolesports.com/"),
-}
+# Verified operator / official pages. Matched by substring so a split suffix
+# ("Komplettligaen 2026 Autumn Playoffs") still finds its league page.
+# Only pages a human opened and confirmed on 2026-10-24 are listed here;
+# competitions with no verified operator page are simply left without one.
+ORGANIZER_LINKS = (
+    ("PRM", "Prime League (organizer)", "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627"),
+    ("RIVALS LEAGUE", "RIVALS LEAGUE (organizer)", "https://www.rivalsleague.gg/lol"),
+    ("Komplettligaen", "Komplettligaen (organizer)", "https://www.komplettligaen.no/lol/"),
+    ("Worlds", "LoL Esports (official)", "https://lolesports.com/"),
+    ("LGC Rising", "LoL Esports (official)", "https://lolesports.com/"),
+    ("LCP", "LoL Esports (official)", "https://lolesports.com/"),
+)
+
+
+def organizer_for(tournament: str):
+    """Return (name, url) for the first verified organizer page matching the label."""
+    low = (tournament or "").lower()
+    for needle, name, url in ORGANIZER_LINKS:
+        if needle.lower() in low:
+            return name, url
+    return None
+
 
 
 def classify_league_category(tournament: str) -> str:
@@ -119,7 +133,7 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     for tour, ms in sorted(by_tour.items(), key=lambda kv: (-len(kv[1]), kv[0])):
         lp_url = next((m.get("leaguepedia_url") for m in ms if m.get("leaguepedia_url")), None)
         lp_page = next((m.get("leaguepedia_page") for m in ms if m.get("leaguepedia_page")), None)
-        org = ORGANIZER_LINKS.get(tour)
+        org = organizer_for(tour)
         mkt = sum(1 for m in ms if m.get("market"))
         elo = sum(1 for m in ms if m.get("method") in ("MODEL_ELO", "MODEL_ELO_THIN"))
         st = sum(1 for m in ms if m.get("method") == "MODEL_STANDINGS")
@@ -219,6 +233,8 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         source_status.append({"name": s.get("source"), "url": s.get("url"), "status": s.get("status"),
                               "count": s.get("count"), "note": s.get("note") or s.get("error")})
     lp_degraded = bool(leaguepedia.get("degraded")) or leaguepedia["counts"]["results"] <= 1000
+    standings_pages = len({(x.get("overview") or "") for x in (leaguepedia.get("standings") or [])
+                           if x.get("overview")})
     source_status.append({"name": "Leaguepedia MatchSchedule",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
                           "status": "degraded" if lp_degraded else "ok",
@@ -226,7 +242,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
                           "note": (leaguepedia.get("degraded_reason")
                                    or ("Recorded results + schedules, exact UTC (CC BY-SA 3.0). "
                                        f"Standings rows: {leaguepedia['counts'].get('standings', 0)} "
-                                       f"across {leaguepedia['counts'].get('standings_pages', 0)} competitions."))})
+                                       f"across {standings_pages} competitions."))})
     st_count = leaguepedia["counts"].get("standings", len(leaguepedia.get("standings") or []))
     source_status.append({"name": "Leaguepedia Standings",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
@@ -264,7 +280,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         "coverage": picks["coverage"],
         "coverage_reconciliation": fixtures.get("reconciliation") or {},
         "excluded_fixtures": fixtures.get("excluded") or [],
-        "model": picks["model"],
+        "model": {**picks["model"], "standings_pages": standings_pages},
         "league_breakdown": build_league_breakdown(matches),
         "unresolved": {
             "count": len(unresolved),

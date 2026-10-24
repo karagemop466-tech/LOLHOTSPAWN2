@@ -108,7 +108,8 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
            "http_status": None, "is_json": False, "bytes": 0,
            "lol_mentions": None, "vs_style_items": None, "verdict": ""}
     try:
-        r = fetch(url, headers=headers, timeout=12, retries=0)
+        # retries=1 means exactly one attempt (lib_common.fetch returns None when retries=0)
+        r = fetch(url, headers=headers, timeout=12, retries=1) or {}
         text = r.get("text") or ""
         status = r.get("status")
         row["http_status"] = status
