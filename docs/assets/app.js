@@ -332,12 +332,41 @@
     const u = d.unresolved || {};
     const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const uCount = u.count ?? 0;
+    const lcCount = u.low_confidence_count ?? 0;
     const ubox = $("#unresolved-summary");
-    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; Low-confidence picks (${u.low_confidence_count ?? 0})</h3>
-      <p><b>${u.count ?? 0}</b> fixture${(u.count ?? 0) === 1 ? "" : "s"} lack external lines, recorded team matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge). <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows rely on thin history (&lt;8 games), split standings, or a single debut side against the competition prior and are capped at Low confidence. Hotspawn's crowd % is never used.</p>
+    if (ubox) {
+      // The headline sentence has to read correctly whether or not anything is
+      // currently unresolved: "0 fixtures lack ..." is confusing on its own.
+      const headline = uCount > 0
+        ? `<b>${uCount}</b> fixture${uCount === 1 ? "" : "s"} lack external lines, recorded team
+           matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b>
+           (never an edge).`
+        : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
+           external betting line, our Elo model, or a current-split standings record. Anything that later
+           loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
+      // Per-league limitations are part of the executive summary, not only on
+      // the separate Unresolved page, so the reader sees which signal prices
+      // each competition without leaving this page.
+      const bl = d.unresolved?.by_league || [];
+      const perLeague = bl.length ? `
+        <p class="small"><b>Per-league limitations — which signal prices each competition</b></p>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Competition</th><th scope="col">Fixtures</th><th scope="col">Pricing mix</th><th scope="col">Limitation</th></tr></thead>
+          <tbody>${bl.map((b) => `<tr>
+            <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(b.tournament))}"><b>${esc(b.tournament)}</b></a></td>
+            <td data-label="Fixtures"><b>${b.fixtures}</b></td>
+            <td data-label="Pricing mix" class="small">💰 ${b.market ?? 0} mkt · 🧮 ${b.elo ?? 0} Elo · 📊 ${b.standings ?? 0} st · 📐 ${b.prior_only ?? 0} prior · ⚠️ ${b.unresolved ?? 0} unres</td>
+            <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
+          </tr>`).join("")}</tbody>
+        </table></div>` : "";
+      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
+      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
+      ${perLeague}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
-      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; full per-league limitations page →</a></p></div>`;
+    }
 
     const exLimBody = $("#exec-league-limits-body");
     if (exLimBody) exLimBody.innerHTML = leagueLimitRows(computeLeagueBreakdown(d), false);

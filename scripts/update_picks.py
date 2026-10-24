@@ -182,6 +182,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
     market_matches = [m for m in matches if m["market"]]
+    league_breakdown = build_league_breakdown(matches)
     reasons = Counter()
     for m in unresolved:
         if "NO_TEAM_HISTORY" in m["flags"]:
@@ -226,6 +227,9 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
             b["unresolved"] += 1
         if m in low_conf:
             b["low_confidence"] += 1
+    # Per-league limitation text, so the executive summary can state the limit
+    # for each competition without the reader having to open another page.
+    league_limits = {r["tournament"]: r.get("limitation") for r in league_breakdown}
     for b in by_league.values():
         b["best_signal"] = ("External betting lines" if b["market"]
                             else "Elo + split standings" if b["elo"] and b["standings"]
@@ -233,6 +237,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
                             else "Official standings record" if b["standings"]
                             else "League prior only" if b["prior_only"]
                             else "No verified signal")
+        b["limitation"] = league_limits.get(b["tournament"])
     by_league_list = sorted(by_league.values(),
                              key=lambda b: (-b["unresolved"], -b["low_confidence"], -b["fixtures"]))
     source_status = []
@@ -293,7 +298,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         "coverage_reconciliation": fixtures.get("reconciliation") or {},
         "excluded_fixtures": fixtures.get("excluded") or [],
         "model": {**picks["model"], "standings_pages": standings_pages},
-        "league_breakdown": build_league_breakdown(matches),
+        "league_breakdown": league_breakdown,
         "unresolved": {
             "count": len(unresolved),
             "low_confidence_count": len(low_conf),
