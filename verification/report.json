@@ -1,31 +1,31 @@
 {
- "verified_at": "2026-10-24T17:18:23.155154+00:00",
+ "verified_at": "2026-10-24T17:21:05.691827+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 44,
+  "PASS": 45,
   "FAIL": 0,
   "WARN": 1,
   "SKIP": 0
  },
  "data_matches": 159,
  "methods": {
-  "UNRESOLVED": 0,
-  "MODEL_ELO_STANDINGS": 55,
-  "MARKET_CONSENSUS": 7,
-  "MARKET_SINGLE": 1,
-  "MODEL_STANDINGS": 0,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO_THIN": 2,
   "MARKET_BOOKS": 0,
+  "MARKET_CONSENSUS": 7,
+  "MARKET_POLYMARKET": 0,
   "MODEL_ELO": 94,
-  "MARKET_POLYMARKET": 0
+  "MODEL_STANDINGS": 0,
+  "MARKET_SINGLE": 1,
+  "MODEL_ELO_STANDINGS": 55,
+  "UNRESOLVED": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO_THIN": 2
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "159 matches, generated_at=2026-10-24T17:12:04.116988Z (0.1h old)"
+   "detail": "159 matches, generated_at=2026-10-24T17:20:45.325382Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -145,7 +145,7 @@
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "31 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "37 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
@@ -157,7 +157,7 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:16:39.757307+00:00 (0.0h old)."
+   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:19:11.040929+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -295,9 +295,8 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "15/18 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "detail": "15/18 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
    "items": [
-    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
     "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
    ]
