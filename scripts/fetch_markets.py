@@ -328,24 +328,42 @@ def _bovada_groups(data):
     return data
 
 
-def fetch_bovada() -> dict:
-    status = {"source": "Bovada", "key": "bovada", "url": BOVADA_PAGE, "status": "error", "count": 0}
-    data, r, used = None, {}, None
-    for url in BOVADA_APIS:
-        data, r = get_json(url, headers={"Referer": BOVADA_PAGE, "Origin": "https://www.bovada.lv"})
-        groups = _bovada_groups(data)
-        if any(g.get("events") for g in groups if isinstance(g, dict)):
-            used = url
-            break
-        time.sleep(0.5)
-    groups = _bovada_groups(data)
-    if not groups:
-        status["error"] = f"coupon feed HTTP {r.get('status')} (no event groups)"
-        return {"status": status, "records": []}
-    status["feed"] = used or BOVADA_APIS[0]
+def _bovada_series_moneyline(mk: dict) -> bool:
+    """True only for Bovada's full-series (head-to-head) moneyline.
+
+    Bovada labels the full-event period ``Game`` with ``main: true``
+    (display group "Game Lines", descriptionKey "Head To Head") — the same
+    period carries the series map-total (e.g. Total 4.5 in a Bo5), so it is
+    the series market, not Map 1. Numbered periods ("Game 1", "Map 2") and
+    any explicit map period are single-game markets and stay rejected.
+    Evidence: committed coupon snapshot ``data/diag/bovada_prematch.json``
+    (Worlds + EMEA Masters events, replayed in
+    ``verification/test_entity_and_books.py``). The previous rule rejected
+    every market whose period contained "game", which silently discarded
+    100% of Bovada LoL moneylines (status ``no_data`` during Worlds).
+    """
+    if str(mk.get("description", "")).strip().lower() != "moneyline":
+        return False
+    if mk.get("status") not in (None, "O", "OPEN"):
+        return False
+    if len(mk.get("outcomes") or []) != 2:
+        return False
+    period = mk.get("period") or {}
+    prd = str(period.get("description") or "").strip().lower()
+    if re.search(r"(game|map)\s*\d", prd) or "map" in prd:
+        return False
+    if period.get("main") is True:
+        return prd in ("game", "match", "full game", "full match", "")
+    # No explicit main flag: only accept an unnumbered full-event period.
+    return prd in ("game", "match", "full game", "full match", "")
+
+
+def _parse_bovada_groups(groups: list) -> tuple[list, list, int]:
+    """Parse coupon groups into (records, competition names, events seen)."""
     records = []
     seen = set()
     comps = []
+    events_seen = 0
     for group in groups:
         if not isinstance(group, dict):
             continue
@@ -360,6 +378,7 @@ def fetch_bovada() -> dict:
         if comp and comp not in comps:
             comps.append(comp)
         for ev in group.get("events") or []:
+            events_seen += 1
             if ev.get("live"):
                 continue
             comps_names = [c.get("name") for c in ev.get("competitors") or []]
@@ -372,13 +391,7 @@ def fetch_bovada() -> dict:
             market = None
             for dg in ev.get("displayGroups") or []:
                 for mk in dg.get("markets") or []:
-                    desc = str(mk.get("description", "")).strip().lower()
-                    prd_obj = mk.get("period") or {}
-                    prd = str(prd_obj.get("description") or "").strip().lower()
-                    is_submap = bool(re.search(r"\b(map|game)\s*\d+", prd)) or (prd_obj.get("main") is False)
-                    if (desc == "moneyline" and not is_submap and not _PROP_CRIT_RE.search(desc)
-                            and mk.get("status") in (None, "O", "OPEN")
-                            and len(mk.get("outcomes") or []) == 2):
+                    if _bovada_series_moneyline(mk):
                         market = mk
                         break
                 if market:
@@ -417,13 +430,31 @@ def fetch_bovada() -> dict:
                 if dk not in seen:
                     seen.add(dk)
                     records.append(rec)
-    status.update({
-        "status": "ok" if records else "no_data",
-        "count": len(records),
-        "competitions": comps,
-        "note": ("Public Bovada pre-match League of Legends coupon JSON (2-way main moneyline only)."
-                 if records else "Bovada coupon feed reachable; 0 open pre-match LoL moneylines listed."),
-    })
+    return records, comps, events_seen
+
+
+def fetch_bovada() -> dict:
+    status = {"source": "Bovada", "key": "bovada", "url": BOVADA_PAGE, "status": "error", "count": 0}
+    data, r, used = None, {}, None
+    for url in BOVADA_APIS:
+        data, r = get_json(url, headers={"Referer": BOVADA_PAGE, "Origin": "https://www.bovada.lv"})
+        groups = _bovada_groups(data)
+        if any(g.get("events") for g in groups if isinstance(g, dict)):
+            used = url
+            break
+        time.sleep(0.5)
+    groups = _bovada_groups(data)
+    if not groups:
+        status["error"] = f"coupon feed HTTP {r.get('status')} (no event groups)"
+        return {"status": status, "records": []}
+    status["feed"] = used or BOVADA_APIS[0]
+    records, comps, events_seen = _parse_bovada_groups(groups)
+    status.update({"status": "ok" if records else "no_data", "count": len(records),
+                   "competitions": comps, "events_seen": events_seen,
+                   "note": ("Public Bovada pre-match League of Legends coupon JSON (2-way main moneyline only)."
+                            if records else
+                            f"Bovada coupon feed reachable ({events_seen} LoL event(s) listed); "
+                            "0 open pre-match full-series moneylines parsed; no Bovada price used.")})
     return {"status": status, "records": records}
 
 
