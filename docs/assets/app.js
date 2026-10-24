@@ -274,6 +274,11 @@
     set("#here-leagues-count", computeLeagueBreakdown(d).length);
     set("#here-unresolved-count", cov0.unresolved ?? 0);
     set("#here-low-count", cov0.low_confidence ?? c.low_confidence ?? 0);
+    // hero "find the picks" buttons carry the same counts, so a phone visitor sees
+    // the size of each list before tapping it
+    set("#hero-count-picks", all0.length ? `(${all0.length})` : "");
+    set("#hero-count-next24", `(${n24})`);
+    set("#hero-count-unresolved", `(${cov0.unresolved ?? c.unresolved ?? 0})`);
     const hs = $("#hero-status");
     if (hs) {
       hs.innerHTML = `<b>Updated ${esc(whenLocal(d.generated_at).text)}</b> (${esc(whenUTC(d.generated_at))}) · `
@@ -401,6 +406,16 @@
       const list = (u.limitations || []);
       exLimits.innerHTML = list.length ? list.map((x) => `<li>${esc(x)}</li>`).join("")
         : "<li>No limitations recorded in this refresh.</li>";
+    }
+
+    // every unresolved fixture, on the executive summary itself (not just a count)
+    const uList = $("#unresolved-list");
+    if (uList) {
+      const un = all0.filter((m) => m.method === "UNRESOLVED")
+        .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+      uList.innerHTML = un.length
+        ? un.map((m) => matchCard(m, { sources: 3 })).join("")
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>.</div>`;
     }
 
     const ss = $("#sources-strip");

@@ -75,6 +75,24 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
      "aggregator-page", "market"),
     ("EsportsBets — LoL betting guide", "https://www.esportsbets.com/betting/league-of-legends/",
      "odds-guide", "market"),
+    # --- added 2026-10-24 (session arena/e6f33fe9), all measured from CI ----------
+    # Oddspedia's generic LoL odds paths answered HTTP 410 "permanently deleted"; kept
+    # so the finding stays measured instead of being retried blindly later.
+    ("Oddspedia — generic LoL odds path (410 as of 2026-10-24)",
+     "https://oddspedia.com/league-of-legends/odds", "aggregator-page", "market"),
+    ("BMBets — LoL Prime League (book-by-book comparison)",
+     "https://www.bmbets.com/e-sports/world/lol---prime-league/", "aggregator-page", "market"),
+    ("Strafe — LoL odds (Oddspedia feed)",
+     "https://www.strafe.com/esports-betting/odds/league-of-legends/", "aggregator-page", "market"),
+    # Kambi powers several Unibet brands. `ub`/`ubca` are the feeds production uses;
+    # these two prove per-brand feeds are not a route to lower-tier leagues: ubde is
+    # rejected outright and the `market=` parameter does not widen coverage.
+    ("Unibet DE Kambi brand feed (control)",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+     "sportsbook-api", "market"),
+    ("Unibet Kambi feed with market=DE (coverage control)",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
+     "sportsbook-api", "market"),
     # --- prediction markets --------------------------------------------------
     ("Kalshi esports series", "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
      "prediction-market-api", "market"),

@@ -651,3 +651,39 @@ the World Championship already feed the pricing cascade through `scripts/fetch_m
 | 2026-10-24 | Prime League official rules | Betting/gambling operators are a prohibited sponsor category | https://www.primeleague.gg/en/statics/rules_general |
 | 2026-10-24 | Prime League Fall Split 2026/27 | League is running (group stage 24.09–04.12) even though no book prices it | https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 |
 | 2026-10-24 | Actions 40110923198, 40111672023, 40111922808 | Probe executed in CI; evidence committed; 0 sources with coverage | `data/diag/line_probe.json` |
+
+---
+
+---
+
+## 16. Refresh 2026-10-24 (session `arena/e6f33fe9`) — Oddspedia gone, Kambi brand feeds closed, and what that means
+
+This section only records findings that are **new** relative to §13–§15; it is not a re-statement of them.
+Everything below was measured from the CI runner on 2026-10-24 and is stored verbatim in
+`data/diag/source_probe.json` (candidates added this session to `scripts/source_probe.py`).
+
+| Candidate | Measured status from CI | Consequence |
+|---|---|---|
+| Oddspedia — `oddspedia.com/league-of-legends/odds` | **HTTP 410** ("The resource you have requested has been permanently deleted"), confirmed the same from a direct fetch; `oddspedia.com/lol` answered 404 earlier | Oddspedia is no longer a usable cross-check on its generic LoL path. League-scoped URLs surfaced by search were not verifiable, so nothing from Oddspedia is cited as a source |
+| BMBets — `bmbets.com/e-sports/world/lol---prime-league/` | HTTP 200, HTML only | Human cross-check only; no API |
+| Betmonitor — Prime League 2nd Division comparison | HTTP 200, HTML only | Human cross-check only; body is client-rendered |
+| Strafe — `strafe.com/esports-betting/odds/league-of-legends/` | HTTP 200, HTML only (Oddspedia-powered) | Human cross-check only |
+| Kambi `ubde` brand feed (`…/offering/v2018/ubde/listView/esports/…`) | **HTTP 400** — `Unable to resolve customer for extApiEndpoint ubde` | No German Unibet brand feed exists for us |
+| Kambi `ub` feed with `market=DE` and `market=SE` | HTTP 200, **same 8 World Championship events** as `market=GB` / `ubca market=ZZ` | The `market` parameter does not widen LoL coverage; per-brand enumeration is not a route to tier-2/3 lines |
+
+**What is still true (and now stated on the site, not only here).** A handful of established books
+(bet365, Unibet, efbet, novibet) do publish Prime League 2nd Division prices — visible on
+[Betmonitor](https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464) and
+[OddsPortal](https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/).
+None of them, and no esportsbook or aggregator we probed, exposes a public feed that a scheduled
+Actions job may legally and reliably consume. Therefore those fixtures keep **our own line** from
+recorded results and split standings, and the executive summary now lists every such limit next to
+each competition instead of only describing it in prose.
+
+### 16.1 Hand verification performed with this session (2026-10-24)
+
+| Row / claim | Source opened | Observed | Result |
+|---|---|---|---|
+| Top Esports vs Anyone's Legend — published consensus 0.365 for Top Esports | [Polymarket event](https://polymarket.com/event/lol-tes-al-2026-10-24) · [Kambi `ub` feed](https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true) | Polymarket **Top 37¢ / AL 64¢**; Kambi **2.65 / 1.42** | Matches — 0.365 sits between the two books |
+| JSK Esports vs El Menzah Esports — a no-market tier-3 row (`MODEL_ELO_THIN`) | [Hotspawn match page](https://www.hotspawn.com/matches/jsk-esports-vs-el-menzah-esports-tunisian-super-league-2026-1080924) · [Leaguepedia competition](https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season) | Teams, tournament and 24 Oct 16:00 start confirmed; the Leaguepedia split page exists with the results the model used | Matches |
+| Lobby coverage | [Hotspawn lobby](https://play.hotspawn.com/lol-pickems) · [live payload](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json) | Lobby listed 241 LoL rows (169 upcoming at 15:28Z); payload reconciliation `lobby_upcoming = priced`, 0 missing | Matches |
