@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
 
@@ -44,14 +45,21 @@ _LATIN_FOLD = str.maketrans({
 })
 
 # Established LoL betting sites / Kambi-powered sportsbooks.
+# Kambi powers many European sportsbooks from one odds pool, but each operator
+# and each country market offers a different *set of competitions*. Prime League
+# is a German league, so the German market matters more than the operator.
+# One operator, several markets, spaced out: the CDN answers 429 when hammered
+# (observed 2026-10-24 on Betsson/NordicBet).
 KAMBI_OPERATORS = [
-    ("Unibet", "ub", "GB"),
-    ("Betsson", "betsson", "SE"),
-    ("NordicBet", "nordicbet", "SE"),
-    ("LeoVegas", "leovegas", "SE"),
-    ("Unibet FR", "ubfr", "FR"),
-    ("Unibet IT", "ubit", "IT"),
-    ("Betcity", "betcity", "NL"),
+    ("Unibet / GB", "ub", "GB"),
+    ("Unibet / DE", "ub", "DE"),
+    ("Unibet / SE", "ub", "SE"),
+    ("Unibet / IT", "ub", "IT"),
+    ("Unibet / NL", "ub", "NL"),
+    ("Unibet / FR", "ub", "FR"),
+    ("Unibet / PL", "ub", "PL"),
+    ("Unibet / AU", "ub", "AU"),
+    ("Unibet / ZZ", "ub", "ZZ"),
 ]
 
 
@@ -432,6 +440,65 @@ def probe_polymarket():
 
 
 # --------------------------------------------------------------------------- #
+
+def probe_kambi_all_esports():
+    """List every esports competition Kambi exposes, not just the LoL path."""
+    name = "Kambi / Unibet (all esports view)"
+    url = ("https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/all/all/"
+           "matches.json?lang=en_GB&market=GB&useCombined=true")
+    data, r = get_json(url, headers={"Accept": "application/json"}, retries=1)
+    groups = []
+    recs = []
+    if isinstance(data, dict) and isinstance(data.get("events"), list):
+        for item in data["events"]:
+            ev = (item or {}).get("event") or {}
+            path = " / ".join(str((ev.get(k) or {}).get("name") or "") for k in
+                              ("sport", "path", "group")).strip(" /")
+            if path and path not in groups:
+                groups.append(path)
+            if "league of legends" not in path.lower():
+                continue
+            for bo in item.get("betOffers") or []:
+                if (bo.get("betOfferType") or {}).get("id") != 2:
+                    continue
+                outs = [o for o in (bo.get("outcomes") or []) if o.get("status") in (None, "OPEN")]
+                if len(outs) != 2:
+                    continue
+                o1 = next((o for o in outs if o.get("type") == "OT_ONE"), None)
+                o2 = next((o for o in outs if o.get("type") == "OT_TWO"), None)
+                if not o1 or not o2:
+                    continue
+                rec = _two_way(recs, name, url, path, ev.get("start"), ev.get("homeName"),
+                               ev.get("awayName"), (o1.get("odds") or 0) / 1000.0,
+                               (o2.get("odds") or 0) / 1000.0, note=f"event {ev.get('id')}")
+                if rec:
+                    recs.append(rec)
+    return {"name": name, "kind": "established-sportsbook", "url": url,
+            "http_status": r.get("status"), "bytes": len(r.get("text") or ""),
+            "is_json": isinstance(data, dict), "competitions": groups[:60],
+            "records": recs, "detail": {"competition_count": len(groups)},
+            "error": None if recs else "no League of Legends two-way prices in the all-esports view"}
+
+
+def probe_bmbets():
+    """bmbets is an esports odds-comparison page (HTML, decimal 1/2 per bookmaker)."""
+    name = "bmbets LoL odds comparison"
+    url = "https://www.bmbets.com/e-sports/world/lol---world-championship/"
+    r = fetch(url, timeout=25, retries=1)
+    text = r.get("text") or ""
+    # Keep the evidence auditable: count what a parser would see, plus an excerpt.
+    odds_pairs = re.findall(r">\s*([0-9]+\.[0-9]{2})\s*<", text)
+    rows = re.findall(r"(?is)<tr[^>]*>(.{0,400}?)</tr>", text)
+    leagues = sorted(set(re.findall(r'href="(/e-sports/[^"]*lol[^"]*)"', text, re.I)))[:40]
+    return {"name": name, "kind": "aggregator-page", "url": url,
+            "http_status": r.get("status"), "bytes": len(text.encode("utf-8", "ignore")),
+            "is_json": False, "records": [],
+            "detail": {"odd_cells": len(odds_pairs), "table_rows": len(rows),
+                       "lol_league_links": leagues,
+                       "excerpt": re.sub(r"\s+", " ", text[:1200]) if text else ""},
+            "error": None if r.get("status") == 200 else f"HTTP {r.get('status')}"}
+
+
 def summarise(res, index: FixtureIndex) -> dict:
     recs = res.get("records") or []
     matched, unpriced_hits, samples = 0, 0, []
@@ -501,12 +568,16 @@ def main() -> int:
 
     add(probe_pinnacle)
     add(probe_polymarket)
-    for op_name, slug, mkt in KAMBI_OPERATORS:
+    for i, (op_name, slug, mkt) in enumerate(KAMBI_OPERATORS):
+        if i:
+            time.sleep(3.5)   # the Kambi CDN answers 429 to a burst of operators
         add(probe_kambi, op_name, slug, mkt)
     add(probe_sofascore)
     add(probe_bo3)
     for host in ONEXBET_HOSTS:
         add(probe_onexbet, host)
+    add(probe_kambi_all_esports)
+    add(probe_bmbets)
     for name, url, kind in STATUS_ONLY:
         add(probe_status, name, url, kind)
 
