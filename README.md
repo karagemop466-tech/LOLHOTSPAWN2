@@ -86,11 +86,11 @@ published list **and** a human has verified a sample row — neither probe ever 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-npm install --no-save jsdom && node verification/check_dom_render.js   # 50/50 jsdom render checks
-python3 verification/test_verifier.py           # verifier rule self-tests (D22 probe + S11/S12/S13-S15 structure)
-python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
+npm install --no-save jsdom && node verification/check_dom_render.js   # jsdom render checks (all pages)
+node verification/render_check.cjs            # executes the real JS on all 7 pages
+python3 verification/test_verifier.py           # verifier rule self-tests (incl. D22 probe + S11-S15 structure)
+python3 verification/test_entity_and_books.py   # 17/17 entity & bookmaker unit tests (incl. Bovada period regression)
 python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11-S15)
-python3 scripts/verify_site.py                  # full schema + link + page audit
 python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
 ```

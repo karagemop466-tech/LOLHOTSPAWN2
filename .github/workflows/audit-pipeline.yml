@@ -40,6 +40,7 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           set -euo pipefail
+          set -o pipefail  # a generator failure must fail the step, not be masked by tee
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag

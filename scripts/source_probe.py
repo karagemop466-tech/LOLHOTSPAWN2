@@ -46,6 +46,8 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("Smarkets API (sports index)", "https://api.smarkets.com/v3/sports/", "exchange-api", "market"),
     ("Betway Esports LoL", "https://www.betway.com/en/esports/league-of-legends", "sportsbook-page", "market"),
     ("BetOnline LoL", "https://www.betonline.ag/sportsbook/esports/league-of-legends", "sportsbook-page", "market"),
+    ("SportsBetting.ag LoL", "https://www.sportsbetting.ag/sportsbook/esports/league-of-legends", "sportsbook-page", "market"),
+    ("TonyBet LoL", "https://tonybet.com/en/esports/league-of-legends", "sportsbook-page", "market"),
     ("Unibet LoL (HTML shell)", "https://www.unibet.com/betting/sports/filter/esports/league_of_legends",
      "sportsbook-page", "market"),
     # --- esportsbooks --------------------------------------------------------
@@ -53,11 +55,14 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("Thunderpick LoL", "https://thunderpick.io/esports/league-of-legends", "esportsbook-page", "market"),
     ("Rivalry LoL", "https://www.rivalry.com/lol", "esportsbook-page", "market"),
     ("Midnite LoL", "https://www.midnite.com/esports/league-of-legends", "esportsbook-page", "market"),
+    ("BC.Game LoL", "https://bc.game/sports/esports/league-of-legends", "esportsbook-page", "market"),
+    ("Stake LoL", "https://stake.com/sports/esports/league-of-legends", "esportsbook-page", "market"),
     ("1xBet line feed (sports index)", "https://1xbet.com/LineFeed/GetSportsShortZip?lng=en&country=1",
      "esportsbook-api", "market"),
     # --- odds aggregators (keys are NOT configured) --------------------------
     ("OddsPapi (API — no key configured)", "https://api.oddspapi.io/v1/sports", "aggregator-api", "market"),
     ("odds-api.io (API — no key configured)", "https://api.odds-api.io/v3/sports", "aggregator-api", "market"),
+    ("PandaScore LoL upcoming (API — no token configured)", "https://api.pandascore.co/lol/matches/upcoming", "aggregator-api", "market"),
     ("OddsPortal LoL", "https://www.oddsportal.com/lol/", "aggregator-page", "market"),
     ("BetExplorer LoL", "https://www.betexplorer.com/lol/", "aggregator-page", "market"),
     ("eGamersWorld LoL odds", "https://egamersworld.com/lol/bets", "aggregator-page", "market"),
@@ -102,6 +107,7 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     # --- community / official results ----------------------------------------
     ("gol.gg tournament index", "https://gol.gg/tournament/list/", "results-page", "results"),
     ("bo3.gg LoL matches", "https://bo3.gg/lol/matches", "results-page", "results"),
+    ("Oracle's Elixir downloads (community CSVs)", "https://oracleselixir.com/tools/downloads", "results-page", "results"),
     ("Riot LoLESports official schedule",
      "https://esports-api.lolesports.com/persisted/gw/getSchedule?hl=en-US", "official-api", "results"),
     ("Liquipedia LoL API", "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json",
