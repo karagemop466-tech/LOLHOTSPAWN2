@@ -779,14 +779,69 @@ fabrication. Any reachable-HTML result is recorded as "human cross-check only".
   4-book (Pinnacle/Unibet/Bovada/Polymarket) with max cross-book dispersion 0.046; payload
   160/160 resolved, 0 unresolved; standings note now reads *"2,880 rows across 209 competitions"*.
 
+## 18. Refresh 2026-10-24 (later pass) — tier probe with browser UA, plus proof that cited pages exist — tier probe with browser UA, plus proof that cited pages exist
+(session `arena/9d523943`)
+
+§13–§17 above already establish the landscape (sections are numbered in merge order, so §14 appears twice —
+that is upstream, not a typo). This pass adds three things they do not cover and does not repeat their measurements. Evidence: a tier-tagged probe (28 candidates, browser-like User-Agent for the sites that
+block bots), run in CI on 2026-10-24 and **preserved as a dated snapshot** —
+`data/diag/source_probe_2026-10-24_arena-9d523943.json` @ **2026-10-24T16:48:11Z** (older snapshot
+16:26:27Z from run [40110891210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40110891210);
+later one from run [40112604014](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112604014)).
+The live `data/diag/source_probe.json` is regenerated on every run by `scripts/source_probe.py`, so the dated copy
+is the one to cite. Per-tier roll-up at 16:48:11Z: established-book 11 probed / 7 × HTTP 200 / 6 JSON;
+esportsbook 10 probed / 3 × 200 / 0 JSON; community 7 probed / 5 × 200 / 3 JSON. Direct page reads on 2026-10-24
+follow.
+
+### 18.1 Does a browser User-Agent get us into the esportsbooks? No.
+
+| Source | Plain bot UA | Browser UA | Reading it as a page |
+|---|---|---|---|
+| eGamersWorld `/lol/bets` | 403 | **403** | **Reads fine** — and shows a genuine 5-book board (Vave, Thunderpick, Rainbet, Underdog, CocoBet). Every listed match is **2026 World Championship**; the “recent predictions” block is Worlds too. No PRM, Tunisian, RIVALS, Komplettligaen, LigaGG or Arabian fixture appears. |
+| GG.Bet / Thunderpick / Coolbet / Stake | 403 | **403** | n/a |
+| Rivalry / Midnite / Betano | 200 | 200 | HTML shell, no server-rendered prices |
+| Betway / BetExplorer / Smarkets | 404 | 404 | n/a |
+| 1xBet line index | 203 | 203 | non-authoritative status, not parsed |
+| The Odds API | 401 (no key) | 401 | n/a |
+| OddsPortal `/lol/` | 200 then **503** on the next CI run | 200 to CI | **404 “Offside — page not found”** when opened — a 200 from a bot-facing edge is not evidence the board exists, so it is not cited |
+
+Tier 3 of the fixture list stays unpriced by books. The one production source that reaches below tier 2 remains
+**Polymarket**, which prices the *LGC Rising* BO5 decider (`MARKET_SINGLE`, 39.0 / 61.0 in the 16:47Z payload).
+
+### 18.2 Organiser pages: reachable or not, they carry no prices
+
+* **Komplettligaen** (`https://www.komplettligaen.no/lol/`) and **RIVALS LEAGUE**
+  (`https://www.rivalsleague.gg/`) — HTTP 200, HTML results only; Leaguepedia remains the programmatic source.
+* **Prime League** (`https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627`) — **403 from CI** (Bunny
+  Shield) but readable as a page: it publishes the Fall Split 2026/27 structure (group stage 24.09 → 04.12,
+  playoffs 05.–13.12.) and 1,293 registered participants. **No odds anywhere**, so being able to read it would
+  improve division metadata, never a line. Adapter still blocked by the 403.
+
+### 18.3 A 200 from Leaguepedia does not prove the cited page exists
+
+Leaguepedia returns **HTTP 200 with the body “There is currently no text in this page”** for a missing title
+(checked 2026-10-24 against `/wiki/Prime_League/2026_Season/Fall_Split`). `scripts/verify_site.py
+--check-external` therefore cannot certify a citation. New
+`verification/check_source_pages.py` extracts every distinct `leaguepedia_url` from the payload and asks
+`api.php?action=query&titles=…` (one batched, read-only request) whether each page exists. Result on the
+2026-10-24 payload: **12 cited pages, 12 exist, 0 missing**, written to `data/diag/source_pages.log` by the branch
+pipeline and wired into `verify.yml` (an unreachable API is a warning, a missing page is a failure).
+
+### 18.4 What changed in production as a result
+**Nothing.** No new adapter was promoted, no formula changed, no probability moved. The evidence supports what the
+site already says: above the World Championship, no reachable book prices these competitions, so those rows are our
+own line, disclosed per league with the Low-confidence count.
+
 ---
 
-## 18. Refresh 2026-10-24 — live source re-verification + fresh candidate research (session `arena/df8a86d2`)
+---
+
+## 19. Refresh 2026-10-24 — live source re-verification + fresh candidate research (session `arena/df8a86d2`)
 
 Brief: re-verify the current payload line by line against the official feeds it cites, then re-run the
 established-books → esportsbooks → community search for any fixture that still has no book line.
 
-### 18.1 Line-by-line spot checks of the priced rows (live, 2026-10-24 ~16:1x–16:3x UTC)
+### 19.1 Line-by-line spot checks of the priced rows (live, 2026-10-24 ~16:1x–16:3x UTC)
 
 Payload under test: `docs/data/picks.json` generated **2026-10-24T15:28:56Z** (169 fixtures, 169 priced, 0 unresolved, 9 market rows).
 
@@ -810,7 +865,7 @@ Suite results on this commit: `check_dom_contract.py` PASS · `test_verifier.py`
 (including REQ1–REQ12 traceability: pick on every match, probabilities sum to 100%, outside-Hotspawn inputs,
 separate unresolved section linked from the exec summary, mobile viewport, 4–8 h refresh).
 
-### 18.2 Established LoL betting sites (fresh check 2026-10-24)
+### 19.2 Established LoL betting sites (fresh check 2026-10-24)
 
 | Source | What was observed today | Usable for our low-tier fixtures? | Evidence |
 |---|---|---|---|
@@ -820,7 +875,7 @@ separate unresolved section linked from the exec summary, mobile viewport, 4–8
 | **OddsPapi** | Live page today: **`0 Fixtures scheduled`** measured 2026-10-24 04:15 UTC for LoL tournamentIds `2452, 2454, 39985`; documented coverage remains Worlds/LEC/LCS/LCK/LPL/CBLOL/LJL/Prime League **Pro** Division. Free REST tier exists but requires a sign-up key — **no key configured, no manual input available**. | No amateur leagues; key required — no | https://oddspapi.io/sports/esports/lol |
 | **eGamersWorld odds board** | Today's board lists only `2026 World Championship` (5 books: Vave, Thunderpick, Rainbet, Underdog, CocoBet) and `LGC 2026 Rising` (same 5 books). No PRM 3rd/2nd Division, RIVALS LEAGUE, Tunisian, Komplettligaen, LigaGG, Icelandic, Benelux, 4 Nations, Superstrike, Hitpoint or Arabian events. Their LGC line (Vave 1.40/2.73 → devig RB ≈ 66%) corroborates the direction of our Polymarket-only row (RB 61.5%). | Human cross-check only; HTML, no structured feed — no | https://egamersworld.com/lol/bets |
 
-### 18.3 Esportsbooks & esports betting lines (fresh check 2026-10-24)
+### 19.3 Esportsbooks & esports betting lines (fresh check 2026-10-24)
 
 | Source | Observation today | Verdict |
 |---|---|---|
@@ -830,14 +885,14 @@ separate unresolved section linked from the exec summary, mobile viewport, 4–8
 | **GG.Bet / Thunderpick / Rivalry / Midnite / Betway / Marathonbet / BetMGM** | Previous CI probe statuses (403/404/503/403/404/403/403) stand; re-confirmed by the branch `probe_sources.py` run of this session (`data/diag/source_probe.json`). Their own pages (per eGamersWorld's board above) price Worlds/LGC only anyway. | No change — no |
 | **Kalshi / Smarkets / Manifold** | Prior probe: no per-match LoL series (Kalshi none, Smarkets 404, Manifold futures only). Unchanged in this session's CI probe. | No change — no |
 
-### 18.4 Community / results sources (resolution path for matches no book prices — unchanged and still the production answer)
+### 19.4 Community / results sources (resolution path for matches no book prices — unchanged and still the production answer)
 
 All 169 current fixtures are priced; **0 UNRESOLVED**. For any fixture that ever lacks a book line the cascade is:
 Leaguepedia `MatchSchedule` Elo (31,633 matches / 5,493 teams in the current payload) → Leaguepedia `Standings`
 (`MODEL_STANDINGS`) → competition prior (`MODEL_LEAGUE_PRIOR`) → explicit 50/50 `UNRESOLVED` published on the
 Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is never an input (verifier W3).
 
-### 18.5 Irregularities found this session (all non-blocking)
+### 19.5 Irregularities found this session (all non-blocking)
 
 1. **Two Unibet rows show small post-snapshot drift** (DK/T1 moved 16:15Z, LYON/KC 15:29Z vs payload 15:28:56Z generation). Not errors: values were correct when generated; the 6-hour refresh picks up the new prices. No action.
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
