@@ -364,7 +364,12 @@ def fetch_bovada() -> dict:
                 for mk in dg.get("markets") or []:
                     desc = str(mk.get("description", "")).strip().lower()
                     prd = str((mk.get("period") or {}).get("description") or "").lower()
-                    if desc == "moneyline" and "map" not in prd and "game" not in prd and len(mk.get("outcomes") or []) == 2:
+                    # Bovada labels the *series* moneyline with period "Game"
+                    # (its match-level period), so reject only child boards such
+                    # as "Map 1"/"Game 1" — not the whole series market.
+                    child_board = bool(re.search(r"\b(?:map|game)\s*\d+\b", prd))
+                    if (desc == "moneyline" and not child_board
+                            and len(mk.get("outcomes") or []) == 2):
                         market = mk
                         break
                 if market:

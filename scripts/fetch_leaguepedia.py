@@ -315,6 +315,10 @@ def main() -> int:
         errors.append({"table": "TeamRedirects", "error": r_err})
 
     tour_counts = Counter(x["overview"] for x in results)
+    # Distinct competitions that actually contributed a split-standings row.
+    # Published on the site as "N standings rows across M competitions"; without
+    # this the note rendered "across 0 competitions" even when rows existed.
+    standings_by_overview = Counter(x["overview"] for x in standings if x.get("overview"))
     payload = {
         "generated_at": utc_iso(now),
         "degraded": False,
@@ -324,6 +328,8 @@ def main() -> int:
             "schedule": len(schedule),
             "unscheduled": len(unscheduled),
             "standings": len(standings),
+            "standings_pages": len(standings_by_overview),
+            "standings_competitions": [k for k, _ in standings_by_overview.most_common(60)],
             "teams": len(teams),
             "redirects": len(redirects),
             "export_calls": calls,

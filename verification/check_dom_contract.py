@@ -86,6 +86,32 @@ def main() -> int:
                 if links != columns:
                     problems.append(f"{name}: mobile bottom nav has {links} links but {columns} grid columns")
 
+    # Shared header/nav contract on every dashboard page. A page that uses a
+    # different header is how a visitor loses the link back to the picks.
+    for name in sorted(pages):
+        html = open(os.path.join(docs, name), encoding="utf-8").read()
+        for need in ('class="site-header"', 'id="theme-toggle"', 'id="updated"',
+                     'id="freshness"', 'id="status-strip"'):
+            if need not in html:
+                problems.append(f"{name}: missing {need}")
+        top = re.search(r'<nav\s+class="top-nav"[^>]*>(.*?)</nav>', html, re.S)
+        if not top:
+            problems.append(f"{name}: no top-nav")
+        else:
+            links = re.findall(r'<a\s+[^>]*href="[^"]+"[^>]*data-nav="[^"]+"', top.group(1))
+            if len(links) != 6:
+                problems.append(f"{name}: top-nav has {len(links)} links (want 6)")
+        if name == "index.html":
+            hub = re.search(r'<section[^>]*id="find-picks".*?</section>', html, re.S)
+            if not hub:
+                problems.append("index.html: no #find-picks hub")
+            elif len(re.findall(r'class="linkcard"', hub.group(0))) != 6:
+                problems.append("index.html: #find-picks does not have 6 link cards")
+        if name == "methodology.html" and 'id="source-research-body"' not in html:
+            problems.append("methodology.html: no #source-research-body")
+        if name == "unresolved.html" and 'id="source-research-compact"' not in html:
+            problems.append("unresolved.html: no #source-research-compact")
+
     print(f"ids referenced by app.js: {len(used)} · ids present in pages: {len(all_ids)}")
     if missing:
         print("MISSING (referenced but on no page):")

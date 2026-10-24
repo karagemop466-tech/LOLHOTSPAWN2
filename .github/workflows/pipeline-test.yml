@@ -31,6 +31,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Probe candidate odds sources (diagnostic only, never feeds picks)
+        run: |
+          mkdir -p data/diag docs/data
+          python3 scripts/probe_sources.py
+
       - name: Run the live pipeline
         run: |
           mkdir -p data/diag
@@ -63,10 +68,6 @@ jobs:
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
 
-      - name: Probe candidate odds sources (diagnostic only, never feeds picks)
-        if: always()
-        run: python3 scripts/probe_sources.py
-
       - name: Commit outputs for review
         if: always()
         run: |
@@ -90,7 +91,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log docs/data/source_probe.json verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?

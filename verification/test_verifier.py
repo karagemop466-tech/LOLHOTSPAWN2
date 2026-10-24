@@ -41,6 +41,13 @@ def payload(rows, **kw):
     p = {"generated_at": NOW, "count": len(rows),
          "counts_by_method": {m: sum(1 for r in rows if r.get("method") == m)
                               for m in vs.METHODS},
+         "unresolved": {"count": 0, "limitations": ["Test limitation"],
+                        "by_league": [{"tournament": "Test League"}]},
+         "source_research": {"verified_on": "2026-10-24", "categories": [{
+             "step": 1, "title": "Test sources", "sources": [{
+                 "name": "Test book", "url": "https://example.com/lol",
+                 "role": "probability_input", "observed": "checked directly",
+                 "verified_on": "2026-10-24"}]}]},
          "matches": rows}
     p.update(kw)
     return p
@@ -149,6 +156,29 @@ def main() -> int:
         ],
     }
     results.append(assert_status(run([r]), "D20", vs.FAIL, "prop market leaked into market.sources"))
+    # source ladder missing entirely
+    p = payload([copy.deepcopy(BASE_ROW)]); p.pop("source_research", None)
+    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D22", vs.FAIL,
+                                 "missing source_research"))
+    # source ladder with a non-https link and no observation
+    p = payload([copy.deepcopy(BASE_ROW)])
+    p["source_research"]["categories"][0]["sources"][0].update({"url": "http://example.com", "observed": ""})
+    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D22", vs.FAIL,
+                                 "source without https/observation"))
+    # source ladder with no usable probability input
+    p = payload([copy.deepcopy(BASE_ROW)])
+    p["source_research"]["categories"][0]["sources"][0]["role"] = "context"
+    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D22", vs.FAIL,
+                                 "source ladder without a probability input"))
+    # unresolved section without limitations / per-league rows
+    p = payload([copy.deepcopy(BASE_ROW)]); p["unresolved"] = {"count": 0}
+    rep = vs.Report(); vs.verify_data(rep, p, "t.json", 8.0)
+    results.append(assert_status({x["id"]: x for x in rep.checks}, "D23", vs.FAIL,
+                                 "unresolved without limitations"))
+
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],

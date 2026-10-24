@@ -16,6 +16,7 @@ import fetch_leaguepedia
 import fetch_markets
 import model
 from lib_common import load_json, log, now_utc, utc_iso, write_json
+from source_research import build as build_source_research, load_probe
 from standings_and_books import probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
@@ -216,7 +217,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
                           "count": fixtures["count"], "note": "Fixture list only (crowd % never used)."})
 
     payload = {
-        "schema_version": 3,
+        "schema_version": 4,
         "generated_at": utc_iso(now),
         "next_update_utc": utc_iso(now + timedelta(hours=6)),
         "stale_after_utc": utc_iso(now + timedelta(hours=8)),
@@ -255,6 +256,10 @@ def build_payload(fixtures, markets, leaguepedia, picks):
         },
         "tournaments": [{"name": k, "count": v} for k, v in tournaments.most_common()],
         "sources_status": source_status,
+        # Independently verified ladder of where a price could come from. Only
+        # sources with role=probability_input feed a pick; every blocked or
+        # HTML-only source keeps its observed status and link on the site.
+        "source_research": build_source_research(markets, leaguepedia, load_probe()),
         "checked_unavailable": CHECKED_UNAVAILABLE,
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],

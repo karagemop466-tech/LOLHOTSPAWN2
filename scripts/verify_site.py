@@ -71,7 +71,11 @@ MARKET_HOSTS = ("polymarket.com", "oddspapi.io", "pinnacle.com", "pinnacleapi",
                 "bet365.com", "draftkings.com", "fanduel.com", "betmgm.com",
                 "williamhill.com", "betway.com", "1xbet.com", "gg.bet", "betboom.ru",
                 "midnite.com", "rivalry.com", "unibet.com", "betfair.com",
-                "smarkets.com", "kalshi.com", "betano.com", "betsson.com")
+                "smarkets.com", "kalshi.com", "betano.com", "betsson.com",
+                # checked directly in manual research (2026-10-24); Thunderpick
+                # listed an LGC Rising line, OddsPortal the Prime League page.
+                "thunderpick.io", "oddsportal.com", "betexplorer.com",
+                "egamersworld.com", "the-odds-api.com")
 RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
@@ -509,6 +513,8 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
             f"{len(no_ev) - len(unlab)} labelled, {len(bad_no_ev)} non-50/50. "
             f"Info: {near} model row(s) land within ±2 pts of 50% — these are even-matchup "
             f"estimates from recorded results, not placeholders.", (bad_no_ev + unlab)[:10])
+    verify_source_research(rep, payload if isinstance(payload, dict) else {})
+
     return rows
 
 
@@ -630,6 +636,56 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
             diff[:12])
 
 
+def verify_source_research(rep: Report, payload: dict) -> None:
+    """D22/D23: the published source ladder and unresolved section must be real.
+
+    The site claims every source it looked at, with the observed status and the
+    date checked. A missing/undated entry, a non-https link, or a ladder with no
+    probability input means the page cannot be audited, so it fails the build.
+    """
+    src = payload.get("source_research")
+    bad = []
+    seen = 0
+    if not isinstance(src, dict) or not isinstance(src.get("categories"), list) or not src.get("categories"):
+        bad.append("missing source_research.categories")
+    else:
+        roles = {"probability_input", "model_input", "context", "unavailable"}
+        for cat in src["categories"]:
+            for item in cat.get("sources") or []:
+                seen += 1
+                name = item.get("name") or "?"
+                if not str(item.get("url") or "").startswith("https://"):
+                    bad.append(f"{name}: missing/non-https url")
+                if not str(item.get("observed") or "").strip():
+                    bad.append(f"{name}: no observed evidence")
+                if not str(item.get("verified_on") or "").strip():
+                    bad.append(f"{name}: no verified_on date")
+                if item.get("role") not in roles:
+                    bad.append(f"{name}: unknown role {item.get('role')!r}")
+        if seen == 0:
+            bad.append("no sources listed")
+        used = [i for cat in src["categories"] for i in (cat.get("sources") or [])
+                if i.get("role") == "probability_input"]
+        if not used:
+            bad.append("no probability_input source")
+    rep.add("D22", "verified source ladder present (https, observed status, dated, one usable input)",
+            PASS if not bad else FAIL,
+            (f"{seen} source(s) across {len((src or {}).get('categories') or [])} step(s); "
+             "every row has a date and an observed status") if not bad
+            else f"{len(bad)} problem(s)", bad[:12])
+
+    u = payload.get("unresolved") or {}
+    u_bad = []
+    if not u.get("limitations"):
+        u_bad.append("no limitations")
+    if not u.get("by_league"):
+        u_bad.append("no per-league limits")
+    rep.add("D23", "unresolved section publishes limitations and per-league limits",
+            PASS if not u_bad else FAIL,
+            (f"{len(u.get('limitations') or [])} limitation(s), "
+             f"{len(u.get('by_league') or [])} league row(s)") if not u_bad else "; ".join(u_bad))
+
+
 def verify_data_files(rep: Report) -> None:
     present = [p for p in DATA_PATHS if os.path.exists(p)]
     if not present:
@@ -740,6 +796,75 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     rep.add("S10", "phone bottom nav has one grid column per link on every page",
             PASS if not nav_bad else FAIL,
             "; ".join(nav_bad[:5]) if nav_bad else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
+
+    # S11: one shared header, theme toggle and navigation on every dashboard page.
+    # The executive summary once used a .bar wrapper that collided with the
+    # probability-bar rule and clipped the header; this check keeps the shared
+    # markup from drifting again.
+    header_bad, nav_shapes = [], []
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep):
+            continue
+        relp = os.path.relpath(pg, ROOT)
+        html_text = open(pg, encoding="utf-8").read()
+        for need in ('class="site-header"', 'id="theme-toggle"', 'id="updated"',
+                     'id="freshness"', 'id="status-strip"'):
+            if need not in html_text:
+                header_bad.append(f"{relp}: missing {need}")
+        top = re.search(r'<nav\s+class="top-nav"[^>]*>(.*?)</nav>', html_text, re.S)
+        if not top:
+            header_bad.append(f"{relp}: no top nav")
+        else:
+            links = re.findall(r'<a\s+[^>]*href="([^"]+)"[^>]*data-nav="([^"]+)"', top.group(1))
+            nav_shapes.append(tuple(sorted(links)))
+            if len(links) != 6:
+                header_bad.append(f"{relp}: {len(links)} top-nav links (want 6)")
+        bottom = re.search(r'<nav\s+class="bottom-nav"[^>]*>(.*?)</nav>', html_text, re.S)
+        if not bottom or len(re.findall(r"<a\b", bottom.group(1))) != 6:
+            header_bad.append(f"{relp}: phone bottom nav is not 6 links")
+    if nav_shapes and len(set(nav_shapes)) != 1:
+        header_bad.append("top navigation targets differ between pages")
+    rep.add("S11", "one shared header, theme toggle and 6-link navigation on every page",
+            PASS if not header_bad else FAIL,
+            "shared header/nav present on all dashboard pages" if not header_bad
+            else f"{len(header_bad)} problem(s)", header_bad[:10])
+
+    index_html = ""
+    ipath = os.path.join(DOCS, "index.html")
+    if os.path.exists(ipath):
+        index_html = open(ipath, encoding="utf-8").read()
+    hub = re.search(r'<section[^>]*id="find-picks".*?</section>', index_html, re.S)
+    hub_links = re.findall(r'href="([^"]+)"', hub.group(0)) if hub else []
+    hub_need = ["#starting-soon", "picks.html", "leagues.html", "unresolved.html",
+                "flagged.html", "methodology.html"]
+    hub_missing = [n for n in hub_need
+                   if not any(h.split("?")[0] == n or h.startswith(n) for h in hub_links)]
+    rep.add("S12", "executive summary has an explicit 'find the picks' hub with in-site links",
+            PASS if hub and not hub_missing else FAIL,
+            ("hub links to starting-soon, all picks, leagues, unresolved, flagged and methodology"
+             if hub and not hub_missing else
+             f"missing hub links: {hub_missing}" if hub else "no #find-picks section"))
+
+    has_unres = ('id="unresolved-heading"' in index_html and
+                 'id="unresolved-summary"' in index_html)
+    js_always = ("0 explicit 50/50 placeholders" in js_text or
+                 "No fixture in this snapshot is unresolved" in js_text)
+    rep.add("S13", "executive summary always renders a separate unresolved & limitations section",
+            PASS if has_unres and js_always else FAIL,
+            "section present and renders a zero-state plus all limitations" if has_unres and js_always
+            else f"section={has_unres}, zero-state={js_always}")
+
+    picks_link_bad = []
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep):
+            continue
+        hrefs = [h for _t, h in parse_page(pg).links]
+        if not any(h.split("?")[0].split("#")[0].endswith("picks.html") for h in hrefs):
+            picks_link_bad.append(os.path.relpath(pg, ROOT))
+    rep.add("S14", "every page has a direct in-site link to the updated picks list",
+            PASS if not picks_link_bad else FAIL,
+            "all dashboard pages link picks.html" if not picks_link_bad
+            else f"{len(picks_link_bad)} page(s) without a picks link", picks_link_bad)
 
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
@@ -1093,11 +1218,11 @@ def main() -> int:
         ("REQ5", "Every match without a market line still gets a pick + documented method",
          ["D8b", "D13"]),
         ("REQ6", "Separate unresolved section, with limitations, linked from the exec summary",
-         ["S4", "S5", "S5b"]),
+         ["S4", "S5", "S5b", "S13", "D23"]),
         ("REQ7", "Executive summary links in-site to the updated picks list",
-         ["S4"]),
+         ["S4", "S12", "S14"]),
         ("REQ8", "Every row links its source; non-official or generic evidence is disclosed and flagged",
-         ["D7", "D7b", "D8a", "D8b", "D8c", "D8d", "D17"]),
+         ["D7", "D7b", "D8a", "D8b", "D8c", "D8d", "D17", "D22"]),
         ("REQ9", "Mobile-friendly: responsive viewport + responsive CSS + readable cards",
          ["S2", "S7"]),
         ("REQ10", "Automatic refresh every 4-8 hours, no manual input",
@@ -1106,6 +1231,10 @@ def main() -> int:
          ["S1", "S6", "S8"]),
         ("REQ12", "Third-party sources attributed where their data is used",
          ["S5c"]),
+        ("REQ13", "Every looked-at source is published with an observed status, date and link",
+         ["D22"]),
+        ("REQ14", "Consistent, phone-first navigation to the picks on every page",
+         ["S11", "S12", "S13", "S14"]),
     ]
     req_status = (FAIL if any(worst(*ids) == FAIL for _r, _t, ids in requirements)
                   else WARN if any(worst(*ids) == WARN for _r, _t, ids in requirements)
