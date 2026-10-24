@@ -64,8 +64,8 @@ jobs:
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
           set +e
-          python3 verification/check_source_pages.py
-          src_rc=$?
+          python3 verification/check_source_pages.py 2>&1 | tee data/diag/source_pages.log
+          src_rc=${PIPESTATUS[0]}
           set -e
           if [ "$src_rc" = "2" ]; then
             echo "::warning title=Source page check skipped::Leaguepedia API was unreachable; page existence not verified in this run"
@@ -111,7 +111,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json data/diag/source_pages.log verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?

@@ -102,13 +102,31 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
         if mkt == len(ms):
             lim = "Covered by external bookmakers/markets (de-vigged consensus). Polymarket end-dates drift vs UTC lock times; Hotspawn epoch timestamps govern lock times."
         elif mkt > 0:
-            lim = f"{mkt}/{len(ms)} match(es) have external market odds; remaining matches rely on Leaguepedia recorded history and split standings."
+            rest = []
+            if elo:
+                rest.append(f"{elo} from Leaguepedia recorded results (Elo)")
+            if st:
+                rest.append(f"{st} from split standings")
+            if prior:
+                rest.append(f"{prior} from the competition prior")
+            lim = (f"{mkt}/{len(ms)} match(es) have external market odds; the other {len(ms) - mkt} rely on "
+                   + (", ".join(rest) if rest else "Leaguepedia recorded history") + "."
+                   + (f" {low} capped at Low confidence." if low else ""))
         elif unres > 0:
             lim = f"No external bookmaker prices this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
         elif prior > 0:
             lim = f"No bookmaker prices this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
         else:
-            lim = "No external sportsbook prices this division; 100% of fixtures resolved via Leaguepedia recorded match results and split standings."
+            # Only claim the signals that were actually used for this competition.
+            used = []
+            if elo:
+                used.append(f"{elo} from Leaguepedia recorded match results (Elo)")
+            if st:
+                used.append(f"{st} from current split standings")
+            lim = ("No external sportsbook prices this competition; all "
+                   f"{len(ms)} fixture(s) are priced by our own line: "
+                   + (" and ".join(used) if used else "the competition prior")
+                   + "." + (f" {low} of {len(ms)} " + ("is" if low == 1 else "are") + " capped at Low confidence (thin or mixed history)." if low else ""))
         rows.append({
             "tournament": tour,
             "category": classify_league_category(tour),

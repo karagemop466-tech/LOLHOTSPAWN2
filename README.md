@@ -64,6 +64,7 @@ python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit
 python3 scripts/probe_sources.py                # refresh the candidate-source measurements (CI, not sandbox)
+python3 verification/check_source_pages.py      # every cited Leaguepedia tournament page must exist (needs network)
 ```
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.

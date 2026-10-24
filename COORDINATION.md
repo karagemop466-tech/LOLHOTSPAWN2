@@ -730,3 +730,63 @@ the exact source link so a human can repeat it.
 | T23 Line-by-line verification of the combined payload/site, PR to `main`, merge, confirm the Pages deploy, record the PR/deploy here | pending | arena/9d523943 | `COORDINATION.md`, `README.md` |
 
 **Baseline at claim** (`main` `72c9b5a`, 2026-10-24T15:28:56Z payload): 169 fixtures · 169 priced (100%) · 9 market · 160 model · 0 unresolved · 73 low-confidence · 14 cancelled excluded. `scripts/verify_site.py` passes but the DOM contract does **not** check markup/CSS agreement, so the defects in T20 shipped green.
+
+### T20 — executive-summary / mobile UX repair: **done**
+
+Found by reading every page's markup against `docs/assets/style.css` and `docs/assets/app.js` (no browser needed).
+Full write-up with the reasoning for each item: **`verification/mobile_audit.md`**.
+
+| # | Defect (shipped) | Consequence on a phone | Fix | Check that now catches it |
+|---|---|---|---|---|
+| D1 | `index.html` + `unresolved.html` header wrapper was `<div class="wrap bar">`, and `.bar` is the probability progress bar (`height:12px; overflow:hidden`) | the landing page's logo, title and nav were clipped to a 12 px strip | standard `.site-header > .header-inner` skeleton on every page | `C3` |
+| D2 | those two pages had `<nav class="top-nav"><a>` with no `<ul>` | nav lost its 40 px scroll strip and tap targets | six-section `<ul>` nav everywhere | `C2` |
+| D3 | `#updated` / `#freshness` missing on those pages; an unscripted `#status-strip` sat there instead | summary displayed "Loading latest picks…" forever | header meta block added to all pages | `C5` |
+| D4 | `<button id="theme-toggle">` with **no handler** anywhere in `app.js` | a dead control | real toggle: `<html data-theme>`, icon/`aria-label` swap, `localStorage`, overrides OS preference both ways | `C4` + render smoke |
+| D5 | `.brand`, `.mark`, `.bar-end`, `.icon-btn`, `.nav-list`, `.covbar`, `.status-strip` had **no CSS rule** | the four section cards and the coverage bar rendered as bare text | `.nav-list`, `.covbar`, `.icon-btn` added, legacy classes removed | `C1` |
+| D6 | stat tiles used `<b>`/`<span>` but CSS sizes `.stat .n/.l` | headline counts rendered at body size | markup aligned with CSS | render smoke |
+| D7 | `methodology.html` used `class="table"` (undefined) | cosmetic | class removed | `C1` |
+| D8 | the picks list was only reachable through the (broken) nav | brief requires the summary to link to the picks | new `#where` card: all picks · next 24 h · by league · unresolved/limits, each with a live count, plus a hero chip | `S4`/`REQ7` + render smoke |
+
+### T21 — verification hardening: **done**
+
+* `verification/check_dom_contract.py` rewritten: `C1` class↔CSS coverage, `C2` header/nav skeleton + six sections,
+  `C3` no non-header class inside the header, `C4` no handler-less `<button id>`, `C5` ids `app.js` writes on every
+  page, `C6` mobile contracts (viewport, theme-color, table→card rule, ≥16 px body), plus the original id/bottom-nav checks.
+  **PASS** on this branch.
+* `verification/test_dom_contract.py` (new): **7/7** negative self-tests — each rule must fail on an injected defect.
+* `verification/render_smoke.js` (new): jsdom, real `app.js` + real payload, all 7 pages — **63/63** checks
+  (no JS errors, timestamp/freshness populated, counters, one picks row per fixture with an outbound source link,
+  match detail, theme toggle flips/persists/re-applies). Injecting two defects produced exactly 2 failures, so the
+  harness is not vacuous.
+* Both runners are wired into `.github/workflows/verify.yml` and `.github/workflows/pipeline-test.yml`.
+
+### T22 — fresh source research for the unresolved/low-confidence bucket: **done**
+
+Recorded as `research/betting-sources.md` **§13** (established books → esportsbooks → community, in that order).
+`scripts/probe_sources.py` rebuilt: **28** candidates tagged by tier, browser-UA where needed, per-tier roll-up in
+`data/diag/source_probe.json` (snapshot 2026-10-24T16:26:27Z). Headline results:
+
+* Established books: Pinnacle / Unibet (Kambi) / Bovada / Polymarket all **200 JSON** (production); Kalshi 200 but
+  no LoL series; Manifold futures only; The Odds API **401** (no key); BetExplorer **404**; Smarkets **404**;
+  OddsPortal LoL is a **404 page** when read directly today despite a 200 to the CI GET → not citable.
+* Esportsbooks: eGamersWorld / GG.Bet / Thunderpick / Coolbet / Stake **403**; Rivalry / Midnite / Betano HTML shells;
+  Betway **404**; 1xBet **203**. Read as a page, eGamersWorld *does* show a real 5-book board (Vave, Thunderpick,
+  Rainbet, Underdog, CocoBet) — but **only for the 2026 World Championship**, i.e. the matches we already price.
+* Community/organisers: Leaguepedia `MatchSchedule`/`Standings` **200 JSON**, Liquipedia API **200 JSON**,
+  Komplettligaen and RIVALS organiser pages 200, Prime League organiser **403 to CI** (readable as a page; no odds).
+  Riot LoLESports **403**.
+* Net effect: **no new market adapter was justified**, and no probability changed. What the tier-3 rows get is the
+  model plus an honest per-league limitation; Polymarket remains the only source that reaches below tier 2 (it prices
+  the LGC Rising BO5 decider).
+* New `verification/check_source_pages.py`: every cited Leaguepedia tournament page must **exist** (Leaguepedia answers
+  HTTP 200 with an empty body for a missing title). All **12** cited pages verified to exist on 2026-10-24; the result
+  is written to `data/diag/source_pages.log` by the branch pipeline.
+* Accuracy fix in `scripts/update_picks.py::build_league_breakdown`: the generated per-league limitation no longer
+  claims "split standings" for competitions where the standings signal priced nothing; it now names only the signals
+  actually used, with the Low-confidence count.
+
+### Session conflicts / handoffs
+* No other session is active on this branch's files. Open PRs #20 (`arena/b132c242`) and #26 (`arena/e76bc0ae`) were
+  inspected as branch refs only; nothing of theirs was edited. If either merges first, this branch rebases.
+* `scripts/update_picks.py` and `scripts/probe_sources.py` were edited by this session (not owned by any live claim);
+  the edit is the limitation-wording fix above, plus probe expansion. No model formula changed.
