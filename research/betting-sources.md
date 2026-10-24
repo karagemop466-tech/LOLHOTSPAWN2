@@ -609,3 +609,17 @@ when its coupon is empty between rounds.
 Eleven of the 37 sources returned 401/402/403/202/203 (key required, blocked or interstitial); that is recorded as
 observed and is the evidence behind the site's statement that no reachable book publishes a verifiable line for 95% of
 the fixtures. Nothing in this table can contribute a probability.
+
+### 13.8 Independent spot check of the published numbers (2026-10-24 17:05Z)
+
+Two of the published market rows were re-checked by hand, straight from the sources, after the refresh:
+
+| Fixture (payload `id`) | Source | Live value observed | Published | Match |
+|---|---|---|---|---|
+| Bilibili Gaming vs Team Liquid (Worlds 2026, Bo1) | Pinnacle `GET /0.1/matchups/1639121259/markets/related/straight` | moneyline `home +241`, `away −305` → decimals 3.41 / 1.3279 → de-vig `0.2933 / 0.7531` (overround 4.64%) → **0.2803 / 0.7197** | Pinnacle source row `0.7197` (decimal 1.3279) | ✅ exact |
+| Bilibili Gaming vs Team Liquid (same fixture) | Polymarket `GET /events?slug=lol-tl2-blg-2026-10-24` | `outcomePrices ["0.245","0.755"]`, market title *“LoL: Team Liquid vs Bilibili Gaming (BO1) - Worlds Group Stage”* | Polymarket source row `0.7550` | ✅ exact |
+
+The Polymarket market is a **BO1 series (match-winner) market**, not a Game-N prop — the D16/D20 rejection rules
+behave correctly on a live sample; the de-vig arithmetic above reproduces the pipeline's number to four decimals.
+The consensus row for that fixture is `0.7208` across Pinnacle 0.7197 / Unibet 0.7220 / Bovada 0.7108 / Polymarket
+0.7550 (dispersion 4.4 pts, High confidence), which is what the dashboard shows.
