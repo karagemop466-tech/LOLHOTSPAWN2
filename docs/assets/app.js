@@ -21,6 +21,7 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
+    MODEL_ELO_STANDINGS: { label: "Elo + split standings", cls: "blue", ico: "📊" },
     MODEL_STANDINGS: { label: "Split standings", cls: "blue", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved 50/50", cls: "red", ico: "⚠️" },
@@ -29,7 +30,7 @@
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
   const METHOD_RANK = {
     MARKET_CONSENSUS: 6, MARKET_SINGLE: 5, MODEL_ELO: 4,
-    MODEL_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
+    MODEL_STANDINGS: 3, MODEL_ELO_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
   };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
@@ -141,7 +142,7 @@
       const lpUrl = (ms.find((x) => x.leaguepedia_url) || {}).leaguepedia_url || "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule";
       const mkt = ms.filter((x) => x.market).length;
       const elo = ms.filter((x) => x.method === "MODEL_ELO" || x.method === "MODEL_ELO_THIN").length;
-      const st = ms.filter((x) => x.method === "MODEL_STANDINGS").length;
+      const st = ms.filter((x) => x.method === "MODEL_STANDINGS" || x.method === "MODEL_ELO_STANDINGS").length;
       const prior = ms.filter((x) => x.method === "MODEL_LEAGUE_PRIOR").length;
       const unres = ms.filter((x) => x.method === "UNRESOLVED").length;
       const t = tour.toLowerCase();
@@ -153,7 +154,10 @@
       return {
         tournament: tour, category: cat, fixtures: ms.length, market: mkt, elo, standings: st,
         league_prior: prior, unresolved: unres, leaguepedia_url: lpUrl,
-        limitation: mkt ? "Priced by external bookmaker/prediction-market consensus." : "No external sportsbook line; priced via Leaguepedia recorded results & split standings.",
+        limitation: mkt
+          ? "Priced by external bookmaker/prediction-market consensus."
+          : ("No external sportsbook line; priced via Leaguepedia recorded results"
+             + (st ? " & current-split standings records." : ".")),
       };
     });
   }
@@ -404,7 +408,7 @@
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
-    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS") return false;
+    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS" && m.method !== "MODEL_ELO_STANDINGS") return false;
     if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
@@ -444,7 +448,7 @@
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
       market: all.filter((m) => m.market).length,
       model: all.filter((m) => m.model && !m.market).length,
-      standings: all.filter((m) => m.method === "MODEL_STANDINGS").length,
+      standings: all.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length,
       low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
     };
@@ -531,6 +535,7 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
+      STANDINGS_BLEND_APPLIED: "Current-split standings record blended into the rating",
     };
     return map[f] || f;
   }

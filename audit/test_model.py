@@ -140,6 +140,36 @@ def test_payload_book_invariant() -> None:
     check("every pick is one of the two teams", not bad_pick,
           (f"offenders: {bad_pick[:3]}" if bad_pick else "all picks valid"))
 
+    # --- standings blend invariants (MODEL_ELO_STANDINGS) -------------------
+    rows = data.get("matches") or []
+    blends = [m for m in rows if m.get("method") == "MODEL_ELO_STANDINGS"]
+    bad_blend = []
+    for m in blends:
+        mod = m.get("model") or {}
+        w1 = mod.get("standings_weight_team1") or 0.0
+        w2 = mod.get("standings_weight_team2") or 0.0
+        # weight must stay inside the documented [0, 0.6] band
+        if not (0.0 <= w1 <= 0.6 and 0.0 <= w2 <= 0.6):
+            bad_blend.append(f"{m.get('id')} weights {w1}/{w2}")
+        # a blend must actually use a standings record on at least one side
+        if not (mod.get("standings_team1") or mod.get("standings_team2")):
+            bad_blend.append(f"{m.get('id')} no standings record")
+        # a blend must be flagged so it is auditable from the Flagged page
+        if "STANDINGS_BLEND_APPLIED" not in (m.get("flags") or []):
+            bad_blend.append(f"{m.get('id')} missing flag")
+        # confidence must never exceed Medium for a standings-based row
+        if m.get("confidence") not in ("Low", "Medium"):
+            bad_blend.append(f"{m.get('id')} confidence {m.get('confidence')}")
+    check("standings blend invariants hold", not bad_blend,
+          (f"offenders: {bad_blend[:3]}" if bad_blend else f"{len(blends)} blend row(s) ok"))
+
+    # a standings-sourced row must link the Leaguepedia Standings table
+    no_st_src = [m.get("id") for m in rows
+                 if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS")
+                 and not any("Standings" in str(s.get("name") or "") for s in (m.get("sources") or []))]
+    check("standings rows link the Standings table", not no_st_src,
+          (f"offenders: {no_st_src[:3]}" if no_st_src else "all standings rows linked"))
+
 
 def main() -> int:
     for fn in (test_dedup_key_ignores_team_order_and_time,
