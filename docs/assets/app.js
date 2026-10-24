@@ -242,6 +242,22 @@
     </tr>`).join("");
   }
 
+  // One source of truth for "how was each fixture priced" (used by the summary and the
+  // unresolved page so the two can never disagree again).
+  function pricingMix(d) {
+    const rows = d.matches || [];
+    const n = (f) => rows.filter(f).length;
+    const mix = {
+      total: rows.length,
+      market: n((m) => !!m.market),
+      elo: n((m) => m.method === "MODEL_ELO" || m.method === "MODEL_ELO_THIN"),
+      standings: n((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS"),
+      prior: n((m) => m.method === "MODEL_LEAGUE_PRIOR"),
+      unresolved: n((m) => m.method === "UNRESOLVED"),
+    };
+    return mix;
+  }
+
   function renderIndex(d) {
     const c = d.counts || {};
     const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
@@ -291,9 +307,19 @@
     }
 
     const cov = d.coverage || {};
+<<<<<<< HEAD
     const mx = methodMix(d);
     const covText = $("#coverage-text");
     if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mx.market}</b> from external betting lines, <b>${mx.elo}</b> from our chronological Elo model, <b>${mx.standings}</b> from split standings, <b>${mx.prior}</b> from competition priors, and <b>${mx.unresolved}</b> explicit 50/50 placeholders. See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+=======
+    // Count the pricing mix from the rows themselves. The coverage fields are a
+    // summary written by the generator and mixing them with method counts produced a
+    // breakdown that did not add up to the fixture total (e.g. 9 + 41 + 55 = 105 of 160).
+    const mix = pricingMix(d);
+    const stCount = mix.standings;
+    const covText = $("#coverage-text");
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+>>>>>>> origin/main
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -542,12 +568,23 @@
     if (lbox) lbox.innerHTML = lim;
     const mix = $("#resolution-mix");
     if (mix) {
+<<<<<<< HEAD
       const mix_ = methodMix(d);
       mix.innerHTML = `<b>${mix_.fixtures}</b> scheduled fixtures published · `
         + `<b>${mix_.market}</b> priced by external betting lines · `
         + `<b>${mix_.elo}</b> by our Elo model · `
         + `<b>${mix_.standings}</b> by split standings · <b>${mix_.prior}</b> by a competition prior · `
         + `<b>${mix_.unresolved}</b> explicit 50/50 placeholders. `
+=======
+      const cov = d.coverage || {};
+      const counts = pricingMix(d);
+      mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
+        + `<b>${counts.market}</b> priced by external betting lines · `
+        + `<b>${counts.elo}</b> by our Elo model · `
+        + `<b>${counts.standings}</b> by split standings · `
+        + `<b>${counts.prior}</b> by a competition prior · `
+        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}). `
+>>>>>>> origin/main
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }
     const psum = $("#probe-summary");
