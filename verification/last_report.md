@@ -93,7 +93,7 @@ _2026-10-24T17:22:22.382559+00:00_
 - REQ5: Every match without a market line still gets a pick + documented method -> PASS
 - REQ6: Separate unresolved section, with limitations, linked from the exec summary -> PASS
 - REQ7: Executive summary links in-site to the updated picks list -> PASS
-- REQ8: Every row links its source; non-official or generic evidence is disclosed and flagged -> PASS
+- REQ8: Every row links its source; non-official or generic evidence is disclosed and flagged -> FAIL
 - REQ9: Mobile-friendly: responsive viewport + responsive CSS + readable cards -> PASS
 - REQ10: Automatic refresh every 4-8 hours, no manual input -> PASS
 - REQ11: Site integrity: no broken internal links, root entry point works -> PASS
