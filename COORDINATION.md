@@ -832,4 +832,3 @@ PR/merge record — completed 2026-10-24:
 | Pages status | **built** — live |
 | Live site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ (serving the merged payload: 169 fixtures, 169 resolved, 0 unresolved; live dashboard render confirmed) |
 
-| Live site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
