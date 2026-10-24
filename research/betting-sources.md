@@ -365,7 +365,7 @@ links and 14 sources recorded as not usable, each with the observed status and d
 |---|---|---|
 | **Pinnacle guest JSON** (`sports/12/leagues`) | The only LoL league in the response was **“League of Legends – World Championship”** with `matchupCount: 10`; no national or tier-3 league appeared. | Confirms the production filter is not dropping tier-3 leagues; Pinnacle simply does not price them. |
 | **Pinnacle matchup board** | 8 open World Championship fixtures were readable; the pipeline published 8 two-way prices from it. | Unchanged production input. |
-| **Bovada coupon JSON** (bare endpoint, browser vantage) | Returned the **World Championship ’26 (8 events)** and **EMEA Masters Summer (1 event)** series moneylines. The same endpoint with `preMatchOnly=true` (and with `marketFilterId=def`) returned `{}`. | See 13.2 — production was silently discarding every event it fetched. |
+| **Bovada coupon JSON** (bare endpoint, browser vantage) | Returned the **World Championship ’26 (8 events)** and **EMEA Masters Summer (1 event)** series moneylines. The same endpoint with `preMatchOnly=true` (and with `marketFilterId=def`) returned `{}`. From the CI runner the *same* bare endpoint returned **250,013 bytes** in the 17:14 probe, while `fetch_bovada()` in the 17:22 pipeline still reported “no event groups”. | See 13.2 — production was silently discarding every event it fetched; the shape normaliser now handles a single group object, a group list and a bare event list, and the `Origin` header was removed. |
 | **Bovada market shape** | The *series* moneyline is labelled `description = "Moneyline"` with `period.description = "Game"`; child boards are `Map 1`, `Map 2`, … | The old filter rejected any period containing “game”, i.e. the whole series market. Fixed to reject only `Map N`/`Game N`. |
 | **Unibet (Kambi CDN)** | The Kambi `listView` feed answered and the run read 8 two-way prices; the Unibet HTML page still returns 503 to CI. | Feed stays in production; the page remains a human reference only. |
 | **Polymarket Gamma** | `tag_slug=league-of-legends` returned **neg-risk futures groups** (e.g. “Worlds 2026 Winning Region”) marked `restricted: true`, not per-match moneylines. Per-match markets have to be matched by slug/team pair. | No change to matching; do **not** read a futures group as a match price. |
@@ -382,6 +382,13 @@ fetched successfully (the published `sources_status` entry said `no_data`, 0 pri
 Fix: reject only periods that name a **child board** (`Map 1`, `Game 2`, …) and accept the match-level “Game”
 period. Verified against the saved coupon snapshot (`data/diag/bovada_prematch.json`): the parser now returns
 **9 records** (8 Worlds + 1 EMEA Masters) with two-way de-vigged probabilities, where it previously returned 0.
+
+A second, independent bug surfaced in the same run: the CI probe received **250 KB of valid JSON** from the bare
+coupon endpoint while `fetch_bovada()` reported “no event groups”. The normaliser only accepted a list of groups
+and a bare event list, not a single `{path, events}` object (and it dropped `path`); the request also sent an
+`Origin` header that the endpoint answers with an empty body. Both are fixed and shape-tested locally. Until a live
+run publishes Bovada `ok`, the site records it as `error`/`no_data` rather than claiming a price — exactly the
+behaviour the ladder is meant to have.
 The 2026-10-24 live run is the acceptance test (`sources_status` should show Bovada `ok`, and the affected
 Worlds rows should move from `MODEL_ELO*` to `MARKET_*`).
 

@@ -760,3 +760,16 @@ match-level "Game" period. Verified on the saved snapshot `data/diag/bovada_prem
 (8 Worlds + 1 EMEA Masters Summer) where the old code returned 0. Acceptance = the next live run should publish
 Bovada `ok` with a non-zero count and move those rows to `MARKET_*`. The ladder entry now states the browser-vs-CI
 difference (`{}` from CI's 2026-10-23 probe) instead of claiming a live price.
+
+### Live run 2026-10-24T17:22Z — pipeline, verifier and publish all green (`arena/26d1e778`)
+
+| Item | Result / evidence |
+|---|---|
+| Branch run | **success** `40115157991` (`3c48a42`), 7m54s, all 8 steps including "Commit outputs for review" |
+| Payload | `generated_at 2026-10-24T17:22:21Z`, `schema_version 4`, **159 fixtures / 159 resolved (100%) / 0 unresolved / 64 Low confidence**, 8 market rows, 151 model rows (93 `MODEL_ELO` + 58 `MODEL_ELO_THIN`), 9 cancelled fixtures excluded, 12 per-league limitation rows |
+| Source ladder | `source_research`: 27 sources — 4 `probability_input`, 1 `model_input`, 8 `context`, 14 `unavailable`; probe block carries **27** candidates checked at 17:14:46Z |
+| Standings count fix | published note now says **“2880 standings rows across 209 competitions”** (was “across 0”) |
+| Verifier (local, fresh payload) | **PASS · 42 pass · 0 fail · 0 warn · 1 skip**; D22 and D23 PASS; jsdom 7-page DOM contract PASS |
+| Publish hardening | the merge-based retry succeeded (the previous run failed in `git rebase --abort` and lost its payload — fixed in `9f6641c`) |
+| Fetch hardening | Leaguepedia requests capped at 25 s / 2 retries with a 600 s export budget, previous snapshot preferred when a fresh export is <85% of its size, `data/cache` cached between runs (`3c48a42`). The 16:35 run had hung in this step for 40+ minutes; the next run completed the whole pipeline in under 8 minutes |
+| Open item | `fetch_bovada()` reported `error` (“HTTP 200, no event groups”) while the same run's probe received **250,013 bytes** from the bare coupon endpoint. Fixed by normalising a single group object / group list / bare event list, keeping the competition path, and removing the `Origin` header (the endpoint returns an empty body with it). Local shape tests: group list → 9 records, single group → 8, bare event list → 8, empty → explicit error. Acceptance = the next live run publishes Bovada `ok` with a non-zero count. |

@@ -145,12 +145,17 @@ def probe(category: str, name: str, url: str, kind: str, headers: dict | None = 
                 lol_hits = titles.lower().count("league of legends") + titles.lower().count("lol ")
         elif isinstance(data, list):
             detail["item_count"] = len(data)
+            groups = [x for x in data if isinstance(x, dict) and isinstance(x.get("events"), list)]
+            if groups:
+                detail["group_count"] = len(groups)
+                detail["event_count"] = sum(len(g.get("events") or []) for g in groups)
             blob = json.dumps(data[:60]).lower()
             lol_hits = blob.count("league of legends") + blob.count("lol")
             questions = [str(s.get("question", "")) for s in data[:60] if isinstance(s, dict)]
             if questions:
                 detail["vs_style_questions"] = sum(1 for q in questions if " vs " in q.lower())
                 detail["question_sample"] = questions[:3]
+        empty_json = (isinstance(data, (dict, list)) and len(data) == 0)
     except Exception:
         pass
     if status == 200 and not is_json:
@@ -162,9 +167,16 @@ def probe(category: str, name: str, url: str, kind: str, headers: dict | None = 
             detail["title"] = t
     signals = _signals(text)
     if is_json and status == 200:
-        verdict = f"reachable structured JSON ({len(text)} bytes)"
-        if lol_hits is not None:
-            verdict += f"; LoL mentions: {lol_hits}"
+        if "empty_json" in locals() and empty_json:
+            verdict = (f"reachable but returned an empty JSON body "
+                       f"({len(text)} bytes) — no market content")
+        else:
+            verdict = f"reachable structured JSON ({len(text)} bytes)"
+            if detail.get("group_count"):
+                verdict += (f"; {detail['group_count']} group(s), "
+                            f"{detail.get('event_count', 0)} event(s)")
+            if lol_hits is not None:
+                verdict += f"; LoL mentions: {lol_hits}"
     elif status == 200:
         verdict = "reachable HTML only — no structured per-match prices parsed"
         if lol_hits is not None:
