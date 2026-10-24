@@ -411,3 +411,30 @@ and record only what was actually observed. Every statement below is a live obse
 - **F13.3** Polymarket's resolution text for `lol-tes-al-2026-10-24` says 7:00 PM ET while its own
   countdown and the Hotspawn/Leaguepedia schedule say 17:00 UTC. The published lock time follows
   Hotspawn (source of truth for pick'em locks); the discrepancy is already flagged per row.
+
+### 13.6 What the CI probe actually observed (GitHub Actions, 2026-10-24T16:27:59Z)
+
+`scripts/probe_sources.py` was extended with seven candidates and run inside
+`Pipeline test (branch verification)` run
+[40111023039](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111023039)
+(step "Probe candidate odds sources", read-only, never feeds picks). Full JSON: `data/diag/source_probe.json`.
+Twenty candidates probed; the seven added in this pass:
+
+| Candidate | HTTP | Structured JSON? | Verdict recorded |
+|---|---|---|---|
+| Betmonitor — Prime League 2nd Division comparison | **200** | no | reachable HTML only — no per-match prices in the response |
+| Betmonitor — esports hub | **200** | no | reachable HTML only |
+| EsportBet — LoL odds board | **200** | no | reachable HTML only |
+| EsportsBets — LoL guide | **200** | no | reachable HTML only |
+| bo3.gg — LoL matches | **200** | no | reachable HTML only (community results) |
+| gol.gg — Games of Legends | **200** | no | reachable HTML only (community stats) |
+| Riot LoL Esports schedule API | **403** | n/a | needs the Riot `x-api-key`; not configured, not used |
+
+The 13 pre-existing candidates were unchanged in character: Kalshi and Manifold answer JSON but carry no per-match
+LoL market for our leagues; eGamersWorld 403, GG.Bet 403, Thunderpick 403, Rivalry 503, Unibet 503, Betway 404,
+BetExplorer 404, Smarkets 404; OddsPortal / Midnite / OddsPapi return HTML shells only.
+
+**Conclusion for this pass (unchanged from §12, now re-measured):** no additional source can supply a
+machine-readable per-match price for the 160 non-featured fixtures without either (a) a paid/registered API key
+(OddsPapi), or (b) a headless browser to read an odds-comparison page (Betmonitor). Neither is available in a
+6-hourly, no-manual-input Actions job, so those fixtures keep our own line and the site says so on every row.
