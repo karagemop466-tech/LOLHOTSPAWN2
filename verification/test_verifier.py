@@ -204,7 +204,9 @@ def main() -> int:
                 with open(os.path.join(td, name), "w") as fh:
                     fh.write(html)
             for name, text in (extra_files or {}).items():
-                with open(os.path.join(td, name), "w") as fh:
+                target = os.path.join(td, name)
+                os.makedirs(os.path.dirname(target) or td, exist_ok=True)
+                with open(target, "w") as fh:
                     fh.write(text)
             rep = vs.Report()
             vs.verify_structure(rep, td)
@@ -265,6 +267,17 @@ def main() -> int:
     c = structure_checks(css_good, {"index.html": good_page, "methodology.html": stale_meth},
                          {"assets/app.js": good_app})
     results.append(assert_status(c, "S14", vs.FAIL, "hard-coded sample count fails S14"))
+
+    # D24: a committed conflict marker must fail the audit (it shipped a broken
+    # docs/data/picks.json once, which broke D1 with a JSONDecodeError).
+    c = structure_checks(css_good, {"index.html": good_page, "methodology.html": good_meth},
+                         {"assets/app.js": good_app})
+    results.append(assert_status(c, "D24", vs.PASS, "clean tree passes D24"))
+    c = structure_checks(css_good, {"index.html": good_page, "methodology.html": good_meth},
+                         {"assets/app.js": good_app,
+                          "data/picks.json": ("<<<<<<< HEAD\n{}\n=======\n{\"a\": 1}\n"
+                                             ">>>>>>> other\n")})
+    results.append(assert_status(c, "D24", vs.FAIL, "conflict markers fail D24"))
 
     # helper parsing
     helper_ok = (vs.html_class_names('<div class="a b">') == {"a", "b"}

@@ -20,6 +20,7 @@ Checks the published data and site against the project requirements:
   D20 reserved (unique source_key per fixture: requested by arena/0fb2d0c7 as R16)
   D21 every upcoming lobby fixture is priced; no cancelled/excluded fixture is priced
   D22 external-source probe rows link an https page and never carry a probability
+  D24 no published file carries git conflict markers (an unresolved merge must never ship)
   S1  every page exists and has a mobile viewport meta
   S2  every page has the shared navigation with links to all site sections
   S3  executive summary (docs/index.html) links in-site to the picks list and the
@@ -1129,6 +1130,56 @@ def verify_structure(rep: Report, docs_dir: str) -> None:
     rep.add("S14", "methodology sample counts are read live from the payload, never hard-coded",
             PASS if not meth_problems else FAIL,
             "4 live count slots wired to app.js" if not meth_problems else "; ".join(meth_problems))
+
+    # D24: never publish a file that still carries conflict markers.
+    marker_files = conflict_marker_files(os.path.dirname(os.path.abspath(docs_dir)),
+                                        os.path.abspath(docs_dir))
+    rep.add("D24", "no published file carries git conflict markers",
+            PASS if not marker_files else FAIL,
+            "no <<<<<<< / >>>>>>> markers in docs/, data/, verification/, scripts/, research/"
+            if not marker_files else f"{len(marker_files)} file(s) still conflicted: "
+                                     + ", ".join(marker_files[:6]))
+
+
+CONFLICT_MARKER_RE = re.compile(r"^(?:<<<<<<< |>>>>>>> )", re.MULTILINE)
+
+
+def conflict_marker_files(*roots: str) -> list[str]:
+    """Return tracked-looking text files that still contain git conflict markers.
+
+    A merge resolved by committing the conflict markers previously shipped a broken
+    docs/data/picks.json (JSONDecodeError) and a doubled data/diag/pipeline.log; this
+    rule makes that state impossible to publish.
+    """
+    watched = ["docs", "data", "verification", "scripts", "research"]
+    text_ext = {".html", ".js", ".css", ".json", ".md", ".py", ".cjs", ".log", ".yml", ".yaml", ".txt"}
+    bad: list[str] = []
+    seen: set[str] = set()
+    candidates: list[str] = []
+    for root in roots:
+        candidates.append(root)                       # the site directory itself (docs/)
+        candidates += [os.path.join(root, top) for top in watched]
+    for base in candidates:
+        if not os.path.isdir(base):
+            continue
+        for dirpath, _dirnames, filenames in os.walk(base):
+            for fn in filenames:
+                if os.path.splitext(fn)[1].lower() not in text_ext:
+                    continue
+                path = os.path.join(dirpath, fn)
+                try:
+                    if os.path.getsize(path) > 4 * 1024 * 1024:
+                        continue
+                    with open(path, encoding="utf-8", errors="replace") as fh:
+                        body = fh.read()
+                except OSError:
+                    continue
+                if CONFLICT_MARKER_RE.search(body):
+                    rel = os.path.relpath(path, roots[0]).replace(os.sep, "/")
+                    if rel not in seen:
+                        seen.add(rel)
+                        bad.append(rel)
+    return sorted(bad)
 
 
 # --------------------------------------------------------------------------- workflow

@@ -1177,3 +1177,19 @@ from the already-published payload, whose provenance is recorded in the T25 bloc
 `research/betting-sources.md` §14. The reconciliation rule (D23/S13) is exactly what stopped the mismatch, and
 `coverage.counts_by_method` remains the single source of truth for the coverage sentence. Hotspawn is still never a
 probability input.
+
+### T26b — a merge shipped conflict markers; added D24
+While rebasing/merging the branch, two generated files were committed **with git conflict markers** by an
+unattended run: `docs/data/picks.json` (2 marker lines) and `data/diag/pipeline.log`. The former made the payload
+unparsable (`D1 JSONDecodeError`), i.e. the site would have served a broken picks file.
+
+- `docs/data/picks.json` restored from a valid generated run (`origin/main`, `2026-10-24T16:58:27Z`, 160 fixtures);
+  `data/diag/pipeline.log` rebuilt from its two halves, keeping the newer run (16:54:44Z) intact.
+- `scripts/verify_site.py`: new **D24** — no file under `docs/`, `data/`, `verification/`, `scripts/`,
+  `research/` may contain `<<<<<<<` / `>>>>>>>` markers; `conflict_marker_files()` is unit-tested.
+- `verification/test_verifier.py`: +2 self-tests → **54/54**; `README.md` updated.
+
+### Final gate run on this branch (payload `2026-10-24T16:58:27Z`, 160 fixtures)
+`verify_site.py` **44 PASS · 0 FAIL · 1 WARN · 0 SKIP** (WARN = documented D18 stale Leaguepedia snapshot);
+`test_verifier.py` 54/54; `audit/test_model.py` 23/23; `test_entity_and_books.py` 13/13;
+`test_standings_model.py` ALL PASS; `check_dom_contract.py` PASS; `render_check.cjs` PASS on all 7 pages.

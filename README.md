@@ -55,7 +55,7 @@ its verified sources, and any upstream irregularity is surfaced on *Flagged for 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-python3 verification/test_verifier.py           # verifier rule self-tests (52: schema, probe, S11–S14)
+python3 verification/test_verifier.py           # verifier rule self-tests (54: schema, probe, S11–S14, D24)
 python3 verification/test_entity_and_books.py   # 13/13 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11–S14)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
@@ -66,7 +66,9 @@ check that catches an unstyled or clipped header), **S12** (all pages share one 
 freshness slot and unique ids), **S13** (the executive summary's coverage numbers are computed from
 `coverage.counts_by_method`, so the buckets must add up to the fixture count) and **S14** (the methodology's
 sample counts are filled at runtime and never hard-coded). **D23** asserts the same partition on the payload
-itself: market + model + unresolved rows equal the number of fixtures published. `verification/render_check.cjs` loads each page in jsdom with the committed
+itself: market + model + unresolved rows equal the number of fixtures published, and **D24** fails if any
+published file still carries git conflict markers (an unresolved merge once shipped a broken
+`docs/data/picks.json`). `verification/render_check.cjs` loads each page in jsdom with the committed
 payload and asserts that the picks, tables and counts actually render.
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.
