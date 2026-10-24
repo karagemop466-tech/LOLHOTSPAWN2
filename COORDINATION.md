@@ -867,3 +867,18 @@ PR/merge record — completed 2026-10-24:
 7. **1xBet is US-geo-blocked** (`https://1xbet.com/en/block`, "Access denied") — its claimed tier-2/3 coverage stays unverified and unused.
 
 **Open items for review (non-blocking, published on the Flagged page):** S8 1xBet geo-block; S7 five competitions without a verified organizer page; S2 probe verdicts are observations only.
+
+### PR / merge / deploy record (`arena/26fa1cec`, 2026-10-24)
+
+| Item | Value |
+|---|---|
+| Pull request | [PR #33](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/33) — `arena/26fa1cec-lolhotspawn2` → `main` |
+| Merge | `gh pr merge 33 --merge` → **MERGED** 2026-10-24T16:30:56Z, merge commit `fb4ad13` |
+| Pre-merge branch CI | `pipeline-test.yml` run [40111740168](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111740168) — **success** (live pipeline + `verify_site.py --check-external` + all unit suites) |
+| Post-merge verification on `main` | `verify.yml` run [40111916819](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111916819) — **success**, all 8 steps (self-tests, offline + external/live-Pages verify, coverage audit, DOM contract) |
+| Post-merge production refresh | `update-picks.yml` run [40111916813](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111916813) — **success**, commit `1901334`, payload `2026-10-24T16:32:38Z`: **160 upcoming fixtures · 160 priced (100%) · 9 market · 151 model · 0 unresolved · 64 low confidence · 18 cancelled excluded · 22 probe rows** |
+| GitHub Pages | build [40112050113](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112050113) — **success**; Pages API `status: built` for `1901334` (16:33:19Z) |
+| Live site checked | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ — rendered summary shows “📌 Where the updated picks are” with **160 / 25 / 12 / 0 unresolved · 64 low confidence**, the refresh line “Updated … 160/160 listed matches priced (100%)”, and the Unresolved page renders the 22-row external-source table (Pinnacle 200, Betfair 403, BetOnline 200 HTML, 1xBet 203, Kalshi 200 no LoL, Liquipedia 200, …) |
+
+**Follow-up commit (same session):** probe verdict wording is now category-aware (results/metadata pages are no longer
+described in odds language) and the probe table labels the type as “Market”/“Results”. No data or probability behaviour changes.

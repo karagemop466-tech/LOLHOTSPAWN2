@@ -81,6 +81,7 @@ VS_RE = re.compile(r"\bvs\.?\b|\bv\b", re.I)
 
 
 def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str) -> str:
+    results_kind = kind in ("results-page", "wiki-api", "official-api")
     if status == 401 or status == 402:
         return "requires an API key / paid plan — no key is configured, so nothing is used"
     if status == 403:
@@ -92,6 +93,9 @@ def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str)
         return f"endpoint not found (HTTP {status}) — path may have moved; nothing used"
     if status in (500, 502, 503, 504) or status == 0:
         return f"not reachable from CI this run (HTTP {status or 'network error'}) — nothing used"
+    if status == 200 and results_kind:
+        return ("reachable results/metadata page (HTML or API) — not parsed, and never a probability input; "
+                "Leaguepedia remains the results source and this is a manual cross-check only")
     if status == 200 and is_json:
         if lol_hits:
             return ("reachable JSON with League of Legends references — candidate for an adapter only "

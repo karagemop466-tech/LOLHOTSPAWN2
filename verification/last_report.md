@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-24T16:30:23.134915+00:00_
-164 matches · MARKET_POLYMARKET: 0 · MODEL_ELO: 93 · UNRESOLVED: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · MODEL_ELO_THIN: 62 · MODEL_STANDINGS: 0 · MARKET_CONSENSUS: 8
+_2026-10-24T16:34:09.530989+00:00_
+164 matches · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 62 · MARKET_CONSENSUS: 8 · MODEL_ELO: 93 · MODEL_LEAGUE_PRIOR: 0 · UNRESOLVED: 0 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0 · MARKET_POLYMARKET: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 164 matches, generated_at=2026-10-24T16:30:21.800387Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 164 matches, generated_at=2026-10-24T16:30:21.800387Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 164 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -26,7 +26,7 @@ _2026-10-24T16:30:23.134915+00:00_
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=164, priced=164, missing=0, extra=0, excluded=14, leaked=0 |
 | D22 external-source probe rows are sourced and never carry a probability | PASS | 22 probed source(s), each with an https link, HTTP status and verdict |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 65 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 112/122 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (67.8h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 10 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 6 links, 6 columns on every page |
@@ -43,7 +43,6 @@ _2026-10-24T16:30:23.134915+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
-| X1 external links reachable (official-source links resolve) | WARN | 9/11 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -62,21 +61,6 @@ _2026-10-24T16:30:23.134915+00:00_
 | REQ10 | Automatic refresh every 4-8 hours, no manual input | PASS | W1, W2, D1 |
 | REQ11 | Site integrity: no broken internal links, root entry point works | PASS | S1, S6, S8 |
 | REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
-
-**D18 items:**
-- Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00
-- Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00
-- Karolinerna vs Turbo Gaming: ours=2026-10-27 18:00 lp=2026-10-24 16:30
-- FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30
-- Babos Gaming Academy vs VfB x Engines Stuttgart: ours=2026-10-29 18:00 lp=2026-10-25 16:00
-- Playwell Rød Q vs Your Saviours: ours=2026-10-30 17:00 lp=2026-10-01 17:45
-- Volda E-Sport vs Ascent Gaming: ours=2026-10-30 17:00 lp=2026-09-26 17:00
-- Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00
-- Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30
-- 2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30
-
-**X1 items:**
-- https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
