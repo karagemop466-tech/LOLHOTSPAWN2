@@ -232,6 +232,25 @@ async function main() {
   check("unresolved: per-league limitations rendered",
         udoc.querySelectorAll("#league-limitations-body tr").length === leagues.length);
 
+  // The "how this snapshot was resolved" line must agree with the payload's own per-method
+  // tally — and with the league table further down the same page. It once reported "0 by split
+  // standings" next to a table showing 55, because the method id it looked for did not exist.
+  const byMethod = (PAYLOAD.coverage || {}).counts_by_method || {};
+  const nStandings = byMethod.MODEL_ELO_STANDINGS || 0;
+  const nElo = (byMethod.MODEL_ELO || 0) + (byMethod.MODEL_ELO_THIN || 0);
+  const mixText = (udoc.querySelector("#resolution-mix") || {}).textContent || "";
+  check("unresolved: resolution mix reports the split-standings count",
+        new RegExp(`${nStandings}\\s*by split standings`).test(mixText)
+        || (mixText.includes(String(nStandings)) && mixText.includes("split standings")),
+        mixText.replace(/\s+/g, " ").slice(0, 160));
+  check("unresolved: resolution mix reports the Elo count",
+        mixText.includes(String(nElo)) && mixText.includes("Elo model"),
+        `want ${nElo}`);
+  const leagueStandings = leagues.reduce((n, l) => n + (l.standings || 0), 0);
+  check("cross-page: summary, unresolved page and league rows agree on standings",
+        nStandings === leagueStandings,
+        `coverage ${nStandings} vs league rows ${leagueStandings}`);
+
   // ---------- flagged page --------------------------------------------------
   const fpage = await render("flagged.html");
   check("flagged: no JS error", (fpage.__errors || []).length === 0, (fpage.__errors || []).join(" | "));
