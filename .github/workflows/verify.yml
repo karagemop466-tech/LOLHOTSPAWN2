@@ -65,12 +65,12 @@ jobs:
           fi
           exit "$rc"
 
-      - name: Render check (jsdom runs the real pages against the payload)
+      - name: Render checks (jsdom executes the real pages against the payload)
         run: |
           npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
-            echo "jsdom not installed; render_check will SKIP"
+            echo "jsdom not installed; render checks will SKIP"
           node verification/render_check.cjs
-
+          node verification/check_dom_render.js
 
       - name: Upload verification artifacts
         if: always()

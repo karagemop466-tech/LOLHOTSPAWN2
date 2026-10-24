@@ -52,6 +52,21 @@
       <b>Hotspawn crowd percentages are context only — never an input to any probability.</b>
     </p>
     <p class="statusline" id="hero-status">Loading the latest refresh…</p>
+    <div class="hero-actions">
+      <a class="btn primary big" href="picks.html">📋 Find every pick <span class="btn-n" id="hero-count-picks">—</span></a>
+      <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24 hours <span class="btn-n" id="hero-count-next24">—</span></a>
+      <a class="btn" href="leagues.html">🏆 By league / tier</a>
+      <a class="btn warn" href="#unresolved-section">⚠️ Unresolved <span class="btn-n" id="hero-count-unresolved">—</span></a>
+    </div>
+    <details class="hero-details">
+      <summary class="small">How each probability is produced (tap to expand)</summary>
+      <p class="small">
+        💰 <b>Market consensus</b> — de-vigged full-match two-way lines from Pinnacle, Unibet (Kambi), Bovada and Polymarket,
+        one main board per book. 🧮 <b>Own Elo model</b> — chronological, competition-tier-anchored Elo over Leaguepedia
+        results (with current-split standings blended in for thin rows). ⚠️ <b>Unresolved</b> — explicit 50/50 placeholder,
+        never an edge. Full detail: <a href="methodology.html">methodology &amp; sources</a>.
+      </p>
+    </details>
   </section>
 
   <section id="picks-here" aria-labelledby="picks-here-heading">
@@ -170,6 +185,11 @@
       explicit 50/50 placeholders, low-confidence model picks, the per-league signal limit, and the external sources we
       re-checked for those matches. The full detail is on <a href="unresolved.html">Unresolved &amp; limitations →</a></p>
     <div id="unresolved-summary"></div>
+
+    <h3 style="margin-top:18px">Every unresolved fixture in this snapshot</h3>
+    <p class="small">Listed with its own source links and the explicit 50/50 placeholder, so nothing the featured picks cannot
+      resolve is hidden behind a count. When the count is zero this says so.</p>
+    <div id="unresolved-list"><div class="loading"><span class="spinner"></span>Loading unresolved fixtures…</div></div>
 
     <h3 style="margin-top:18px">Per-league limits — which signal prices each league</h3>
     <p class="small">No external sportsbook we can reach prices these divisions, so the pick comes from recorded results and split

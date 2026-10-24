@@ -3,5 +3,7 @@ __pycache__/
 # generated caches and duplicate payloads (rebuilt by the pipeline, not versioned)
 data/cache/
 data/picks.json
+
+# jsdom install for verification/check_dom_render.js (CI installs it per run)
 node_modules/
 package-lock.json

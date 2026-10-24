@@ -13,6 +13,7 @@ from standings_and_books import (  # noqa: E402
     is_pinnacle_main_matchup,
     standings_probability,
 )
+from model import Resolver, contains, load_aliases  # noqa: E402
 from entity_resolution import (  # noqa: E402
     build_page_rosters,
     build_tournament_page_map,
@@ -126,6 +127,42 @@ def main() -> int:
     )
     check("standings model prices 2-0 vs 0-2 > 0.55", p_reh is not None and p_reh > 0.55 and meta is not None)
     check("0-0 standings entries rejected", p_zero is None)
+
+    # 4. Inari Esports -> Inari Esports (British Team) (never 4-char SEA tag NARI)
+    aliases = load_aliases(os.path.join(ROOT, "data", "aliases.json"))
+    res_inari = Resolver(["NARI", "Inari Esports (British Team)", "Bulldog Esports"], {})
+    check("short 4-char tag NARI does not substring-match Inari Esports",
+          not contains("Inari Esports", "NARI"))
+    check("Inari Esports stripped-parenthetical beats short substring NARI",
+          res_inari.resolve("Inari Esports") == "Inari Esports (British Team)")
+    check("tournament_pages maps 4 Nations 2026 Halloween Heist & Komplettligaen Playoffs",
+          aliases["tournament_pages"].get("4 Nations 2026 Halloween Heist") == "4 Nations/2026 Season/Halloween Heist"
+          and aliases["tournament_pages"].get("Komplettligaen 2026 Autumn Playoffs") == "Komplettligaen/2026 Season/Autumn Playoffs")
+
+    # 5. Bovada series-moneyline period handling (regression: period "Game"
+    # with main=true is the full-series market; numbered periods are not).
+    import json as _json
+
+    from fetch_markets import _bovada_groups, _bovada_series_moneyline, _parse_bovada_groups
+
+    def _mk(period_desc, main=True):
+        return {"description": "Moneyline",
+                "period": {"description": period_desc, "main": main},
+                "outcomes": [{"description": "A"}, {"description": "B"}]}
+
+    check("bovada Game/main moneyline accepted as series", _bovada_series_moneyline(_mk("Game")))
+    check("bovada Game 1 moneyline rejected", not _bovada_series_moneyline(_mk("Game 1")))
+    check("bovada Map 1 moneyline rejected", not _bovada_series_moneyline(_mk("Map 1")))
+    snap = os.path.join(ROOT, "data", "diag", "bovada_prematch.json")
+    if os.path.exists(snap):
+        with open(snap, encoding="utf-8") as fh:
+            recs, _comps, seen = _parse_bovada_groups(_bovada_groups(_json.load(fh)))
+        check("bovada coupon snapshot replays to records (9 events)",
+              seen == 9 and len(recs) == 9
+              and all(abs(r["prob_a"] + r["prob_b"] - 1) < 0.005 for r in recs)
+              and all((r.get("raw") or {}).get("market_type") == "series" for r in recs))
+    else:
+        check("bovada coupon snapshot replays to records (9 events)", False)
 
     passed = sum(1 for _, ok in checks if ok)
     print(f"\n{passed}/{len(checks)} entity & sportsbook unit tests passed")

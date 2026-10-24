@@ -733,6 +733,46 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
             diff[:12])
 
 
+CONFLICT_SCAN_DIRS = ("docs", "data", "verification", "research", "scripts", ".github")
+CONFLICT_SCAN_SUFFIX = (".json", ".html", ".css", ".js", ".cjs", ".py", ".yml", ".yaml", ".md", ".log", ".txt")
+
+
+def verify_no_conflict_markers(rep: Report) -> None:
+    """Fail if a committed file still carries git merge-conflict markers.
+
+    A conflicted generated file (docs/data/picks.json) was once merged into main and
+    made the whole dashboard unreadable while the diff looked harmless. This check
+    scans the files the site and pipeline consume, so a conflicted artifact can never
+    ship again: markers in a payload are a hard failure, not a cosmetic issue.
+    """
+    bad: list[str] = []
+    for base in CONFLICT_SCAN_DIRS:
+        root_dir = os.path.join(ROOT, base)
+        if not os.path.isdir(root_dir):
+            continue
+        for dirpath, dirnames, filenames in os.walk(root_dir):
+            dirnames[:] = [d for d in dirnames if d not in
+                           {"node_modules", "__pycache__", ".git", ".venv", "build", "dist"}]
+            for name in filenames:
+                if not name.endswith(CONFLICT_SCAN_SUFFIX):
+                    continue
+                path = os.path.join(dirpath, name)
+                try:
+                    with open(path, encoding="utf-8", errors="replace") as fh:
+                        for lineno, line in enumerate(fh, 1):
+                            if line.startswith(("<<<<<<< ", ">>>>>>> ")) or \
+                                    line.rstrip() == "=======":
+                                bad.append(f"{os.path.relpath(path, ROOT)}:{lineno}")
+                                break
+                except OSError:
+                    continue
+    rep.add("D23", "no committed artifact contains git conflict markers",
+            PASS if not bad else FAIL,
+            "no conflict markers in docs/, data/, verification/, research/, scripts/, .github/"
+            if not bad else f"{len(bad)} file(s) still contain conflict markers",
+            bad[:12])
+
+
 def verify_data_files(rep: Report) -> None:
     present = [p for p in DATA_PATHS if os.path.exists(p)]
     if not present:
@@ -846,6 +886,75 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
     # S10 deliberately uses its own variable: it used to overwrite S3's `nav_bad`,
     # which silently turned S3 ("every page links the shared picks navigation") green.
+
+    # S11: the executive summary must carry its own "separate unresolved section"
+    # (fixture list + per-league limitation table) and put picks ahead of it.
+    idx_path = os.path.join(DOCS, "index.html")
+    s11_detail = "docs/index.html missing"
+    s11_ok = False
+    if os.path.exists(idx_path):
+        idx_html = open(idx_path, encoding="utf-8").read()
+        need_ids = ["starting-soon", "quick-picks-body", "unresolved-section",
+                    "unresolved-list", "exec-league-limits-body"]
+        missing_ids = [i for i in need_ids if f'id="{i}"' not in idx_html]
+        pos_picks = idx_html.find('id="quick-picks-body"')
+        pos_unres = idx_html.find('id="unresolved-section"')
+        ordered = pos_picks >= 0 and pos_unres >= 0 and pos_picks < pos_unres
+        in_site_links = all(f'href="{h}"' in idx_html for h in
+                            ("picks.html", "picks.html?filter=next24", "unresolved.html", "leagues.html"))
+        s11_ok = not missing_ids and ordered and in_site_links
+        s11_detail = (f"unresolved section ids {'present' if not missing_ids else 'missing ' + str(missing_ids)}; "
+                      f"picks before unresolved section: {'yes' if ordered else 'NO'}; "
+                      f"in-site pick links: {'yes' if in_site_links else 'NO'}")
+    rep.add("S13", "executive summary has a separate unresolved section (every unresolved "
+                   "fixture listed + per-league limits) with the picks listed first",
+            PASS if s11_ok else FAIL, s11_detail)
+
+    # S12: every CSS class used by a page must actually have a rule. A shared class
+    # name collision (`class="wrap bar"` reused the 12px probability bar) silently
+    # clipped the header on the summary and unresolved pages.
+    defined = set(re.findall(r"\.([A-Za-z][A-Za-z0-9_-]*)", css_text))
+    used_classes: dict[str, set[str]] = {}
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep) or not pg.endswith(".html"):
+            continue
+        with open(pg, encoding="utf-8") as fh:
+            raw = fh.read()
+        for m in re.finditer(r'class="([^"]+)"', raw):
+            for cls in m.group(1).split():
+                used_classes.setdefault(cls, set()).add(os.path.basename(pg))
+    unstyled = {c: sorted(v) for c, v in used_classes.items()
+                if c not in defined and c != "table"}
+        # (class coverage itself is check S11 above; this one only guards the header markup
+    #  that used to collide with the 12px probability-bar rule)
+    hdr_bad = []
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep) or not pg.endswith(".html"):
+            continue
+        with open(pg, encoding="utf-8") as fh:
+            raw = fh.read()
+        if 'class="wrap bar"' in raw:
+            hdr_bad.append(os.path.basename(pg))
+    rep.add("S14", "no page reuses the 12px .bar probability rule as its header",
+            PASS if not hdr_bad else FAIL,
+            "headers use .header-inner on every page" if not hdr_bad
+            else f"header collision on {', '.join(hdr_bad)}")
+
+    # S13: the jsdom render harness must exist and be run by CI, so a page that
+    # fails to render cannot pass verification.
+    harness = os.path.join(ROOT, "verification", "check_dom_render.js")
+    wf_dir = os.path.join(ROOT, ".github", "workflows")
+    wired = []
+    if os.path.isdir(wf_dir):
+        for f in sorted(os.listdir(wf_dir)):
+            if f.endswith((".yml", ".yaml")):
+                text = open(os.path.join(wf_dir, f), encoding="utf-8").read()
+                if "check_dom_render.js" in text:
+                    wired.append(f)
+    rep.add("S15", "jsdom render harness exists and runs in CI",
+            PASS if os.path.exists(harness) and wired else FAIL,
+            f"harness {'present' if os.path.exists(harness) else 'MISSING'}; "
+            f"wired into {', '.join(wired) if wired else 'no workflow'}")
 
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
@@ -1260,6 +1369,7 @@ def main() -> int:
     rows = verify_data(rep, payload, err or "docs/data/picks.json", args.max_age_hours)
     verify_schedule(rep, rows, args.leaguepedia_schedule)
     verify_data_files(rep)
+    verify_no_conflict_markers(rep)
     verify_site(rep, rows)
     verify_workflows(rep)
     if args.check_external:

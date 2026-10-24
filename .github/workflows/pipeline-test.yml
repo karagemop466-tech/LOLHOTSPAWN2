@@ -33,6 +33,7 @@ jobs:
 
       - name: Run the live pipeline
         run: |
+          set -o pipefail  # a generator failure must fail the step, not be masked by tee
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
 
@@ -52,6 +53,18 @@ jobs:
           print("\nModel:", json.dumps(d["model"], indent=2))
           print("\nSources:", json.dumps(d["sources_status"], indent=2))
           PY
+
+      - uses: actions/setup-node@v4
+        if: always()
+        with:
+          node-version: "20"
+
+      - name: Render checks (jsdom renders every page from this run's payload)
+        if: always()
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund jsdom
+          node verification/render_check.cjs
+          node verification/check_dom_render.js
 
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
@@ -73,17 +86,6 @@ jobs:
             echo "::error title=Cited source page missing::a tournament page cited by a pick row does not exist on Leaguepedia"
             exit "$src_rc"
           fi
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Render check (jsdom runs the real pages and the theme toggle against the payload)
-        if: always()
-        run: |
-          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
-            echo "jsdom not installed; render_check will SKIP"
-          node verification/render_check.cjs
 
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()

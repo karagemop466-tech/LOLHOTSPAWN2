@@ -1,31 +1,31 @@
 {
- "verified_at": "2026-10-24T17:06:44.301619+00:00",
+ "verified_at": "2026-10-24T17:09:35.236370+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 41,
+  "PASS": 45,
   "FAIL": 0,
   "WARN": 1,
   "SKIP": 0
  },
  "data_matches": 159,
  "methods": {
-  "MODEL_ELO_THIN": 2,
-  "MARKET_CONSENSUS": 7,
-  "MODEL_ELO": 94,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MARKET_BOOKS": 0,
-  "UNRESOLVED": 0,
-  "MARKET_POLYMARKET": 0,
-  "MODEL_STANDINGS": 0,
   "MODEL_ELO_STANDINGS": 55,
-  "MARKET_SINGLE": 1
+  "MODEL_ELO_THIN": 2,
+  "MARKET_BOOKS": 0,
+  "MARKET_POLYMARKET": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO": 94,
+  "UNRESOLVED": 0,
+  "MODEL_STANDINGS": 0,
+  "MARKET_SINGLE": 1,
+  "MARKET_CONSENSUS": 7
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "159 matches, generated_at=2026-10-24T17:06:41.567265Z (0.0h old)"
+   "detail": "159 matches, generated_at=2026-10-24T17:09:15.157724Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -145,7 +145,7 @@
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "26 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "31 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
@@ -157,13 +157,19 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:05:12.567985+00:00 (0.0h old)."
+   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:07:40.260440+00:00 (0.0h old)."
   },
   {
    "id": "D14",
    "title": "single published data file (site copy)",
    "status": "PASS",
    "detail": "only docs/data/picks.json exists — site copy is the single source"
+  },
+  {
+   "id": "D23",
+   "title": "no committed artifact contains git conflict markers",
+   "status": "PASS",
+   "detail": "no conflict markers in docs/, data/, verification/, research/, scripts/, .github/"
   },
   {
    "id": "S1",
@@ -176,6 +182,24 @@
    "title": "phone bottom nav has one grid column per link on every page",
    "status": "PASS",
    "detail": "6 links, 6 columns on every page"
+  },
+  {
+   "id": "S13",
+   "title": "executive summary has a separate unresolved section (every unresolved fixture listed + per-league limits) with the picks listed first",
+   "status": "PASS",
+   "detail": "unresolved section ids present; picks before unresolved section: yes; in-site pick links: yes"
+  },
+  {
+   "id": "S14",
+   "title": "no page reuses the 12px .bar probability rule as its header",
+   "status": "PASS",
+   "detail": "headers use .header-inner on every page"
+  },
+  {
+   "id": "S15",
+   "title": "jsdom render harness exists and runs in CI",
+   "status": "PASS",
+   "detail": "harness present; wired into pipeline-test.yml, verify.yml"
   },
   {
    "id": "S2",
@@ -235,7 +259,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "15 external link(s) collected for manual review; 0 plain-http"
+   "detail": "18 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "S11",
@@ -271,9 +295,10 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "13/15 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "detail": "15/18 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
    "items": [
-    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403"
+    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
+    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
    ]
   },
   {
