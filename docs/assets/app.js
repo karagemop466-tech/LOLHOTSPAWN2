@@ -317,6 +317,25 @@
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
+    // Measured, out-of-sample track record of the model that prices the rows no
+    // bookmaker covers. Published as-is (including weak bands) so the reader can
+    // judge a tier-3 pick instead of taking a percentage on faith.
+    const track = $("#model-track-record");
+    const bt = (d.model && d.model.backtest) || null;
+    if (track) {
+      const bands = (bt && bt.by_band) || [];
+      const worst = bands.slice().sort((a, b) => b.log_loss - a.log_loss)[0];
+      track.innerHTML = bt
+        ? `<b>Model track record (out-of-sample, last ${bt.window_days} days):</b> ${bt.n} completed matches,
+           log-loss <b>${bt.log_loss}</b> vs 0.6931 coin-flip, Brier <b>${bt.brier}</b>, accuracy
+           <b>${(bt.accuracy * 100).toFixed(1)}%</b>.
+           ${worst ? `Weakest band: ${esc(worst.band)} — log-loss ${worst.log_loss} on ${worst.n} matches.` : ""}
+           ${bt.calibration && bt.calibration.length ? `Calibration is published per confidence bucket.` : ""}
+           <a href="methodology.html#backtest">See the tables →</a>`
+        : "";
+      if (!bt) track.innerHTML = "";
+    }
+
     const sortedAll = (d.matches || []).slice().sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const quickBody = $("#quick-picks-body");
     if (quickBody) {
@@ -750,12 +769,39 @@
     if (g) g.textContent = `${whenLocal(d.generated_at).text} · next update ${whenUTC(d.next_update_utc)}`;
     const ft = $("#backtest");
     const b = d.model && d.model.backtest;
+    const bandRows = (b && b.by_band || []).map((r) => `<tr>
+        <td data-label="Competition band">${esc(r.band)}</td>
+        <td data-label="Matches">${r.n}</td>
+        <td data-label="Log-loss">${r.log_loss} <span class="tiny">vs 0.6931</span></td>
+        <td data-label="Brier">${r.brier} <span class="tiny">vs 0.2500</span></td>
+        <td data-label="Accuracy">${(r.accuracy * 100).toFixed(1)}%</td></tr>`).join("");
+    const calRows = (b && b.calibration || []).map((r) => `<tr>
+        <td data-label="We said">${esc(r.bucket)}</td>
+        <td data-label="Matches">${r.n}</td>
+        <td data-label="Average stated">${(r.predicted * 100).toFixed(1)}%</td>
+        <td data-label="Favoured side won">${(r.actual * 100).toFixed(1)}%</td>
+        <td data-label="Gap">${r.gap > 0 ? "+" : ""}${(r.gap * 100).toFixed(1)} pts</td></tr>`).join("");
     if (ft) ft.innerHTML = b ? `<dl class="kv">
         <dt>Test window</dt><dd>Last ${b.window_days} days (${b.n} matches)</dd>
         <dt>Log-loss</dt><dd><b>${b.log_loss}</b> <span class="small">(coin-flip baseline ${b.baseline_log_loss})</span></dd>
         <dt>Brier score</dt><dd><b>${b.brier}</b> <span class="small">(baseline ${b.baseline_brier})</span></dd>
         <dt>Accuracy</dt><dd>${(b.accuracy * 100).toFixed(1)}%</dd>
-      </dl><p class="tiny">Out-of-sample: ratings fitted before the window and frozen; only matches where both teams were already rated are scored.</p>`
+      </dl><p class="tiny">Out-of-sample: ratings fitted before the window and frozen; only matches where both teams were already rated are scored.</p>
+      ${bandRows ? `<h4 style="margin:14px 0 4px">How the model scores by competition strength</h4>
+      <p class="tiny">Same frozen ratings, same window, split by the competition prior the model itself assigns.
+        ${esc((b.band_note || ""))} Low-tier rows are the ones we price without a bookmaker line, so this is the
+        realistic accuracy to expect from them — not an estimate.</p>
+      <div class="table-wrap"><table><thead><tr>
+        <th scope="col">Competition band</th><th scope="col">Matches</th><th scope="col">Log-loss</th>
+        <th scope="col">Brier</th><th scope="col">Accuracy</th></tr></thead>
+        <tbody>${bandRows}</tbody></table></div>` : ""}
+      ${calRows ? `<h4 style="margin:14px 0 4px">Calibration — when we say X%, how often does it happen?</h4>
+      <p class="tiny">Out-of-sample only. "Average stated" is the confidence we published; "favoured side won" is the
+        measured hit rate. A positive gap means we were overconfident in that bucket.</p>
+      <div class="table-wrap"><table><thead><tr>
+        <th scope="col">We said</th><th scope="col">Matches</th><th scope="col">Average stated</th>
+        <th scope="col">Favoured side won</th><th scope="col">Gap</th></tr></thead>
+        <tbody>${calRows}</tbody></table></div>` : ""}`
       : `<p>No backtest available for this run.</p>`;
   }
 
