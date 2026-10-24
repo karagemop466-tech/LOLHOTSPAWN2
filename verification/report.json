@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-24T16:29:57.472014+00:00",
+ "verified_at": "2026-10-24T16:39:15.873667+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 38,
@@ -7,30 +7,30 @@
   "WARN": 2,
   "SKIP": 0
  },
- "data_matches": 164,
+ "data_matches": 160,
  "methods": {
+  "MODEL_LEAGUE_PRIOR": 0,
   "MODEL_ELO": 93,
+  "UNRESOLVED": 0,
+  "MARKET_SINGLE": 1,
   "MODEL_STANDINGS": 0,
   "MARKET_CONSENSUS": 8,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MARKET_SINGLE": 1,
-  "UNRESOLVED": 0,
-  "MODEL_ELO_THIN": 62,
+  "MARKET_BOOKS": 0,
   "MARKET_POLYMARKET": 0,
-  "MARKET_BOOKS": 0
+  "MODEL_ELO_THIN": 58
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "164 matches, generated_at=2026-10-24T16:27:29.259449Z (0.0h old)"
+   "detail": "160 matches, generated_at=2026-10-24T16:39:13.364426Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 164 rows have team1, team2 and a start time"
+   "detail": "all 160 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -72,7 +72,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 164 rows carry at least one source URL"
+   "detail": "all 160 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -126,7 +126,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=164, rows=164"
+   "detail": "declared=160, rows=160"
   },
   {
    "id": "D20",
@@ -138,19 +138,19 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=164, priced=164, missing=0, extra=0, excluded=14, leaked=0"
+   "detail": "lobby upcoming=160, priced=160, missing=0, extra=0, excluded=18, leaked=0"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 65 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 63 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "WARN",
-   "detail": "112/122 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (67.8h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
+   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (67.9h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
    "items": [
     "Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00",
     "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",

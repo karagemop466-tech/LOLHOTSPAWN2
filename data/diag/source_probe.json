@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:30:55.009997Z",
+ "checked_at": "2026-10-24T16:39:46.024081Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -66,12 +66,12 @@
    "name": "OddsPortal LoL",
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 0,
+   "http_status": 503,
    "bytes": 0,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 0)"
+   "verdict": "not usable from CI (HTTP 503)"
   },
   {
    "name": "BetExplorer LoL",
@@ -166,7 +166,7 @@
    "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 416391,
+   "bytes": 405151,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -177,7 +177,7 @@
    "url": "https://www.betmonitor.com/odds-comparison/esports/",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 416291,
+   "bytes": 405051,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -188,7 +188,7 @@
    "url": "https://esportbet.com/odds/league-of-legends/",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 407411,
+   "bytes": 407421,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
