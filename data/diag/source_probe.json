@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:43:00.077102Z",
+ "checked_at": "2026-10-24T16:44:38.585940Z",
  "books": [
   {
    "name": "Pinnacle (guest JSON)",
@@ -64,7 +64,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 366117,
+   "bytes": 366114,
    "lol_mentions": 0,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -263,7 +263,7 @@
    "bytes": 568902,
    "lol_mentions": 4,
    "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
    "reachable": true,
    "structured": false
   },
@@ -277,7 +277,7 @@
    "bytes": 190915,
    "lol_mentions": 177,
    "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
    "reachable": true,
    "structured": false
   },
@@ -300,14 +300,14 @@
    "url": "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json",
    "kind": "wiki-api",
    "category": "results",
-   "http_status": 429,
-   "is_json": false,
-   "bytes": 2707,
-   "lol_mentions": null,
+   "http_status": 200,
+   "is_json": true,
+   "bytes": 2352,
+   "lol_mentions": 5,
    "vs_style_items": null,
-   "verdict": "HTTP 429 — nothing used",
-   "reachable": false,
-   "structured": false
+   "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
+   "reachable": true,
+   "structured": true
   }
  ],
  "summary": {
