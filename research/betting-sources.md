@@ -349,3 +349,61 @@ Standings ignore strength of schedule; Elo tiers across leagues are priors, not 
 | 2026-10-23 | Live pipeline (Actions 39980317947) | Standings fetched: 167 rows / 14 competitions; 4 fixtures → `MODEL_STANDINGS`; 188/188 picks, 0 unresolved | `data/diag/pipeline.log`, `docs/data/picks.json` |
 | 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
 
+
+## 13. Refresh 2026-10-24 — new probes, a Bovada parsing bug, and the published source ladder (session `arena/26d1e778`)
+
+This pass re-ran the requested order — **established LoL betting sites → esportsbooks → esports lines/aggregators
+→ prediction markets → community results** — and changed production only where a structured, human-verified
+two-way price existed. Everything looked at is now published as a machine-readable ladder
+(`source_research` in `docs/data/picks.json`, rendered on `methodology.html#source-research`): 27 sources,
+4 probability inputs (Pinnacle, Unibet/Kambi, Bovada, Polymarket), 1 model input (Leaguepedia), 8 reference-only
+links and 14 sources recorded as not usable, each with the observed status and date.
+
+### 13.1 New facts verified this pass
+
+| Source | Observation on 2026-10-24 | Consequence |
+|---|---|---|
+| **Pinnacle guest JSON** (`sports/12/leagues`) | The only LoL league in the response was **“League of Legends – World Championship”** with `matchupCount: 10`; no national or tier-3 league appeared. | Confirms the production filter is not dropping tier-3 leagues; Pinnacle simply does not price them. |
+| **Pinnacle matchup board** | 8 open World Championship fixtures were readable; the pipeline published 8 two-way prices from it. | Unchanged production input. |
+| **Bovada coupon JSON** (bare endpoint, browser vantage) | Returned the **World Championship ’26 (8 events)** and **EMEA Masters Summer (1 event)** series moneylines. The same endpoint with `preMatchOnly=true` (and with `marketFilterId=def`) returned `{}`. | See 13.2 — production was silently discarding every event it fetched. |
+| **Bovada market shape** | The *series* moneyline is labelled `description = "Moneyline"` with `period.description = "Game"`; child boards are `Map 1`, `Map 2`, … | The old filter rejected any period containing “game”, i.e. the whole series market. Fixed to reject only `Map N`/`Game N`. |
+| **Unibet (Kambi CDN)** | The Kambi `listView` feed answered and the run read 8 two-way prices; the Unibet HTML page still returns 503 to CI. | Feed stays in production; the page remains a human reference only. |
+| **Polymarket Gamma** | `tag_slug=league-of-legends` returned **neg-risk futures groups** (e.g. “Worlds 2026 Winning Region”) marked `restricted: true`, not per-match moneylines. Per-match markets have to be matched by slug/team pair. | No change to matching; do **not** read a futures group as a match price. |
+| **Thunderpick** | The LGC Rising 2026 Playoffs page listed **Vitality Rising Bees −238 / Mental Rush +162** (BO5, 27 Oct 13:00 UTC). De-vig ≈ 64.8% / 35.2%. The published pick on the same fixture was 61.5% / 38.5% from Polymarket. | A genuine, independent esportsbook line exists for one low-tier fixture. It is a **manual cross-check**, because the site returns HTTP 403 to GitHub Actions (and robots.txt disallows only locale/casino paths, not the odds pages). |
+| **OddsPortal — Prime League** | Page returned HTTP 200 but listed **no current bookmaker odds**; CI got HTTP 503 on 2026-10-23. | Aggregators do not currently supply a tier-3 German price. |
+| **GG.Bet / Rivalry / DraftKings / BetOnline / Betway** | Region-blocked, operationally closed, or 404 at the tested LoL route (2026-10-23/24 probes). | Not usable; recorded rather than assumed. |
+
+### 13.2 Production bug found and fixed — Bovada prices were being dropped
+
+`fetch_bovada()` accepted a moneyline only when neither `map` nor `game` appeared in the market period. Bovada
+labels its **match-level** period “Game”, so every series moneyline was rejected even though the coupon had been
+fetched successfully (the published `sources_status` entry said `no_data`, 0 prices).
+
+Fix: reject only periods that name a **child board** (`Map 1`, `Game 2`, …) and accept the match-level “Game”
+period. Verified against the saved coupon snapshot (`data/diag/bovada_prematch.json`): the parser now returns
+**9 records** (8 Worlds + 1 EMEA Masters) with two-way de-vigged probabilities, where it previously returned 0.
+The 2026-10-24 live run is the acceptance test (`sources_status` should show Bovada `ok`, and the affected
+Worlds rows should move from `MODEL_ELO*` to `MARKET_*`).
+
+### 13.3 Why every remaining fixture is still priced
+
+* 9 fixtures have a book or prediction-market price; the rest fall through to the documented model:
+  `MODEL_ELO` (≥8 games on both sides, shrunk by `min(g1,g2)/(min+8)`), `MODEL_ELO_THIN` (<8 games),
+  `MODEL_STANDINGS` (split standings converted to an Elo offset), `MODEL_LEAGUE_PRIOR` (one side unknown,
+  flag `ONE_TEAM_NO_HISTORY`) and, only when nothing verifiable exists, an explicit 50/50 `UNRESOLVED` row.
+* No fixture is priced from Hotspawn's crowd percentage; that column is context and is never read by
+  `model.py`.
+* `scripts/probe_sources.py` re-checks all 27 candidates from Actions before each refresh (27 polite GETs,
+  always exit 0) and publishes the observed HTTP/JSON status next to the ladder, so a source that starts or
+  stops working is visible without hand-editing claims.
+
+### 13.4 Verification log additions
+
+| Date | Source | What it verified | Link / evidence |
+|---|---|---|---|
+| 2026-10-24 | Pinnacle guest JSON | Only the World Championship league is priced (10 matchups) | https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues |
+| 2026-10-24 | Bovada coupon JSON | Worlds ’26 + EMEA Masters Summer series moneylines returned; query-string variant returns `{}` | https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends |
+| 2026-10-24 | Thunderpick | LGC Rising line −238/+162 vs published 61.5% (≈3.3 pt delta) | https://thunderpick.io/esports/league-of-legends/lgc-rising-2026-playoffs/11363 |
+| 2026-10-24 | OddsPortal Prime League | Page up, no current bookmaker odds listed | https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ |
+| 2026-10-24 | Polymarket Gamma | LoL tag returns restricted futures groups, not match moneylines | https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&closed=false&limit=5 |
+| 2026-10-24 | Local parser test | Bovada coupon snapshot → 9 two-way records after the period fix (was 0) | `data/diag/bovada_prematch.json`, `scripts/fetch_markets.py` |

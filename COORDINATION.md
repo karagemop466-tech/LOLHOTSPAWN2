@@ -740,3 +740,23 @@ this sandbox; CI performs the external checks).
 
 No other session is active on these paths; if a future session needs one of them, log a request here instead of
 editing. Small commits will be pushed to this branch only. Claim pushed before any code change.
+
+### Progress 2026-10-24 — T21–T24 implemented, live run + PR pending (`arena/26d1e778`)
+
+| Task | What changed | Evidence / files |
+|---|---|---|
+| T21 data integrity | `fetch_standings()` now emits `standings_pages` (distinct `OverviewPage`) and `standings_competitions`; the "2880 standings rows across 0 competitions" note is fixed. Payload gained a machine-readable `source_research` ladder and `schema_version` 4. Every match row already carried `sources[]` (Hotspawn fixture + Leaguepedia page); no row is source-less. | `scripts/fetch_leaguepedia.py` (`standings_by_overview`), `scripts/update_picks.py` (schema 4), `scripts/source_research.py` |
+| T22 source research | 27 sources checked and published with role + observed status: 4 probability inputs (Pinnacle, Unibet/Kambi, Bovada, Polymarket), 1 model input (Leaguepedia), 8 reference-only, 14 not usable. `probe_sources.py` re-probes 27 candidates (Bovada URL corrected to the bare endpoint), always exits 0 and writes both `data/diag/source_probe.json` and `docs/data/source_probe.json`. Research note §13 added. | `research/betting-sources.md`, `scripts/source_research.py`, `scripts/probe_sources.py` |
+| T23 mobile UX | One header/nav/status strip + theme toggle across all 7 pages; `#find-picks` hub on the executive summary with 6 in-site links; always-rendered unresolved-and-limitations section; top nav collapses to the 6-item bottom nav under 860px; standings/pick tables become labelled cards under 760px. `.bar` collision fixed by moving the header to `.topbar`/`status-strip` classes. | `docs/*.html`, `docs/assets/style.css`, `docs/assets/app.js` |
+| T24 verification | `verify_site.py`: D22 (source ladder https/observed/dated/role + ≥1 probability input), D23 (unresolved limitations + per-league), S11 (shared header/theme/6-link nav), S12 (`#find-picks` hub links), S13 (always-on unresolved section), S14 (every page links picks.html); REQ13/REQ14 added; trust allowlist extended with the four sources checked by hand. `check_dom_contract.py` now asserts the shared header and 6+6 nav links. | `scripts/verify_site.py`, `verification/check_dom_contract.py`, `verification/test_verifier.py` |
+| Offline acceptance | `py_compile` all scripts · `node --check` · DOM contract PASS · verifier self-tests 39/39 · entity/books 10/10 · standings model ALL PASS · model tests 20/20 · jsdom (7 pages) ALL DOM CHECKS PASS · `verify_site.py` = **41 pass / 1 fail (D22 only, payload not yet regenerated) / 0 warn / 1 skip**. | run locally 2026-10-24 |
+
+### Irregularity I10 — Bovada series moneyline was silently discarded (fixed this session)
+
+`fetch_bovada()` rejected any market whose `period.description` contained `map` or `game`. Bovada labels its
+**match-level** period "Game"; child boards are "Map 1"/"Map 2". As a result the coupon was fetched but zero
+prices were recorded (`sources_status: Bovada no_data`). Fix: reject only `Map N`/`Game N`, accept the
+match-level "Game" period. Verified on the saved snapshot `data/diag/bovada_prematch.json`: 9 two-way records
+(8 Worlds + 1 EMEA Masters Summer) where the old code returned 0. Acceptance = the next live run should publish
+Bovada `ok` with a non-zero count and move those rows to `MARKET_*`. The ladder entry now states the browser-vs-CI
+difference (`{}` from CI's 2026-10-23 probe) instead of claiming a live price.
