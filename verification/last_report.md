@@ -1,10 +1,10 @@
-# Verification report — FAIL
-_2026-10-24T16:57:26.308339+00:00_
-160 matches · MARKET_CONSENSUS: 8 · MARKET_BOOKS: 0 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0 · UNRESOLVED: 0 · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 57 · MODEL_ELO: 94
+# Verification report — PASS
+_2026-10-24T17:00:29.507968+00:00_
+160 matches · MARKET_POLYMARKET: 0 · MODEL_ELO: 94 · MARKET_BOOKS: 0 · UNRESOLVED: 0 · MARKET_SINGLE: 1 · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 57 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 160 matches, generated_at=2026-10-24T16:57:25.137710Z (0.0h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 160 matches, generated_at=2026-10-24T17:00:28.274021Z (0.0h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 160 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -25,9 +25,9 @@ _2026-10-24T16:57:26.308339+00:00_
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0 |
 | D22 external-source probe rows are sourced and never carry a probability | PASS | 37 probed source(s), each with an https link, HTTP status and verdict |
-| D23 probe separates the production feeds from checked-only sources | FAIL | 4 wired feed(s) counted consistently with summary (4/4 reachable) |
+| D23 probe separates the production feeds from checked-only sources | PASS | 4 wired feed(s) counted consistently with summary (4/4 reachable) |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 63 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.2h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.3h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 10 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 6 links, 6 columns on every page |
@@ -64,12 +64,6 @@ _2026-10-24T16:57:26.308339+00:00_
 | REQ10 | Automatic refresh every 4-8 hours, no manual input | PASS | W1, W2, D1 |
 | REQ11 | Site integrity: no broken internal links, root entry point works | PASS | S1, S6, S8 |
 | REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
-
-**D23 items:**
-- Pinnacle LoL matchups (wired feed): wired row carries a probability
-- Unibet/Kambi LoL listView (wired feed): wired row carries a probability
-- Bovada esports coupon (wired feed): wired row carries a probability
-- Polymarket LoL tag (wired feed): wired row carries a probability
 
 **D18 items:**
 - Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00
