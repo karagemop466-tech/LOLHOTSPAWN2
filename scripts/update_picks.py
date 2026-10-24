@@ -8,6 +8,7 @@ list, never a probability.
 from __future__ import annotations
 
 import argparse
+import re
 from collections import Counter
 from datetime import timedelta
 
@@ -17,7 +18,7 @@ import fetch_markets
 import model
 from lib_common import load_json, log, now_utc, utc_iso, write_json
 from source_probe import probe_sources
-from standings_and_books import probe_liquipedia_pages
+from standings_and_books import liquipedia_search_prefix, probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
 
@@ -107,30 +108,96 @@ LIMITATIONS = [
     "Commercial esports odds/data APIs that do price some lower-tier LoL (OddsPapi, PandaScore Odds, Abios/Kambi direct, GRID) require a paid key, a licensed-sportsbook contract, or a sales agreement. No such key is configured in this repository, so matches only those vendors might price are resolved by our Elo/standings model instead (research log: research/betting-sources.md §17, checked 2026-10-24).",
 ]
 
-# Liquipedia MediaWiki `list=allpages` needs a *page title prefix*, not a Hotspawn
-# tournament label. Before 2026-10-24 this probe passed whole tournament names
-# ("PRM 3rd Division 26-27 Fall") as `apprefix`, so it always returned no_data.
-LIQUIPEDIA_PREFIXES = {
-    "prime league": "Prime_League",
-    "prm": "Prime_League",
-    "rivals": "RIVALS_LEAGUE",
-    "komplett": "Komplettligaen",
-    "4 nations": "4_Nations",
-    "tunisian": "Tunisian",
-    "lgc rising": "LGC_Rising",
-    "worlds": "2026_Season_World_Championship",
-}
+# Liquipedia titles and Hotspawn labels disagree ("PRM 3rd Division 26-27 Fall"
+# vs "Prime League/3. Liga/..."), so pages are looked up with the MediaWiki search
+# API (see standings_and_books.probe_liquipedia_pages) and a link is published only
+# when the title accounts for the whole label.
+_SPLIT_WORDS = {"spring", "summer", "autumn", "fall", "winter"}
+_SPLIT_SYNONYMS = {"autumn": {"autumn", "fall"}, "fall": {"autumn", "fall"},
+                   "spring": {"spring"}, "summer": {"summer"}, "winter": {"winter"}}
+_STAGE_WORDS = {"playoffs", "playoff", "finals", "final", "promotion", "qualifier",
+                "qualifiers", "group", "groups", "regular"}
 
 
-def liquipedia_prefixes_for(tournaments: list[str]) -> tuple[str, ...]:
-    """Map the active Hotspawn tournament labels to Liquipedia page prefixes."""
-    found: list[str] = []
-    for t in tournaments:
-        low = (t or "").lower()
-        for needle, prefix in LIQUIPEDIA_PREFIXES.items():
-            if needle in low and prefix not in found:
-                found.append(prefix)
-    return tuple(found) or ("Prime_League", "RIVALS_LEAGUE", "Komplettligaen")
+def _norm_title(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", str(text or "").lower()).strip()
+
+
+def liquipedia_page_for(tournament: str, pages: dict[str, list[str]] | None) -> str | None:
+    """Return a Liquipedia URL only when the page clearly is this competition.
+
+    A link is published only when the *whole* Hotspawn label is accounted for:
+      * every significant word of the league name appears in the page title
+        ("Arabian League", "2nd", "Division" -> Arabian_League/2nd_Division/...)
+      * the label's year appears in the title (never link a 2023 page for 2026)
+      * a numbered season ("Season 2", "Split 2") appears in the title
+      * a split word (Spring/Summer/Autumn/Fall/Winter) appears, so
+        "Autumn Playoffs" cannot link to the Spring split; the stage word itself
+        is optional because wikis file playoffs under the split page
+      * descriptive words (e.g. "Halloween Heist") must appear, and qualifier
+        pages are only accepted when the label says qualifier
+    Anything short of that returns None: an approximate wiki link would look like
+    verified evidence for a competition it does not describe.
+    """
+    term = liquipedia_search_prefix(tournament)
+    if not term or not pages:
+        return None
+    year_hit = re.search(r"\b(20[0-9]{2})\b", tournament or "")
+    year = year_hit.group(1) if year_hit else None
+    titles = pages.get(term) or pages.get(f"{term} {year}") if year else pages.get(term)
+    titles = titles or []
+    if not titles:
+        return None
+    label = _norm_title(tournament)
+    league_tokens = [t for t in _norm_title(term).split() if len(t) >= 3]
+    if not league_tokens:
+        return None
+    season_num = re.search(r"\bseason\s*([0-9]{1,2})\b", label)
+    season_num = season_num.group(1) if season_num else None
+    split_num = re.search(r"\bsplit\s*([0-9]{1,2})\b", label)
+    split_num = split_num.group(1) if split_num else None
+    split = next((w for w in label.split() if w in _SPLIT_WORDS), None)
+    optional = _SPLIT_WORDS | _STAGE_WORDS | {"season", "split"} | set("0123456789")
+    required = [t for t in label.split() if len(t) >= 3 and t not in optional]
+    label_stages = {w for w in label.split() if w in _STAGE_WORDS}
+    label_qualifier = bool({"qualifier", "qualifiers"} & label_stages)
+
+    best, best_score = None, -1
+    for title in titles:
+        toks = _norm_title(title).split()
+        if not all(tok in toks for tok in league_tokens):
+            continue
+        if not all(tok in toks for tok in required):
+            continue
+        if year and year not in toks:
+            continue
+        if season_num and not ({"season", season_num} <= set(toks)):
+            continue
+        if split_num and not ({"split", split_num} <= set(toks)):
+            continue
+        if split and not (_SPLIT_SYNONYMS[split] & set(toks)):
+            continue
+        if ({"qualifier", "qualifiers"} & set(toks)) and not label_qualifier:
+            continue
+        score = 0
+        if season_num:
+            score += 4
+        if split_num:
+            score += 3
+        if split:
+            score += 2
+        if label_stages & set(toks):
+            score += 2
+        score -= abs(len(toks) - len(_tokens(label))) * 0.1
+        if score > best_score:
+            best, best_score = title, score
+    if not best:
+        return None
+    return "https://liquipedia.net/leagueoflegends/" + str(best).replace(" ", "_")
+
+
+def _tokens(text: str) -> list[str]:
+    return [t for t in _norm_title(text).split() if t]
 
 
 # Verified operator / official pages. Matched by substring so a split suffix
@@ -166,7 +233,8 @@ def classify_league_category(tournament: str) -> str:
     return "Tier 3 — National & Amateur Divisions"
 
 
-def build_league_breakdown(matches: list[dict]) -> list[dict]:
+def build_league_breakdown(matches: list[dict],
+                           liquipedia_pages: dict[str, list[str]] | None = None) -> list[dict]:
     by_tour: dict[str, list[dict]] = {}
     for m in matches:
         by_tour.setdefault(m.get("tournament") or "Unknown competition", []).append(m)
@@ -210,6 +278,7 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
             "leaguepedia_url": lp_url,
             "organizer_name": org[0] if org else None,
             "organizer_url": org[1] if org else None,
+            "liquipedia_url": liquipedia_page_for(tour, liquipedia_pages),
             "limitation": lim,
         })
     return rows
@@ -222,7 +291,8 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
     market_matches = [m for m in matches if m["market"]]
-    league_breakdown = build_league_breakdown(matches)
+    league_breakdown = build_league_breakdown(
+        matches, (leaguepedia.get("liquipedia") or {}).get("pages") or {})
     reasons = Counter()
     for m in unresolved:
         if "NO_TEAM_HISTORY" in m["flags"]:
@@ -386,7 +456,7 @@ def main() -> int:
         raise SystemExit("missing cache inputs; run without --use-cache")
     if not args.use_cache and not leaguepedia.get("liquipedia"):
         tournaments_seen = sorted({(f.get("tournament") or "") for f in fixtures.get("fixtures") or []})
-        leaguepedia["liquipedia"] = probe_liquipedia_pages(liquipedia_prefixes_for(tournaments_seen))
+        leaguepedia["liquipedia"] = probe_liquipedia_pages(tournaments_seen)
     picks = model.run(fixtures, leaguepedia, markets)
     market_probe = None
     if not args.use_cache:

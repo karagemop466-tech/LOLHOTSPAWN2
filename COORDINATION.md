@@ -1358,3 +1358,20 @@ time regardless.
 3. The X1 external-link check tolerates host-blocked links (Polymarket/Unibet geoblocks from US runners)
    and fails only on genuinely dead links — that is how the dead `github.com/.../blob/main/...` link was
    caught during this session.
+
+## Session `arena/09a5546b-lolhotspawn2` — 2026-10-24 (Liquipedia per-league provenance + per-book kickoff times)
+
+| Task | Status | Scope (non-overlapping) |
+|---|---|---|
+| T38 Liquipedia provenance: the probe ran against a hardcoded prefix list, so RIVALS LEAGUE / Arabian / LCP / LigaGG / 4 Nations league rows could never carry a wiki link; look up every Hotspawn label and publish a link only when the page title matches the whole label | done | `scripts/standings_and_books.py`, `scripts/update_picks.py`, `docs/assets/app.js`, `verification/test_entity_and_books.py`, `verification/test_verifier.py` |
+| T39 Per-book kickoff provenance on the match page (`Feed start (UTC)` column + delta vs the Hotspawn lock time), so each quote's own start time is auditable instead of hidden in the payload | done | `docs/assets/app.js` |
+| T40 Integration: branch CI, PR to `main`, merge, confirm Pages deploy, record PR/run links here | in progress | `COORDINATION.md` |
+
+### T38 / T39 results
+
+* **Root cause, twice.** `probe_liquipedia_pages()` called MediaWiki `list=allpages&apprefix=` with either whole Hotspawn labels (`"Worlds 2026 Main Event"` → 0 pages, always `no_data`) or a hardcoded prefix tuple that ignored the fixtures on screen. Worse, the rewritten probe was inserted **above** an older copy of the same function, so Python kept binding the stale body and a refresh still shipped the old note. Both copies are gone; `verification/test_verifier.py` now fails if any `scripts/*.py` defines the same top-level name twice (46/46 self-tests at the time of writing).
+* **Lookup:** `api.php?list=search&srsearch=<league term> <year>` per Hotspawn label, deduplicated, ≤14 queries, 2.2 s spacing, gzip, bot UA, CC BY-SA attribution retained. Latest refresh: `ok`, 60 titles, **12 of 12 labels matched**.
+* **Publishing rule:** a league row links a Liquipedia page only when the title contains every significant word of the league name, the label's year, the numbered season/split and the split word, and never a qualifier page unless the label says qualifier. Refusals are deliberate: no page for `PRM 3rd Division` (wiki says "3. Liga"), `Worlds` ("World Championship"), `4 Nations … Halloween Heist`, `LGC Rising`, Tunisia or LigaGG.
+* **Links published and opened by hand (HTTP 200, title matches):** `RIVALS_LEAGUE/Season_2`, `Arabian_League/2nd_Division/2026/Summer`, `Komplettligaen/2026/Autumn`, `LCP/2027/Promotion`.
+* **Kickoff provenance:** the payload already carried `market.sources[].start_utc` / `start_delta_hours`; the match page now renders them, with the sentence that only the Hotspawn timestamp decides when a pick locks (Pinnacle and Polymarket publish the same kickoff; Unibet/Kambi ran +0 to +0.2 h on the 2026-10-24 Worlds slate).
+* Generated artifacts (`docs/data/picks.json`, `data/diag/*`, `verification/report.json`, `verification/last_report.md`) were never hand-merged: each collision was resolved by taking one complete side and the CI pipeline regenerates them.

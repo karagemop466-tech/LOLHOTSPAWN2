@@ -273,91 +273,104 @@ def standings_probability(rec1: dict | None, rec2: dict | None) -> tuple[float, 
     return p1, meta
 
 
-_LIQUIPEDIA_PREFIX_RULES: tuple[tuple[str, str], ...] = (
-    ("worlds", "World_Championship/2026"),
-    ("world championship", "World_Championship/2026"),
-    ("world_championship", "World_Championship/2026"),
-    ("prm ", "Prime_League"),
-    ("prime league", "Prime_League"),
-    ("prime_league", "Prime_League"),
-    ("arabian", "Arabian_League"),
-    ("komplettligaen", "Komplettligaen"),
-    ("lcp", "LCP/2027"),
-    ("lgc", "Game_Changers"),
-    ("game changers", "Game_Changers"),
-    ("em ", "EMEA_Masters"),
-    ("emea masters", "EMEA_Masters"),
+_TOURNAMENT_STOP = re.compile(
+    r"\s+(?:\d{2,4}(?:-\d{2,4})?|season|split|spring|summer|autumn|winter|fall|"
+    r"playoffs?|regular season|group stage|main event|promotion|halloween heist|"
+    r"finals?|round \d+|week \d+)\b.*$",
+    re.I,
 )
 
 
-def _normalise_liquipedia_prefixes(prefixes) -> list[str]:
-    """Map raw tournament labels to deduplicated canonical Liquipedia page prefixes (max 8)."""
-    out: list[str] = []
-    seen: set[str] = set()
-    for raw in prefixes or ():
-        s = str(raw or "").strip()
-        if not s:
-            continue
-        low = s.lower()
-        mapped = None
-        for needle, target in _LIQUIPEDIA_PREFIX_RULES:
-            if needle in low:
-                mapped = target
-                break
-        if mapped is None:
-            # Keep explicit MediaWiki prefixes (e.g. Prime_League), otherwise take first title token
-            if "_" in s or "/" in s:
-                mapped = s.replace(" ", "_")
-            else:
-                continue
-        if mapped not in seen:
-            seen.add(mapped)
-            out.append(mapped)
-        if len(out) >= 8:
-            break
-    return out or ["World_Championship/2026", "Prime_League", "Arabian_League", "Komplettligaen"]
+def liquipedia_search_prefix(tournament: str) -> str:
+    """Turn a Hotspawn tournament label into a Liquipedia search term.
+
+    Hotspawn labels ("PRM 3rd Division 26-27 Fall", "RIVALS LEAGUE Season 2") are
+    not wiki titles ("Prime League/3. Liga/...", "RIVALS LEAGUE/Season 2"). Cutting
+    the season/stage tail leaves a term the MediaWiki search API can resolve.
+    """
+    name = str(tournament or "").strip()
+    if not name:
+        return ""
+    stripped = _TOURNAMENT_STOP.sub("", name).strip(" -/")
+    if len(stripped) < 3:
+        stripped = re.split(r"\s+\d", name, maxsplit=1)[0].strip(" -/") or name
+    return stripped[:80]
 
 
-def probe_liquipedia_pages(prefixes: tuple[str, ...] = ("Prime_League", "World_Championship/2026", "Komplettligaen")) -> dict:
+def _liquipedia_query(label: str) -> str:
+    """Search the league term plus the label's year, when it has one."""
+    term = liquipedia_search_prefix(label)
+    if not term:
+        return ""
+    year = re.search(r"\b(20[0-9]{2})\b", label or "")
+    return f"{term} {year.group(1)}" if year else term
+
+
+def probe_liquipedia_pages(prefixes: tuple[str, ...] | list[str] = ()) -> dict:
     """Compliant read-only check via Liquipedia's official MediaWiki API (CC-BY-SA 3.0).
+
+    The argument is the list of *Hotspawn tournament labels* seen in the fixture
+    feed, not wiki prefixes: the old `list=allpages&apprefix=` call only ever ran
+    against a hardcoded prefix list, so leagues such as RIVALS LEAGUE, Arabian
+    League, LCP or LigaGG were never looked up and could never be linked.
 
     Strictly obeys https://liquipedia.net/api-terms-of-use:
       * MediaWiki api.php endpoint ONLY (never HTML scraping)
       * Accept-Encoding: gzip (handled by lib_common.fetch)
       * Custom contact User-Agent (LOLHOTSPAWN2 bot UA)
-      * >= 2.2s spacing between requests
-      * Deduplicated to <=8 canonical prefixes per run
+      * >= 2.2s spacing between requests, deduplicated, <=14 queries per run
     """
-    norm_prefixes = _normalise_liquipedia_prefixes(prefixes)
-    found = {}
-    errors = []
-    for pfx in norm_prefixes:
+    found: dict[str, list[str]] = {}
+    errors: list[str] = []
+    queries: list[str] = []
+    seen: set[str] = set()
+    for label in prefixes or ():
+        q = _liquipedia_query(label)
+        if not q or q.lower() in seen:
+            continue
+        seen.add(q.lower())
+        queries.append(q)
+        if len(queries) >= 14:
+            break
+    for q in queries:
         params = urllib.parse.urlencode({
             "action": "query",
-            "list": "allpages",
-            "apprefix": pfx,
-            "aplimit": "15",
+            "list": "search",
+            "srsearch": q,
+            "srlimit": "5",
             "format": "json",
         })
         r = fetch(f"{LIQUIPEDIA_API}?{params}", timeout=30, retries=2)
         time.sleep(2.2)
         if r["status"] != 200:
-            errors.append(f"{pfx}: HTTP {r['status']}")
+            errors.append(f"{q}: HTTP {r['status']}")
             continue
         try:
             body = json.loads(r["text"])
-            pages = [x.get("title") for x in (body.get("query", {}).get("allpages") or []) if x.get("title")]
-            if pages:
-                found[pfx] = pages
         except Exception:
-            errors.append(f"{pfx}: parse error")
+            errors.append(f"{q}: parse error")
+            continue
+        if isinstance(body.get("error"), dict):
+            errors.append(f"{q}: API error {str(body['error'].get('code'))[:40]}")
+            continue
+        hits = [x.get("title") for x in (body.get("query", {}).get("search") or []) if x.get("title")]
+        if hits:
+            found[q] = hits
     total = sum(len(v) for v in found.values())
+    matched = len(found)
+    status = "ok" if total else ("degraded" if errors else "no_data")
+    note = ("Official MediaWiki api.php search index (gzip, >=2.2s spacing; HTML never scraped; "
+            f"CC-BY-SA 3.0 attribution on Methodology & Sources). {matched} of {len(queries)} "
+            "Hotspawn tournament label(s) matched a Liquipedia page; metadata only, never a "
+            "probability input.")
+    if errors:
+        note += " Errors: " + "; ".join(errors[:3])
     return {
         "name": "Liquipedia MediaWiki API (CC-BY-SA 3.0)",
         "url": LIQUIPEDIA_PAGE,
-        "status": "ok" if total > 0 else ("degraded" if errors else "no_data"),
+        "status": status,
         "count": total,
+        "tournaments_matched": matched,
         "pages": found,
-        "note": ("Official MediaWiki api.php index (gzip, >=2.2s spacing; HTML never scraped; "
-                 "CC-BY-SA 3.0 attribution on Methodology & Sources)."),
+        "note": note,
     }

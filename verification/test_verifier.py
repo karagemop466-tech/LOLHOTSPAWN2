@@ -225,6 +225,21 @@ def main() -> int:
     print(f"  [{'ok' if helper_ok else 'FAILED'}] class/id/nav parsing helpers")
     results.append(helper_ok)
 
+    # no shadowed duplicate top-level definitions: a second copy of a function
+    # silently overrides the first, which is how a stale Liquipedia probe kept
+    # shipping after it was rewritten twice on 2026-10-24
+    import ast, collections, pathlib
+    dupes = {}
+    for f in sorted(pathlib.Path("scripts").glob("*.py")):
+        names = [n.name for n in ast.parse(f.read_text()).body
+                 if isinstance(n, (ast.FunctionDef, ast.ClassDef))]
+        for name, count in collections.Counter(names).items():
+            if count > 1:
+                dupes.setdefault(str(f), []).append(name)
+    print(f"  [{'ok' if not dupes else 'FAILED'}] scripts/ has no duplicate top-level defs"
+          f"{'' if not dupes else ' -> ' + str(dupes)}")
+    results.append(not dupes)
+
     # cron parser
     for expr, want in [("0 */6 * * *", 6.0), ("0 */4 * * *", 4.0),
                        ("0 */12 * * *", 12.0), ("30 2 * * *", None),
