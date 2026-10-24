@@ -715,3 +715,24 @@ the exact source link so a human can repeat it.
 | Post-merge live 6h refresh on `main` | **success** — run `39989184592` (`9d65409`, `generated_at = 2026-10-23T16:52:07.057868Z`): **172 / 172 upcoming fixtures resolved (`100.0%`)**, `9` market (`8` 3-book consensus + `1` single), `163` Elo model (`88` `MODEL_ELO` + `75` `MODEL_ELO_THIN`), `0` unresolved, `12` cancelled fixtures excluded, `10` per-league breakdown rows & all 8 `sources_status` entries published |
 | Post-refresh Pages deploy #2 | **success** — run `39990334025` deployed fresh `9d65409` payload to https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
 | Follow-up verifier hardening PR (#28 + #29) | Merged `wait_for_http()` + `http_status_retry()` in `scripts/verify_site.py` (PR **#28**, Pages deploy `39990798461` **success**), and replaced US-geoblocked SPA route `www.pinnacle.com/en/esports/league-of-legends` (HTTP `404` on US-East CI runners) in `docs/methodology.html`'s manual check log with the public `200 OK` JSON feeds actually queried by CI (`guest.api.arcadia.pinnacle.com` & `gamma-api.polymarket.com`) so `verify.yml` passes `X1`–`X3` cleanly on `main`. |
+
+---
+
+## Session `arena/a21e3910-lolhotspawn2` — 2026-10-24 (claim)
+
+Baseline at claim: branch == `origin/main` == `72c9b5a`, payload generated 2026-10-24T15:28:56Z
+(169 upcoming fixtures, 169 priced, 0 unresolved, 73 Low confidence, 14 cancelled excluded).
+Local baseline before any edit: `scripts/verify_site.py` **36 PASS / 0 FAIL / 0 WARN / 1 SKIP**,
+`verification/test_verifier.py` 35/35, `audit/test_model.py` 20/20, `verification/test_entity_and_books.py` 10/10,
+`verification/check_dom_contract.py` PASS, `node --check docs/assets/app.js` OK. No other session holds a live
+claim on these files (all prior sessions are merged into `main`).
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T20 Executive-summary & navigation integrity: fix the broken header/NAV markup introduced on `index.html` + `unresolved.html` (undefined CSS classes `.brand`/`.mark`/`.bar-end`/`.icon-btn`/`.status-strip`/`.nav-list`/`.covbar`, `.bar` height collision clipping the header to 12 px), unify the header across all 7 pages, make the picks path obvious on a phone, add verifier rules for CSS class coverage, duplicate ids and cross-page nav consistency, plus self-tests | in progress | arena/a21e3910 | docs/index.html, docs/unresolved.html, docs/assets/style.css, scripts/verify_site.py (new rules only), verification/test_verifier.py, verification/check_dom_contract.py |
+| T21 Fresh external-source research for matches with no featured line (established books → esportsbooks/esports betting lines → community), with the probe re-run on CI and every claim linked | in progress | arena/a21e3910 | research/**, scripts/probe_sources.py, data/diag/source_probe.json |
+| T22 Integration: re-run the live pipeline on this branch, re-verify line by line, PR to `main`, merge, confirm Pages deploy, record PR/run links here | pending | arena/a21e3910 | COORDINATION.md, generated payload |
+
+**Files not edited by this session:** `scripts/update_picks.py`, `scripts/fetch_*.py`, `scripts/model.py`,
+`.github/workflows/update-picks.yml` (production pipeline behaviour is unchanged; this session only touches the
+presentation layer and verification). Any request for those files is logged here instead of implemented.
