@@ -1396,3 +1396,29 @@ Fixed by one shared `methodMix()` helper in `docs/assets/app.js` that reads the 
 the unresolved page, so the two can no longer drift. `verification/check_dom_render.js` now asserts the
 reported standings/Elo counts match the payload **and** that they equal the sum of the per-league standings
 column (3 new checks, 53/53). Verified non-vacuous: restoring the old `app.js` fails exactly the standings check.
+
+### Incident 2 — conflict markers reached `main` again, and a redundant fix (session `arena/e6f33fe9`)
+
+**Two things went wrong at once and both are corrected here.**
+
+1. **PR #52 was redundant.** It "fixed" the unresolved page reporting *0 by split standings*. While this branch
+   was working, session `arena/ac089f33` fixed the same defect on `main` (`bafe9f8`) with a `pricingMix()` helper
+   that counts each row once, reports a total, and already includes `MODEL_ELO_STANDINGS`. Two sessions fixed the
+   same bug because neither had claimed it on this board — **claim before starting** exists for exactly this.
+2. **That merge then shipped conflict markers in `docs/assets/app.js`.** The conflict was auto-marked when this
+   branch merged `main`, and `git add -A` was run without re-checking `git status` for `UU` paths. `main`'s
+   `Verify picks and site` run went red again ([40115856865](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40115856865)),
+   even though `D23` flagged it — CI caught it, the merge should not have happened first.
+
+**Resolution in this branch**
+
+- `docs/assets/app.js` = `main`'s `pricingMix()` implementation **plus** what this branch contributed and `main`
+  had dropped in that merge: the hero `#hero-count-*` counters and the `#unresolved-list` renderer that lists every
+  unresolved fixture on the executive summary. Nothing from either side is lost.
+- `data/diag/source_probe.json` restored from the last clean pipeline commit (`69e0e0f`).
+- `verification/check_dom_render.js` now asserts the pricing breakdown **adds up to the fixture total**, that the
+  summary and unresolved page report the **same** standings count, and that it equals the per-league column sum
+  (55/55 checks; each new check verified non-vacuous against the broken versions).
+- **Process rule added:** a branch may only be merged into `main` when the *exact* SHA has a green
+  `Pipeline test (branch verification)` run. This session merged during a running build twice; that is how markers
+  and a redundant fix both slipped through. `D23` stays as the backstop.

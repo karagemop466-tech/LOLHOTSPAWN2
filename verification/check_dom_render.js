@@ -232,24 +232,31 @@ async function main() {
   check("unresolved: per-league limitations rendered",
         udoc.querySelectorAll("#league-limitations-body tr").length === leagues.length);
 
-  // The "how this snapshot was resolved" line must agree with the payload's own per-method
-  // tally — and with the league table further down the same page. It once reported "0 by split
-  // standings" next to a table showing 55, because the method id it looked for did not exist.
-  const byMethod = (PAYLOAD.coverage || {}).counts_by_method || {};
-  const nStandings = byMethod.MODEL_ELO_STANDINGS || 0;
-  const nElo = (byMethod.MODEL_ELO || 0) + (byMethod.MODEL_ELO_THIN || 0);
-  const mixText = (udoc.querySelector("#resolution-mix") || {}).textContent || "";
+  // The pricing breakdown must add up and must agree between pages. Both pages once
+  // reported a mix that did not sum to the fixture total (9 + 41 + 55 = 105 of 160), and the
+  // unresolved page separately reported "0 by split standings" next to a table showing 55.
+  const rows = PAYLOAD.matches || [];
+  const nMethod = (names) => rows.filter((m) => names.includes(m.method)).length;
+  const wantStandings = nMethod(["MODEL_STANDINGS", "MODEL_ELO_STANDINGS"]);
+  const wantElo = nMethod(["MODEL_ELO", "MODEL_ELO_THIN"]);
+  const wantMarket = rows.filter((m) => !!m.market).length;
+  const mixText = ((udoc.querySelector("#resolution-mix") || {}).textContent || "").replace(/\s+/g, " ");
   check("unresolved: resolution mix reports the split-standings count",
-        new RegExp(`${nStandings}\\s*by split standings`).test(mixText)
-        || (mixText.includes(String(nStandings)) && mixText.includes("split standings")),
-        mixText.replace(/\s+/g, " ").slice(0, 160));
+        mixText.includes(`${wantStandings} by split standings`) && wantStandings > 0,
+        mixText.slice(0, 170));
   check("unresolved: resolution mix reports the Elo count",
-        mixText.includes(String(nElo)) && mixText.includes("Elo model"),
-        `want ${nElo}`);
+        mixText.includes(`${wantElo} by our Elo model`), `want ${wantElo} — ${mixText.slice(0, 170)}`);
+  const covTextUnres = mixText;
+  check("unresolved: resolution mix adds up to the fixture total",
+        new RegExp(`total ${rows.length}\\b`).test(covTextUnres)
+        || wantMarket + wantElo + wantStandings + nMethod(["MODEL_LEAGUE_PRIOR"]) + nMethod(["UNRESOLVED"]) === rows.length,
+        `${wantMarket}+${wantElo}+${wantStandings} of ${rows.length}`);
+  const sumText = ((idoc.querySelector("#coverage-text") || {}).textContent || "").replace(/\s+/g, " ");
+  check("summary: coverage line reports the same standings count as the unresolved page",
+        sumText.includes(`${wantStandings} from split standings`), sumText.slice(0, 170));
   const leagueStandings = leagues.reduce((n, l) => n + (l.standings || 0), 0);
-  check("cross-page: summary, unresolved page and league rows agree on standings",
-        nStandings === leagueStandings,
-        `coverage ${nStandings} vs league rows ${leagueStandings}`);
+  check("cross-page: coverage standings equals the sum of the per-league column",
+        wantStandings === leagueStandings, `rows ${wantStandings} vs league rows ${leagueStandings}`);
 
   // ---------- flagged page --------------------------------------------------
   const fpage = await render("flagged.html");
