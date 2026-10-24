@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>LoL Pick'em — Executive Summary · Independent Hotspawn Picks</title>
-<meta name="description" content="Independent League of Legends match picks and win probabilities for every fixture on Hotspawn's Pick'em lobby, refreshed automatically every 6 hours.">
+<meta name="theme-color" content="#0b1220">
+<title>Executive summary — LoL picks for every Hotspawn match</title>
+<meta name="description" content="Every League of Legends fixture on Hotspawn's Pick'em lobby with a pick, both win probabilities, the pricing signal used and verified source links. Updated automatically every 6 hours.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b5fff'/%3E%3Ctext x='16' y='22' font-family='system-ui,sans-serif' font-size='16' font-weight='800' fill='white' text-anchor='middle'%3ELP%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -13,67 +14,97 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="wrap bar">
-    <a class="brand" href="index.html">
-      <span class="mark" aria-hidden="true">LP</span>
-      <span>LoL Pick'em <small>Independent Hotspawn companion</small></span>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · not affiliated with Hotspawn</small></span>
     </a>
-    <nav class="top-nav" aria-label="Primary">
-      <a href="index.html" data-nav="summary">Executive summary</a>
-      <a href="picks.html" data-nav="picks">All picks</a>
-      <a href="leagues.html" data-nav="leagues">By league</a>
-      <a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a>
-      <a href="flagged.html" data-nav="flagged">Flagged</a>
-      <a href="methodology.html" data-nav="methodology">Methodology</a>
-    </nav>
-    <div class="bar-end">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">☀️</button>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
     </div>
   </div>
-  <div class="status-strip"><div class="wrap" id="status-strip">Loading latest picks…</div></div>
 </header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
 
   <section class="hero">
-    <p class="eyebrow">Executive summary · updated automatically every 6 hours</p>
-    <h1>Every Hotspawn LoL match — clear pick, both win probabilities, verified sources.</h1>
+    <p class="eyebrow">Executive summary · refreshed automatically every 6 hours</p>
+    <h1>Every Hotspawn LoL match — one clear pick, both win probabilities, linked sources.</h1>
     <p class="lede">
-      Mirrors 100% of upcoming scheduled League of Legends fixtures from
+      We mirror <b>100% of upcoming scheduled League of Legends fixtures</b> from
       <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
-      and originates an independent probability for every match: 💰 de-vigged external sportsbook &amp; prediction-market lines first,
-      otherwise 🧮 our tier-anchored Elo model or 📊 split standings records.
-      <b>Hotspawn crowd percentages are context only — never used as a probability input.</b>
+      and originate an independent probability for every one of them: 💰 de-vigged external
+      sportsbook &amp; prediction-market lines first, otherwise 🧮 our tier-anchored Elo model or
+      📊 official split standings.
+      <b>Hotspawn crowd percentages are context only — never a probability input.</b>
     </p>
-    <div class="warnbox" role="note">
-      <b>Source limitation:</b> When no external bookmaker line exists, probabilities come from our Elo / split-standings model on Leaguepedia's recorded match history. Leaguepedia is a community-maintained database, not an official tournament or Riot odds feed, and Hotspawn confirms only the listed fixture. See <a href="flagged.html#source-limitations">source limitations and flagged items →</a>
-    </div>
+
     <div class="hero-actions">
-      <a class="btn primary" href="picks.html">📋 All updated picks →</a>
-      <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24h picks →</a>
-      <a class="btn" href="leagues.html">🏆 Browse by league / tier →</a>
-      <a class="btn warn" href="unresolved.html">⚠️ Unresolved &amp; limitations →</a>
-      <a class="btn" href="flagged.html">🚩 Flagged for review →</a>
-    </div>
-    <div class="chips" role="navigation" aria-label="Jump to picks on this page">
-      <a class="chipbtn" href="#starting-soon">⏰ Starting soon ↓</a>
-      <a class="chipbtn" href="#featured-heading">💰 Market picks ↓</a>
-      <a class="chipbtn" href="#unresolved-heading">⚠️ Unresolved ↓</a>
-      <a class="chipbtn" href="picks.html?filter=market">💰 Only market lines</a>
-      <a class="chipbtn" href="picks.html?filter=standings">📊 Standings picks</a>
+      <a class="btn primary" href="picks.html">📋 See all updated picks</a>
+      <a class="btn primary" href="picks.html?filter=next24">⏰ Picks for the next 24 hours</a>
+      <a class="btn" href="leagues.html">🏆 Browse by league</a>
+      <a class="btn warn" href="unresolved.html">⚠️ Unresolved &amp; limitations</a>
     </div>
   </section>
 
-  <section aria-label="Coverage metrics">
+  <section aria-labelledby="where-picks">
+    <h2 id="where-picks">Where the picks are (tap any card)</h2>
+    <p class="small">Every card below opens the live list — the same data, filtered. Nothing on this site needs an account, and the list is rebuilt automatically every 6 hours.</p>
+    <div class="linkgrid">
+      <a class="linkcard" href="picks.html">
+        <span class="ico" aria-hidden="true">📋</span>
+        <span><b>All updated picks</b><span>Every upcoming match, both win probabilities, the pick, the pricing signal and source links. Searchable and filterable.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="picks.html?filter=next24">
+        <span class="ico" aria-hidden="true">⏰</span>
+        <span><b>Next 24 hours</b><span>Only matches locking soon, so you can pick before the Hotspawn lock (5 minutes before start).</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="leagues.html">
+        <span class="ico" aria-hidden="true">🏆</span>
+        <span><b>By league &amp; tier</b><span>Tier 1 Worlds, tier 2 promotion/challenger and tier 3 national &amp; amateur divisions, each with its source links.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="unresolved.html">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span><b>Unresolved &amp; limitations</b><span>Which matches have no external betting line, how each is priced instead, and the exact limits of that evidence.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="chips" role="navigation" aria-label="Jump to sections on this page">
+      <a class="chipbtn" href="#starting-soon">⏰ Starting soon ↓</a>
+      <a class="chipbtn" href="#coverage">📈 Coverage ↓</a>
+      <a class="chipbtn" href="#featured-heading">💰 Market picks ↓</a>
+      <a class="chipbtn" href="#unresolved-heading">⚠️ Unresolved ↓</a>
+      <a class="chipbtn" href="picks.html?filter=market">💰 Only market lines</a>
+      <a class="chipbtn" href="picks.html?filter=low">⚠️ Low confidence rows</a>
+    </div>
+  </section>
+
+  <section id="coverage" aria-label="Coverage metrics">
+    <h2>Coverage right now</h2>
     <div class="stats">
       <div class="stat"><b id="stat-fixtures">—</b><span>Scheduled matches</span></div>
-      <div class="stat"><b id="stat-market">—</b><span>With bookmaker lines</span></div>
-      <div class="stat"><b id="stat-model">—</b><span>Own Elo + Standings</span></div>
+      <div class="stat"><b id="stat-market">—</b><span>With external betting lines</span></div>
+      <div class="stat"><b id="stat-model">—</b><span>Our Elo / standings model</span></div>
       <div class="stat"><b id="stat-unresolved">—</b><span>Unresolved (50/50)</span></div>
     </div>
-    <div class="card" style="margin-top:12px">
+    <div class="card">
       <h3>Coverage of Hotspawn's match list</h3>
       <p id="coverage-text">Loading…</p>
       <div class="covbar" id="coverage-bar" aria-hidden="true"></div>
@@ -84,37 +115,12 @@
     </div>
   </section>
 
-  <section aria-label="Site sections" style="margin-top:18px">
-    <div class="nav-list">
-      <a href="picks.html">
-        <span class="ico" aria-hidden="true">📋</span>
-        <span><b>All updated picks</b><span>Every upcoming match with both win probabilities, source links, search, and league/method filters.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a href="leagues.html">
-        <span class="ico" aria-hidden="true">🏆</span>
-        <span><b>By league &amp; competition tier</b><span>Tier 1 Worlds, Tier 2 Promotion/Challenger, and Tier 3 National &amp; Amateur divisions with per-league source links.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a href="unresolved.html">
-        <span class="ico" aria-hidden="true">⚠️</span>
-        <span><b>Unresolved picks &amp; limitations</b><span>Explicit 50/50 placeholders, low-confidence model rows, and per-competition limitations.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a href="flagged.html">
-        <span class="ico" aria-hidden="true">🚩</span>
-        <span><b>Flagged for review</b><span>Excluded cancelled rows, upstream team-tag collisions, flex-schedule time shifts, and unavailable sportsbooks.</span></span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
-
   <section id="starting-soon">
     <h2>Starting soon — immediate upcoming picks</h2>
-    <p class="small"><span id="soon-count">Next scheduled matches locking soonest on Hotspawn.</span> Tap any match to inspect full bookmaker &amp; Elo breakdown, or open <a href="picks.html">All picks →</a>.</p>
+    <p class="small"><span id="soon-count">Next scheduled matches locking soonest on Hotspawn.</span> Tap a card for the full bookmaker &amp; Elo breakdown, or open <a href="picks.html">All picks →</a>.</p>
     <div id="next24"></div>
     <details style="margin-top:14px" open>
-      <summary class="small" style="cursor:pointer"><b>Quick-scan summary table (next 10 picks + source links)</b></summary>
+      <summary class="small" style="cursor:pointer"><b>Quick-scan table (next 12 picks + source links)</b></summary>
       <div class="table-wrap" style="margin-top:8px">
         <table>
           <thead>
@@ -137,7 +143,7 @@
 
   <section>
     <h2>Per-competition breakdown</h2>
-    <p class="small">Every active competition on Hotspawn grouped with its pricing mix and official source link (<a href="leagues.html">open full By-League page →</a>).</p>
+    <p class="small">Every active competition on Hotspawn, with the signal that prices it and its official source link (<a href="leagues.html">open the full By-League page →</a>).</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -158,14 +164,38 @@
 
   <section>
     <h2 id="featured-heading">Featured — matches with external betting lines</h2>
-    <p class="small">Priced from the de-vigged consensus of independent sportsbooks and prediction markets (1 deduplicated main-match line per book), cross-checked against our Elo model.</p>
+    <p class="small">Priced from the de-vigged consensus of independent sportsbooks and prediction markets (one deduplicated main-match line per book), cross-checked against our Elo model.</p>
     <div id="featured"></div>
   </section>
 
-  <section>
-    <h2 id="unresolved-heading">Unresolved picks &amp; limitations for generating picks</h2>
-    <p class="small">Separate executive summary section documenting every unresolved placeholder, low-confidence pick, per-league signal limit, and external market limitation.</p>
+  <section id="unresolved-section">
+    <h2 id="unresolved-heading">Unresolved picks &amp; the limitations for generating picks</h2>
+    <p class="small">
+      A separate section, because these rows are priced differently from the featured picks above.
+      It lists every match that has <b>no external betting line</b>, the signal we used instead, and
+      the exact reason that signal is weaker. Nothing here is filled in by hand or inferred.
+    </p>
     <div id="unresolved-summary"></div>
+
+    <h3 style="margin-top:18px">Per-competition limitations</h3>
+    <p class="small">One row per competition on Hotspawn's list. Every row links to the fixture rows and to the source behind the pricing signal.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Competition</th>
+            <th scope="col">Fixtures</th>
+            <th scope="col">Signal mix</th>
+            <th scope="col">Limitation</th>
+            <th scope="col">Open the picks</th>
+          </tr>
+        </thead>
+        <tbody id="unresolved-league-body">
+          <tr><td colspan="5"><div class="loading"><span class="spinner"></span>Loading per-competition limitations…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small"><a class="btn warn" href="unresolved.html">Open the full Unresolved &amp; limitations page →</a></p>
   </section>
 
   <section>
@@ -179,6 +209,7 @@
 
 <footer class="site-footer">
   <div class="wrap footer-grid">
+    <p class="small" id="footer-updated"></p>
     <p class="small">Fixture list from Hotspawn's public lobby. Probabilities from external sportsbooks &amp; prediction markets where available, otherwise our Elo model and Leaguepedia split standings (<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>). Hotspawn crowd percentages are never used as a probability input.</p>
     <p class="small">Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.</p>
   </div>

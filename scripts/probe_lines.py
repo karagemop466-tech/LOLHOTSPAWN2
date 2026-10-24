@@ -333,6 +333,15 @@ def probe_onexbet(host):
 # 5. Status-only probes (documented, never parsed)
 # --------------------------------------------------------------------------- #
 STATUS_ONLY = [
+    ("bmbets LoL odds comparison", "https://www.bmbets.com/e-sports/world/lol---world-championship/", "aggregator-page"),
+    ("Prime League official (organizer)", "https://www.primeleague.gg/en/liga2", "organizer-results"),
+    ("RIVALS LEAGUE official (organizer)", "https://www.rivalsleague.gg/", "organizer-results"),
+    ("BetOnline LoL", "https://www.betonline.ag/sportsbook/esports/league-of-legends", "established-sportsbook"),
+    ("SportsBetting.ag LoL", "https://sportsbetting.ag/sportsbook/esports/league-of-legends", "established-sportsbook"),
+    ("Stake LoL", "https://stake.com/sports/esports/league-of-legends", "esportsbook"),
+    ("BC.Game LoL", "https://bc.game/sports/esports/league-of-legends", "esportsbook"),
+    ("William Hill esports", "https://sports.williamhill.com/betting/en-gb/esports", "established-sportsbook"),
+    ("Parimatch LoL", "https://www.parimatch.com/en/esports/league-of-legends", "established-sportsbook"),
     ("eGamersWorld LoL odds", "https://egamersworld.com/lol/bets", "aggregator-page"),
     ("Oddspedia LoL", "https://oddspedia.com/esports/league-of-legends", "aggregator-page"),
     ("GGScore LoL", "https://ggscore.com/en/lol/matches", "aggregator-page"),

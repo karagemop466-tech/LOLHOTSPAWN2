@@ -287,3 +287,36 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
 .pick-pill.red { background: var(--red-soft); color: var(--red); border-color: rgba(185, 28, 28, .3); }
 .cat-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
 .cat-section { margin: 22px 0; scroll-margin-top: 90px; }
+
+/* ------------------------------------------------------------------ */
+/* Executive-summary building blocks and phone tap-target refinements  */
+/* ------------------------------------------------------------------ */
+
+/* Stat cards in docs/index.html use <b>/<span> (older pages use .n/.l). */
+.stat b { display: block; font-size: 28px; font-weight: 900; line-height: 1.05; letter-spacing: -.02em; }
+.stat span { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-top: 5px; }
+
+/* Coverage meter written by renderIndex() into #coverage-bar. */
+.covbar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-2); margin: 8px 0; }
+.covbar i { display: block; background: var(--green); height: 100%; }
+.covbar b { display: block; background: color-mix(in srgb, var(--muted) 30%, var(--surface-2)); height: 100%; }
+
+/* Channel cards ("Where the picks are") stay thumb-sized on phones. */
+.linkcard { min-height: 84px; }
+.linkcard span span { display: block; }
+
+/* Disclosure rows are real buttons on a touch screen. */
+details > summary { min-height: 44px; display: flex; align-items: center; }
+
+@media (max-width: 640px) {
+  /* Full-width primary actions: no mis-taps between two small buttons. */
+  .hero-actions .btn { flex: 1 1 100%; }
+  .hero-actions { gap: 8px; }
+  /* Long competition names must wrap instead of pushing the row sideways. */
+  .linkcard b, .linkcard span span { overflow-wrap: anywhere; }
+  tbody td { overflow-wrap: anywhere; }
+  /* Keep the sticky filter bar clear of the sticky header. */
+  .filters { top: 52px; }
+  h1 { font-size: clamp(22px, 7vw, 30px); }
+  .lede { font-size: 16px; }
+}

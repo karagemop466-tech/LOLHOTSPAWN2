@@ -254,14 +254,48 @@
       : `<div class="card">No external market lines are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
 
     const u = d.unresolved || {};
+    const allMatches = d.matches || [];
+    const noLine = allMatches.filter((m) => !m.market);
+    const unresN = allMatches.filter((m) => m.method === "UNRESOLVED").length;
+    const lowN = u.low_confidence_count ?? allMatches.filter((m) => m.confidence === "Low").length;
+    const priorN = allMatches.filter((m) => m.method === "MODEL_LEAGUE_PRIOR").length;
     const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
-    const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const lims = (u.limitations || []).map((x) => `<li>${esc(x)}</li>`).join("");
     const ubox = $("#unresolved-summary");
-    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; Low-confidence picks (${u.low_confidence_count ?? 0})</h3>
-      <p><b>${u.count ?? 0}</b> fixture${(u.count ?? 0) === 1 ? "" : "s"} lack external lines, recorded team matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge). <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows rely on thin history (&lt;8 games), split standings, or a single debut side against the competition prior and are capped at Low confidence. Hotspawn's crowd % is never used.</p>
+    if (ubox) ubox.innerHTML = `<div class="warnbox">
+      <h3>${unresN ? "⚠️ Unresolved picks" : "✅ No unresolved placeholders"} · ${noLine.length} of ${allMatches.length} matches have no external betting line</h3>
+      <p><b>${noLine.length}</b> fixture${noLine.length === 1 ? "" : "s"} are priced <b>without</b> a sportsbook or prediction-market line, because no book we can reach lists that competition. They still get a pick and both win probabilities, from a documented signal:
+      🧮 our Elo model on recorded Leaguepedia results, 📊 current-split standings, or 📐 the competition prior when a side has no recorded games.</p>
+      <p><b>${unresN}</b> row${unresN === 1 ? "" : "s"} have no signal at all and are published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge).
+      <b>${lowN}</b> row${lowN === 1 ? "" : "s"} are capped at <b>Low confidence</b> (thin history, no cross-league evidence, or a prior substituted for a side), and <b>${priorN}</b> use a competition prior for a team with no recorded games.
+      Hotspawn's crowd percentage is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
-      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+      <p class="small"><b>Open the rows behind these numbers</b></p>
+      <div class="hero-actions">
+        <a class="btn" href="picks.html?filter=model">🧮 ${allMatches.filter((m) => m.model && !m.market).length} model-priced matches →</a>
+        <a class="btn" href="picks.html?filter=low">⚠️ ${lowN} low-confidence matches →</a>
+        <a class="btn warn" href="unresolved.html">⚠️ Unresolved &amp; limitations →</a>
+      </div>
+      ${lims ? `<details><summary class="small"><b>Key limitations for generating these picks</b></summary><ul class="clean small">${lims}</ul></details>` : ""}
+    </div>`;
+
+    const ulBody = $("#unresolved-league-body");
+    if (ulBody) {
+      const lbs = (u.by_league && u.by_league.length) ? u.by_league : computeLeagueBreakdown(d);
+      ulBody.innerHTML = lbs.length ? lbs.map((lb) => {
+        const elo = lb.elo ?? 0, st = lb.standings ?? 0, prior = lb.prior_only ?? lb.league_prior ?? 0;
+        const unres = lb.unresolved ?? 0, mkt = lb.market ?? 0;
+        const q = `picks.html?tournament=${encodeURIComponent(lb.tournament)}`;
+        const href = unres ? `${q}&filter=unresolved` : q;
+        return `<tr>
+          <td data-label="Competition"><a class="rowlink" href="${esc(href)}"><b>${esc(lb.tournament)}</b></a>${lb.best_signal ? `<span class="sub small">${esc(lb.best_signal)}</span>` : ""}</td>
+          <td data-label="Fixtures"><b>${lb.fixtures ?? 0}</b></td>
+          <td data-label="Signal mix" class="small">💰 ${mkt} market · 🧮 ${elo} Elo · 📊 ${st} standings · 📐 ${prior} prior · ⚠️ ${unres} unresolved</td>
+          <td data-label="Limitation" class="small">${esc(lb.limitation || (mkt === (lb.fixtures ?? 0) ? "Priced from external bookmaker lines." : "No external sportsbook prices this competition; picks come from recorded results and split standings."))}</td>
+          <td data-label="Open the picks"><a class="btn" style="min-height:40px;padding:8px 12px" href="${esc(href)}">${lb.fixtures ?? 0} rows →</a></td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="5">No competitions in this snapshot.</td></tr>`;
+    }
 
     const ss = $("#sources-strip");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<span class="chip ${s.status === "ok" ? "green" : "amber"}" title="${esc(s.note || "")}">${esc(s.name)} · ${esc(s.status)}${s.count != null ? ` · ${s.count}` : ""}</span>`).join(" ");
@@ -391,13 +425,17 @@
     const limBody = $("#league-limitations-body");
     if (limBody) {
       const lbs = computeLeagueBreakdown(d);
-      limBody.innerHTML = lbs.map((x) => `<tr>
+      limBody.innerHTML = lbs.map((x) => {
+        const q = `picks.html?tournament=${encodeURIComponent(x.tournament)}`;
+        const href = x.unresolved ? `${q}&filter=unresolved` : q;
+        return `<tr>
         <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(x.tournament))}"><b>${esc(x.tournament)}</b></a></td>
-        <td data-label="Fixtures"><b>${x.fixtures}</b></td>
+        <td data-label="Fixtures"><a class="rowlink" href="${esc(href)}"><b>${x.fixtures}</b> row(s) →</a></td>
         <td data-label="Breakdown" class="small">💰 ${x.market} · 🧮 ${x.elo} · 📊 ${x.standings || 0} · 📐 ${x.league_prior} · ⚠️ ${x.unresolved}</td>
         <td data-label="Limitation" class="small">${esc(x.limitation || "")}</td>
         <td data-label="Sources">${leagueSourceLinks(x)}</td>
-      </tr>`).join("");
+      </tr>`;
+      }).join("");
     }
     const reasons = (d.unresolved?.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const rbox = $("#reasons");
