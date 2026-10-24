@@ -33,6 +33,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
         run: |
+          set -o pipefail  # a generator failure must fail the step, not be masked by tee
           mkdir -p data/diag
           python3 scripts/update_picks.py 2>&1 | tee data/diag/pipeline.log
 
