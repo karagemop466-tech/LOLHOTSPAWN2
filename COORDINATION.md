@@ -885,7 +885,6 @@ PR/merge record — completed 2026-10-24:
 **Follow-up commit (same session):** probe verdict wording is now category-aware (results/metadata pages are no longer
 described in odds language) and the probe table labels the type as “Market”/“Results”. No data or probability behaviour changes.
 
-<<<<<<< HEAD
 ---
 
 ## Session `arena/a21e3910-lolhotspawn2` — 2026-10-24 (claim)
@@ -978,7 +977,9 @@ table kept on Methodology and its `F14.1–F14.4` flags kept on Flagged. This se
 After the merge the verifier runs **40 PASS / 0 FAIL / 0 WARN / 1 SKIP** and `render_check.cjs` passes on all 7 pages
 against the merged payload (160 fixtures, generated 2026-10-24T16:39Z). Task ids for this session are T23–T25 because
 `arena/047af680` had already used T20–T22.
-=======
+
+---
+
 | Item (continued) | Value |
 |---|---|
 | Follow-up PR | [PR #34](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/34) — **MERGED** 2026-10-24T16:36:32Z, merge commit `5d71d0b`; `verify.yml` [40112346967](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112346967) success; Pages build [40112346904](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112346904) success |
@@ -1020,4 +1021,3 @@ Verified with a jsdom pass over all 160 rendered rows: 160/160 pairs sum to 100.
 | Post-merge production refresh on `main` | `update-picks.yml` run [40112685473](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112685473) — **success** (`1m36s`), commit `d5e3127`, payload `2026-10-24T16:42:29.066048Z`: **160 upcoming fixtures · 160 resolved (`100.0%`) · 0 unresolved · 9 market (`8` 4-book Worlds consensus + `1` single Polymarket) · 151 Elo model (`94` `MODEL_ELO` + `57` `MODEL_ELO_THIN`) · `8/8` `sources_status` `ok` (`Bovada: ok/8`, `Liquipedia: ok`) · `0` `GENERIC_RESULTS_SOURCE`** |
 | GitHub Pages builds | [40112685075](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112685075) & post-refresh [40112807856](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40112807856) — **success**, Pages API `status: built` for `d5e3127` (`2026-10-24T16:43:03Z`) |
 | Live site verification | Live checks on <https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/>, `match.html?id=1067688` (4-book consensus: Pinnacle + Unibet + Bovada + Polymarket with `200 OK` links), and `match.html?id=1081700` (`Inari Esports (British Team)` Bo3 on `4 Nations/2026 Season/Halloween Heist`) all confirmed live. |
->>>>>>> origin/main
