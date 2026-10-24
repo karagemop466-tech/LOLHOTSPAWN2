@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-24T16:56:39.568872+00:00",
+ "verified_at": "2026-10-24T17:01:53.762401+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 43,
@@ -9,23 +9,23 @@
  },
  "data_matches": 160,
  "methods": {
-  "MARKET_SINGLE": 1,
-  "MODEL_ELO_THIN": 2,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MARKET_CONSENSUS": 8,
   "MODEL_STANDINGS": 0,
   "MODEL_ELO": 94,
   "UNRESOLVED": 0,
   "MARKET_BOOKS": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
   "MARKET_POLYMARKET": 0,
-  "MODEL_ELO_STANDINGS": 55
+  "MARKET_CONSENSUS": 8,
+  "MODEL_ELO_STANDINGS": 55,
+  "MODEL_ELO_THIN": 2,
+  "MARKET_SINGLE": 1
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "160 matches, generated_at=2026-10-24T16:55:16.448930Z (0.0h old)"
+   "detail": "160 matches, generated_at=2026-10-24T17:00:39.738822Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -145,7 +145,7 @@
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "31 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "26 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",

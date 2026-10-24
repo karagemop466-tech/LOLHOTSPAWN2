@@ -39,6 +39,28 @@ probability, and the sources needing API keys are recorded as such instead of gu
 context and are never an input to any probability. Every table row carries direct links to
 its verified sources, and any upstream irregularity is surfaced on *Flagged for review*.
 
+## Line-source research: is there a book line for the low-tier fixtures?
+
+The 164-fixture snapshot of 2026-10-24 had 9 fixtures with an external betting line; the rest (PRM 2nd/3rd
+Division, Tunisian Super League, RIVALS LEAGUE, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP
+Promotion, LigaGG) were priced by our model. Two probes answer whether that is avoidable:
+
+* `scripts/source_probe.py` runs in **every** production refresh and publishes `market_probe` — reachability
+  status for every established book, esportsbook, aggregator and community site (rendered on the
+  Unresolved & Method pages).
+* `scripts/probe_lines.py` (`.github/workflows/line-probe.yml`, manual, ~1 min) goes further: it asks each
+  source for **two-way main-match prices**, then matches what it finds to the published fixtures by team
+  name **and** start time, so it can report how many of our model-only rows a source would actually cover.
+  Evidence: `data/diag/line_probe.json`; write-up: `research/betting-sources.md` §15.
+
+**Measured result (39 requests, 30 sites): 0 sources cover a single model-only fixture.** Pinnacle's league
+index lists one LoL league (World Championship); nine Kambi/Unibet country markets return the same eight
+World Championship matches; bmbets' LoL index stops at Worlds, LCP and Game Changers Rising; SofaScore,
+eGamersWorld, Oddspedia, GGScore, Winamax, Marathonbet, Betano, Stake, GG.Bet, Thunderpick and others answer
+403/404/410/503 to CI; the 1xBet/Betwinner/Melbet LineFeed returns a geo-restriction stub; bo3.gg has no odds
+fields. A source is only promoted into `scripts/fetch_markets.py` when it returns prices for fixtures in the
+published list **and** a human has verified a sample row — neither probe ever writes a probability.
+
 ## Automation & Verification
 
 - `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
@@ -68,6 +90,8 @@ npm install --no-save jsdom && node verification/check_dom_render.js   # 50/50 j
 python3 verification/test_verifier.py           # verifier rule self-tests (D22 probe + S11/S12/S13-S15 structure)
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11-S15)
+python3 scripts/verify_site.py                  # full schema + link + page audit
+python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all 7 pages
 ```
 

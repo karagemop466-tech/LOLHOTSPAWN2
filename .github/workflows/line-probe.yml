@@ -1,0 +1,74 @@
+name: Line-source probe (manual, diagnostic)
+
+# Standalone because a full pipeline run takes ~8 minutes while the probe needs
+# ~1 minute. It never writes picks: it only records which betting sites, esportsbooks
+# and aggregators can be read from a CI runner and how many of our unpriced fixtures
+# they would cover. Trigger it by hand from the Actions tab.
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]
+    paths:
+      - "scripts/probe_lines.py"
+      - ".github/workflows/line-probe.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: line-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Probe betting-line sources
+        run: python3 scripts/probe_lines.py
+
+      - name: Summarise
+        if: always()
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          p = Path("data/diag/line_probe.json")
+          if not p.exists():
+              print("**No probe output was written.**"); raise SystemExit(0)
+          d = json.loads(p.read_text())
+          print(f"## Line probe · {d['checked_at']}\n")
+          print(f"{d['fixture_count']} fixtures, **{d['fixtures_without_external_line']} without an external betting line**.\n")
+          print("| Source | Kind | HTTP | Two-way prices | Matches our fixtures | New coverage | Verdict |")
+          print("|---|---|---|---:|---:|---:|---|")
+          for c in d["candidates"]:
+              print(f"| {c.get('name')} | {c.get('kind')} | {c.get('http_status')} | "
+                    f"{c.get('priced_records', 0)} | {c.get('records_matched_to_fixtures', 0)} | "
+                    f"{c.get('fixtures_matched_and_previously_unpriced', 0)} | {c.get('verdict')} |")
+          PY
+
+      - name: Commit the probe evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          git config user.name "picks-bot"
+          git config user.email "actions@github.com"
+          git add data/diag/line_probe.json
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "diag: line-source probe [skip ci]"
+          for attempt in 1 2 3; do
+            git fetch -q origin "${GITHUB_REF_NAME}" || true
+            git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1 || git merge --abort >/dev/null 2>&1 || true
+            if git push -q origin "HEAD:${GITHUB_REF_NAME}"; then echo "pushed on attempt ${attempt}"; exit 0; fi
+            sleep 5
+          done
+          echo "could not push probe evidence" >&2
+          exit 1

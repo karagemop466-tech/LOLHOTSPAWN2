@@ -359,3 +359,9 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
   .hero-actions .btn { width: 100%; justify-content: center; }
 }
 @media (min-width: 860px) { .hero-details > summary { min-height: 0; } }
+/* Touch targets + phone-only full-width primary actions (2026-10-24) */
+details > summary { min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 640px) {
+  .hero-actions .btn { flex: 1 1 100%; }
+  .hero-actions { gap: 8px; }
+}
