@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:40:17.166925Z",
+ "checked_at": "2026-10-24T16:49:59.223267Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -66,12 +66,12 @@
    "name": "OddsPortal LoL",
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 503,
-   "bytes": 0,
+   "http_status": 200,
+   "bytes": 491898,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
   },
   {
    "name": "BetExplorer LoL",
@@ -100,7 +100,7 @@
    "url": "https://thunderpick.io/esports/league-of-legends",
    "kind": "esportsbook-page",
    "http_status": 403,
-   "bytes": 5789,
+   "bytes": 5767,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -162,7 +162,7 @@
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
   },
   {
-   "name": "Oddspedia LoL odds comparison",
+   "name": "Oddspedia LoL odds comparison (410 as of 2026-10-24)",
    "url": "https://oddspedia.com/league-of-legends/odds",
    "kind": "odds-comparison-page",
    "http_status": 410,
@@ -177,7 +177,7 @@
    "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 405151,
+   "bytes": 411971,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -188,7 +188,7 @@
    "url": "https://www.bmbets.com/e-sports/world/lol---prime-league/",
    "kind": "odds-comparison-page",
    "http_status": 200,
-   "bytes": 1045640,
+   "bytes": 1045643,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -225,7 +225,7 @@
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
    "kind": "sportsbook-api",
    "http_status": 200,
-   "bytes": 14032,
+   "bytes": 14028,
    "is_json": true,
    "lol_mentions_in_first_items": null,
    "detail": {
