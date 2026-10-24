@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:25:23.974254Z",
+ "checked_at": "2026-10-24T16:28:06.001250Z",
  "books": [
   {
    "name": "Pinnacle (guest JSON)",
@@ -22,7 +22,7 @@
    "category": "market",
    "http_status": 403,
    "is_json": false,
-   "bytes": 3644,
+   "bytes": 3646,
    "lol_mentions": null,
    "vs_style_items": null,
    "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
@@ -64,7 +64,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 366113,
+   "bytes": 366116,
    "lol_mentions": 0,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -106,7 +106,7 @@
    "category": "market",
    "http_status": 403,
    "is_json": false,
-   "bytes": 5767,
+   "bytes": 5789,
    "lol_mentions": null,
    "vs_style_items": null,
    "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
@@ -148,15 +148,15 @@
    "category": "market",
    "http_status": 203,
    "is_json": false,
-   "bytes": 2644,
+   "bytes": 2646,
    "lol_mentions": null,
    "vs_style_items": null,
-   "verdict": "HTTP 203 — nothing used",
+   "verdict": "served an interstitial/redirect page (HTTP 203) instead of the feed — no line can be read",
    "reachable": false,
    "structured": false
   },
   {
-   "name": "OddsPapi (API, key required)",
+   "name": "OddsPapi (API — no key configured)",
    "url": "https://api.oddspapi.io/v1/sports",
    "kind": "aggregator-api",
    "category": "market",
@@ -170,7 +170,7 @@
    "structured": false
   },
   {
-   "name": "odds-api.io (API, key required)",
+   "name": "odds-api.io (API — no key configured)",
    "url": "https://api.odds-api.io/v3/sports",
    "kind": "aggregator-api",
    "category": "market",
@@ -179,7 +179,7 @@
    "bytes": 1351,
    "lol_mentions": 0,
    "vs_style_items": 0,
-   "verdict": "reachable JSON without any League of Legends match market in the response — nothing used",
+   "verdict": "endpoint answers without a key, but the payload carries no League of Legends match market — its data needs a paid API key that is not configured here; nothing used",
    "reachable": true,
    "structured": true
   },
@@ -218,7 +218,7 @@
    "category": "market",
    "http_status": 403,
    "is_json": false,
-   "bytes": 5718,
+   "bytes": 5740,
    "lol_mentions": null,
    "vs_style_items": null,
    "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
