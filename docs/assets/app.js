@@ -190,6 +190,24 @@
     set("#stat-model", c.model ?? "—");
     set("#stat-unresolved", c.unresolved ?? "—");
 
+    // Phone-first answer to "where are the picks?": one line, above the hero.
+    const cta = $("#picks-cta");
+    if (cta) {
+      const cov = d.coverage || {};
+      const priced = cov.resolved ?? c.resolved ?? c.fixtures ?? 0;
+      const total = cov.fixtures ?? c.fixtures ?? 0;
+      const un = cov.unresolved ?? c.unresolved ?? 0;
+      const low = c.low_confidence ?? 0;
+      const gen = d.generated_at ? ` · refreshed ${relative(d.generated_at)}` : "";
+      cta.innerHTML = `<b>${priced}</b> of <b>${total}</b> upcoming Hotspawn matches have a pick right now`
+        + ` · <b>${cov.with_external_market ?? c.market ?? 0}</b> from bookmaker/prediction-market lines`
+        + ` · <b>${cov.with_model ?? c.model ?? 0}</b> from our own model`
+        + (low ? ` · <b>${low}</b> low confidence` : "")
+        + (un ? ` · <b>${un}</b> unresolved` : "")
+        + gen
+        + ` · <a href="picks.html">open the full updated list →</a>`;
+    }
+
     const rb = $("#recon-body");
     if (rb) {
       const r = d.coverage_reconciliation || {};

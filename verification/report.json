@@ -1,36 +1,36 @@
 {
- "verified_at": "2026-10-23T16:57:04.857741+00:00",
+ "verified_at": "2026-10-24T16:17:49.066632+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 36,
+  "PASS": 38,
   "FAIL": 0,
   "WARN": 0,
   "SKIP": 1
  },
- "data_matches": 172,
+ "data_matches": 169,
  "methods": {
-  "MARKET_BOOKS": 0,
-  "MODEL_ELO": 88,
   "MARKET_SINGLE": 1,
-  "MODEL_LEAGUE_PRIOR": 0,
   "MARKET_POLYMARKET": 0,
-  "MARKET_CONSENSUS": 8,
+  "MARKET_BOOKS": 0,
   "MODEL_STANDINGS": 0,
-  "MODEL_ELO_THIN": 75,
-  "UNRESOLVED": 0
+  "MODEL_ELO": 93,
+  "MODEL_ELO_THIN": 67,
+  "UNRESOLVED": 0,
+  "MARKET_CONSENSUS": 8,
+  "MODEL_LEAGUE_PRIOR": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "172 matches, generated_at=2026-10-23T16:52:07.057868Z (0.1h old)"
+   "detail": "169 matches, generated_at=2026-10-24T15:28:56.619239Z (0.8h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 172 rows have team1, team2 and a start time"
+   "detail": "all 169 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -72,7 +72,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 172 rows carry at least one source URL"
+   "detail": "all 169 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -126,7 +126,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=172, rows=172"
+   "detail": "declared=169, rows=169"
   },
   {
    "id": "D20",
@@ -138,13 +138,13 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=172, priced=172, missing=0, extra=0, excluded=12, leaked=0"
+   "detail": "lobby upcoming=169, priced=169, missing=0, extra=0, excluded=14, leaked=0"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 74 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 69 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
@@ -223,6 +223,18 @@
    "title": "all external links use https",
    "status": "PASS",
    "detail": "10 external link(s) collected for manual review; 0 plain-http"
+  },
+  {
+   "id": "S11",
+   "title": "every CSS class used by a page is defined in style.css",
+   "status": "PASS",
+   "detail": "7 page(s), no unstyled class"
+  },
+  {
+   "id": "S12",
+   "title": "all pages share one navigation, freshness slot and unique ids",
+   "status": "PASS",
+   "detail": "7 pages, identical nav with 6 primary targets"
   },
   {
    "id": "W1",
