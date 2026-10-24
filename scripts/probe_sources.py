@@ -175,6 +175,10 @@ def probe(category: str, name: str, url: str, kind: str, headers: dict | None = 
             if detail.get("group_count"):
                 verdict += (f"; {detail['group_count']} group(s), "
                             f"{detail.get('event_count', 0)} event(s)")
+            if "series_count" in detail and not detail["series_count"]:
+                verdict += "; 0 series (no LoL market)"
+            if "event_count" in detail and not detail["event_count"]:
+                verdict += "; 0 events"
             if lol_hits is not None:
                 verdict += f"; LoL mentions: {lol_hits}"
     elif status == 200:

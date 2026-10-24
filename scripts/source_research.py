@@ -104,9 +104,9 @@ SOURCES = [
                  "esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en"),
         "role": "probability_input",
         "observed": ("Public coupon JSON returned the World Championship '26 and EMEA Masters "
-                     "Summer series moneylines from a browser request on 2026-10-24 (8 + 1 "
-                     "fixtures). GitHub Actions received an empty {} in the 2026-10-23 probe, "
-                     "so Bovada is used only when a run actually returns prices."),
+                     "Summer series moneylines on 2026-10-24 (8 + 1 fixtures). The 2026-10-23 "
+                     "probe saw an empty {}, and the shape fix is what made the same feed readable "
+                     "in the 17:54Z run; Bovada is counted only when a run returns a price."),
         "limitation": ("Lists the leagues Bovada offers (Worlds and occasional tier-2 like "
                        "EMEA Masters); never counted as a source when the run returns no price."),
         "status_key": "Bovada",

@@ -773,3 +773,16 @@ difference (`{}` from CI's 2026-10-23 probe) instead of claiming a live price.
 | Publish hardening | the merge-based retry succeeded (the previous run failed in `git rebase --abort` and lost its payload — fixed in `9f6641c`) |
 | Fetch hardening | Leaguepedia requests capped at 25 s / 2 retries with a 600 s export budget, previous snapshot preferred when a fresh export is <85% of its size, `data/cache` cached between runs (`3c48a42`). The 16:35 run had hung in this step for 40+ minutes; the next run completed the whole pipeline in under 8 minutes |
 | Open item | `fetch_bovada()` reported `error` (“HTTP 200, no event groups”) while the same run's probe received **250,013 bytes** from the bare coupon endpoint. Fixed by normalising a single group object / group list / bare event list, keeping the competition path, and removing the `Origin` header (the endpoint returns an empty body with it). Local shape tests: group list → 9 records, single group → 8, bare event list → 8, empty → explicit error. Acceptance = the next live run publishes Bovada `ok` with a non-zero count. |
+
+### Live run 2026-10-24T17:54Z — Bovada parser fix verified in production (`arena/26d1e778`)
+
+Run `40117535357` (`1cd17e6`, 8m16s) finished green and published a fresh payload.
+
+| Item | Result |
+|---|---|
+| Payload | `generated_at 2026-10-24T17:54:30Z`, 158 fixtures, **158/158 resolved**, 0 unresolved, 64 Low, 8 market, 150 model, 9 cancelled excluded |
+| Bovada | **`ok` · 7 two-way prices** — the shape fix worked in CI (previously `error`, 0) |
+| Other books | Pinnacle `ok` 7 · Unibet `ok` 7 · Polymarket `ok` 9 → 7 `MARKET_CONSENSUS` + 1 `MARKET_SINGLE` |
+| Probe | 27 candidates at 17:46:40Z; Bovada row reports **1 group / 8 events** from 225,206 bytes |
+| Verifier | local run on the fresh payload: **PASS · 42 pass · 0 fail · 0 warn · 1 skip** |
+| Cross-check | LGC Rising: published 61.0% vs Thunderpick de-vig 64.8% (≈4 pts); the manual row now says “≈61%” so it does not go stale on every refresh |
