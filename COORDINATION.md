@@ -715,3 +715,17 @@ the exact source link so a human can repeat it.
 | Post-merge live 6h refresh on `main` | **success** — run `39989184592` (`9d65409`, `generated_at = 2026-10-23T16:52:07.057868Z`): **172 / 172 upcoming fixtures resolved (`100.0%`)**, `9` market (`8` 3-book consensus + `1` single), `163` Elo model (`88` `MODEL_ELO` + `75` `MODEL_ELO_THIN`), `0` unresolved, `12` cancelled fixtures excluded, `10` per-league breakdown rows & all 8 `sources_status` entries published |
 | Post-refresh Pages deploy #2 | **success** — run `39990334025` deployed fresh `9d65409` payload to https://karagemop466-tech.github.io/LOLHOTSPAWN2/ |
 | Follow-up verifier hardening PR (#28 + #29) | Merged `wait_for_http()` + `http_status_retry()` in `scripts/verify_site.py` (PR **#28**, Pages deploy `39990798461` **success**), and replaced US-geoblocked SPA route `www.pinnacle.com/en/esports/league-of-legends` (HTTP `404` on US-East CI runners) in `docs/methodology.html`'s manual check log with the public `200 OK` JSON feeds actually queried by CI (`guest.api.arcadia.pinnacle.com` & `gamma-api.polymarket.com`) so `verify.yml` passes `X1`–`X3` cleanly on `main`. |
+
+---
+
+## Session `arena/26fa1cec-lolhotspawn2` — 2026-10-24 (claim)
+
+**Baseline at claim:** `main`/session branch `72c9b5a` (payload generated 2026-10-24T15:28:56Z): 169 scheduled upcoming fixtures · **169 priced (100%)** · 9 market (8 consensus + 1 single) · 160 model (93 `MODEL_ELO` + 67 `MODEL_ELO_THIN`) · 0 `MODEL_STANDINGS` · 0 `MODEL_LEAGUE_PRIOR` · **0 `UNRESOLVED`** · 73 Low confidence · 14 cancelled Hotspawn fixtures excluded. No other session is active on `COORDINATION.md`. No commits by another session on these paths observed in `git log` since 2026-10-23T16:52Z.
+
+| Task | Status | Owner | Files (exclusive scope) |
+|---|---|---|---|
+| T20 Phone-first executive summary: one consistent header/nav on all 7 pages, a prominent in-site "where the updated picks are" block above the fold, explicit unresolved-picks + limitations section in the executive summary, remove non-functional controls, verify mobile readability | in progress | arena/26fa1cec | `docs/*.html`, `docs/assets/style.css`, `docs/assets/app.js`, `verification/check_dom_contract.py` (only if the contract needs extending) |
+| T21 External-source research v2 for fixtures the featured (market) picks cannot price: established books → esportsbooks → betting lines/aggregators → community results; new live probe of untried endpoints from GitHub Actions; promote any adapter that shows structured per-match LoL prices, otherwise publish the attempted sources + observed HTTP status + limitation on the site | in progress | arena/26fa1cec | `scripts/probe_sources.py`, `research/betting-sources.md`, `scripts/update_picks.py` (`CHECKED_UNAVAILABLE` / market-coverage payload only), `docs/methodology.html`, `docs/unresolved.html`, `README.md` |
+| T22 Integration: full local + CI verification, PR to `main` from this branch, merge, confirm GitHub Pages deploy, record PR/deploy/live-check here | in progress | arena/26fa1cec | `COORDINATION.md`, `verification/**` |
+
+**Scope rule:** this session edits only the paths above. `scripts/fetch_markets.py`, `scripts/fetch_leaguepedia.py`, `scripts/model.py`, `data/aliases.json`, and `.github/workflows/**` are **not** modified; any change needed there is logged as a request instead of edited.
