@@ -57,11 +57,22 @@ jobs:
         if: always()
         run: |
           python3 verification/check_dom_contract.py
+          python3 verification/test_dom_contract.py
           python3 verification/test_verifier.py
           python3 verification/test_standings_model.py
           python3 verification/test_entity_and_books.py
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Render smoke test (real app.js + payload through every page)
+        if: always()
+        run: |
+          npm install --no-save --no-audit --no-fund jsdom@24
+          node verification/render_smoke.js
 
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
 <meta name="color-scheme" content="light dark">
 <title>LoL Pick'em — Executive Summary · Independent Hotspawn Picks</title>
 <meta name="description" content="Independent League of Legends match picks and win probabilities for every fixture on Hotspawn's Pick'em lobby, refreshed automatically every 6 hours.">
@@ -13,25 +14,29 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="wrap bar">
-    <a class="brand" href="index.html">
-      <span class="mark" aria-hidden="true">LP</span>
-      <span>LoL Pick'em <small>Independent Hotspawn companion</small></span>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-mark" aria-hidden="true">🎯</span>
+      <span class="logo-text">Hotspawn LoL Picks<small>Independent picks · updated every 6h</small></span>
     </a>
-    <nav class="top-nav" aria-label="Primary">
-      <a href="index.html" data-nav="summary">Executive summary</a>
-      <a href="picks.html" data-nav="picks">All picks</a>
-      <a href="leagues.html" data-nav="leagues">By league</a>
-      <a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a>
-      <a href="flagged.html" data-nav="flagged">Flagged</a>
-      <a href="methodology.html" data-nav="methodology">Methodology</a>
-    </nav>
-    <div class="bar-end">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">☀️</button>
+    <div class="header-meta">
+      <span id="updated">Loading…</span><br>
+      <span class="freshness" id="freshness"><span class="dot"></span>checking freshness</span>
     </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">🌙</button>
   </div>
-  <div class="status-strip"><div class="wrap" id="status-strip">Loading latest picks…</div></div>
 </header>
+
+<nav class="top-nav" aria-label="Main">
+  <ul>
+    <li><a href="index.html" data-nav="summary">Summary</a></li>
+    <li><a href="picks.html" data-nav="picks">All picks</a></li>
+    <li><a href="leagues.html" data-nav="leagues">By league</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
+    <li><a href="flagged.html" data-nav="flagged">Flagged for review</a></li>
+    <li><a href="methodology.html" data-nav="methodology">Methodology &amp; sources</a></li>
+  </ul>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
@@ -58,6 +63,7 @@
       <a class="btn" href="flagged.html">🚩 Flagged for review →</a>
     </div>
     <div class="chips" role="navigation" aria-label="Jump to picks on this page">
+      <a class="chipbtn" href="#where">📍 Where the picks are ↓</a>
       <a class="chipbtn" href="#starting-soon">⏰ Starting soon ↓</a>
       <a class="chipbtn" href="#featured-heading">💰 Market picks ↓</a>
       <a class="chipbtn" href="#unresolved-heading">⚠️ Unresolved ↓</a>
@@ -68,10 +74,10 @@
 
   <section aria-label="Coverage metrics">
     <div class="stats">
-      <div class="stat"><b id="stat-fixtures">—</b><span>Scheduled matches</span></div>
-      <div class="stat"><b id="stat-market">—</b><span>With bookmaker lines</span></div>
-      <div class="stat"><b id="stat-model">—</b><span>Own Elo + Standings</span></div>
-      <div class="stat"><b id="stat-unresolved">—</b><span>Unresolved (50/50)</span></div>
+      <div class="stat"><b class="n" id="stat-fixtures">—</b><span class="l">Scheduled matches</span></div>
+      <div class="stat"><b class="n" id="stat-market">—</b><span class="l">With bookmaker lines</span></div>
+      <div class="stat"><b class="n" id="stat-model">—</b><span class="l">Own Elo + Standings</span></div>
+      <div class="stat"><b class="n" id="stat-unresolved">—</b><span class="l">Unresolved (50/50)</span></div>
     </div>
     <div class="card" style="margin-top:12px">
       <h3>Coverage of Hotspawn's match list</h3>
@@ -84,7 +90,35 @@
     </div>
   </section>
 
+  <section id="where" aria-label="Where the picks are">
+    <h2>Where the picks are — jump straight to the list</h2>
+    <p class="small">Every destination below is a page on this site. The same six links are in the bar under the title and in the thumb bar at the bottom of every screen on a phone.</p>
+    <div class="nav-list">
+      <a href="picks.html">
+        <span class="ico" aria-hidden="true">📋</span>
+        <span><b>All updated picks</b><span><span id="where-picks">every</span> match on Hotspawn's list, newest lock time first, with the pick and both win probabilities on one line.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="picks.html?filter=next24">
+        <span class="ico" aria-hidden="true">⏰</span>
+        <span><b>Next 24 hours only</b><span><span id="where-next24">matches</span> locking soonest — the fastest view of what to pick right now.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="leagues.html">
+        <span class="ico" aria-hidden="true">🏆</span>
+        <span><b>By league &amp; competition tier</b><span>Low-tier and amateur divisions grouped by competition, each with its own source link.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="unresolved.html">
+        <span class="ico" aria-hidden="true">⚠️</span>
+        <span><b>Unresolved &amp; limitations</b><span><span id="where-unresolved">0</span> explicit 50/50 placeholders and <span id="where-lowconf">low-confidence</span> picks, with the per-league reason picks are harder there.</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
   <section aria-label="Site sections" style="margin-top:18px">
+    <h2>All sections of this site</h2>
     <div class="nav-list">
       <a href="picks.html">
         <span class="ico" aria-hidden="true">📋</span>

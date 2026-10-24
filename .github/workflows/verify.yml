@@ -48,8 +48,20 @@ jobs:
             --out verification/leaguepedia_coverage.json \
             --md verification/leaguepedia_coverage.md
 
-      - name: DOM contract (every id the JS uses exists in the pages)
+      - name: DOM/mobile contract (ids, header skeleton, class coverage, no dead controls)
         run: python3 verification/check_dom_contract.py
+
+      - name: DOM contract negative self-tests (each rule must fail on a broken page)
+        run: python3 verification/test_dom_contract.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Render smoke test (runs the real app.js + payload against every page)
+        run: |
+          npm install --no-save --no-audit --no-fund jsdom@24
+          node verification/render_smoke.js
 
       - name: Upload verification artifacts
         if: always()

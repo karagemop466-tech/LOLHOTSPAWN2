@@ -42,6 +42,49 @@
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);
   }
 }
+/* Explicit theme choice — the header toggle sets data-theme on <html> and must
+   beat both the OS preference above and the default :root block in both directions. */
+:root[data-theme="light"] {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef2f9;
+  --text: #0f172a;
+  --muted: #5b6478;
+  --line: #dfe5ef;
+  --brand: #1d4ed8;
+  --brand-ink: #ffffff;
+  --green: #15803d;
+  --green-soft: #dcfce7;
+  --amber: #b45309;
+  --amber-soft: #fef3c7;
+  --red: #b91c1c;
+  --red-soft: #fee2e2;
+  --blue-soft: #dbeafe;
+  --violet: #6d28d9;
+  --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 8px 24px rgba(15, 23, 42, .06);
+  --radius: 16px;
+  --max: 1180px;
+  --nav-h: 60px;
+}
+:root[data-theme="dark"] {
+    --bg: #0b1020;
+    --surface: #131a2e;
+    --surface-2: #1b2440;
+    --text: #eef2ff;
+    --muted: #a7b0c8;
+    --line: #27324f;
+    --brand: #7aa2ff;
+    --brand-ink: #0b1020;
+    --green: #4ade80;
+    --green-soft: #12351f;
+    --amber: #fbbf24;
+    --amber-soft: #3a2b08;
+    --red: #f87171;
+    --red-soft: #3b1212;
+    --blue-soft: #16233f;
+    --violet: #c4b5fd;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.25);}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
@@ -287,3 +330,36 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
 .pick-pill.red { background: var(--red-soft); color: var(--red); border-color: rgba(185, 28, 28, .3); }
 .cat-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
 .cat-section { margin: 22px 0; scroll-margin-top: 90px; }
+
+/* header theme control (works on every page, persisted in localStorage) */
+.icon-btn {
+  flex: 0 0 auto; margin-left: 8px; width: 42px; height: 42px; min-height: 42px;
+  display: inline-grid; place-items: center; cursor: pointer;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 12px; font-size: 17px; line-height: 1;
+}
+.icon-btn:active { transform: translateY(1px); }
+@media (max-width: 420px) {
+  .header-meta { font-size: 11px; }
+  .logo-text { font-size: 14px; }
+  .logo-text small { font-size: 10px; }
+}
+
+/* competition category cards on the executive summary */
+.nav-list { display: grid; gap: 10px; margin: 14px 0; }
+@media (min-width: 760px) { .nav-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.nav-list > a {
+  display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); text-decoration: none; color: var(--text);
+}
+.nav-list > a:hover, .nav-list > a:focus-visible { border-color: var(--brand); }
+.nav-list .ico { font-size: 24px; width: 40px; text-align: center; flex: 0 0 auto; }
+.nav-list b { display: block; font-size: 16px; }
+.nav-list span span, .nav-list a > span > span { display: block; color: var(--muted); font-size: 13px; font-weight: 500; }
+.nav-list .arrow { margin-left: auto; color: var(--brand); font-weight: 900; font-size: 20px; flex: 0 0 auto; }
+
+/* coverage bar on the executive summary (separate class from the header bar) */
+.covbar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-2); margin: 6px 0 8px; }
+.covbar i { display: block; background: var(--green); height: 100%; }
+.covbar b { display: block; background: color-mix(in srgb, var(--muted) 35%, var(--surface-2)); height: 100%; }
