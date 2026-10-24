@@ -12,6 +12,7 @@ Run: python3 verification/test_dom_contract.py
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -56,7 +57,7 @@ def main() -> int:
 
     # 2. A class that no stylesheet rule defines (unstyled markup).
     d = copy_docs()
-    patch(os.path.join(d, "index.html"), '<div class="nav-list">', '<div class="nav-list never-styled">')
+    patch(os.path.join(d, "index.html"), '<div class="linkgrid">', '<div class="linkgrid never-styled">')
     code, out = run(d)
     checks.append(("undefined class fails C1",
                    code == 1 and "never-styled" in out, [l for l in out.splitlines() if "never-styled" in l][:1]))
@@ -97,8 +98,10 @@ def main() -> int:
 
     # 6. A page missing the viewport meta.
     d = copy_docs()
-    patch(os.path.join(d, "match.html"),
-          '<meta name="viewport" content="width=device-width, initial-scale=1">', '')
+    html_match = open(os.path.join(d, "match.html"), encoding="utf-8").read()
+    viewport = re.search(r'<meta name="viewport"[^>]*>', html_match)
+    assert viewport, "match.html has no viewport meta to remove"
+    patch(os.path.join(d, "match.html"), viewport.group(0), '')
     code, out = run(d)
     checks.append(("missing viewport meta fails C6",
                    code == 1 and "C6 match.html" in out, [l for l in out.splitlines() if "C6" in l][:1]))

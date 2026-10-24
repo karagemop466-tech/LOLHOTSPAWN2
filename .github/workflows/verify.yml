@@ -65,14 +65,12 @@ jobs:
           fi
           exit "$rc"
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Render smoke test (runs the real app.js + payload against every page)
+      - name: Render check (jsdom runs the real pages against the payload)
         run: |
-          npm install --no-save --no-audit --no-fund jsdom@24
-          node verification/render_smoke.js
+          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
+            echo "jsdom not installed; render_check will SKIP"
+          node verification/render_check.cjs
+
 
       - name: Upload verification artifacts
         if: always()

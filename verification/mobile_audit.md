@@ -1,78 +1,80 @@
-# Mobile & accessibility audit — 2026-10-24 (session `arena/9d523943`)
+# Mobile & accessibility audit — 2026-10-24
 
 Scope: the seven published pages (`docs/index.html`, `picks.html`, `leagues.html`,
-`unresolved.html`, `flagged.html`, `methodology.html`, `match.html`), the shared
-stylesheet `docs/assets/style.css` and the shared script `docs/assets/app.js`.
+`unresolved.html`, `flagged.html`, `methodology.html`, `match.html`), the shared stylesheet
+`docs/assets/style.css` and the shared script `docs/assets/app.js`.
 
-Method: the markup of every page was read against the selectors that actually exist
-in `style.css`, and the selectors that `app.js` writes against the ids that actually
-exist in each page. Every finding below is a reproducible fact about the files in this
-repository — no browser was required to establish it — and each one is now covered by
-an automated check (see *Verification added*).
+Method: every page's markup was read against the selectors that actually exist in `style.css`, and every
+selector `app.js` writes against the ids that actually exist in each page. Nothing below needs a browser to
+establish — each finding is a fact about the files in this repository — and each one is now covered by an
+automated check.
+
+Two sessions audited this area on the same day. Session `arena/c38ce482` landed the shared header/nav skeleton
+and the “Where the updated picks are” card on `main` first; this audit's conflicting work was reconciled onto
+theirs (see *Merge note* at the end) rather than duplicating it.
 
 ---
 
-## 1. Defects found (all fixed in this session)
+## 1. Defects found and fixed
 
-| # | Page | Defect | Why it mattered on a phone | Fix |
+| # | Where | Defect | Why it mattered on a phone | Fix |
 |---|---|---|---|---|
-| D1 | `index.html` (executive summary) and `unresolved.html` | The header wrapper was `<div class="wrap bar">`. `.bar` is the **probability progress-bar** component: `display:flex; height:12px; border-radius:999px; overflow:hidden`. The logo, page title and primary navigation were therefore clipped to a 12 px-tall strip with `overflow:hidden`. | The landing page — the one the brief says must lead to the picks — rendered a header that could not be read or tapped. | Header rebuilt to the same `<header class="site-header"> → .header-inner` structure the other five pages use. Check `C3` now rejects any non-header class inside the header. |
-| D2 | `index.html`, `unresolved.html` | Primary navigation was `<nav class="top-nav"><a>…</a></nav>` with no `<ul>`. `style.css` styles `.top-nav ul` as the horizontal, scrollable, 40 px-tall tap strip. | Nav links fell back to inline text: no scroll strip, uneven tap targets, and wrapping on narrow screens. | Standardised on `<nav class="top-nav"><ul><li><a>` with the six sections, on all seven pages. Checks `C2`. |
-| D3 | `index.html`, `unresolved.html` | The freshness/timestamp block targeted `#updated` and `#freshness`, which did not exist on those two pages; instead there was a `#status-strip` div that no script ever wrote to. | The executive summary permanently displayed “Loading latest picks…” — a reader could not tell whether the numbers were current. | Both pages now carry the `#updated` / `#freshness` header block; check `C5` requires those ids on every page. |
-| D4 | `index.html`, `unresolved.html` | `<button id="theme-toggle">` existed but no script handled it — a dead control. There was also no theme logic anywhere: dark mode came only from `prefers-color-scheme`. | A button that does nothing is worse than no button; readers on phones in bright light had no override. | Working toggle added to all seven pages: flips `<html data-theme>`, swaps icon + `aria-label`, persists in `localStorage`, and overrides the OS preference in both directions. Check `C4` fails on any handler-less `<button id>`. |
-| D5 | `index.html` | Unstyled classes: `brand`, `mark`, `bar-end`, `icon-btn`, `nav-list`, `covbar`, `status-strip` had **no rule** in `style.css`. The “site sections” cards and the coverage bar rendered as bare text. | The four big section cards (All picks / By league / Unresolved / Flagged) — the site's main navigation affordance — were unformatted text on phones. | `.nav-list`, `.covbar`, `.icon-btn` added; the legacy `brand`/`mark`/`bar-end`/`status-strip` markup was removed in favour of the shared header classes. Check `C1` fails on any class with no stylesheet rule. |
-| D6 | `index.html` | The four stat tiles used `<b>`/`<span>` but the stylesheet sizes `.stat .n` / `.stat .l`. | Headline counts (matches, market rows, model rows, unresolved) rendered at body size instead of as large numbers. | Markup now uses `.n` / `.l`. |
-| D7 | `methodology.html` | `<table class="table">` used a class that is not defined anywhere. | Cosmetic only — table styling comes from the element selector. | Class removed; `C1` keeps it from coming back. |
-| D8 | all pages | The six primary destinations were only reachable through the top nav (D2 made it unusable on two pages) or the fixed bottom bar. | The brief asks for an executive summary that *links to where the picks are*. | New `#where` section at the top of the summary: four large tap targets with live counts (all picks, next 24 h, by league, unresolved + low-confidence), plus a `📍 Where the picks are ↓` chip in the hero. |
+| D1 | `index.html`, `unresolved.html` | The header wrapper was `<div class="wrap bar">`, and `.bar` is the *probability progress bar* (`display:flex; height:12px; overflow:hidden`). Logo, title and primary navigation were clipped to a 12 px strip. | The landing page — the page that must lead to the picks — had a header that could not be read or tapped. | Shared `<header class="site-header"> → .header-inner` skeleton on all seven pages. `render_check.cjs` now fails if the header computes to a fixed height < 40 px or clips its content. |
+| D2 | `index.html`, `unresolved.html` | Primary nav was `<nav class="top-nav"><a>…</a></nav>` with no `<ul>`; `style.css` styles `.top-nav ul` as the horizontal 40 px tap strip. | Nav links fell back to inline text: no scroll strip, uneven tap targets, wrapping on narrow screens. | Six-section `<ul>` nav on every page, one active item per page. |
+| D3 | `index.html`, `unresolved.html` | The freshness/timestamp slots (`#updated`, `#freshness`) did not exist; an unscripted `#status-strip` sat there instead. | The executive summary displayed “Loading latest picks…” permanently — a reader could not tell whether the numbers were current. | Both slots exist on every page; `C5` enforces it. |
+| D4 | all pages | `<button id="theme-toggle">` existed with **no handler** in `app.js` — a dead control — and the stylesheet had no theme override at all. | A button that does nothing is worse than no button, and readers had no way to override the OS theme. | Real toggle on all seven pages: flips `<html data-theme>`, swaps icon + `aria-label`, persists in `localStorage`, overrides the OS preference in both directions. `C4` fails on any handler-less `<button id>`; `render_check.cjs` clicks it on every page and asserts the flip persists. |
+| D5 | `index.html` | Seven classes had **no rule** in `style.css` (`brand`, `mark`, `bar-end`, `icon-btn`, `nav-list`, `covbar`, `status-strip`). | The section cards and the coverage bar rendered as bare text. | Legacy markup replaced by the shared header classes; `.covbar`, `.icon-btn` and the link-card grid now exist. `C1` (and `verify_site.py`'s `S11`) fail on any unstyled class. |
+| D6 | `index.html` | Stat tiles used `<b>`/`<span>` while the stylesheet sizes `.stat .n` / `.stat .l`. | Headline counts rendered at body size instead of as large numbers. | Markup aligned with the CSS. |
+| D7 | `methodology.html` | `<table class="table">` used a class defined nowhere. | Cosmetic. | Class removed; `C1` keeps it out. |
+| D8 | `index.html` | The picks list was reachable only through the (broken) nav. | The brief requires the summary itself to link to where the picks are. | **“📌 Where the updated picks are”** block at the top of the summary: all picks · next 24 h · by league · unresolved/limits, each with a live count. |
 
-## 2. What was checked and found already correct
+## 2. Verified already correct
 
 | Area | Evidence |
 |---|---|
 | Responsive viewport | `width=device-width` on all seven pages (`C6`). |
-| Wide tables on phones | `@media (max-width: 760px)` turns `table/thead/tbody/tr/td` into stacked cards with `data-label` captions (`C6` asserts the rule still exists). |
-| Bottom navigation | 6 links, `grid-template-columns: repeat(6, …)`, 60 px tap height, safe-area inset (`C2` + `C6`). |
+| Wide tables on phones | `@media (max-width: 760px)` turns `table/thead/tbody/tr/td` into stacked cards with `data-label` captions (`C6` asserts the rule survives). |
+| Bottom navigation | 6 links, `repeat(6, …)` grid, 60 px tap height, safe-area inset (`C2`/`render_check`). |
 | Tap targets | `.btn` 48 px, `.chipbtn` 40 px, `.top-nav a` 40 px, `.bottom-nav a` 60 px, `.icon-btn` 42 px. |
-| Dark mode | Full variable set for dark, plus the new explicit override; `.dot.stale` / `.dot.bad` freshness states. |
+| Type | 16 px base, 13–14 px secondary, `-webkit-text-size-adjust:100%`. |
 | Long source URLs | `main a, .sub, .small { overflow-wrap:anywhere }` prevents sideways scroll from Leaguepedia URLs. |
-| Body type | 16 px base, 13–14 px secondary, `-webkit-text-size-adjust:100%`. |
 
-## 3. Verification added
+## 3. Checks added
 
-1. `verification/check_dom_contract.py` — extended from one check (ids exist) to seven:
-   `C1` class coverage, `C2` header/nav skeleton + six nav sections, `C3` no
-   non-header class inside the header, `C4` no dead `<button id>`, `C5` the ids
-   `app.js` writes on every page, `C6` mobile contracts (viewport, theme-color,
-   table→card rule, 16 px body).
-2. `verification/test_dom_contract.py` — **7/7 negative self-tests**: it copies
-   `docs/`, injects one defect at a time (the `.bar` header, an undefined class, a
-   missing `#updated`, a handler-less button, a `top-nav` without `<ul>`, a missing
-   viewport meta) and asserts the contract fails with the right message. The
-   baseline copy must pass.
-3. `verification/render_smoke.js` — jsdom run of the **real** `app.js` against the
-   **real** `docs/data/picks.json` on all seven pages: no uncaught errors, header
-   timestamp and freshness populated, the summary counters filled, one picks row per
-   fixture with an outbound source link on every row, match detail rendered, and the
-   theme button flips `data-theme`, persists, and is re-applied on reload.
-   **63/63 checks pass**; two injected defects (removed `#updated`, renamed theme
-   button) produced exactly two failures, so the harness is not vacuous.
+1. `verification/check_dom_contract.py` — `C1` class↔CSS coverage, `C2` header/nav skeleton + the six destinations,
+   `C3` no non-header class inside the header (the D1 regression), `C4` no dead `<button id>`, `C5` the ids `app.js`
+   writes on every page, `C6` mobile contracts (viewport, theme-color, table→card rule, ≥16 px body), plus the
+   original id and bottom-nav-column checks.
+2. `verification/test_dom_contract.py` — **7/7** negative self-tests: each rule must fail on an injected defect
+   (the `.bar` header, an undefined class, a missing `#updated`, a handler-less button, a `top-nav` without `<ul>`,
+   a missing viewport meta) while the untouched copy passes.
+3. `verification/render_check.cjs` — extended: on every page it now also clicks the theme button and asserts
+   `data-theme` flips, the choice is stored, and the `aria-label` updates.
+4. `verification/check_source_pages.py` — every cited Leaguepedia tournament page must exist; Leaguepedia answers
+   **200 with an empty body** for a missing title, so a URL check alone cannot certify a citation.
 
-Both new test runners are wired into `.github/workflows/verify.yml` and
-`.github/workflows/pipeline-test.yml`, so a regression fails CI instead of shipping.
+All four run in `.github/workflows/verify.yml`, and 1–3 also run in `.github/workflows/pipeline-test.yml`.
 
-## 4. Remaining limitation (disclosed, not hidden)
+## 4. Merge note (coordination)
 
-There is no real browser in the CI runners, so this audit covers DOM, CSS-rule
-presence and script behaviour, not rendered pixels. jsdom has no layout engine:
-it cannot measure wrapping, overlap or contrast. A manual pass on a physical phone
-or a browser device-emulation view is still the final check, and the audit above is
-designed to leave that pass with nothing structural to find.
+`main` moved while this audit was open: session `arena/c38ce482` had independently fixed D1/D2/D8 and added a jsdom
+render harness (`verification/render_check.cjs`) plus `S11`/`S12` class-and-nav checks in `verify_site.py`.
+The merge kept **their** header markup, “Where the updated picks are” card and render harness, and kept this
+session's theme toggle, `C1`–`C6` contract, negative self-tests and source-page check; this session's duplicate
+render harness (`render_smoke.js`) was **deleted** rather than shipped twice. Nothing was overwritten silently.
 
-## 5. Reproduce
+## 5. Remaining limitation (disclosed, not hidden)
+
+There is no real browser in the CI runners. This audit covers DOM, CSS-rule presence and script behaviour, not
+rendered pixels; jsdom has no layout engine and cannot measure wrapping, overlap or contrast. A manual pass on a
+physical phone remains the final check — the audit is designed to leave that pass with nothing structural to find.
+
+## 6. Reproduce
 
 ```bash
 python3 verification/check_dom_contract.py      # C1–C6 contract
 python3 verification/test_dom_contract.py       # 7/7 negative self-tests
 npm install --no-save jsdom@24
-node verification/render_smoke.js               # 63/63 render checks
+node verification/render_check.cjs              # renders all 7 pages + theme toggle
+python3 verification/check_source_pages.py      # cited Leaguepedia pages exist (network)
 ```

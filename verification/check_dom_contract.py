@@ -39,6 +39,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
 
 PRIMARY_SECTIONS = ["summary", "picks", "leagues", "unresolved", "flagged", "methodology"]
+# The same six destinations as page filenames, which is what the nav must link to.
+PRIMARY_PAGES = ["index", "picks", "leagues", "unresolved", "flagged", "methodology"]
 
 # Written by setHeader()/toastError() on every page, whatever the page renders.
 ALWAYS_PRESENT_IDS = ["error-box", "freshness-warning", "updated", "freshness"]
@@ -195,10 +197,11 @@ def main() -> int:
         if p.top_nav_items != len(PRIMARY_SECTIONS):
             problems.append(
                 f"C2 {name}: .top-nav has {p.top_nav_items} section links, expected {len(PRIMARY_SECTIONS)}")
-        nav_ids = set(re.findall(r'data-nav="([a-z]+)"', html[name]))
-        if not set(PRIMARY_SECTIONS).issubset(nav_ids):
-            problems.append(f"C2 {name}: nav data-nav targets {sorted(nav_ids)} miss "
-                            f"{sorted(set(PRIMARY_SECTIONS) - nav_ids)}")
+        nav_block = re.search(r'<nav[^>]*class="top-nav"[^>]*>(.*?)</nav>', html[name], re.S)
+        nav_hrefs = set(re.findall(r'href="([a-z]+)\.html', nav_block.group(1))) if nav_block else set()
+        if not set(PRIMARY_PAGES).issubset(nav_hrefs):
+            problems.append(f"C2 {name}: primary nav does not link to "
+                            f"{sorted(set(PRIMARY_PAGES) - nav_hrefs)}")
 
     # ---- C3: no cross-component class reuse inside the header --------------
     for name, p in pages.items():

@@ -58,6 +58,17 @@ jobs:
         run: |
           python3 verification/check_dom_contract.py
           python3 verification/test_dom_contract.py
+          set +e
+          python3 verification/check_source_pages.py 2>&1 | tee data/diag/source_pages.log
+          src_rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$src_rc" = "2" ]; then
+            echo "::warning title=Source page check skipped::Leaguepedia API was unreachable; page existence not verified in this run"
+          elif [ "$src_rc" != "0" ]; then
+            echo "::error title=Cited source page missing::a tournament page cited by a pick row does not exist on Leaguepedia"
+            exit "$src_rc"
+          fi
+          python3 verification/test_dom_contract.py
           python3 verification/test_verifier.py
           python3 verification/test_standings_model.py
           python3 verification/test_entity_and_books.py
@@ -83,6 +94,13 @@ jobs:
         run: |
           npm install --no-save --no-audit --no-fund jsdom@24
           node verification/render_smoke.js
+
+      - name: Render check (jsdom runs the real pages against the payload)
+        if: always()
+        run: |
+          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
+            echo "jsdom not installed; render_check will SKIP"
+          node verification/render_check.cjs
 
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()

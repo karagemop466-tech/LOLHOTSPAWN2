@@ -1,30 +1,30 @@
 {
- "verified_at": "2026-10-24T16:47:51.331951+00:00",
+ "verified_at": "2026-10-24T16:46:38.412004+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 36,
+  "PASS": 40,
   "FAIL": 0,
-  "WARN": 2,
+  "WARN": 1,
   "SKIP": 0
  },
  "data_matches": 160,
  "methods": {
-  "MODEL_ELO_THIN": 58,
-  "MODEL_ELO": 93,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MARKET_CONSENSUS": 8,
-  "MARKET_BOOKS": 0,
   "MARKET_SINGLE": 1,
-  "UNRESOLVED": 0,
+  "MODEL_ELO_THIN": 57,
+  "MODEL_LEAGUE_PRIOR": 0,
   "MODEL_STANDINGS": 0,
-  "MARKET_POLYMARKET": 0
+  "MARKET_BOOKS": 0,
+  "MARKET_POLYMARKET": 0,
+  "MARKET_CONSENSUS": 8,
+  "UNRESOLVED": 0,
+  "MODEL_ELO": 94
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "160 matches, generated_at=2026-10-24T16:47:50.011901Z (0.0h old)"
+   "detail": "160 matches, generated_at=2026-10-24T16:42:29.066048Z (0.1h old)"
   },
   {
    "id": "D2",
@@ -141,6 +141,12 @@
    "detail": "lobby upcoming=160, priced=160, missing=0, extra=0, excluded=10, leaked=0"
   },
   {
+   "id": "D22",
+   "title": "external-source probe rows are sourced and never carry a probability",
+   "status": "PASS",
+   "detail": "22 probed source(s), each with an https link, HTTP status and verdict"
+  },
+  {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
@@ -150,7 +156,7 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "WARN",
-   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.1h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
+   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (68.0h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
    "items": [
     "Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00",
     "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
@@ -201,6 +207,12 @@
    "detail": "exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True}"
   },
   {
+   "id": "S4c",
+   "title": "executive summary has a dedicated in-site picks block",
+   "status": "PASS",
+   "detail": "4 in-site links, counts bound to ids; 0 missing"
+  },
+  {
    "id": "S5",
    "title": "separate unresolved section with limitations",
    "status": "PASS",
@@ -234,7 +246,19 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "10 external link(s) collected for manual review; 0 plain-http"
+   "detail": "15 external link(s) collected for manual review; 0 plain-http"
+  },
+  {
+   "id": "S11",
+   "title": "every CSS class used by a page is defined in style.css",
+   "status": "PASS",
+   "detail": "7 page(s), no unstyled class"
+  },
+  {
+   "id": "S12",
+   "title": "all pages share one navigation, freshness slot and unique ids",
+   "status": "PASS",
+   "detail": "7 pages, identical nav with 6 primary targets"
   },
   {
    "id": "W1",
@@ -253,15 +277,6 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
-  },
-  {
-   "id": "X1",
-   "title": "external links reachable (official-source links resolve)",
-   "status": "WARN",
-   "detail": "8/10 returned 2xx/3xx; 1 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
-   "items": [
-    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403"
-   ]
   },
   {
    "id": "REQ",
