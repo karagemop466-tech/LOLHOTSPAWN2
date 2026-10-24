@@ -1,23 +1,23 @@
 {
- "verified_at": "2026-10-24T16:37:59.246532+00:00",
+ "verified_at": "2026-10-24T16:39:47.415487+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 38,
   "FAIL": 0,
-  "WARN": 2,
-  "SKIP": 0
+  "WARN": 0,
+  "SKIP": 1
  },
  "data_matches": 160,
  "methods": {
-  "MODEL_STANDINGS": 0,
-  "MODEL_ELO": 94,
-  "MARKET_BOOKS": 0,
-  "MODEL_ELO_THIN": 57,
   "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_STANDINGS": 0,
+  "MARKET_CONSENSUS": 8,
+  "MODEL_ELO_THIN": 57,
   "UNRESOLVED": 0,
   "MARKET_SINGLE": 1,
-  "MARKET_POLYMARKET": 0,
-  "MARKET_CONSENSUS": 8
+  "MODEL_ELO": 94,
+  "MARKET_BOOKS": 0,
+  "MARKET_POLYMARKET": 0
  },
  "checks": [
   {
@@ -155,20 +155,8 @@
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "WARN",
-   "detail": "108/118 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (67.9h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule.",
-   "items": [
-    "Whalepower Humpbacks vs 1. Esport Club Frankfurt e.V.: ours=2026-10-24 17:30 lp=2026-10-24 17:00",
-    "Mazepa vs B2U: ours=2026-10-26 18:00 lp=2026-10-24 17:00",
-    "Karolinerna vs Turbo Gaming: ours=2026-10-27 18:00 lp=2026-10-24 16:30",
-    "FlameHard vs B2U: ours=2026-10-28 17:00 lp=2026-10-24 16:30",
-    "Babos Gaming Academy vs VfB x Engines Stuttgart: ours=2026-10-29 18:00 lp=2026-10-25 16:00",
-    "Playwell Rød Q vs Your Saviours: ours=2026-10-30 17:00 lp=2026-10-01 17:45",
-    "Volda E-Sport vs Ascent Gaming: ours=2026-10-30 17:00 lp=2026-09-26 17:00",
-    "Karolinerna vs Lund Esports Organization OGs: ours=2026-11-01 18:00 lp=2026-10-25 18:00",
-    "Rich Gang Sweden vs Northern Wolves Esports: ours=2026-11-01 18:00 lp=2026-10-25 17:30",
-    "2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30"
-   ]
+   "status": "SKIP",
+   "detail": "no --leaguepedia-schedule snapshot supplied"
   },
   {
    "id": "D14",
@@ -265,16 +253,6 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
-  },
-  {
-   "id": "X1",
-   "title": "external links reachable (official-source links resolve)",
-   "status": "WARN",
-   "detail": "9/11 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
-   "items": [
-    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
-    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403"
-   ]
   },
   {
    "id": "REQ",

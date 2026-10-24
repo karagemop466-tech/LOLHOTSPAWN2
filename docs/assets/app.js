@@ -205,7 +205,7 @@
     if (!books.length) return `<tr><td colspan="4" class="small">No external-source probe ran in this refresh.</td></tr>`;
     return books.map((b) => `<tr>
       <td data-label="Source"><b>${esc(b.name)}</b><span class="sub"><a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.url)} ↗</a></span></td>
-      <td data-label="Type"><span class="chip">${esc(b.category || b.kind || "")}</span><span class="sub">${esc(b.kind || "")}</span></td>
+      <td data-label="Type"><span class="chip">${b.category === "results" ? "Results" : "Market"}</span><span class="sub">${esc(b.kind || "")}</span></td>
       <td data-label="HTTP"><span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}">${esc(b.http_status ?? "no response")}</span></td>
       <td data-label="Verdict" class="small">${esc(b.verdict || "")}</td>
     </tr>`).join("");
