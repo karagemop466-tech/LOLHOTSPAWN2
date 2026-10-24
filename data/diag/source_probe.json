@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:26:27.017310Z",
+ "checked_at": "2026-10-24T16:37:29.861587Z",
  "candidates": [
   {
    "name": "Pinnacle guest LoL leagues (production)",
@@ -56,12 +56,16 @@
    "tier": "established-book",
    "http_status": 200,
    "is_json": true,
-   "lol_mentions": 0,
+   "lol_mentions": 1,
    "low_tier_markers_seen": [],
    "detail": {
-    "top_level_keys": [],
+    "item_count": 1,
+    "vs_style_questions": 0,
+    "question_sample": [
+     ""
+    ],
     "low_tier_markers_seen": [],
-    "bytes": 2
+    "bytes": 11752
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
   },
@@ -89,7 +93,7 @@
      "hitpoint",
      "lgc rising"
     ],
-    "bytes": 4361919
+    "bytes": 4357679
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
   },
@@ -133,15 +137,15 @@
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
    "tier": "established-book",
-   "http_status": 200,
+   "http_status": 503,
    "is_json": false,
    "lol_mentions": null,
    "low_tier_markers_seen": [],
    "detail": {
     "low_tier_markers_seen": [],
-    "bytes": 491898
+    "bytes": 0
    },
-   "verdict": "reachable HTML — human cross-check only; no structured per-match prices parsed"
+   "verdict": "not usable from CI (HTTP 503)"
   },
   {
    "name": "BetExplorer LoL board",
@@ -225,13 +229,9 @@
    "http_status": 403,
    "is_json": false,
    "lol_mentions": null,
-   "low_tier_markers_seen": [
-    "lfl"
-   ],
+   "low_tier_markers_seen": [],
    "detail": {
-    "low_tier_markers_seen": [
-     "lfl"
-    ],
+    "low_tier_markers_seen": [],
     "bytes": 5718
    },
    "verdict": "not usable from CI (HTTP 403)"
@@ -341,7 +341,7 @@
    "low_tier_markers_seen": [],
    "detail": {
     "low_tier_markers_seen": [],
-    "bytes": 957
+    "bytes": 961
    },
    "verdict": "not usable from CI (HTTP 403)"
   },
@@ -356,7 +356,7 @@
    "low_tier_markers_seen": [],
    "detail": {
     "low_tier_markers_seen": [],
-    "bytes": 2632
+    "bytes": 2630
    },
    "verdict": "not usable from CI (HTTP 203)"
   },
@@ -371,7 +371,7 @@
    "low_tier_markers_seen": [],
    "detail": {
     "low_tier_markers_seen": [],
-    "bytes": 5762
+    "bytes": 5783
    },
    "verdict": "not usable from CI (HTTP 403)"
   },
@@ -510,7 +510,7 @@
  "by_tier": {
   "established-book": {
    "probed": 11,
-   "http_200": 8,
+   "http_200": 7,
    "json": 6,
    "reachable_with_low_tier_markers": 1
   },
