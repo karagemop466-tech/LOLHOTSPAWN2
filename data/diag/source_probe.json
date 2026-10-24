@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:37:29.861587Z",
+ "checked_at": "2026-10-24T16:48:11.192163Z",
  "candidates": [
   {
    "name": "Pinnacle guest LoL leagues (production)",
@@ -45,7 +45,7 @@
      "terms"
     ],
     "low_tier_markers_seen": [],
-    "bytes": 14032
+    "bytes": 14028
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
   },
@@ -65,7 +65,7 @@
      ""
     ],
     "low_tier_markers_seen": [],
-    "bytes": 11752
+    "bytes": 11751
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
   },
@@ -93,7 +93,7 @@
      "hitpoint",
      "lgc rising"
     ],
-    "bytes": 4357679
+    "bytes": 4357470
    },
    "verdict": "reachable; structured JSON — candidate for a future adapter, needs per-match price verification before any production use"
   },
@@ -341,7 +341,7 @@
    "low_tier_markers_seen": [],
    "detail": {
     "low_tier_markers_seen": [],
-    "bytes": 961
+    "bytes": 964
    },
    "verdict": "not usable from CI (HTTP 403)"
   },
@@ -356,7 +356,7 @@
    "low_tier_markers_seen": [],
    "detail": {
     "low_tier_markers_seen": [],
-    "bytes": 2630
+    "bytes": 2632
    },
    "verdict": "not usable from CI (HTTP 203)"
   },
@@ -368,9 +368,15 @@
    "http_status": 403,
    "is_json": false,
    "lol_mentions": null,
-   "low_tier_markers_seen": [],
+   "low_tier_markers_seen": [
+    "lfl",
+    "prm"
+   ],
    "detail": {
-    "low_tier_markers_seen": [],
+    "low_tier_markers_seen": [
+     "lfl",
+     "prm"
+    ],
     "bytes": 5783
    },
    "verdict": "not usable from CI (HTTP 403)"
