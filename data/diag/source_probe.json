@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T17:55:38.660226Z",
+ "checked_at": "2026-10-24T18:04:34.719315Z",
  "candidates": [
   {
    "category": "Established sportsbooks",
@@ -30,7 +30,7 @@
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubca/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true",
    "kind": "sportsbook-json",
    "http_status": 200,
-   "bytes": 12353,
+   "bytes": 12461,
    "is_json": true,
    "lol_mentions": 0,
    "vs_pairs": null,
@@ -49,7 +49,7 @@
     ],
     "event_count": 7
    },
-   "verdict": "reachable structured JSON (12347 bytes); LoL mentions: 0",
+   "verdict": "reachable structured JSON (12455 bytes); LoL mentions: 0",
    "error": null
   },
   {
@@ -58,21 +58,15 @@
    "url": "https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends",
    "kind": "sportsbook-json",
    "http_status": 200,
-   "bytes": 221312,
+   "bytes": 2,
    "is_json": true,
-   "lol_mentions": 1,
+   "lol_mentions": null,
    "vs_pairs": null,
    "signals": [],
    "detail": {
-    "item_count": 1,
-    "group_count": 1,
-    "event_count": 7,
-    "vs_style_questions": 0,
-    "question_sample": [
-     ""
-    ]
+    "top_level_keys": []
    },
-   "verdict": "reachable structured JSON (221312 bytes); 1 group(s), 7 event(s); LoL mentions: 1",
+   "verdict": "reachable but returned an empty JSON body (2 bytes) — no market content",
    "error": null
   },
   {
@@ -80,15 +74,19 @@
    "name": "DraftKings LoL page",
    "url": "https://sportsbook.draftkings.com/leagues/esports/league-of-legends",
    "kind": "sportsbook-page",
-   "http_status": 404,
-   "bytes": 257963,
+   "http_status": 200,
+   "bytes": 1660627,
    "is_json": false,
-   "lol_mentions": null,
-   "vs_pairs": null,
-   "signals": [],
-   "detail": {},
-   "verdict": "not usable from CI (HTTP 404)",
-   "error": "HTTP 404"
+   "lol_mentions": 9,
+   "vs_pairs": 60,
+   "signals": [
+    "forbidden"
+   ],
+   "detail": {
+    "title": "E-Sports Betting Odds &amp; Lines | DraftKings Sportsbook"
+   },
+   "verdict": "reachable HTML only — no structured per-match prices parsed (LoL mentions: 9, 'vs' occurrences: 60); signals: forbidden",
+   "error": null
   },
   {
    "category": "Established sportsbooks",
@@ -96,7 +94,7 @@
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "kind": "sportsbook-page",
    "http_status": 200,
-   "bytes": 366119,
+   "bytes": 366116,
    "is_json": false,
    "lol_mentions": 0,
    "vs_pairs": 2,
@@ -278,7 +276,7 @@
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&closed=false&limit=5",
    "kind": "prediction-market-json",
    "http_status": 200,
-   "bytes": 81233,
+   "bytes": 81223,
    "is_json": true,
    "lol_mentions": 95,
    "vs_pairs": null,
@@ -292,7 +290,7 @@
      ""
     ]
    },
-   "verdict": "reachable structured JSON (81217 bytes); LoL mentions: 95",
+   "verdict": "reachable structured JSON (81207 bytes); LoL mentions: 95",
    "error": null
   },
   {
@@ -303,15 +301,17 @@
    "http_status": 200,
    "bytes": 16,
    "is_json": true,
-   "lol_mentions": null,
+   "lol_mentions": 0,
    "vs_pairs": null,
    "signals": [],
    "detail": {
     "top_level_keys": [
      "series"
-    ]
+    ],
+    "series_count": 0,
+    "series_null": true
    },
-   "verdict": "reachable structured JSON (16 bytes)",
+   "verdict": "reachable structured JSON (16 bytes); series is null (no esports market); LoL mentions: 0",
    "error": null
   },
   {
@@ -363,7 +363,7 @@
    "url": "https://www.betfair.com/exchange/plus/",
    "kind": "exchange-page",
    "http_status": 403,
-   "bytes": 3647,
+   "bytes": 3646,
    "is_json": false,
    "lol_mentions": null,
    "vs_pairs": null,
@@ -442,7 +442,7 @@
    "url": "https://lolesports.com/",
    "kind": "official-page",
    "http_status": 200,
-   "bytes": 3032671,
+   "bytes": 3033540,
    "is_json": false,
    "lol_mentions": 20,
    "vs_pairs": 57,
