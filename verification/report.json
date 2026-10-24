@@ -1,31 +1,31 @@
 {
- "verified_at": "2026-10-24T17:07:51.666112+00:00",
+ "verified_at": "2026-10-24T17:15:17.172202+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 41,
+  "PASS": 45,
   "FAIL": 0,
   "WARN": 1,
   "SKIP": 0
  },
  "data_matches": 159,
  "methods": {
+  "UNRESOLVED": 0,
+  "MODEL_STANDINGS": 0,
   "MODEL_ELO": 94,
+  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO_THIN": 2,
   "MARKET_BOOKS": 0,
   "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO_STANDINGS": 55,
   "MARKET_SINGLE": 1,
-  "MODEL_ELO_THIN": 2,
-  "MODEL_STANDINGS": 0,
-  "MARKET_CONSENSUS": 7,
-  "MARKET_POLYMARKET": 0,
-  "UNRESOLVED": 0
+  "MODEL_ELO_STANDINGS": 55,
+  "MARKET_CONSENSUS": 7
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "159 matches, generated_at=2026-10-24T17:07:30.616089Z (0.0h old)"
+   "detail": "159 matches, generated_at=2026-10-24T17:15:13.027653Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -139,7 +139,7 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=159, priced=159, missing=0, extra=0, excluded=11, leaked=0"
+   "detail": "lobby upcoming=159, priced=159, missing=0, extra=0, excluded=9, leaked=0"
   },
   {
    "id": "D22",
@@ -157,13 +157,19 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:06:02.771936+00:00 (0.0h old)."
+   "detail": "138/138 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T17:13:40.549969+00:00 (0.0h old)."
   },
   {
    "id": "D14",
    "title": "single published data file (site copy)",
    "status": "PASS",
    "detail": "only docs/data/picks.json exists — site copy is the single source"
+  },
+  {
+   "id": "D23",
+   "title": "no committed artifact contains git conflict markers",
+   "status": "PASS",
+   "detail": "no conflict markers in docs/, data/, verification/, research/, scripts/, .github/"
   },
   {
    "id": "S1",
