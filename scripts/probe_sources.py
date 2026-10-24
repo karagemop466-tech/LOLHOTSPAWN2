@@ -36,6 +36,15 @@ CANDIDATES = [
     ("Betway LoL", "https://www.betway.com/en/esports/league-of-legends", "sportsbook-page"),
     ("Unibet LoL", "https://www.unibet.com/betting/sports/filter/esports/league_of_legends", "sportsbook-page"),
     ("OddsPapi LoL (no key configured)", "https://oddspapi.io/sports/esports/lol", "aggregator-page"),
+    # --- added 2026-10-24 (session arena/66e731b3, research/betting-sources.md §13) ---
+    ("BetOnline LoL", "https://www.betonline.ag/sportsbook/esports/league-of-legends", "sportsbook-page"),
+    ("SportsBetting.ag LoL", "https://www.sportsbetting.ag/sportsbook/esports/league-of-legends", "sportsbook-page"),
+    ("TonyBet LoL", "https://tonybet.com/en/esports/league-of-legends", "sportsbook-page"),
+    ("BC.Game LoL", "https://bc.game/sports/esports/league-of-legends", "esportsbook-page"),
+    ("Stake LoL", "https://stake.com/sports/esports/league-of-legends", "esportsbook-page"),
+    ("PandaScore LoL upcoming (no token configured)", "https://api.pandascore.co/lol/matches/upcoming", "data-api"),
+    ("gol.gg (community stats pages)", "https://gol.gg/tournament/list/", "community-stats-page"),
+    ("Oracle's Elixir downloads (community CSVs)", "https://oracleselixir.com/tools/downloads", "community-results-page"),
 ]
 
 

@@ -47,7 +47,7 @@ its verified sources, and any upstream irregularity is surfaced on *Flagged for 
 python3 scripts/update_picks.py                 # live fetch + model + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
 python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
-python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
+python3 verification/test_entity_and_books.py   # 14/14 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit
 ```
 

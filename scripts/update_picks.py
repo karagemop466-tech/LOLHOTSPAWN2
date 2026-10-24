@@ -51,6 +51,15 @@ CHECKED_UNAVAILABLE = [
      "observed": "Only futures/prop markets, no per-match prices", "consequence": "Not used for match picks."},
     {"name": "Riot LoLESports API", "url": "https://esports-api.lolesports.com/persisted/gw/getSchedule?hl=en-US",
      "observed": "HTTP 403 for the public key", "consequence": "Official Riot schedule not used; Leaguepedia is the results source."},
+    {"name": "PandaScore", "url": "https://developers.pandascore.co/docs/frequently-asked-questions",
+     "observed": "Official docs (checked 2026-10-24): every API request requires a token (none configured in this repo) and the Statistics API does not include third-party bookmaker odds; odds are a separate sales-contact product",
+     "consequence": "Not used. No token may be invented; promotion needs a configured key plus a verified per-match sample row."},
+    {"name": "Abios / Kambi Odds Feed+ (direct B2B)", "url": "https://abiosgaming.com/docs/en/content/odds/overview/intro",
+     "observed": "Official docs (checked 2026-10-24): odds feed built for licensed sportsbooks, covering the largest LoL tournaments; full league list only via an account manager",
+     "consequence": "No direct feed. Kambi prices are consumed only via Unibet's public Kambi CDN JSON, one deduplicated line per match."},
+    {"name": "Oracle's Elixir (community results CSVs)", "url": "https://oracleselixir.com/tools/downloads",
+     "observed": "Official downloads page (checked 2026-10-24): free daily CSVs via Google Drive for LCS/LEC/LCK/LPL/PCS/CBLoL and more; no bookmaker odds; some content itself courtesy of Leaguepedia (CC-BY-SA 3.0)",
+     "consequence": "Not ingested: majors-focused results would duplicate Leaguepedia MatchSchedule, which is the wider source for the tier-3/amateur fixtures Hotspawn lists."},
 ]
 
 LIMITATIONS = [
@@ -63,6 +72,7 @@ LIMITATIONS = [
     "A 50/50 row is a nominal placeholder. It is not an edge, not a recommendation, and not derived from Hotspawn's crowd percentage.",
     "Polymarket's own homepage (checked 2026-10-23) says trading is blocked in the United States and offers a view-only mode. Its public prices are used here only as reference data; this site never places or recommends a bet.",
     "Hotspawn shows match times in the visitor's local timezone. This site uses the epoch timestamp from Hotspawn's own fixtures API (UTC) and cross-checks it against Leaguepedia; disagreements over 30 minutes are flagged.",
+    "Commercial esports odds/data APIs that do price some lower-tier LoL (OddsPapi, PandaScore Odds, Abios/Kambi direct, GRID) require a paid key, a licensed-sportsbook contract, or a sales agreement. No such key is configured in this repository, so matches only those vendors might price are resolved by our Elo/standings model instead (research log: research/betting-sources.md §13, checked 2026-10-24).",
 ]
 
 ORGANIZER_LINKS = {
@@ -199,7 +209,7 @@ def build_payload(fixtures, markets, leaguepedia, picks):
                           "note": (leaguepedia.get("degraded_reason")
                                    or ("Recorded results + schedules, exact UTC (CC BY-SA 3.0). "
                                        f"Standings rows: {leaguepedia['counts'].get('standings', 0)} "
-                                       f"across {leaguepedia['counts'].get('standings_pages', 0)} competitions."))})
+                                       f"across {leaguepedia['counts'].get('standings_pages') or len({str(s.get('overview') or '') for s in (leaguepedia.get('standings') or []) if s.get('overview')})} competitions."))})
     st_count = leaguepedia["counts"].get("standings", len(leaguepedia.get("standings") or []))
     source_status.append({"name": "Leaguepedia Standings",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",

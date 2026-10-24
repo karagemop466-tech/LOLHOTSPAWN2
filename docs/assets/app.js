@@ -254,12 +254,18 @@
       : `<div class="card">No external market lines are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
 
     const u = d.unresolved || {};
-    const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
+    const reasonsSrc = (u.count ?? 0) > 0 ? (u.reasons || []) : (u.low_confidence_reasons || u.reasons || []);
+    const reasons = reasonsSrc.map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const noBook = lbs.filter((lb) => !lb.market);
+    const noBookTxt = noBook.length
+      ? `<p class="small"><b>Leagues with no bookmaker line this run (${noBook.length} of ${lbs.length})</b> — priced by our Elo/standings model, not by books: ${noBook.map((lb) => `${esc(lb.tournament)} (${lb.fixtures})`).join(" · ")}. <a href="unresolved.html#by-league">Per-league limitations →</a></p>`
+      : `<p class="small">Every league this run has at least one external bookmaker line.</p>`;
     const ubox = $("#unresolved-summary");
     if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; Low-confidence picks (${u.low_confidence_count ?? 0})</h3>
       <p><b>${u.count ?? 0}</b> fixture${(u.count ?? 0) === 1 ? "" : "s"} lack external lines, recorded team matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge). <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows rely on thin history (&lt;8 games), split standings, or a single debut side against the competition prior and are capped at Low confidence. Hotspawn's crowd % is never used.</p>
-      ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
+      ${noBookTxt}
+      ${reasons ? `<p class="small"><b>${(u.count ?? 0) > 0 ? "Unresolved + low-confidence" : "Low-confidence"} breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
       <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
 
