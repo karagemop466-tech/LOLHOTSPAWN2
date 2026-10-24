@@ -475,3 +475,82 @@ branch (`data/diag/source_probe.json`, committed by the pipeline) and summarised
 publishes the same rows with HTTP status and verdict on *Unresolved & limitations → External sources
 re-checked*. **None of the added sources contributed a probability**, and Betspawn (Hotspawn's own book) is
 probed only so the site can document that Hotspawn data is never an input.
+
+---
+
+## 13. Refresh 2026-10-24 — how the fixtures without a book line are resolved
+
+Scope: the user asked for **a pick and a win probability for every Hotspawn-listed LoL match**, not only the
+matches a bookmaker prices, with any unresolved match kept separate and its limitations documented. This
+section records what was actually tried, in the required order, and what each attempt returned.
+
+### 13.1 What the market covers in this window
+
+| Observation (live payload) | Value |
+|---|---|
+| Fixtures on Hotspawn's list | 164 |
+| Fixtures with an external full-match line | 9 (5.5%) — 8 Pinnacle, 8 Unibet/Kambi, 9 Polymarket, Bovada `no_data` at that moment |
+| Fixtures priced by our own model | 155 |
+| Competitions on the list | 12 |
+| Competitions with any external line | 1 — *Worlds 2026 Main Event* |
+
+So the featured (market-priced) picks can only resolve 9 rows. The other 155 need a source of truth that is
+**not** Hotspawn and **not** a bookmaker: recorded results.
+
+### 13.2 Established sportsbooks and exchanges
+
+| Source | What it returned (probed from CI) | Verdict for tier-2/3 fixtures |
+|---|---|---|
+| Pinnacle (guest JSON) | HTTP 200, parent `Regular` moneylines for Worlds only | prices tier-1 only; used for the 8 Worlds rows |
+| Unibet / Kambi (`listView`, `ubau`) | HTTP 200, 2-way Match Odds for the same 8 Worlds matches | used for Worlds; not listed elsewhere |
+| Bovada | HTTP 200 after the 2026-10-24 fix; coupon had 0 LoL events at probe time | previously carried the same 8 Worlds rows |
+| Betfair Exchange | HTTP 403 to automated requests | not usable without a key/session |
+| Smarkets | API path moved (404 on the sports index), no structured LoL rows found | not usable this run |
+| 1xBet | Public line feed answers with a 203 interstitial; US egress is redirected to `/en/block` ("Access denied") | geo-blocked — cannot be verified from CI or from a US IP, so it is **not** wired in |
+| OddsPapi / odds-api.io | require an API key (no key configured, none invented) | vendor docs (unverified claim) list Worlds, LEC, LCS, LCK, LPL, CBLOL, LJL and *Prime League Pro Division* only — **not** PRM 2nd/3rd Division, RIVALS, 4 Nations, Tunisian Super League, Komplettligaen, LigaGG or Arabian 2nd Division |
+| Betway / BetOnline / GG.Bet / Thunderpick / Rivalry / Midnite / eGamersWorld / OddsPortal / BetExplorer | mixed 403 / 503 / 200-HTML; no public per-match JSON that can be verified | reachability evidence only; nothing parsed |
+
+Conclusion for this tier: **no established sportsbook publishes a verifiable line for the competitions that make
+up 95% of Hotspawn's list.** That is a property of the market, not a gap in the search.
+
+### 13.3 Esportsbooks and esports odds aggregators
+
+GG.Bet, Thunderpick, Rivalry, Midnite, Betspawn (Hotspawn's own book), Oddspedia and the two API vendors either
+block automated requests, require a key, or expose only HTML. None produced a structured, verifiable
+per-match line for a tier-2/3 fixture. Betspawn is probed deliberately: it is Hotspawn's own sportsbook, and it
+is **never** allowed to feed a probability (same rule as Hotspawn's crowd percentage).
+
+### 13.4 What does resolve those fixtures: recorded results
+
+| Source | Live check (2026-10-24) | Use |
+|---|---|---|
+| Leaguepedia Cargo `MatchSchedule` | 31,750 recorded matches (CC BY-SA 3.0) | chronological Elo (half-life 365 d) |
+| Leaguepedia Cargo `Standings` | 2,880 rows | split-standings adjustment where the split publishes a table |
+| Liquipedia MediaWiki API | `api.php` with normalized page prefixes → 54 page titles; gzip, ≥2.2 s pacing, HTML never scraped | tournament metadata cross-check only; not a results source |
+| Prime League (organizer, PRM) | https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 — group stage 24 Sep → 4 Dec 2026, playoffs 5–13 Dec 2026 | independent confirmation that the PRM fixtures exist |
+| RIVALS League (organizer) | https://www.rivalsleague.gg/lol — match weeks to 22 Nov 2026, playoffs 23 Nov – 6 Dec 2026 | same |
+| Komplettligaen (organizer) | https://www.komplettligaen.no/lol/ — divisions and playoffs schedule/results | same |
+| Hotspawn lobby / fixtures API | fixture list and timestamps only | the fixture list itself; **never** a probability input |
+
+Tunisian Super League, Arabian League 2nd Division, 4 Nations, LCP 2027 Promotion and the LigaGG CELOL splits
+have **no organizer page we could verify**. Rather than guess a URL, those rows carry the Leaguepedia split
+page as their source and are listed on *Flagged for review*.
+
+### 13.5 Result
+
+164/164 fixtures published with a pick at the 2026-10-24 16:22Z refresh (0 unresolved placeholders, 68
+low-confidence rows; the counts move with every 6-hour refresh, so the live dashboard is authoritative).
+Every row links
+to its Hotspawn fixture page and to the evidence used. The match pages state, for rows without a line, how many
+external sources were requested and that none of them listed the fixture.
+
+### 13.6 Verification log for this refresh
+
+| Check | Result |
+|---|---|
+| `python3 scripts/verify_site.py` | PASS · 40 · fail 0 · warn 0 · skip 1 |
+| `python3 verification/test_verifier.py` | 40/40 |
+| `python3 verification/check_dom_contract.py` | PASS |
+| `python3 verification/test_entity_and_books.py` | 10/10 |
+| `python3 verification/test_standings_model.py` | ALL PASS |
+| Deployed site (GitHub Pages) | summary, picks, leagues, unresolved, flagged, methodology, match — all fetched and rendered |
