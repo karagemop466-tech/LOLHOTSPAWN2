@@ -56,8 +56,8 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("1xBet line feed (sports index)", "https://1xbet.com/LineFeed/GetSportsShortZip?lng=en&country=1",
      "esportsbook-api", "market"),
     # --- odds aggregators (keys are NOT configured) --------------------------
-    ("OddsPapi (API, key required)", "https://api.oddspapi.io/v1/sports", "aggregator-api", "market"),
-    ("odds-api.io (API, key required)", "https://api.odds-api.io/v3/sports", "aggregator-api", "market"),
+    ("OddsPapi (API — no key configured)", "https://api.oddspapi.io/v1/sports", "aggregator-api", "market"),
+    ("odds-api.io (API — no key configured)", "https://api.odds-api.io/v3/sports", "aggregator-api", "market"),
     ("OddsPortal LoL", "https://www.oddsportal.com/lol/", "aggregator-page", "market"),
     ("BetExplorer LoL", "https://www.betexplorer.com/lol/", "aggregator-page", "market"),
     ("eGamersWorld LoL odds", "https://egamersworld.com/lol/bets", "aggregator-page", "market"),
@@ -85,6 +85,9 @@ def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str)
         return "requires an API key / paid plan — no key is configured, so nothing is used"
     if status == 403:
         return "blocked to automated requests (HTTP 403) — no line can be read"
+    if status in (202, 203):
+        return (f"served an interstitial/redirect page (HTTP {status}) instead of the feed — "
+                "no line can be read")
     if status in (404, 410):
         return f"endpoint not found (HTTP {status}) — path may have moved; nothing used"
     if status in (500, 502, 503, 504) or status == 0:
@@ -137,6 +140,9 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
         row["lol_mentions"] = lol_hits
         row["vs_style_items"] = vs_items
         row["verdict"] = _verdict(status, row["is_json"], lol_hits, kind)
+        if "no key configured" in name.lower() and status == 200:
+            row["verdict"] = ("endpoint answers without a key, but the payload carries no League of Legends "
+                              "match market — its data needs a paid API key that is not configured here; nothing used")
     except Exception as e:  # noqa: BLE001 - a probe must never break the run
         row["verdict"] = f"probe error: {repr(e)[:120]}"
         row["http_status"] = 0

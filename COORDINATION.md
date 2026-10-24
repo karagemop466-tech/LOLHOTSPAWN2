@@ -730,3 +730,26 @@ the exact source link so a human can repeat it.
 | T22 Integration: full local + CI verification, PR to `main` from this branch, merge, confirm GitHub Pages deploy, record PR/deploy/live-check here | in progress | arena/26fa1cec | `COORDINATION.md`, `verification/**` |
 
 **Scope rule:** this session edits only the paths above. `scripts/fetch_markets.py`, `scripts/fetch_leaguepedia.py`, `scripts/model.py`, `data/aliases.json`, and `.github/workflows/**` are **not** modified; any change needed there is logged as a request instead of edited.
+
+### Results so far (`arena/26fa1cec`, 2026-10-24)
+
+| Item | Status | Evidence |
+|---|---|---|
+| T20 phone-first summary + unified nav | implemented, verified locally (38 PASS / 0 FAIL / 0 WARN) | `docs/index.html`, `docs/unresolved.html`, `docs/assets/style.css`, `docs/assets/app.js`; new verifier check `S4c` (dedicated `#picks-here` block with 4 in-site links + bound counts) |
+| T21 external-source probe on every refresh | implemented; 22 candidates measured live, results published in the payload + site | `scripts/source_probe.py` (new), `scripts/update_picks.py`, `scripts/probe_sources.py`; verifier check `D22` |
+| T21b Liquipedia prefix fix | implemented; probe now returns **54 page titles** (was `no_data`) | `scripts/update_picks.py`; `docs/data/picks.json` → `sources_status` |
+| Organizer links | substring matching (fixes the missing Komplettligaen row); 3 organizer pages re-verified live 2026-10-24 | `scripts/update_picks.py`; `research/betting-sources.md` §13.3 |
+| T22 integration | in progress (PR/merge/deploy pending) | — |
+
+**Live measurements used (run [40111355592](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111355592), payload `2026-10-24T16:25:23Z`):** 164 upcoming fixtures · 164 priced (100%) · 9 market · 155 model · 0 unresolved · 68 low confidence · 14 cancelled excluded. Probe: 22 candidates, 10 reachable, 5 structured JSON, 3 with LoL references. Pinnacle 200 JSON, Betfair 403, Smarkets 404, Betway 404, BetOnline 200 HTML, Unibet shell 503, GG.Bet 403, Thunderpick 403, Rivalry 503, Midnite 200 HTML, 1xBet 203 (US geo-block confirmed separately), OddsPapi 404 (no key), odds-api.io 200 no LoL, OddsPortal 200 HTML, BetExplorer 404, eGamersWorld 403, Kalshi 200 no LoL series, Manifold 200 futures only, gol.gg 200, bo3.gg 200 (177 LoL references), Riot LoLESports 403, Liquipedia 200. **No new market adapter was justified**: no probed source returned a structured per-match LoL price, and vendor documentation (OddsPapi) excludes every amateur league on Hotspawn's list.
+
+**Irregularities found & fixed this session** (also on the site's Flagged page and in `verification/flagged_items.md` S4–S9):
+1. **Clipped header on the executive summary + unresolved page** — `<div class="wrap bar">` collided with the `.bar` probability-bar component (`height:12px; overflow:hidden`), so the brand/nav/theme button were clipped to a 12px strip on phones; `.brand`, `.mark`, `.bar-end`, `.status-strip`, `.nav-list`, `.covbar` and `.stat b` had no CSS at all. Fixed by moving all 7 pages to one header component and adding the missing styles.
+2. **Dead `#theme-toggle` button** (no JS handler) — removed; dark mode follows `prefers-color-scheme`.
+3. **Liquipedia probe always returned `no_data`** because whole Hotspawn tournament labels were passed as MediaWiki `apprefix`; now mapped to page prefixes (54 pages found).
+4. **`probe_sources.py` broke on `retries=0`** (`lib_common.fetch` returns `None`), so the first probe run recorded 22 `AttributeError`s; fixed to a single attempt and the results are now real.
+5. **`sources_status` printed “2880 standings across 0 competitions”** (missing `standings_pages` key) — computed from the rows and exposed as `model.standings_pages`.
+6. **Komplettligaen organizer link never rendered** (exact-key mismatch: `Komplettligaen 2026 Autumn` vs `… Autumn Playoffs`) — substring matching now; 5 competitions have no verified organizer page and stay blank + flagged rather than guessed.
+7. **1xBet is US-geo-blocked** (`https://1xbet.com/en/block`, "Access denied") — its claimed tier-2/3 coverage stays unverified and unused.
+
+**Open items for review (non-blocking, published on the Flagged page):** S8 1xBet geo-block; S7 five competitions without a verified organizer page; S2 probe verdicts are observations only.
