@@ -1172,3 +1172,18 @@ entry in `scripts/update_picks.py`, `research/betting-sources.md` §15, and the 
 | GitHub Pages deployment | `pages-build-deployment` run [40113723631](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40113723631) — **success**, Pages API `status: "built"` for commit `f5734a89986d9276bbc3a08dedb01e96c89a241c` (`2026-10-24T16:56:49Z`, duration `123.8s`) at <https://karagemop466-tech.github.io/LOLHOTSPAWN2/> |
 
 
+
+### T24 PR & deployment record (session `arena/ac089f33-lolhotspawn2`)
+
+| Item | Result | Evidence |
+|---|---|---|
+| Pull request | **PR [#42](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/42)** — `arena/ac089f33-lolhotspawn2` → `main` | https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/42 |
+| Merge | `gh pr merge 42 --merge` → **MERGED** 2026-10-24T16:58:59Z, merge commit `633a273` | GitHub PR record |
+| Branch CI before merge | **success** — live pipeline, unit suites, `verify_site.py --check-external`, DOM contract, probe (`Pipeline test (branch verification)` run 40113728002, head `f1506ac`) | Actions run 40113728002 |
+| Post-merge verify on `main` | **success** | Actions run 40114030726 |
+| Pages deployment | **built** for `633a273c7c5a2dd0288c758460a3925c7d2c4293` at 2026-10-24T16:59:46Z | `GET /repos/.../pages/builds/latest` |
+| Live executive summary | renders the freshness line ("Updated Sat, Oct 24, 12:54 PM · next refresh 22:54 UTC · 160/160 listed matches priced"), the four "Where the updated picks are" cards with counts (160 matches / 25 next-24h / 12 competitions / 0 unresolved · 9 low confidence), the coverage reconciliation block and the separate unresolved/limitations section with per-competition limits | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ |
+| Live payload | `generated_at` 2026-10-24T16:58:27Z · 160 fixtures · 160 priced · 9 external-market · 151 model (55 blended with split standings) · 0 unresolved · 9 low-confidence · `market_probe` 26 sources · `checked_unavailable` 24 rows (11 added here) · 11 limitations (1 added here) | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json |
+| Live stylesheet | serves this session's final mobile rules (`details > summary { min-height: 44px }`, full-width `.hero-actions .btn` under 640 px) | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/assets/style.css |
+| Line-probe evidence | committed; 39 requests / 30 sites / 0 with coverage | `data/diag/line_probe.json`, `research/betting-sources.md` §15 |
+| Next automatic refresh | 6-hour schedule (`0 */6 * * *`) continues on `main`; no manual input required | `.github/workflows/update-picks.yml` |
