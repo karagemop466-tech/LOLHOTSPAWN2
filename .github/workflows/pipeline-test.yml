@@ -63,13 +63,16 @@ jobs:
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
 
+      - name: Render check (jsdom runs the real pages against the payload)
+        if: always()
+        run: |
+          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
+            echo "jsdom not installed; render_check will SKIP"
+          node verification/render_check.cjs
+
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()
         run: python3 scripts/probe_sources.py
-
-      - name: Probe betting lines for fixtures we price with the model (diagnostic only)
-        if: always()
-        run: python3 scripts/probe_lines.py
 
       - name: Commit outputs for review
         if: always()
@@ -94,7 +97,7 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json data/diag/line_probe.json verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json verification/report.json verification/last_report.md 2>&1); then
             :
           else
             rc=$?

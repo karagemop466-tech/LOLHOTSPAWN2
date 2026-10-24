@@ -51,6 +51,13 @@ jobs:
       - name: DOM contract (every id the JS uses exists in the pages)
         run: python3 verification/check_dom_contract.py
 
+      - name: Render check (jsdom runs the real pages against the payload)
+        run: |
+          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
+            echo "jsdom not installed; render_check will SKIP"
+          node verification/render_check.cjs
+
+
       - name: Upload verification artifacts
         if: always()
         uses: actions/upload-artifact@v4
