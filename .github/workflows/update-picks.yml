@@ -29,12 +29,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore the Leaguepedia snapshot cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: leaguepedia-${{ github.run_id }}
+          restore-keys: |
+            leaguepedia-
+
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
+        timeout-minutes: 10
         run: |
           mkdir -p data/diag docs/data
           python3 scripts/probe_sources.py
 
       - name: Fetch fixtures, external lines and results; build picks
+        timeout-minutes: 25
         env:
           PYTHONUNBUFFERED: "1"
         run: |
