@@ -47,7 +47,7 @@ _2026-10-24T17:54:31.743120+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
-| X1 external links reachable (official-source links resolve) | WARN | 7/10 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
+| X1 external links reachable (official-source links resolve) | WARN | 7/10 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS; REQ13 PASS; REQ14 PASS |
 
 ## Requirements traceability
@@ -81,6 +81,7 @@ _2026-10-24T17:54:31.743120+00:00_
 - 2 Massive vs Lund Esports Organization OGs: ours=2026-11-03 18:00 lp=2026-10-24 16:30
 
 **X1 items:**
+- https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429
 - https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
 - https://thunderpick.io/esports/league-of-legends/lgc-rising-2026-playoffs/11363 -> 403
 

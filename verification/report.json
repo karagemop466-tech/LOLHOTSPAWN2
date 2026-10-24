@@ -293,8 +293,9 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "7/10 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "detail": "7/10 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
    "items": [
+    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
     "https://thunderpick.io/esports/league-of-legends/lgc-rising-2026-playoffs/11363 -> 403"
    ]
