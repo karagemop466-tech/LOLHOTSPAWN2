@@ -350,6 +350,75 @@ Standings ignore strength of schedule; Elo tiers across leagues are priors, not 
 | 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
 
 
+---
+
+## 14. Refresh 2026-10-24 — making the split-standings signal actually price rows (session `arena/c38ce482`)
+
+### 14.1 The gap this closes
+
+The brief asks that every fixture get a line "based upon known betting lines" **and** that community LoL
+sites be used to originate lines where no book prices a match. Community *results* sources are the only
+usable signal for tier-3 fixtures, and Leaguepedia's `Standings` table is the one that carries a
+**current-split** record per team.
+
+The pipeline already fetched that table (2 880 rows across 41 competition pages in the 2026-10-24 run),
+but it priced **0** fixtures:
+
+- `MODEL_STANDINGS` only applied when a side had **no Elo at all**.
+- Elo needs only **one** recorded game in the last 365 days to rate a team; a standings record needs only
+  **one** decided series. Any team with *some* history therefore always had an Elo rating, so the
+  standings branch was unreachable in practice.
+
+That made the standings signal a documented-but-unused capability, and it is also why the published
+per-league limitation text said rows were "resolved via Leaguepedia recorded match results **and split
+standings**" while the standings counter read 0 — the text claimed evidence that was not used.
+
+### 14.2 What changed
+
+| Change | Detail | Where |
+|---|---|---|
+| New method `MODEL_ELO_STANDINGS` | A side with **thin** Elo (<8 games in 365d) *and* a current-split standings record **for this row's own competition** gets that record blended into the rating. Weight `series/(series+4)`, capped at 0.6 so pooled Elo still dominates. Flagged `STANDINGS_BLEND_APPLIED`; capped at Medium confidence (Low when the comparison is cross-league). | `scripts/model.py` |
+| Same-competition rule | A standings record from a *different* tournament is never blended into a row. `standings_by_page_team` is looked up first; the team-only fallback is only used when the side has no Elo at all. | `scripts/model.py` |
+| `standings_pages` counter | `fetch_leaguepedia.py` never emitted it, so the site printed "Standings rows: 2 880 across **0** competitions". It is now computed from the distinct `OverviewPage` values. | `scripts/fetch_leaguepedia.py` |
+| Accurate per-league limitation text | The text now names only the signals that actually priced the competition ("…recorded match results **and current-split standings records**" only when the standings signal fired). | `scripts/update_picks.py`, `docs/assets/app.js` |
+| Standings source link | Standings rows now cite the competition's **own** page (e.g. `RIVALS_LEAGUE/2026_Season/Season_2`) instead of the generic `Special:CargoTables/Standings` index, so a human can read that team's record in context. Check `D8d` (generic-table links must be flagged) therefore passes without weakening the rule. | `scripts/model.py` |
+| Honest source note | The Leaguepedia Standings source note now states rows, competition pages **and how many fixtures the signal actually priced**. | `scripts/update_picks.py` |
+
+### 14.3 Measured effect (live pipeline run 2026-10-24T16:35Z)
+
+| Metric | Before | After |
+|---|---|---|
+| Fixtures priced by the standings signal | **0** | **59** (`MODEL_ELO_STANDINGS`) |
+| `MODEL_ELO_THIN` rows (thin history, no split record) | 67 | **3** |
+| Low-confidence rows | 73 | **9** |
+| Unresolved (explicit 50/50) | 0 | **0** |
+| Coverage | 100 % | **100 %** |
+
+Example row (`RIVALS LEAGUE Season 2`, 2026-10-24): Karolinerna 41.9 % vs Turbo Gaming 58.1 %.
+Pooled Elo 1466 vs 1491 was blended with the current-split record (1–4 series vs 4–2 series) to
+1388 vs 1528 — source: https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2
+
+### 14.4 Verification
+
+| Check | Result | Evidence |
+|---|---|---|
+| `verification/test_standings_model.py` | **17/17** (8 new): blend fires on thin Elo + same-competition record; a stronger split record is favoured; the weight is recorded; the row is flagged; confidence ≤ Medium; an out-of-competition record is **not** blended; a deep Elo pair is not overridden. | `verification/test_standings_model.py` |
+| `audit/test_model.py` | **23/23** (2 new): blend weight stays in [0, 0.6]; a standings row always cites a standings source; a standings row always cites a competition-specific page. | `audit/test_model.py` |
+| `scripts/verify_site.py` (live) | **PASS**, 0 FAIL. `D8d` violations went 59 → 0 after the source-link change. | `verification/last_report.md` |
+| `verification/check_dom_render.js` (new) | All 6 pages render against the published payload in jsdom with every content container filled. | run locally + wired into `pipeline-test.yml` |
+| D18 start-time cross-check | Now reads the **live** `data/cache/leaguepedia.json` written by the same run that priced the model, instead of committed `data/diag/ms_*.json` snapshots that were 67.8 h old. | `scripts/verify_site.py` |
+
+### 14.5 Sources used
+
+| Source | What it verified | Link |
+|---|---|---|
+| Leaguepedia `Standings` (Cargo export) | Current-split series/game records per team per competition — the split record behind every `MODEL_ELO_STANDINGS` row. | https://lol.fandom.com/wiki/Special:CargoTables/Standings |
+| Leaguepedia competition pages | The competition-specific page each standings row cites. | e.g. https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2 |
+| Leaguepedia `MatchSchedule` (Cargo export) | The recorded series the pooled Elo rating is fitted on. | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
+| Live pipeline run (Actions 40111627086, branch `arena/c38ce482-lolhotspawn2`) | The counts in §13.3 and the verifier PASS. | https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40111627086 |
+
+---
+
 ## 13. Refresh 2026-10-24 — resolving every fixture the featured picks cannot price (session `arena/26fa1cec`)
 
 **Brief for this pass:** every match on Hotspawn must carry a pick; matches that cannot be resolved the way the

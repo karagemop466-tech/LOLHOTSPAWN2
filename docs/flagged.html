@@ -150,6 +150,7 @@
         <dt><span class="flag">ONE_TEAM_NO_HISTORY</span></dt><dd>One side has no usable history, so the model substitutes the competition median or tier prior and shrinks toward 50/50.</dd>
         <dt><span class="flag">THIN_HISTORY</span></dt><dd>Fewer than five recorded games in 365 days for at least one team — confidence is capped.</dd>
         <dt><span class="flag">CROSS_LEAGUE_MODEL</span></dt><dd>The two teams' recent competitions differ across ecosystem tiers; confidence is capped at Low.</dd>
+        <dt><span class="flag">STANDINGS_BLEND_APPLIED</span></dt><dd>The side had only a thin Elo history, so its current-split record in this same competition was blended into the rating (method <span class="flag">MODEL_ELO_STANDINGS</span>). The split record is weighted by how many decided series it contains, capped at 60% of the rating, and the row is capped at Medium confidence.</dd>
         <dt><span class="flag">MODEL_DISAGREES_WITH_MARKET</span></dt><dd>The model differs from the external bookmaker consensus by ≥8 percentage points in the same competition. Published pick follows the market; gap is shown.</dd>
         <dt><span class="flag">MARKET_DISAGREEMENT</span></dt><dd>Independent bookmaker/market sources disagree by more than 10 probability points.</dd>
         <dt><span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span></dt><dd>A bookmaker's listed start time differs from Hotspawn's epoch timestamp by &gt;90 minutes.</dd>
