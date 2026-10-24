@@ -29,6 +29,8 @@ from __future__ import annotations
 import json
 import re
 
+from concurrent.futures import ThreadPoolExecutor
+
 from lib_common import fetch, log, now_utc, utc_iso
 
 # Public Riot LoLESports key embedded in the official lolesports.com web client.
@@ -61,6 +63,33 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("OddsPortal LoL", "https://www.oddsportal.com/lol/", "aggregator-page", "market"),
     ("BetExplorer LoL", "https://www.betexplorer.com/lol/", "aggregator-page", "market"),
     ("eGamersWorld LoL odds", "https://egamersworld.com/lol/bets", "aggregator-page", "market"),
+    # --- more established sportsbooks / exchanges (added 2026-10-24, v2) ------
+    ("DraftKings LoL", "https://sportsbook.draftkings.com/leagues/esports/league-of-legends",
+     "sportsbook-page", "market"),
+    ("FanDuel LoL", "https://www.fanduel.com/sportsbook/esports/league-of-legends", "sportsbook-page", "market"),
+    ("BetMGM LoL", "https://sports.betmgm.com/en/sports/esports-8/betting/all", "sportsbook-page", "market"),
+    ("bet365 esports", "https://www.bet365.com/#/AX/", "sportsbook-page", "market"),
+    ("Betsson esports", "https://www.betsson.com/en/esports/league-of-legends", "sportsbook-page", "market"),
+    ("Paf esports", "https://www.paf.com/en/sports/esports", "sportsbook-page", "market"),
+    ("Betano esports", "https://www.betano.com/sport/esports/", "sportsbook-page", "market"),
+    ("Betspawn LoL (Hotspawn's own book)", "https://betspawn.com/esports/league-of-legends",
+     "esportsbook-page", "market"),
+    ("Sportsbetting.ag LoL", "https://www.sportsbetting.ag/sportsbook/esports/league-of-legends",
+     "sportsbook-page", "market"),
+    ("BetUS esports", "https://www.betus.com.pa/sportsbook/esports/league-of-legends/",
+     "sportsbook-page", "market"),
+    ("Oddspedia LoL", "https://oddspedia.com/esports/league-of-legends", "aggregator-page", "market"),
+    # --- the four feeds that actually produce probabilities (live health check) --
+    ("Pinnacle LoL matchups (wired feed)",
+     "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/matchups", "bookmaker-api", "wired"),
+    ("Unibet/Kambi LoL listView (wired feed)",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/ubau/listView/esports/league_of_legends/all/all/matches.json",
+     "bookmaker-api", "wired"),
+    ("Bovada esports coupon (wired feed)",
+     "https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports?marketFilterId=def&preMatchOnly=true&lang=en",
+     "bookmaker-api", "wired"),
+    ("Polymarket LoL tag (wired feed)",
+     "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&limit=5", "prediction-market-api", "wired"),
     # --- prediction markets --------------------------------------------------
     ("Kalshi esports series", "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
      "prediction-market-api", "market"),
@@ -111,7 +140,7 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
     headers = None
     if "lolesports.com" in url:
         headers = {"x-api-key": RIOT_PUBLIC_KEY}
-    row = {"name": name, "url": url, "kind": kind, "category": category,
+    row = {"name": name, "url": url, "kind": kind, "category": category, "wired": category == "wired",
            "http_status": None, "is_json": False, "bytes": 0,
            "lol_mentions": None, "vs_style_items": None, "verdict": ""}
     try:
@@ -144,6 +173,9 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
         row["lol_mentions"] = lol_hits
         row["vs_style_items"] = vs_items
         row["verdict"] = _verdict(status, row["is_json"], lol_hits, kind)
+        if category == "wired" and status == 200:
+            row["verdict"] = ("production feed, reachable this run — it is one of the four sources that may "
+                              "contribute a probability, subject to the de-vig and dedup rules in Methodology")
         if "no key configured" in name.lower() and status == 200:
             row["verdict"] = ("endpoint answers without a key, but the payload carries no League of Legends "
                               "match market — its data needs a paid API key that is not configured here; nothing used")
@@ -154,19 +186,24 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
 
 
 def probe_sources(limit: int | None = None) -> dict:
-    """Probe every candidate once and return {checked_at, books, summary}."""
-    rows: list[dict] = []
-    for name, url, kind, category in CANDIDATES[:limit] if limit else CANDIDATES:
-        row = probe_candidate(name, url, kind, category)
-        log(f"probe: {name} -> HTTP {row['http_status']} json={row['is_json']} "
+    """Probe every candidate once and return {checked_at, books, summary}.
+
+    Candidates are probed concurrently (one GET per host, at most 6 in flight) so a
+    37-source list costs ~1 network timeout instead of 37 of them.
+    """
+    todo = list(CANDIDATES[:limit] if limit else CANDIDATES)
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        rows = list(pool.map(lambda c: probe_candidate(*c), todo))
+    for row in rows:
+        log(f"probe: {row['name']} -> HTTP {row['http_status']} json={row['is_json']} "
             f"lol={row['lol_mentions']}")
-        rows.append(row)
     for r in rows:
         st = r.get("http_status")
         r["reachable"] = st == 200
         r["structured"] = bool(r.get("reachable") and r.get("is_json"))
     market = [r for r in rows if r["category"] == "market"]
     results = [r for r in rows if r["category"] == "results"]
+    wired = [r for r in rows if r["category"] == "wired"]
     summary = {
         "checked": len(rows),
         "reachable": sum(1 for r in rows if r["reachable"]),
@@ -175,6 +212,9 @@ def probe_sources(limit: int | None = None) -> dict:
         "market_sources_checked": len(market),
         "market_sources_reachable": sum(1 for r in market if r["reachable"]),
         "results_sources_reachable": sum(1 for r in results if r["reachable"]),
+        "wired_feeds_checked": len(wired),
+        "wired_feeds_reachable": sum(1 for r in wired if r["reachable"]),
+        "blocked": sum(1 for r in rows if r["http_status"] in (401, 402, 403, 429, 202, 203)),
         "note": ("Probe only: no probed value is used in any probability. "
                  "Only the four production feeds (Pinnacle, Unibet/Kambi, Bovada, Polymarket) "
                  "produce market probabilities."),

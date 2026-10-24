@@ -42,14 +42,7 @@
 
   <section class="hero">
     <p class="eyebrow">Executive summary · refreshed every 6 hours</p>
-    <h1>Every League of Legends match on Hotspawn — one clear pick, both win probabilities.</h1>
-    <p class="lede">
-      We mirror every upcoming scheduled LoL fixture on
-      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
-      and originate an independent probability for each one: 💰 de-vigged sportsbook &amp; prediction-market lines first,
-      otherwise 🧮 our own Elo model on recorded results and split standings.
-      <b>Hotspawn crowd percentages are context only — never an input to any probability.</b>
-    </p>
+    <h1>Every Hotspawn LoL match: one pick, both win probabilities</h1>
     <p class="statusline" id="hero-status">Loading the latest refresh…</p>
   </section>
 
@@ -80,6 +73,20 @@
     </div>
   </section>
 
+  <details class="card how">
+    <summary><b>How these picks are made — and what is never used</b></summary>
+    <p class="lede" style="margin-top:10px">
+      We mirror every upcoming scheduled LoL fixture on
+      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
+      and originate an independent probability for each one: 💰 de-vigged sportsbook &amp; prediction-market lines first,
+      otherwise 🧮 our own Elo model on recorded results and split standings.
+      <b>Hotspawn crowd percentages are context only — never an input to any probability.</b>
+    </p>
+    <p class="small">Sources are requested once per refresh and the result is published whether it worked or not
+      (<a href="unresolved.html#sources-checked">source-by-source checks →</a>);
+      the method and its out-of-sample error are on <a href="methodology.html">Methodology →</a>.</p>
+  </details>
+
   <section aria-label="Coverage metrics">
     <div class="stats">
       <div class="stat"><span class="n" id="stat-fixtures">—</span><span class="l">Scheduled matches</span></div>
@@ -91,6 +98,9 @@
       <h3>Coverage of Hotspawn's match list</h3>
       <p id="coverage-text">Loading…</p>
       <div class="covbar" id="coverage-bar" aria-hidden="true"></div>
+      <p class="small" id="exec-book-summary">Loading market coverage…</p>
+      <p class="small"><a href="unresolved.html#book-matrix">Which feed prices which competition →</a> ·
+        <a href="unresolved.html#wired-feeds">Live health of the four production feeds →</a></p>
       <details style="margin-top:10px">
         <summary class="small" style="cursor:pointer"><b>How this reconciles with Hotspawn's lobby header counts</b></summary>
         <div id="recon-body" class="small" style="margin-top:8px"></div>

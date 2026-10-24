@@ -507,6 +507,39 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         rep.add("D22", "external-source probe rows are sourced and never carry a probability",
                 WARN, "no market_probe block in this payload (probe did not run)")
 
+    # D23: the probe must separate the four production feeds (which may contribute a
+    # probability) from sources that were only checked. The published counters have to
+    # agree with the rows, otherwise the site could claim a feed is live when it is not.
+    probe = payload.get("market_probe")
+    if isinstance(probe, dict) and probe.get("books"):
+        s = probe.get("summary") or {}
+        wired = [b for b in probe["books"]
+                 if isinstance(b, dict) and (b.get("category") == "wired" or b.get("wired"))]
+        problems = []
+        if wired:
+            if s.get("wired_feeds_checked") != len(wired):
+                problems.append(f"summary.wired_feeds_checked={s.get('wired_feeds_checked')} "
+                                f"does not match {len(wired)} wired rows")
+            if all("reachable" in b for b in wired):
+                ok_n = sum(1 for b in wired if b.get("reachable"))
+                if s.get("wired_feeds_reachable") != ok_n:
+                    problems.append(f"summary.wired_feeds_reachable={s.get('wired_feeds_reachable')} "
+                                    f"does not match {ok_n} reachable wired rows")
+            for b in wired:
+                if not str(b.get("name") or "").strip():
+                    problems.append("wired row without a name")
+                if "prob" in json.dumps(b).lower():
+                    problems.append(f"{b.get('name')}: wired row carries a probability")
+        rep.add("D23", "probe separates the production feeds from checked-only sources",
+                PASS if not problems else FAIL,
+                (f"{len(wired)} wired feed(s) counted consistently with summary "
+                 f"({s.get('wired_feeds_reachable')}/{s.get('wired_feeds_checked')} reachable)"
+                 if wired else "no wired-feed rows in this probe (checked-only list)"),
+                problems)
+    else:
+        rep.add("D23", "probe separates the production feeds from checked-only sources", WARN,
+                "no market_probe block in this payload")
+
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
     def lacks_evidence(r):
@@ -806,6 +839,20 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                     (f"4 in-site links, counts bound to ids; {len(missing_links)} missing"
                      if not missing_links and has_js_targets
                      else f"missing links={missing_links}, js counts wired={has_js_targets}"))
+
+    # S12: the per-competition market-coverage view and the live feed-health table are
+    # what make "no line exists for this fixture" checkable rather than asserted.
+    upath = os.path.join(DOCS, "unresolved.html")
+    if os.path.exists(upath):
+        uhtml = open(upath, encoding="utf-8").read()
+        missing = [i for i in ("book-matrix-body", "wired-feeds-body", "book-matrix-summary") if i not in uhtml]
+        js_ok = all(k in js_text for k in ("bookMatrixRows", "probeFeedRows"))
+        idx_html = open(os.path.join(DOCS, "index.html"), encoding="utf-8").read() if os.path.exists(os.path.join(DOCS, "index.html")) else ""
+        idx_ok = "exec-book-summary" in idx_html and "unresolved.html#book-matrix" in idx_html
+        rep.add("S12", "market-coverage matrix + live feed health are published and linked",
+                PASS if not missing and js_ok and idx_ok else FAIL,
+                (f"unresolved page has the matrix and feed-health tables ({len(missing)} missing ids), "
+                 f"js renderers present={js_ok}, executive summary links to them={idx_ok}"))
 
     # S4b unresolved page
     upath = os.path.join(DOCS, "unresolved.html")

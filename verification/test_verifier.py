@@ -161,6 +161,22 @@ def main() -> int:
     bad2 = copy.deepcopy(good_probe); bad2["books"][0]["prob_team1"] = 0.61
     results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=bad2),
                                  "D22", vs.FAIL, "probe row carrying a probability"))
+    # D23: wired production feeds must be counted consistently with the summary
+    wired_probe = {
+        "checked_at": NOW,
+        "summary": {"checked": 2, "wired_feeds_checked": 2, "wired_feeds_reachable": 1},
+        "books": [
+            {"name": "Pinnacle (wired feed)", "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/matchups",
+             "category": "wired", "wired": True, "http_status": 200, "reachable": True, "verdict": "reachable"},
+            {"name": "Unibet (wired feed)", "url": "https://eu-offering-api.kambicdn.com/x.json",
+             "category": "wired", "wired": True, "http_status": 503, "reachable": False, "verdict": "not reachable"},
+        ],
+    }
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=copy.deepcopy(wired_probe)),
+                                 "D23", vs.PASS, "wired feeds counted consistently"))
+    lied = copy.deepcopy(wired_probe); lied["summary"]["wired_feeds_reachable"] = 2
+    results.append(assert_status(run([copy.deepcopy(BASE_ROW)], market_probe=lied),
+                                 "D23", vs.FAIL, "summary claims a dead feed is reachable"))
     # stale data
     old = "2020-01-01T00:00:00+00:00"
     rep = vs.Report(); vs.verify_data(rep, payload([copy.deepcopy(BASE_ROW)],

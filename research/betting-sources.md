@@ -438,3 +438,40 @@ limitation is published on the site.
 | 2026-10-24 | rivalsleague.gg/lol | Organizer LoL page live; season 2 dates published | https://www.rivalsleague.gg/lol |
 | 2026-10-24 | komplettligaen.no/lol/ | Organizer page live with division schedules and results | https://www.komplettligaen.no/lol/ |
 | 2026-10-24 | Kalshi public API | Esports series list carries no League of Legends **series**; our own probe result, not a third-party claim | https://api.elections.kalshi.com/trade-api/v2/series?category=Esports |
+
+## 14. Refresh 2026-10-24 (evening) — probe widened to 37 sources, production feeds now health-checked
+
+The per-refresh probe (`scripts/source_probe.py`) was extended after the first live publication showed it
+only covered 22 hosts. Ten more **established sportsbooks / esportsbooks / aggregators** were added, and the
+four feeds that actually produce probabilities are now probed on the same schedule, so a dead feed is visible
+the same day instead of being inferred from a missing pick.
+
+| Added source | URL probed | Why it was added |
+|---|---|---|
+| DraftKings | https://sportsbook.draftkings.com/leagues/esports/league-of-legends | Largest US book with an esports category; tier-1 LoL only |
+| FanDuel | https://www.fanduel.com/sportsbook/esports/league-of-legends | Second-largest US book, esports category |
+| BetMGM | https://sports.betmgm.com/en/sports/esports-8/betting/all | US book with esports lobby |
+| bet365 | https://www.bet365.com/#/AX/ | Historically the widest esports coverage, JS-only shell |
+| Betsson | https://www.betsson.com/en/esports/league-of-legends | Nordic operator with LoL |
+| Paf | https://www.paf.com/en/sports/esports | Åland operator, Kambi-based |
+| Betano | https://www.betano.com/sport/esports/ | Kaizen/Kambi-backed, large EU footprint |
+| Betspawn | https://betspawn.com/esports/league-of-legends | Hotspawn's own sportsbook — checked to document that its lines are not used |
+| Sportsbetting.ag | https://www.sportsbetting.ag/sportsbook/esports/league-of-legends | US-facing esportsbook |
+| BetUS | https://www.betus.com.pa/sportsbook/esports/league-of-legends/ | US-facing esportsbook |
+| Oddspedia | https://oddspedia.com/esports/league-of-legends | Odds aggregator that lists many books per match |
+
+Production feeds added to the same probe as `category: "wired"` (health check only, they were already wired
+into `scripts/fetch_markets.py`):
+
+| Feed | Endpoint probed |
+|---|---|
+| Pinnacle | https://guest.api.arcadia.pinnacle.com/0.1/sports/12/matchups |
+| Unibet/Kambi | https://eu-offering-api.kambicdn.com/offering/v2018/ubau/listView/esports/league_of_legends/all/all/matches.json |
+| Bovada | https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports?marketFilterId=def&preMatchOnly=true&lang=en |
+| Polymarket | https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&limit=5 |
+
+Observed results for the added sources are recorded from the probe artifact produced by the CI run of this
+branch (`data/diag/source_probe.json`, committed by the pipeline) and summarised in COORDINATION.md; the site
+publishes the same rows with HTTP status and verdict on *Unresolved & limitations → External sources
+re-checked*. **None of the added sources contributed a probability**, and Betspawn (Hotspawn's own book) is
+probed only so the site can document that Hotspawn data is never an input.

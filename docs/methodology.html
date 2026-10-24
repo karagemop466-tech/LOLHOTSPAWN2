@@ -127,8 +127,9 @@
   <section id="market-probe">
     <h2>External sources re-checked on this update</h2>
     <p class="small">
-      A fixed list of established sportsbooks, esportsbooks, exchanges, odds aggregators, prediction markets and
-      community/official result sites is requested <b>once per refresh</b> (single GET each, 12-second timeout).
+      A fixed list of <b>37</b> established sportsbooks, esportsbooks, exchanges, odds aggregators, prediction markets,
+      the four production feeds themselves and community/official result sites is requested <b>once per refresh</b>
+      (single GET each, 12-second timeout, at most six in flight).
       The table is the observed result — nothing here is inferred, and nothing here is ever used in a probability.
       A source only becomes a market input after it returns structured per-match prices <em>and</em> a sample price is
       verified by hand against the live page. The narrative research (what each site claims to cover, with links) is in
@@ -140,6 +141,17 @@
         <thead><tr><th scope="col">Source</th><th scope="col">Type</th><th scope="col">HTTP</th><th scope="col">Verdict</th></tr></thead>
         <tbody id="market-probe-body">
           <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading source checks…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin-top:18px">Live health of the four production feeds</h3>
+    <p class="small">These four are the only sources that may contribute a probability. This is what they returned in
+      the current refresh; a 200 does not mean they listed a tier-2/tier-3 fixture.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Production feed</th><th scope="col">HTTP</th><th scope="col">What we observed</th></tr></thead>
+        <tbody id="wired-feeds-body">
+          <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading feed health…</div></td></tr>
         </tbody>
       </table>
     </div>

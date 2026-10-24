@@ -92,7 +92,11 @@
   function pickPill(m) {
     const tone = m.method === "UNRESOLVED" ? "red" : (m.confidence === "Low" ? "amber" : "");
     const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
-    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
+    // Use the same rounded pair the row prints, so the pick badge can never differ
+    // from the team's own displayed probability (e.g. 56.9% vs 56.8%).
+    const pair = pctPair(m.prob_team1);
+    const shown = m.pick === m.team1 ? pair[0] : (m.pick === m.team2 ? pair[1] : pct1(m.pick_prob));
+    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${shown}</span>`;
   }
 
   function matchCard(m, opts = {}) {
@@ -203,19 +207,76 @@
     const s = p.summary || {};
     if (!p.checked_at) return "No external-source probe ran in this refresh.";
     const when = whenUTC(p.checked_at);
+    const wiredChecked = s.wired_feeds_checked ?? 0;
+    const wiredOk = s.wired_feeds_reachable ?? 0;
     return `<b>${s.checked ?? 0}</b> external sources were requested once on ${esc(when)}: `
       + `<b>${s.reachable ?? 0}</b> answered, <b>${s.structured_json ?? 0}</b> returned structured JSON, `
       + `<b>${s.structured_with_lol ?? 0}</b> contained any League of Legends match market. `
-      + `Market sources checked: <b>${s.market_sources_checked ?? 0}</b>, reachable: <b>${s.market_sources_reachable ?? 0}</b>. `
-      + `Only Pinnacle, Unibet (Kambi), Bovada and Polymarket can produce a market probability, and only when they publish a full-match line.`;
+      + `Market sources checked: <b>${s.market_sources_checked ?? 0}</b>, reachable: <b>${s.market_sources_reachable ?? 0}</b>`
+      + (wiredChecked ? `; production feeds reachable: <b>${wiredOk}/${wiredChecked}</b>` : "")
+      + `. Only Pinnacle, Unibet (Kambi), Bovada and Polymarket can produce a market probability, and only when they publish a full-match line.`;
+  }
+
+  // The four feeds that are actually wired into the picks, with their live health this run.
+  const WIRED_ORDER = ["Pinnacle", "Unibet", "Bovada", "Polymarket"];
+  function probeCheckedNote(d) {
+    const p = d.market_probe || {};
+    const s = p.summary || {};
+    if (!p.checked_at) return "";
+    return `<p class="small"><b>What was checked for this fixture:</b> ${s.checked ?? 0} external sources were requested once at ${esc(whenUTC(p.checked_at))} `
+      + `(${s.market_sources_checked ?? 0} market feeds and ${s.results_sources_reachable ?? 0} reachable results/metadata pages); none published a full-match line for this fixture. `
+      + `The full source-by-source result is on <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a>.</p>`;
+  }
+
+  function probeFeedRows(d) {
+    const books = probeBooks(d).filter((b) => b.category === "wired" || b.wired);
+    if (!books.length) return `<tr><td colspan="3" class="small">The production feeds were not probed in this refresh.</td></tr>`;
+    const find = (key) => books.find((b) => (b.name || "").toLowerCase().includes(key));
+    return WIRED_ORDER.map((feed) => {
+      const b = find(feed.toLowerCase());
+      if (!b) return `<tr><td data-label="Production feed"><b>${feed}</b></td><td data-label="HTTP"><span class="chip">not probed</span></td><td data-label="What we observed" class="small">—</td></tr>`;
+      const ok = b.http_status === 200;
+      return `<tr><td data-label="Production feed"><b>${esc(b.name)}</b><span class="sub"><a href="${esc(b.url)}" target="_blank" rel="noopener">feed ↗</a></span></td>`
+        + `<td data-label="HTTP"><span class="chip ${ok ? "green" : "amber"}">${esc(b.http_status ?? "no response")}</span></td>`
+        + `<td data-label="What we observed" class="small">${esc(b.verdict || "")}</td></tr>`;
+    }).join("");
+  }
+
+  // Which of the four production feeds priced at least one fixture of each competition.
+  // Read straight from each match's market sources, so it cannot drift from the picks.
+  function bookMatrixRows(d) {
+    const lbs = computeLeagueBreakdown(d);
+    const ms = d.matches || [];
+    return lbs.map((lb) => {
+      const rows = ms.filter((m) => m.tournament === lb.tournament && m.market);
+      const seen = new Set();
+      rows.forEach((m) => (m.market.sources || []).forEach((s) => seen.add(s.source)));
+      const cells = WIRED_ORDER.map((feed) => `<td data-label="${feed}">${seen.has(feed) ? '<span class="chip green">✓ line</span>' : '<span class="chip">— none</span>'}</td>`).join("");
+      return `<tr><td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(lb.tournament))}"><b>${esc(lb.tournament)}</b></a><span class="sub">${esc(lb.category)}</span></td>`
+        + `<td data-label="Fixtures"><b>${lb.fixtures}</b></td>${cells}`
+        + `<td data-label="Priced by feeds / own model" class="small">${rows.length} / ${lb.fixtures - rows.length}</td></tr>`;
+    }).join("");
+  }
+
+  function bookMatrixSummary(d) {
+    const ms = d.matches || [];
+    const withMarket = ms.filter((m) => m.market);
+    const feeds = new Set();
+    withMarket.forEach((m) => (m.market.sources || []).forEach((s) => feeds.add(s.source)));
+    const n = ms.length || 0;
+    return `<b>${withMarket.length} of ${n}</b> fixtures are priced by an external betting line`
+      + (feeds.size ? ` (${[...feeds].sort().join(", ")})` : "")
+      + `; the other <b>${n - withMarket.length}</b> have no line at any of the books checked this run and are priced by our own Elo / standings model — never guessed, and never from Hotspawn's crowd %.`;
   }
 
   function probeRows(d, opts = {}) {
-    const books = probeBooks(d);
+    const rank = { wired: 0, market: 1, results: 2 };
+    const books = probeBooks(d).slice().sort((a, b) => (rank[a.category] ?? 1) - (rank[b.category] ?? 1));
     if (!books.length) return `<tr><td colspan="4" class="small">No external-source probe ran in this refresh.</td></tr>`;
+    const label = (b) => (b.category === "results" ? "Results" : b.category === "wired" || b.wired ? "Wired feed" : "Market");
     return books.map((b) => `<tr>
       <td data-label="Source"><b>${esc(b.name)}</b><span class="sub"><a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.url)} ↗</a></span></td>
-      <td data-label="Type"><span class="chip">${b.category === "results" ? "Results" : "Market"}</span><span class="sub">${esc(b.kind || "")}</span></td>
+      <td data-label="Type"><span class="chip ${b.category === "wired" || b.wired ? "green" : ""}">${label(b)}</span><span class="sub">${esc(b.kind || "")}</span></td>
       <td data-label="HTTP"><span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}">${esc(b.http_status ?? "no response")}</span></td>
       <td data-label="Verdict" class="small">${esc(b.verdict || "")}</td>
     </tr>`).join("");
@@ -224,7 +285,17 @@
   function probeStrip(d) {
     const books = probeBooks(d);
     if (!books.length) return `<span class="chip">No probe ran</span>`;
-    return books.map((b) => `<span class="chip ${b.http_status === 200 ? "green" : b.http_status ? "amber" : "red"}" title="${esc(b.verdict || "")}" role="listitem">${esc(b.name)} · ${esc(b.http_status ?? "—")}</span>`).join(" ");
+    const s = (d.market_probe || {}).summary || {};
+    const wired = books.filter((b) => b.category === "wired" || b.wired);
+    const shortName = (n) => String(n || "").replace(/\s*\(wired feed\)/i, "");
+    const chips = wired.map((b) => `<span class="chip ${b.http_status === 200 ? "green" : "amber"}" title="${esc(b.verdict || "")}" role="listitem">${esc(shortName(b.name))} · ${esc(b.http_status ?? "—")}</span>`);
+    if (s.market_sources_checked) {
+      chips.push(`<span class="chip" role="listitem">+ ${Math.max(0, (s.market_sources_checked || 0) - wired.length)} other market sources checked · ${s.market_sources_reachable ?? 0} reachable</span>`);
+    }
+    if (s.results_sources_reachable != null) {
+      chips.push(`<span class="chip" role="listitem">results pages reachable · ${s.results_sources_reachable}</span>`);
+    }
+    return chips.join(" ");
   }
 
   function leagueLimitRows(lbs, withCategory) {
@@ -340,6 +411,8 @@
 
     const exProbeStrip = $("#exec-probe-strip");
     if (exProbeStrip) exProbeStrip.innerHTML = probeStrip(d);
+    const exBook = $("#exec-book-summary");
+    if (exBook) exBook.innerHTML = bookMatrixSummary(d);
     const exProbeSummary = $("#probe-summary");
     if (exProbeSummary) exProbeSummary.innerHTML = probeSummaryLine(d);
 
@@ -508,6 +581,12 @@
     if (psum) psum.innerHTML = probeSummaryLine(d);
     const pbody = $("#probe-body");
     if (pbody) pbody.innerHTML = probeRows(d);
+    const bmBody = $("#book-matrix-body");
+    if (bmBody) bmBody.innerHTML = bookMatrixRows(d);
+    const bmSum = $("#book-matrix-summary");
+    if (bmSum) bmSum.innerHTML = bookMatrixSummary(d);
+    const wiredBody = $("#wired-feeds-body");
+    if (wiredBody) wiredBody.innerHTML = probeFeedRows(d);
     const stat = $("#unresolved-counts");
     if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
   }
@@ -630,7 +709,7 @@
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
             ${m.market ? `<p class="small">Consensus: <b>${pctPair(m.market.consensus_team1)[0]}</b> ${esc(m.team1)} · <b>${pctPair(m.market.consensus_team1)[1]}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
             <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
-            : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>`}
+            : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>${probeCheckedNote(d)}`}
           </div>
           <div class="card"><h3>Our model &amp; standings inputs</h3>
             ${m.model ? `<dl class="kv">
@@ -654,6 +733,8 @@
   }
 
   function renderMethodology(d) {
+    const wiredBodyM = $("#wired-feeds-body");
+    if (wiredBodyM) wiredBodyM.innerHTML = probeFeedRows(d);
     const ss = $("#sources-status");
     if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");

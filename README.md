@@ -21,11 +21,17 @@ Rows are priced in a strict 5-tier cascade:
 4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one team lacks both match history and split standings; the competition median/tier prior is substituted, shrunk toward 50/50 and capped at Low confidence.
 5. **Unresolved (`UNRESOLVED`)** — neither external lines nor recorded team/standings evidence exist: published strictly as an explicit `50.0% / 50.0%` placeholder on its own Unresolved & Limitations page (including a per-league table of which signal prices each league). Never an edge.
 
-Every refresh also re-requests a fixed list of 22 established sportsbooks, esportsbooks, exchanges,
+Every refresh also re-requests a fixed list of 37 sources — established sportsbooks (Pinnacle, Betfair,
+DraftKings, FanDuel, BetMGM, bet365, Betsson, Paf, Betano, Betway, BetOnline, Sportsbetting.ag, BetUS),
+esportsbooks (GG.Bet, Thunderpick, Rivalry, Midnite, 1xBet, Betspawn), odds aggregators,
 odds aggregators, prediction markets and community/official result pages **once each** and publishes
 exactly what they returned (`market_probe`: HTTP status, JSON or HTML, and whether any League of Legends
 match market was visible). That is reachability evidence only — no probed value is ever used in a
 probability, and the sources needing API keys are recorded as such instead of guessed at.
+
+The four feeds that *can* contribute a probability (Pinnacle, Unibet/Kambi, Bovada, Polymarket) are
+probed too, so every refresh publishes their live health, and the site shows **which feed prices which
+competition** alongside each league's Elo/standings fallback (checks `D23` and `S12`).
 
 **Hotspawn is used for the fixture list only.** Its crowd percentages are displayed as
 context and are never an input to any probability. Every table row carries direct links to
@@ -48,14 +54,14 @@ its verified sources, and any upstream irregularity is surfaced on *Flagged for 
 | Polymarket Gamma API | Public prediction-market reference probabilities | https://gamma-api.polymarket.com |
 | Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) — page-prefix probe fixed 2026-10-24 | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
-| External-source probe (22 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
+| External-source probe (37 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators **and live health of the four production feeds**; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
 
 ## Local verification
 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + external-source probe + publish
 python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
-python3 verification/test_verifier.py           # includes the D22 external-source-probe self-tests
+python3 verification/test_verifier.py           # includes the D22/D23 external-source-probe self-tests
 python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit

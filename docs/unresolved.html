@@ -63,6 +63,50 @@
     <ul class="clean small" id="reasons"><li>Loading…</li></ul>
   </div>
 
+  <section class="card" id="wired-feeds">
+    <h3>The four production feeds — live health this run</h3>
+    <p class="small">
+      These are the only sources allowed to contribute a probability, and only when they publish a full-match
+      (series) line that survives de-vigging and de-duplication. A 200 here means the feed answered; it does not
+      mean it listed a line for a tier-2/tier-3 fixture.
+    </p>
+    <div class="table-wrap" style="margin-top:8px">
+      <table>
+        <thead>
+          <tr><th scope="col">Production feed</th><th scope="col">HTTP</th><th scope="col">What we observed</th></tr>
+        </thead>
+        <tbody id="wired-feeds-body">
+          <tr><td colspan="3"><div class="loading"><span class="spinner"></span>Loading feed health…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" id="book-matrix">
+    <h3>Which feed prices which competition</h3>
+    <p class="small" id="book-matrix-summary">Loading…</p>
+    <div class="table-wrap" style="margin-top:8px">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Competition</th>
+            <th scope="col">Fixtures</th>
+            <th scope="col">Pinnacle</th>
+            <th scope="col">Unibet</th>
+            <th scope="col">Bovada</th>
+            <th scope="col">Polymarket</th>
+            <th scope="col">Priced by feeds / own model</th>
+          </tr>
+        </thead>
+        <tbody id="book-matrix-body">
+          <tr><td colspan="7"><div class="loading"><span class="spinner"></span>Loading market coverage…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">A dash means no fixture of that competition had a line from that feed in this refresh — so the
+      pick for those matches comes from our Elo / standings model, with the limitation stated in the table above.</p>
+  </section>
+
   <section class="card" id="by-league">
     <h3>By league — what prices each league, and where its limit is</h3>
     <p class="small">One row per tournament on Hotspawn's list, with a verified source link on every row.</p>
