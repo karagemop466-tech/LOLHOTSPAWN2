@@ -21,6 +21,7 @@
     MARKET_SINGLE: { label: "Single book line", cls: "green", ico: "💰" },
     MODEL_ELO: { label: "Own Elo model", cls: "blue", ico: "🧮" },
     MODEL_ELO_THIN: { label: "Elo (thin history)", cls: "amber", ico: "🧮" },
+    MODEL_ELO_STANDINGS: { label: "Elo + split standings", cls: "blue", ico: "📊" },
     MODEL_STANDINGS: { label: "Split standings", cls: "blue", ico: "📊" },
     MODEL_LEAGUE_PRIOR: { label: "League prior", cls: "amber", ico: "📐" },
     UNRESOLVED: { label: "Unresolved 50/50", cls: "red", ico: "⚠️" },
@@ -29,7 +30,7 @@
   const CONF_RANK = { High: 3, Medium: 2, Low: 1, None: 0 };
   const METHOD_RANK = {
     MARKET_CONSENSUS: 6, MARKET_SINGLE: 5, MODEL_ELO: 4,
-    MODEL_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
+    MODEL_STANDINGS: 3, MODEL_ELO_STANDINGS: 3, MODEL_ELO_THIN: 2, MODEL_LEAGUE_PRIOR: 1, UNRESOLVED: 0,
   };
   const PAGE = document.body.dataset.page || "";
   let DATA = null;
@@ -141,7 +142,7 @@
       const lpUrl = (ms.find((x) => x.leaguepedia_url) || {}).leaguepedia_url || "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule";
       const mkt = ms.filter((x) => x.market).length;
       const elo = ms.filter((x) => x.method === "MODEL_ELO" || x.method === "MODEL_ELO_THIN").length;
-      const st = ms.filter((x) => x.method === "MODEL_STANDINGS").length;
+      const st = ms.filter((x) => x.method === "MODEL_STANDINGS" || x.method === "MODEL_ELO_STANDINGS").length;
       const prior = ms.filter((x) => x.method === "MODEL_LEAGUE_PRIOR").length;
       const unres = ms.filter((x) => x.method === "UNRESOLVED").length;
       const t = tour.toLowerCase();
@@ -153,7 +154,10 @@
       return {
         tournament: tour, category: cat, fixtures: ms.length, market: mkt, elo, standings: st,
         league_prior: prior, unresolved: unres, leaguepedia_url: lpUrl,
-        limitation: mkt ? "Priced by external bookmaker/prediction-market consensus." : "No external sportsbook line; priced via Leaguepedia recorded results & split standings.",
+        limitation: mkt
+          ? "Priced by external bookmaker/prediction-market consensus."
+          : ("No external sportsbook line; priced via Leaguepedia recorded results"
+             + (st ? " & current-split standings records." : ".")),
       };
     });
   }
@@ -328,12 +332,41 @@
     const u = d.unresolved || {};
     const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
     const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
+    const uCount = u.count ?? 0;
+    const lcCount = u.low_confidence_count ?? 0;
     const ubox = $("#unresolved-summary");
-    if (ubox) ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${u.count ?? 0}) &amp; Low-confidence picks (${u.low_confidence_count ?? 0})</h3>
-      <p><b>${u.count ?? 0}</b> fixture${(u.count ?? 0) === 1 ? "" : "s"} lack external lines, recorded team matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b> (never an edge). <b>${u.low_confidence_count ?? 0}</b> additional amateur/promotion rows rely on thin history (&lt;8 games), split standings, or a single debut side against the competition prior and are capped at Low confidence. Hotspawn's crowd % is never used.</p>
+    if (ubox) {
+      // The headline sentence has to read correctly whether or not anything is
+      // currently unresolved: "0 fixtures lack ..." is confusing on its own.
+      const headline = uCount > 0
+        ? `<b>${uCount}</b> fixture${uCount === 1 ? "" : "s"} lack external lines, recorded team
+           matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b>
+           (never an edge).`
+        : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
+           external betting line, our Elo model, or a current-split standings record. Anything that later
+           loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
+      // Per-league limitations are part of the executive summary, not only on
+      // the separate Unresolved page, so the reader sees which signal prices
+      // each competition without leaving this page.
+      const bl = d.unresolved?.by_league || [];
+      const perLeague = bl.length ? `
+        <p class="small"><b>Per-league limitations — which signal prices each competition</b></p>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Competition</th><th scope="col">Fixtures</th><th scope="col">Pricing mix</th><th scope="col">Limitation</th></tr></thead>
+          <tbody>${bl.map((b) => `<tr>
+            <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(b.tournament))}"><b>${esc(b.tournament)}</b></a></td>
+            <td data-label="Fixtures"><b>${b.fixtures}</b></td>
+            <td data-label="Pricing mix" class="small">💰 ${b.market ?? 0} mkt · 🧮 ${b.elo ?? 0} Elo · 📊 ${b.standings ?? 0} st · 📐 ${b.prior_only ?? 0} prior · ⚠️ ${b.unresolved ?? 0} unres</td>
+            <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
+          </tr>`).join("")}</tbody>
+        </table></div>` : "";
+      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
+      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
+      ${perLeague}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
-      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; per-league limitations page →</a></p></div>`;
+      <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; full per-league limitations page →</a></p></div>`;
+    }
 
     const exLimBody = $("#exec-league-limits-body");
     if (exLimBody) exLimBody.innerHTML = leagueLimitRows(computeLeagueBreakdown(d), false);
@@ -404,7 +437,7 @@
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
-    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS") return false;
+    if (state.filter === "standings" && m.method !== "MODEL_STANDINGS" && m.method !== "MODEL_ELO_STANDINGS") return false;
     if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
@@ -444,7 +477,7 @@
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
       market: all.filter((m) => m.market).length,
       model: all.filter((m) => m.model && !m.market).length,
-      standings: all.filter((m) => m.method === "MODEL_STANDINGS").length,
+      standings: all.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length,
       low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
     };
@@ -531,6 +564,7 @@
       START_TIME_MISMATCH: "Start time differs from Leaguepedia (>30 min)",
       START_TIME_DISAGREES_WITH_BOOKS: "Bookmaker start time differs from Hotspawn (>1.5 h)",
       CROSS_LEAGUE_MODEL: "Teams' recent competitions differ (model capped at Low)",
+      STANDINGS_BLEND_APPLIED: "Current-split standings record blended into the rating",
     };
     return map[f] || f;
   }
