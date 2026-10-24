@@ -733,6 +733,46 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
             diff[:12])
 
 
+CONFLICT_SCAN_DIRS = ("docs", "data", "verification", "research", "scripts", ".github")
+CONFLICT_SCAN_SUFFIX = (".json", ".html", ".css", ".js", ".cjs", ".py", ".yml", ".yaml", ".md", ".log", ".txt")
+
+
+def verify_no_conflict_markers(rep: Report) -> None:
+    """Fail if a committed file still carries git merge-conflict markers.
+
+    A conflicted generated file (docs/data/picks.json) was once merged into main and
+    made the whole dashboard unreadable while the diff looked harmless. This check
+    scans the files the site and pipeline consume, so a conflicted artifact can never
+    ship again: markers in a payload are a hard failure, not a cosmetic issue.
+    """
+    bad: list[str] = []
+    for base in CONFLICT_SCAN_DIRS:
+        root_dir = os.path.join(ROOT, base)
+        if not os.path.isdir(root_dir):
+            continue
+        for dirpath, dirnames, filenames in os.walk(root_dir):
+            dirnames[:] = [d for d in dirnames if d not in
+                           {"node_modules", "__pycache__", ".git", ".venv", "build", "dist"}]
+            for name in filenames:
+                if not name.endswith(CONFLICT_SCAN_SUFFIX):
+                    continue
+                path = os.path.join(dirpath, name)
+                try:
+                    with open(path, encoding="utf-8", errors="replace") as fh:
+                        for lineno, line in enumerate(fh, 1):
+                            if line.startswith(("<<<<<<< ", ">>>>>>> ")) or \
+                                    line.rstrip() == "=======":
+                                bad.append(f"{os.path.relpath(path, ROOT)}:{lineno}")
+                                break
+                except OSError:
+                    continue
+    rep.add("D23", "no committed artifact contains git conflict markers",
+            PASS if not bad else FAIL,
+            "no conflict markers in docs/, data/, verification/, research/, scripts/, .github/"
+            if not bad else f"{len(bad)} file(s) still contain conflict markers",
+            bad[:12])
+
+
 def verify_data_files(rep: Report) -> None:
     present = [p for p in DATA_PATHS if os.path.exists(p)]
     if not present:
@@ -1329,6 +1369,7 @@ def main() -> int:
     rows = verify_data(rep, payload, err or "docs/data/picks.json", args.max_age_hours)
     verify_schedule(rep, rows, args.leaguepedia_schedule)
     verify_data_files(rep)
+    verify_no_conflict_markers(rep)
     verify_site(rep, rows)
     verify_workflows(rep)
     if args.check_external:

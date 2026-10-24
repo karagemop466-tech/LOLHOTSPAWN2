@@ -1303,3 +1303,33 @@ entry in `scripts/update_picks.py`, `research/betting-sources.md` §15, and the 
 | Next automatic refresh | 6-hour schedule (`0 */6 * * *`) continues on `main`; no manual input required | `.github/workflows/update-picks.yml` |
 
 **Second merge reconciliation (2026-10-24, `arena/66e731b3`):** merged `origin/main` again after PR #41 (`arena/e6f33fe9`: fixture-matched `probe_lines.py`, S13–S15, jsdom render gate) + scheduled refresh `6017b92`. Kept both sessions' `checked_unavailable` additions (their 9 fixture-matched entries + this session's 3 official-doc entries); research renumbered to **§17** and appended after main's §15/§16; generated files took main's pending CI regeneration. Twice-merged tree locally: `verify_site.py` **43 PASS/0 FAIL/0 WARN/1 SKIP**, verifier 45/45, DOM PASS, entity/books 17/17, standings ALL PASS, audit 23/23, JS syntax OK. Branch pipeline on the first merged tree (run `40114283132`, payload 2026-10-24T17:05Z) was **success**: 159/159 resolved, 0 unresolved, `checked_unavailable` 18 published, `market_probe` 32 sources (this session's 6 new candidates measured live: TonyBet/BC.Game 200 HTML-only; SportsBetting.ag/Stake/PandaScore/Oracle's Elixir 403).
+
+---
+
+### Hotfix `arena/e6f33fe9` — conflicted generated artifacts reached `main` (2026-10-24 17:0x UTC)
+
+**What happened.** While integrating `origin/main` twice (twice within minutes, because other sessions were
+merging concurrently), three machine-written files were committed with git conflict markers still in them:
+`docs/data/picks.json`, `data/diag/source_probe.json` and `data/diag/pipeline.log`. `picks.json` was the
+serious one: the dashboard's payload was unparsable, so `verify_site.py` **D1** failed and the post-merge
+`Verify picks and site` run on `main` (**40114322258**) went red in 7s; the Pages deployment that followed
+published a dashboard that could not load its data.
+
+**How it was detected.** The failing run had no retrievable log (the job-log blob endpoint returned EOF, the
+same limitation earlier sessions hit), so the merged tree was reconstructed with `git archive origin/main`
+and the verifier suite was run locally against it — that reproduced D1 immediately.
+
+**How it was fixed.** The 6-hour `update-picks` run (**40114322196**, success) regenerated `picks.json` and
+`pipeline.log` from the live pipeline, which healed both. `data/diag/source_probe.json` is *not* rewritten
+when a probe newer than 30 minutes already exists, so it stayed broken; this branch restores it from the last
+clean commit (`9ad7c10`) and adds a permanent guard.
+
+**New guard — verifier check `D23`.** Every file under `docs/`, `data/`, `verification/`, `research/`,
+`scripts/` and `.github/` is scanned for `<<<<<<<` / `=======` / `>>>>>>>` markers, and the check **fails the
+run** if any is found. Verified non-vacuous: planting a marker file turns D23 red, removing it turns it green.
+
+**Lesson recorded for future integration sessions.** Generated artifacts (`docs/data/picks.json`,
+`data/diag/*.json|log`, `verification/report.json`, `verification/last_report.md`) must never be hand-merged.
+Resolve them by taking one complete side (`git checkout --theirs <file>`), then confirm with
+`python3 -c "import json;json.load(open('<file>'))"` before committing. `D23` now catches the mistake at CI
+time regardless.
