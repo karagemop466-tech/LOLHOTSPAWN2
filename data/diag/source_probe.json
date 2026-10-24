@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:26:21.534295Z",
+ "checked_at": "2026-10-24T16:32:02.231119Z",
  "candidates": [
   {
    "name": "Kalshi (esports series)",
@@ -56,7 +56,7 @@
    "url": "https://egamersworld.com/lol/bets",
    "kind": "odds-comparison-page",
    "http_status": 403,
-   "bytes": 5740,
+   "bytes": 5718,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
@@ -66,12 +66,12 @@
    "name": "OddsPortal LoL",
    "url": "https://www.oddsportal.com/lol/",
    "kind": "odds-comparison-page",
-   "http_status": 200,
-   "bytes": 491898,
+   "http_status": 503,
+   "bytes": 0,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only"
+   "verdict": "not usable from CI (HTTP 503)"
   },
   {
    "name": "BetExplorer LoL",
@@ -110,12 +110,12 @@
    "name": "Rivalry LoL",
    "url": "https://www.rivalry.com/lol",
    "kind": "esportsbook-page",
-   "http_status": 503,
-   "bytes": 1591,
+   "http_status": 404,
+   "bytes": 65054,
    "is_json": false,
    "lol_mentions_in_first_items": null,
    "detail": {},
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "not usable from CI (HTTP 404)"
   },
   {
    "name": "Midnite LoL",

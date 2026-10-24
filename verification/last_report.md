@@ -1,6 +1,6 @@
 # Verification report — PASS
-_2026-10-24T16:30:39.358219+00:00_
-164 matches · UNRESOLVED: 0 · MARKET_POLYMARKET: 0 · MODEL_ELO: 93 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO_THIN: 62 · MARKET_CONSENSUS: 8 · MODEL_STANDINGS: 0 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0
+_2026-10-24T16:31:54.868910+00:00_
+164 matches · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO: 93 · MARKET_POLYMARKET: 0 · UNRESOLVED: 0 · MARKET_SINGLE: 1 · MODEL_STANDINGS: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 62
 
 | check | status | detail |
 |---|---|---|
@@ -25,7 +25,7 @@ _2026-10-24T16:30:39.358219+00:00_
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=164, priced=164, missing=0, extra=0, excluded=14, leaked=0 |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 65 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 112/122 matched fixture times agree with Leaguepedia; 42 fixture(s) not in the snapshot; 10 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (67.8h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | S1 all required site files exist | PASS | 10 files present |
 | S10 phone bottom nav has one grid column per link on every page | PASS | 6 links, 6 columns on every page |

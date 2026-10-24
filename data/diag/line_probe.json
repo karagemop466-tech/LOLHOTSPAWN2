@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-24T16:32:02.303294Z",
+ "checked_at": "2026-10-24T16:32:59.475500Z",
  "fixture_count": 164,
  "fixtures_without_external_line": 155,
  "candidates_with_new_coverage": [],
@@ -33,7 +33,7 @@
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4361569,
+   "bytes": 4361373,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -1482,6 +1482,22 @@
    "verdict": "reachable, but no two-way per-match price was extracted"
   },
   {
+   "name": "bmbets LoL odds comparison",
+   "kind": "aggregator-page",
+   "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
+   "http_status": 200,
+   "bytes": 1060961,
+   "is_json": false,
+   "lol_mentions": 3,
+   "error": null,
+   "priced_records": 0,
+   "records_matched_to_fixtures": 0,
+   "fixtures_matched": 0,
+   "fixtures_matched_and_previously_unpriced": 0,
+   "samples": [],
+   "verdict": "reachable, but no two-way per-match price was extracted"
+  },
+  {
    "name": "Prime League official (organizer)",
    "kind": "organizer-results",
    "url": "https://www.primeleague.gg/en/liga2",
@@ -1518,7 +1534,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366115,
+   "bytes": 366114,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
