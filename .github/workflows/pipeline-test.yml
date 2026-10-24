@@ -63,6 +63,16 @@ jobs:
           python3 verification/test_entity_and_books.py
           python3 audit/test_model.py
           python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external
+          set +e
+          python3 verification/check_source_pages.py
+          src_rc=$?
+          set -e
+          if [ "$src_rc" = "2" ]; then
+            echo "::warning title=Source page check skipped::Leaguepedia API was unreachable; page existence not verified in this run"
+          elif [ "$src_rc" != "0" ]; then
+            echo "::error title=Cited source page missing::a tournament page cited by a pick row does not exist on Leaguepedia"
+            exit "$src_rc"
+          fi
 
       - uses: actions/setup-node@v4
         with:

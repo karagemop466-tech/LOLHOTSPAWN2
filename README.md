@@ -41,14 +41,29 @@ its verified sources, and any upstream irregularity is surfaced on *Flagged for 
 | Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
 
+## Mobile experience
+
+The site is one dashboard with one shared header, one shared primary nav and one shared
+six-item thumb bar; every page is designed for a 360–430 px phone first. The executive
+summary opens with a **Where the picks are** card that jumps straight to the updated
+list, the next 24 hours, the per-league view, or the unresolved/limitations page, each
+with a live count. A colour-theme button in the header works on every page.
+`verification/mobile_audit.md` records the 2026-10-24 audit (eight defects found and
+fixed — including an executive-summary header that was clipped to 12 px by a
+class-name collision, and a theme button with no handler) and lists the checks that now
+make those regressions fail CI.
+
 ## Local verification
 
 ```bash
 python3 scripts/update_picks.py                 # live fetch + model + publish
-python3 verification/check_dom_contract.py      # DOM ID + mobile bottom-nav column check
+python3 verification/check_dom_contract.py      # C1–C6: ids, header/nav skeleton, class coverage, dead controls, mobile rules
+python3 verification/test_dom_contract.py       # 7/7 negative self-tests for the contract above
+npm install --no-save jsdom@24 && node verification/render_smoke.js   # 63/63 real-app render checks
 python3 verification/test_verifier.py           # 35/35 verifier unit self-tests
 python3 verification/test_entity_and_books.py   # 10/10 entity & bookmaker unit tests
 python3 scripts/verify_site.py                  # full schema + link + page audit
+python3 scripts/probe_sources.py                # refresh the candidate-source measurements (CI, not sandbox)
 ```
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.

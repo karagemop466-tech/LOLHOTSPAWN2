@@ -349,3 +349,110 @@ Standings ignore strength of schedule; Elo tiers across leagues are priors, not 
 | 2026-10-23 | Live pipeline (Actions 39980317947) | Standings fetched: 167 rows / 14 competitions; 4 fixtures → `MODEL_STANDINGS`; 188/188 picks, 0 unresolved | `data/diag/pipeline.log`, `docs/data/picks.json` |
 | 2026-10-23 | `scripts/probe_sources.py` | Fresh observed statuses for 13 candidate sources | `data/diag/source_probe.json` (committed by pipeline-test runs) |
 
+
+---
+
+## 13. Refresh 2026-10-24 — established books → esportsbooks → community, measured by tier
+(session `arena/9d523943`)
+
+Brief: *"Look for information sources to guide pick selections only for any matches that cannot be resolved in
+the same way as the featured picks… Try established LOL betting sites, then try looking at esportsbooks and
+esports betting lines."* This pass answers that literally, in that order, and records what was **observed**
+instead of what a round-up article claims.
+
+Two independent kinds of evidence are used and kept apart:
+
+* **CI measurement** — `scripts/probe_sources.py` now probes **28** candidates, tagged `established-book`,
+  `esportsbook` or `community`, one polite GET each (browser-like `User-Agent` where a site needs it), and
+  writes `data/diag/source_probe.json`. Snapshot: **2026-10-24T16:26:27Z**, produced by pipeline-test run
+  [40110891210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40110891210).
+* **Direct page reads** — pages that a CI runner cannot load (403 / JS shell) were opened as pages on
+  2026-10-24 and are cited by URL with what they actually showed.
+
+### 13.1 Established sportsbooks and odds aggregators (11 probed)
+
+| Source | CI status 2026-10-24 | What it means for our picks |
+|---|---|---|
+| Pinnacle guest feed (production) | **200 JSON** | Prices the Worlds board only; a `Market consensus` row is emitted when its main series moneyline matches a fixture. |
+| Unibet (Kambi `offering` API, production) | **200 JSON** | Same, from a second independent book. |
+| Bovada coupon (production) | **200 JSON** | Same, third book (returns `no_data` when its LoL coupon is empty). |
+| Polymarket Gamma (production) | **200 JSON**, LoL markets include *Hitpoint Masters* and *LGC Rising* text | The only production source that reaches **below tier 2**: in the 16:26Z payload the LGC Rising grand final (*Mental Rush vs Vitality Rising Bees*, BO5) is a `MARKET_SINGLE` row priced 39.0% / 61.0% from Polymarket's main match-winner market. |
+| Kalshi esports series | 200 JSON, **no LoL series** | Nothing to ingest. |
+| Manifold | 200 JSON, futures/questions only | No per-match market. |
+| The Odds API | **401** (paid key required, none configured) | Not used. |
+| OddsPapi | 200 HTML (no key) | Not used; documented coverage (Worlds/LEC/LCS/LCK/LPL/CBLOL/LJL/Prime League **Pro**) still excludes every amateur division in our fixture list. |
+| BetExplorer LoL | **404** | Not used. |
+| Smarkets API | **404** | Not used. |
+| OddsPortal LoL | 200 to CI, but reading <https://www.oddsportal.com/lol/> today returns **404 "Offside — page not found"** | Cannot be cited as a source; not used. |
+
+### 13.2 Esportsbooks and esports betting lines (10 probed)
+
+| Source | CI status | Direct page read 2026-10-24 |
+|---|---|---|
+| eGamersWorld LoL odds board | **403** (even with a browser UA) | **Readable as a page**: <https://egamersworld.com/lol/bets> renders a real 5-book comparison — Vave, Thunderpick, Rainbet, Underdog, CocoBet — e.g. *Top Esports 2.51–2.8 / AG.AL 1.42–1.52* for the 24 Oct Worlds match. **Every match on the page is 2026 World Championship**; the "recent predictions" block is Worlds too. No PRM, Tunisian, RIVALS, Komplettligaen, LigaGG or Arabian listing. |
+| GG.Bet / Thunderpick / Coolbet / Stake | **403** (Cloudflare) | Not readable programmatically. |
+| Rivalry / Midnite / Betano | 200 but **HTML shell only** | No server-rendered prices. |
+| Betway | **404** | LoL page unavailable. |
+| 1xBet | **203** (non-authoritative) | Not used. |
+
+**Conclusion for the tier-3/amateur fixtures (155 of 164 in the 16:26Z payload):** no established book and no
+esportsbook we can reach publishes a per-match line for them. The one aggregator that does render multi-book
+odds (eGamersWorld) covers only the World Championship, i.e. exactly the matches we already price from three
+books. This is a property of the market, not of our pipeline — so those rows are priced by our own model, and
+the site says so on every row and per league.
+
+### 13.3 Community and organiser sources (7 probed) — the path that actually resolves low-tier rows
+
+| Source | CI status | Use |
+|---|---|---|
+| Leaguepedia `MatchSchedule` (Cargo) | **200 JSON** | Production results source for the Elo model. |
+| Leaguepedia `Standings` (Cargo) | **200 JSON** | Production standings fallback (`MODEL_STANDINGS`). |
+| Liquipedia `api.php` | **200 JSON** | Metadata/discovery only (API, gzip, ≥2.2 s pacing, CC-BY-SA 3.0 attribution). |
+| Komplettligaen (organiser) | 200 HTML | Human cross-check; Leaguepedia is the programmatic source. |
+| RIVALS LEAGUE (organiser) | 200 HTML | Human cross-check. |
+| Prime League (PRM organiser) | **403 from CI**, but readable as a page: <https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627> shows the Fall Split 2026/27 schedule (group stage 24.09 → 04.12, playoffs 05.–13.12.) and 1,293 registered participants | **No odds anywhere on the page.** It confirms the divisions exist; it cannot price a match. Adapter still blocked by the 403. |
+| Riot LoLESports public schedule | **403** | Unusable from CI; Leaguepedia remains the results source. |
+
+### 13.4 Resulting pricing mix in the 2026-10-24T16:26Z payload (line-by-line verified)
+
+| Competition | Fixtures | External market | Model | Low confidence | Unresolved |
+|---|---|---|---|---|---|
+| PRM 3rd Division 26-27 Fall | 61 | 0 | 61 | 19 | 0 |
+| PRM 2nd Division 26-27 Fall | 36 | 0 | 36 | 10 | 0 |
+| Tunisian Super League 2026 | 20 | 0 | 20 | 18 | 0 |
+| RIVALS LEAGUE Season 2 | 18 | 0 | 18 | 12 | 0 |
+| Worlds 2026 Main Event | 8 | **8** | 0 | 0 | 0 |
+| Arabian League 2nd Division 2026 Summer | 6 | 0 | 6 | 5 | 0 |
+| 4 Nations 2026 Halloween Heist | 4 | 0 | 4 | 2 | 0 |
+| Komplettligaen 2026 Autumn Playoffs | 3 | 0 | 3 | 0 | 0 |
+| LCP 2027 Promotion | 3 | 0 | 3 | 2 | 0 |
+| LigaGG CELOL A / B 2026 Split 2 Playoffs | 4 | 0 | 4 | 0 | 0 |
+| LGC Rising 2026 Playoffs | 1 | **1** | 0 | 0 | 0 |
+| **Total** | **164** | **9** | **155** | **68** | **0** |
+
+Every one of the 164 fixtures carries a pick and both win probabilities; 14 cancelled fixtures are excluded and
+listed on the Flagged page. Nothing in this pass changed a probability formula, and no new source was promoted
+into production — the evidence did not support it.
+
+### 13.5 Cited source pages verified to exist
+
+`verification/check_source_pages.py` (new) asks the Leaguepedia API whether every tournament page cited by a
+payload row actually exists, because Leaguepedia answers HTTP **200 with an empty body** for a missing title
+(confirmed 2026-10-24: `/wiki/Prime_League/2026_Season/Fall_Split` returns "There is currently no text in this
+page"). All **12** distinct cited pages returned a page id in one batched API call
+(`Prime League 3rd Division/2027 Season/Fall Split`, `Prime League 2nd Division/2027 Season/Fall Split`,
+`Tunisian Super League/2026 Season`, `RIVALS LEAGUE/2026 Season/Season 2`, `2026 Season World Championship/Main
+Event`, `Arabian League 2nd Division/2026 Season/Summer Split`, `4 Nations/2026 Season/Halloween Heist`,
+`Komplettligaen/2026 Season/Autumn Playoffs`, `LCP/2027 Season/Promotion`, `LigaGG/CELOL Série A/2026 Season/Split
+2 Playoffs`, `LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs`, `LoL Game Changers/2026 Season/Playoffs`).
+
+### 13.6 Verification log additions (2026-10-24)
+
+| Source | What it verified | Link / evidence |
+|---|---|---|
+| `scripts/probe_sources.py` run in CI | 28 candidate sources, statuses by tier | `data/diag/source_probe.json` @ 2026-10-24T16:26:27Z, run 40110891210 |
+| eGamersWorld LoL odds board | Multi-book odds exist, Worlds-only | https://egamersworld.com/lol/bets |
+| OddsPortal LoL | Public URL is a 404 today | https://www.oddsportal.com/lol/ |
+| Prime League organiser | Division schedule exists; no odds | https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 |
+| Polymarket Gamma search | LGC Rising BO5 market exists and is priced into the payload | https://gamma-api.polymarket.com/public-search?q=LGC%20Rising |
+| Leaguepedia API `action=query&titles=` | All 12 cited tournament pages exist | `verification/check_source_pages.py` |
