@@ -601,8 +601,27 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         return
     sched = []
     snapshot_generated = None
+    # Prefer the live Leaguepedia cache written by this pipeline run: it is
+    # captured at run time, so the start-time cross-check verifies the CURRENT
+    # schedule instead of a committed diagnostic that may be days old.
+    live_cache = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                              "data", "cache", "leaguepedia.json")
+    live_cache = os.path.normpath(live_cache)
+    if os.path.isfile(live_cache):
+        try:
+            cache = json.load(open(live_cache, encoding="utf-8"))
+            rows_sched = cache.get("schedule") or cache.get("unscheduled") or []
+            if rows_sched:
+                sched = rows_sched
+                stamp = cache.get("generated_at")
+                if stamp:
+                    snapshot_generated = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+                    if snapshot_generated.tzinfo is None:
+                        snapshot_generated = snapshot_generated.replace(tzinfo=timezone.utc)
+        except Exception:  # noqa: BLE001
+            sched = []
     try:
-        if os.path.isdir(path):
+        if not sched and os.path.isdir(path):
             # Diagnostic snapshots are committed artifacts and can outlive the
             # live pipeline. Read their capture timestamp so stale deltas are
             # not mistaken for a current schedule verification.
@@ -631,7 +650,7 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
                     part = part.get("cargoquery") or part.get("rows") or []
                 if isinstance(part, list):
                     sched += part
-        else:
+        elif not sched:
             sched = json.load(open(path, encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
         rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", FAIL,
@@ -662,7 +681,14 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         ours = (m.get("start_utc") or "")[:16].replace("T", " ")
         # the same pair can meet several times in a split: take the closest date
         def stamp(r):
-            return str(r.get("DateTime UTC") or r.get("DateTime_UTC") or "")[:16]
+            # The live Leaguepedia cache stores normalised rows ("start_utc",
+            # ISO-8601 with Z); the committed Cargo snapshots use the raw
+            # column names. Accept both.
+            raw = (r.get("DateTime UTC") or r.get("DateTime_UTC") or r.get("start_utc") or "")
+            txt = str(raw or "")
+            if txt.endswith("Z"):
+                txt = txt[:-1].replace("T", " ")
+            return txt[:16].replace("T", " ")
         try:
             ours_dt = datetime.strptime(ours, "%Y-%m-%d %H:%M")
         except ValueError:
