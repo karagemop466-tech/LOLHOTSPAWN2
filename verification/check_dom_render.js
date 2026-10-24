@@ -32,8 +32,9 @@ let JSDOM;
 try {
   ({ JSDOM } = require("jsdom"));
 } catch (e) {
-  console.error("jsdom is not installed. Run: npm install jsdom");
-  process.exit(2);
+  // Never fail a pipeline for a missing optional dev dependency: record the skip.
+  console.log("SKIP check_dom_render: jsdom is not installed (npm install --no-save jsdom)");
+  process.exit(0);
 }
 
 const args = process.argv.slice(2);
@@ -143,14 +144,14 @@ async function main() {
         idoc.querySelector("#hero-count-picks").textContent);
 
   // in-site links to the updated picks, with a visible href on mobile
-  const whereLinks = Array.from(idoc.querySelectorAll("#where-grid a")).map((a) => a.getAttribute("href"));
+  const whereLinks = Array.from(idoc.querySelectorAll("#picks-here a")).map((a) => a.getAttribute("href"));
   check("summary: in-site links to all picks", whereLinks.includes("picks.html"), whereLinks.join(","));
   check("summary: in-site link to next-24h filter",
         whereLinks.includes("picks.html?filter=next24"), whereLinks.join(","));
   check("summary: in-site link to unresolved page", whereLinks.includes("unresolved.html"), whereLinks.join(","));
 
   // picks first: the picks table must appear before the per-league table in the DOM
-  const order = ["#picks-now", "#quick-picks-body", "#unresolved-section", "#summary-leagues-body"]
+  const order = ["#starting-soon", "#quick-picks-body", "#unresolved-section", "#summary-leagues-body"]
     .map((sel) => idoc.querySelector(sel));
   check("summary: picks section exists on the page", order[0] && order[1]);
   check("summary: picks appear before the unresolved section",
@@ -170,13 +171,17 @@ async function main() {
           ? /0 unresolved/i.test(uList.textContent)
           : uList.querySelectorAll("article.match").length === unresolved.length,
         `${unresolved.length} in payload`);
-  const limRows = idoc.querySelectorAll("#summary-limitations-body tr");
+  const limRows = idoc.querySelectorAll("#exec-league-limits-body tr");
   check("summary: per-league limitation table rendered", limRows.length === leagues.length,
         `${limRows.length} rows vs ${leagues.length} competitions`);
   check("summary: limitations text present on the page",
         /limitation/i.test(idoc.body.textContent));
   check("summary: coverage bar rendered",
         idoc.querySelector("#coverage-bar").innerHTML.includes("width:"));
+  check("summary: \"where the picks are\" strip rendered", !!idoc.querySelector("#picks-here"));
+  check("summary: hero status line filled",
+        (idoc.querySelector("#hero-status") || {}).textContent.trim().length > 0);
+  check("summary: picks-locking-soonest section rendered", !!idoc.querySelector("#starting-soon"));
 
   // ---------- picks page ----------------------------------------------------
   const picks = await render("picks.html");
@@ -208,6 +213,8 @@ async function main() {
   const lbRows = lpage.document.querySelectorAll("#leagues-summary-body tr");
   check("leagues: one summary row per competition", lbRows.length === leagues.length,
         `${lbRows.length} vs ${leagues.length}`);
+  check("leagues: per-league sections rendered",
+        lpage.document.querySelectorAll("#leagues-sections section").length > 0);
   check("leagues: every competition has a source link",
         Array.from(lbRows).every((r) => r.querySelector("a[href^='http']")),
         `${lbRows.length} rows checked`);
@@ -220,12 +227,16 @@ async function main() {
         (udoc.querySelector("#reasons") || {}).textContent.trim().length > 0);
   check("unresolved: limitations rendered",
         (udoc.querySelector("#limitations") || {}).textContent.trim().length > 0);
+  check("unresolved: unresolved and low-confidence lists rendered",
+        !!udoc.querySelector("#unresolved-body") && !!udoc.querySelector("#lowconf-body"));
   check("unresolved: per-league limitations rendered",
         udoc.querySelectorAll("#league-limitations-body tr").length === leagues.length);
 
   // ---------- flagged page --------------------------------------------------
   const fpage = await render("flagged.html");
   check("flagged: no JS error", (fpage.__errors || []).length === 0, (fpage.__errors || []).join(" | "));
+  check("flagged: flag groups rendered",
+        (fpage.document.querySelector("#flag-groups") || {}).textContent.trim().length > 0);
   check("flagged: excluded cancelled fixtures listed",
         fpage.document.querySelectorAll("#excluded-body tr").length === (PAYLOAD.excluded_fixtures || []).length,
         `${fpage.document.querySelectorAll("#excluded-body tr").length} rows`);
@@ -233,6 +244,8 @@ async function main() {
   // ---------- methodology page ---------------------------------------------
   const mpage = await render("methodology.html");
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));
+  check("methodology: backtest block rendered",
+        (mpage.document.querySelector("#backtest") || {}).textContent.trim().length > 0);
 
   // ---------- match detail --------------------------------------------------
   if (firstId) {
@@ -256,6 +269,7 @@ async function main() {
     fixtures: synthetic.matches.length, unresolved: 2, market: 0, resolved: synthetic.matches.length - 2,
   });
   synthetic.unresolved = Object.assign({}, synthetic.unresolved, { count: 2, low_confidence_count: 0 });
+  synthetic.coverage = Object.assign({}, synthetic.coverage, { unresolved: 2 });
   const syn = await render("index.html", { payload: synthetic });
   const sdoc = syn.document;
   check("self-test: summary lists every unresolved fixture",

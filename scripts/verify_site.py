@@ -58,7 +58,7 @@ DATA_PATHS = [os.path.join(ROOT, "data", "picks.json"),
 OUT_DIR = os.path.join(ROOT, "verification")
 
 MARKET_METHODS = {"MARKET_BOOKS", "MARKET_POLYMARKET", "MARKET_CONSENSUS", "MARKET_SINGLE"}
-MODEL_METHODS = {"MODEL_ELO", "MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR", "MODEL_STANDINGS"}
+MODEL_METHODS = {"MODEL_ELO", "MODEL_ELO_THIN", "MODEL_ELO_STANDINGS", "MODEL_LEAGUE_PRIOR", "MODEL_STANDINGS"}
 METHODS = MARKET_METHODS | MODEL_METHODS | {"UNRESOLVED"}
 EXTERNAL_LINKS: list[str] = []
 UA = ("Mozilla/5.0 (compatible; LOLHOTSPAWN2-verify/1.0; "
@@ -76,7 +76,12 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
                  "rivalsleague.gg", "komplettligaen.no")
-ALL_HOSTS = FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + ("github.com", "creativecommons.org")
+# Research/manual-review links published on the Methodology page. They are never a
+# probability input (no row cites them); they are listed so a reader can repeat the
+# search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
+             + ("github.com", "creativecommons.org"))
 
 PASS, FAIL, WARN, SKIP = "PASS", "FAIL", "WARN", "SKIP"
 
@@ -173,6 +178,51 @@ def pages() -> list[str]:
     if os.path.exists(root_index):
         out.append(root_index)
     return sorted(out)
+
+
+def pages_in(docs_dir: str) -> list[str]:
+    """Every HTML page inside a docs directory (used by the structure rules)."""
+    out = []
+    for base, _dirs, files in os.walk(docs_dir):
+        for f in files:
+            if f.endswith(".html"):
+                out.append(os.path.join(base, f))
+    return sorted(out)
+
+
+def css_class_names(css_text: str) -> set[str]:
+    """Every class selector defined in a stylesheet (comments stripped)."""
+    css = re.sub(r"/\*.*?\*/", " ", css_text or "", flags=re.S)
+    return {m.group(1) for m in re.finditer(r"\.([A-Za-z_][-\w]*)", css)}
+
+
+def html_class_names(html_text: str) -> set[str]:
+    """Every class token used by a page."""
+    used: set[str] = set()
+    for m in re.finditer(r'class\s*=\s*"([^"]*)"', html_text or ""):
+        used.update(t for t in m.group(1).split() if t)
+    return used
+
+
+def nav_signature(html_text: str, nav_class: str) -> tuple[tuple[str, str], ...]:
+    """Ordered (href, label) pairs of the <nav class="..."> block, for cross-page comparison."""
+    m = re.search(r'<nav[^>]*class="[^"]*\b' + re.escape(nav_class) + r'\b[^"]*"[^>]*>(.*?)</nav>',
+                  html_text or "", re.S)
+    if not m:
+        return ()
+    sig: list[tuple[str, str]] = []
+    for a in re.finditer(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', m.group(1), re.S):
+        label = " ".join(re.sub(r"<[^>]+>", " ", a.group(2)).split())
+        sig.append((a.group(1), label))
+    return tuple(sig)
+
+
+def duplicate_ids(html_text: str) -> list[str]:
+    """Ids that appear more than once on a page (invalid HTML; JS targets the first one)."""
+    seen: dict[str, int] = {}
+    for m in re.finditer(r'\bid\s*=\s*"([^"]+)"', html_text or ""):
+        seen[m.group(1)] = seen.get(m.group(1), 0) + 1
+    return sorted(k for k, v in seen.items() if v > 1)
 
 
 # --------------------------------------------------------------------------- data
@@ -480,6 +530,33 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         rep.add("D21", "every upcoming Hotspawn lobby fixture is priced", WARN,
                 "lobby state unavailable for this run; coverage compared with the fixtures API only")
 
+    # D22: the live external-source probe is reachability evidence only. Every row must
+    # carry an https link and an HTTP status, and no probed value may carry a probability
+    # (nothing from the probe is allowed to feed a pick).
+    probe = payload.get("market_probe")
+    if isinstance(probe, dict) and probe.get("books"):
+        bad_probe = []
+        for b in probe["books"]:
+            if not isinstance(b, dict):
+                bad_probe.append("non-dict probe row")
+                continue
+            name = b.get("name") or "?"
+            if not str(b.get("url") or "").startswith("https://"):
+                bad_probe.append(f"{name}: no https source url")
+            if not isinstance(b.get("http_status"), int):
+                bad_probe.append(f"{name}: http_status is not an integer")
+            if any(k in b for k in ("prob_team1", "prob_team2", "probability", "prob_a", "prob_b")):
+                bad_probe.append(f"{name}: probed value carries a probability")
+            if not str(b.get("verdict") or "").strip():
+                bad_probe.append(f"{name}: no verdict recorded")
+        rep.add("D22", "external-source probe rows are sourced and never carry a probability",
+                PASS if not bad_probe else FAIL,
+                f"{len(probe['books'])} probed source(s), each with an https link, HTTP status and verdict"
+                if not bad_probe else "; ".join(bad_probe[:6]), bad_probe)
+    else:
+        rep.add("D22", "external-source probe rows are sourced and never carry a probability",
+                WARN, "no market_probe block in this payload (probe did not run)")
+
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
     def lacks_evidence(r):
@@ -524,8 +601,27 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         return
     sched = []
     snapshot_generated = None
+    # Prefer the live Leaguepedia cache written by this pipeline run: it is
+    # captured at run time, so the start-time cross-check verifies the CURRENT
+    # schedule instead of a committed diagnostic that may be days old.
+    live_cache = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                              "data", "cache", "leaguepedia.json")
+    live_cache = os.path.normpath(live_cache)
+    if os.path.isfile(live_cache):
+        try:
+            cache = json.load(open(live_cache, encoding="utf-8"))
+            rows_sched = cache.get("schedule") or cache.get("unscheduled") or []
+            if rows_sched:
+                sched = rows_sched
+                stamp = cache.get("generated_at")
+                if stamp:
+                    snapshot_generated = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+                    if snapshot_generated.tzinfo is None:
+                        snapshot_generated = snapshot_generated.replace(tzinfo=timezone.utc)
+        except Exception:  # noqa: BLE001
+            sched = []
     try:
-        if os.path.isdir(path):
+        if not sched and os.path.isdir(path):
             # Diagnostic snapshots are committed artifacts and can outlive the
             # live pipeline. Read their capture timestamp so stale deltas are
             # not mistaken for a current schedule verification.
@@ -554,7 +650,7 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
                     part = part.get("cargoquery") or part.get("rows") or []
                 if isinstance(part, list):
                     sched += part
-        else:
+        elif not sched:
             sched = json.load(open(path, encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
         rep.add("D18", "start times cross-checked against Leaguepedia MatchSchedule", FAIL,
@@ -585,7 +681,14 @@ def verify_schedule(rep: Report, rows: list[dict], path: str) -> None:
         ours = (m.get("start_utc") or "")[:16].replace("T", " ")
         # the same pair can meet several times in a split: take the closest date
         def stamp(r):
-            return str(r.get("DateTime UTC") or r.get("DateTime_UTC") or "")[:16]
+            # The live Leaguepedia cache stores normalised rows ("start_utc",
+            # ISO-8601 with Z); the committed Cargo snapshots use the raw
+            # column names. Accept both.
+            raw = (r.get("DateTime UTC") or r.get("DateTime_UTC") or r.get("start_utc") or "")
+            txt = str(raw or "")
+            if txt.endswith("Z"):
+                txt = txt[:-1].replace("T", " ")
+            return txt[:16].replace("T", " ")
         try:
             ours_dt = datetime.strptime(ours, "%Y-%m-%d %H:%M")
         except ValueError:
@@ -721,7 +824,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     except OSError:
         pass
     mcol = re.search(r"\.bottom-nav\s*\{[^}]*grid-template-columns:\s*repeat\((\d+)", css_text)
-    nav_bad = []
+    bottom_bad = []
     for pg in pages():
         if not pg.startswith(DOCS + os.sep):
             continue  # root index.html is a redirect shell, not a dashboard page
@@ -732,14 +835,17 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             continue
         nav = re.search(r'<nav class="bottom-nav".*?</nav>', html_text, re.S)
         if not nav:
-            nav_bad.append(f"{pg}: no bottom nav")
+            bottom_bad.append(f"{pg}: no bottom nav")
             continue
         links = len(re.findall(r"<a ", nav.group(0)))
         if not mcol or int(mcol.group(1)) != links:
-            nav_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
+            bottom_bad.append(f"{pg}: {links} links vs grid columns {mcol.group(1) if mcol else 'none'}")
     rep.add("S10", "phone bottom nav has one grid column per link on every page",
-            PASS if not nav_bad else FAIL,
-            "; ".join(nav_bad[:5]) if nav_bad else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
+            PASS if not bottom_bad else FAIL,
+            "; ".join(bottom_bad[:5]) if bottom_bad
+            else f"{mcol.group(1)} links, {mcol.group(1)} columns on every page")
+    # S10 deliberately uses its own variable: it used to overwrite S3's `nav_bad`,
+    # which silently turned S3 ("every page links the shared picks navigation") green.
 
     # S11: the executive summary must carry its own "separate unresolved section"
     # (fixture list + per-league limitation table) and put picks ahead of it.
@@ -748,8 +854,8 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     s11_ok = False
     if os.path.exists(idx_path):
         idx_html = open(idx_path, encoding="utf-8").read()
-        need_ids = ["picks-now", "quick-picks-body", "unresolved-section",
-                    "unresolved-list", "summary-limitations-body"]
+        need_ids = ["starting-soon", "quick-picks-body", "unresolved-section",
+                    "unresolved-list", "exec-league-limits-body"]
         missing_ids = [i for i in need_ids if f'id="{i}"' not in idx_html]
         pos_picks = idx_html.find('id="quick-picks-body"')
         pos_unres = idx_html.find('id="unresolved-section"')
@@ -760,8 +866,8 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
         s11_detail = (f"unresolved section ids {'present' if not missing_ids else 'missing ' + str(missing_ids)}; "
                       f"picks before unresolved section: {'yes' if ordered else 'NO'}; "
                       f"in-site pick links: {'yes' if in_site_links else 'NO'}")
-    rep.add("S11", "executive summary has a separate unresolved section (fixture list + "
-                   "per-league limits) with the picks listed first and linked in-site",
+    rep.add("S13", "executive summary has a separate unresolved section (every unresolved "
+                   "fixture listed + per-league limits) with the picks listed first",
             PASS if s11_ok else FAIL, s11_detail)
 
     # S12: every CSS class used by a page must actually have a rule. A shared class
@@ -779,10 +885,20 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                 used_classes.setdefault(cls, set()).add(os.path.basename(pg))
     unstyled = {c: sorted(v) for c, v in used_classes.items()
                 if c not in defined and c != "table"}
-    rep.add("S12", "every CSS class used by a page has a stylesheet rule",
-            PASS if not unstyled else FAIL,
-            f"{len(used_classes)} classes used, {len(unstyled)} unstyled",
-            [f"{c}: {', '.join(v)}" for c, v in sorted(unstyled.items())])
+        # (class coverage itself is check S11 above; this one only guards the header markup
+    #  that used to collide with the 12px probability-bar rule)
+    hdr_bad = []
+    for pg in pages():
+        if not pg.startswith(DOCS + os.sep) or not pg.endswith(".html"):
+            continue
+        with open(pg, encoding="utf-8") as fh:
+            raw = fh.read()
+        if 'class="wrap bar"' in raw:
+            hdr_bad.append(os.path.basename(pg))
+    rep.add("S14", "no page reuses the 12px .bar probability rule as its header",
+            PASS if not hdr_bad else FAIL,
+            "headers use .header-inner on every page" if not hdr_bad
+            else f"header collision on {', '.join(hdr_bad)}")
 
     # S13: the jsdom render harness must exist and be run by CI, so a page that
     # fails to render cannot pass verification.
@@ -795,7 +911,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                 text = open(os.path.join(wf_dir, f), encoding="utf-8").read()
                 if "check_dom_render.js" in text:
                     wired.append(f)
-    rep.add("S13", "jsdom render harness exists and runs in CI",
+    rep.add("S15", "jsdom render harness exists and runs in CI",
             PASS if os.path.exists(harness) and wired else FAIL,
             f"harness {'present' if os.path.exists(harness) else 'MISSING'}; "
             f"wired into {', '.join(wired) if wired else 'no workflow'}")
@@ -817,6 +933,27 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     else:
         rep.add("S4", "executive summary links in-site to picks + unresolved and "
                       "states limitations", FAIL, "docs/index.html not found")
+
+    # S4c: the executive summary must expose the updated picks lists as first-class
+    # in-site navigation (the "where the picks are" block), not only in the top nav.
+    ipath = os.path.join(DOCS, "index.html")
+    if os.path.exists(ipath):
+        ihtml = open(ipath, encoding="utf-8").read()
+        block = re.search(r'id="picks-here".*?(?=<section|<footer)', ihtml, re.S)
+        if not block:
+            rep.add("S4c", "executive summary has a dedicated in-site picks block",
+                    FAIL, "no #picks-here block on docs/index.html")
+        else:
+            blk = block.group(0)
+            need_links = ["picks.html", "picks.html?filter=next24", "leagues.html", "unresolved.html"]
+            missing_links = [h for h in need_links if f'href="{h}"' not in blk]
+            has_js_targets = all(k in js_text for k in ("here-all-count", "here-24-count",
+                                                        "here-leagues-count", "here-unresolved-count"))
+            rep.add("S4c", "executive summary has a dedicated in-site picks block",
+                    PASS if not missing_links and has_js_targets else FAIL,
+                    (f"4 in-site links, counts bound to ids; {len(missing_links)} missing"
+                     if not missing_links and has_js_targets
+                     else f"missing links={missing_links}, js counts wired={has_js_targets}"))
 
     # S4b unresolved page
     upath = os.path.join(DOCS, "unresolved.html")
@@ -912,6 +1049,76 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
     if unverified_hosts:
         rep.add("S9b", "external link hosts on the trust allowlist", WARN,
                 f"{len(unverified_hosts)} host(s) need manual review", unverified_hosts[:12])
+
+    verify_structure(rep, DOCS)
+
+
+# --------------------------------------------------------------------------- structure
+def verify_structure(rep: Report, docs_dir: str) -> None:
+    """S11/S12: the rendering contract of the static pages.
+
+    S11 every CSS class used by a page must have a rule in that page's stylesheet.
+        (A class with no rule renders as nothing — e.g. the executive summary's
+        header used `class="wrap bar"` and inherited a 12 px, overflow-hidden
+        progress bar, clipping the title and the whole navigation on a phone.)
+    S12 every dashboard page ships the same primary navigation (same targets, same
+        order), the same phone bottom navigation, no duplicate ids, and a visible
+        data-freshness slot (#updated / #freshness) so a reader can always see how
+        old the picks are.
+    """
+    css_path = os.path.join(docs_dir, "assets", "style.css")
+    css_text = ""
+    if os.path.exists(css_path):
+        with open(css_path, encoding="utf-8", errors="replace") as fh:
+            css_text = fh.read()
+    defined = css_class_names(css_text)
+
+    gap_pages: dict[str, list[str]] = {}
+    dup_bad: list[str] = []
+    header_bad: list[str] = []
+    tops: dict[str, tuple] = {}
+    bottoms: dict[str, tuple] = {}
+    for pg in pages_in(docs_dir):
+        try:
+            with open(pg, encoding="utf-8", errors="replace") as fh:
+                html = fh.read()
+        except OSError:
+            continue
+        name = os.path.basename(pg)
+        for cls in sorted(html_class_names(html) - defined):
+            gap_pages.setdefault(cls, []).append(name)
+        for i in duplicate_ids(html):
+            dup_bad.append(f"{name}#{i}")
+        if 'id="updated"' not in html or 'id="freshness"' not in html:
+            header_bad.append(name)
+        tops[name] = nav_signature(html, "top-nav")
+        bottoms[name] = nav_signature(html, "bottom-nav")
+
+    if not gap_pages:
+        rep.add("S11", "every CSS class used by a page is defined in style.css", PASS,
+                f"{len(pages_in(docs_dir))} page(s), no unstyled class")
+    else:
+        rep.add("S11", "every CSS class used by a page is defined in style.css", FAIL,
+                f"{len(gap_pages)} class(es) used with no CSS rule (they render as nothing)",
+                [f".{c} on {', '.join(sorted(set(v)))}" for c, v in sorted(gap_pages.items())][:12])
+
+    nav_problems = []
+    if len(set(tops.values())) > 1:
+        nav_problems.append("primary navigation differs between pages")
+    if any(not sig for sig in tops.values()):
+        nav_problems.append("a page has no primary navigation")
+    if len(set(bottoms.values())) > 1:
+        nav_problems.append("phone bottom navigation differs between pages")
+    if any(not sig for sig in bottoms.values()):
+        nav_problems.append("a page has no phone bottom navigation")
+    if dup_bad:
+        nav_problems.append(f"duplicate id(s): {', '.join(sorted(dup_bad)[:6])}")
+    if header_bad:
+        nav_problems.append(f"missing freshness slot (#updated/#freshness): {', '.join(sorted(header_bad)[:6])}")
+    rep.add("S12", "all pages share one navigation, freshness slot and unique ids",
+            PASS if not nav_problems else FAIL,
+            f"{len(tops)} pages, identical nav with {len(next(iter(tops.values()), ()))} "
+            f"primary targets" if not nav_problems else "; ".join(nav_problems))
 
 
 # --------------------------------------------------------------------------- workflow
