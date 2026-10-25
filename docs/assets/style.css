@@ -443,3 +443,13 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
 @media (max-width: 760px) {
   .cat-nav .chipbtn { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 }
+
+/* On phones lead with the teams, pick and probabilities, not timestamp metadata. */
+@media (max-width: 760px) {
+  #picks-body tr { display: flex; flex-direction: column; }
+  #picks-body td { order: 4; }
+  #picks-body .teams-cell { order: 0; }
+  #picks-body .pickcell { order: 1; }
+  #picks-body .probcell { order: 2; }
+  #picks-body td[data-label="Start"] { order: 3; }
+}
