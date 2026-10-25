@@ -214,9 +214,8 @@
           </tr>
           <tr>
             <td data-label="Ref"><b>A12</b></td>
-            <td data-label="What is irregular"><b>Polymarket prices Prime League <i>1st</i> Division only.</b> Its 1st-division board carries per-map BO3
-            markets, but no 2nd/3rd Division fixture exists there, so it cannot price the 96 PRM rows in this payload.</td>
-            <td data-label="Source checked"><a href="https://polymarket.com/esports/league-of-legends/prime-league-1st-division" target="_blank" rel="noopener">Polymarket PRM 1st Division ↗</a></td>
+            <td data-label="What is irregular"><b>Polymarket prices Prime League <i>1st</i> Division only (no 2nd/3rd Division markets).</b> Polymarket's seasonal <code>/esports/league-of-legends/prime-league-1st-division</code> path returned <code>HTTP 404</code> from CI at 14:39Z when no 1st-division match was open, and its live Gamma LoL events feed carries 0 Prime League 2nd/3rd Division fixtures, so it cannot price the 96 PRM rows in this payload.</td>
+            <td data-label="Source checked"><a href="https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&amp;active=true&amp;closed=false&amp;limit=200" target="_blank" rel="noopener">Polymarket Gamma LoL events JSON ↗</a></td>
             <td data-label="Status"><span class="chip amber">Division not covered</span> — not applicable</td>
           </tr>
         </tbody>
