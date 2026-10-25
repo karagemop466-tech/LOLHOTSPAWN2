@@ -75,8 +75,14 @@
     return ms >= 0 ? `in ${Math.round(hrs / 24)} d` : `${Math.round(hrs / 24)} d ago`;
   }
   function isFresh(d) {
-    if (!d.stale_after_utc) return true;
-    return new Date(d.stale_after_utc) > new Date();
+    const now = Date.now();
+    const generated = Date.parse(d.generated_at);
+    const expires = Date.parse(d.stale_after_utc);
+    // A missing deadline must never silently turn an unknown-age file green.
+    // Eight hours is the maximum requested refresh interval, not a live-feed claim.
+    return Number.isFinite(generated) && Number.isFinite(expires)
+      && generated <= now + 5 * 60000 && generated > now - 8 * 3600000
+      && expires > now && expires > generated;
   }
   function methodInfo(m) { return METHOD[m.method] || { label: m.method, cls: "", ico: "•" }; }
   function matchClass(m) {
@@ -90,10 +96,26 @@
     if (!list.length) return "";
     return `<div class="src-links">${list.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("")}</div>`;
   }
+  // A favourite at or under this probability is a coin-flip for practical
+  // purposes: the pick exists (every match gets one) but it is not an edge.
+  // Model rows are shrunk toward 50%, so a large share of tier-3 picks land
+  // here; labelling them is the difference between "a pick for every match"
+  // and pretending every pick is equally informative. Single source of truth
+  // for the threshold — verifier check S16 and the DOM render test read it.
+  const TOSSUP_MAX = 0.53;
+  function isTossUp(m) {
+    return m.method !== "UNRESOLVED" && (m.pick_prob ?? 1) <= TOSSUP_MAX;
+  }
+  function tossUpChip(m) {
+    return isTossUp(m)
+      ? `<span class="chip amber tossup-chip" title="Favourite is at or under ${Math.round(TOSSUP_MAX * 100)}% — treat this pick as a coin-flip, not an edge">🪙 coin-flip ≤${Math.round(TOSSUP_MAX * 100)}%</span>`
+      : "";
+  }
   function pickPill(m) {
-    const tone = m.method === "UNRESOLVED" ? "red" : (m.confidence === "Low" ? "amber" : "");
+    const tone = m.method === "UNRESOLVED" ? "red" : ((m.confidence === "Low" || isTossUp(m)) ? "amber" : "");
     const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
-    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
+    const flip = isTossUp(m) ? " · coin-flip" : "";
+    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}${flip}</span>`;
   }
 
   function matchCard(m, opts = {}) {
@@ -106,7 +128,7 @@
       <div class="teams"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a></div>
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
       <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
-      <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
+      <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span>${tossUpChip(m)}</div>
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
     </article>`;
@@ -179,13 +201,14 @@
     if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · automatic refresh every 6 hours.`;
     if (fresh) {
       const ok = isFresh(d);
-      fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
+      fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Recent snapshot · not live odds" : "Stale or unverified timestamp"}`;
       fresh.title = `Next scheduled update: ${whenUTC(d.next_update_utc)}`;
     }
     const warn = $("#freshness-warning");
-    if (warn && !isFresh(d)) {
-      warn.className = "warnbox";
-      warn.innerHTML = `<b>This data is older than expected.</b> Last update ${esc(t.text)}; next expected ${esc(whenUTC(d.next_update_utc))}. The 6-hour GitHub Action may have failed — check the repository Actions tab.`;
+    if (warn) {
+      warn.className = isFresh(d) ? "hidden" : "warnbox";
+      warn.setAttribute("role", "status");
+      warn.innerHTML = isFresh(d) ? "" : `<b>Snapshot freshness cannot be confirmed.</b> Last update ${esc(t.text)}; next expected ${esc(whenUTC(d.next_update_utc))}. The 6-hour GitHub Action may have failed — check the repository Actions tab.`;
     }
   }
 
@@ -345,7 +368,7 @@
     const mix = pricingMix(d);
     const stCount = mix.standings;
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a published pick or estimate (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -484,8 +507,9 @@
             <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
           </tr>`).join("")}</tbody>
         </table></div>` : "";
-      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
-      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
+      const tCount = all0.filter((m) => isTossUp(m)).length;
+      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount}) &amp; 🪙 Coin-flip picks (${tCount})</h3>
+      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       ${perLeague}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
@@ -514,7 +538,7 @@
         .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
       uList.innerHTML = un.length
         ? un.map((m) => matchCard(m, { sources: 3 })).join("")
-        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>.</div>`;
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>, and ${all0.filter((m) => isTossUp(m)).length} coin-flip picks (favourite ≤${Math.round(TOSSUP_MAX * 100)}%) on <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>.</div>`;
     }
 
     const ss = $("#sources-strip");
@@ -574,6 +598,7 @@
     if (state.filter === "standings" && m.method !== "MODEL_STANDINGS" && m.method !== "MODEL_ELO_STANDINGS") return false;
     if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
+    if (state.filter === "tossup" && !isTossUp(m)) return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
     if (state.q) {
       const hay = `${m.team1} ${m.team2} ${m.tournament} ${m.pick}`.toLowerCase();
@@ -605,7 +630,7 @@
     const rows = sortMatches(all.filter(applyFilter));
     tbody.innerHTML = rows.length ? rows.map(row).join("") : `<tr><td colspan="6"><div class="card">No matches match these filters. <button class="chipbtn" onclick="document.getElementById('reset').click()">Reset filters</button></div></td></tr>`;
     const count = $("#countline");
-    if (count) count.textContent = `Showing ${rows.length} of ${all.length} fixtures · ${all.filter((m) => m.market).length} with external lines · ${all.filter((m) => m.method === "UNRESOLVED").length} unresolved`;
+    if (count) count.textContent = `Showing ${rows.length} of ${all.length} fixtures · ${all.filter((m) => m.market).length} with external lines · ${all.filter((m) => m.method === "UNRESOLVED").length} unresolved · ${all.filter((m) => isTossUp(m)).length} coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%)`;
     const counts = {
       all: all.length,
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
@@ -614,6 +639,7 @@
       standings: all.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length,
       low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
+      tossup: all.filter((m) => isTossUp(m)).length,
     };
     $$("[data-filter]").forEach((b) => {
       b.setAttribute("aria-pressed", b.dataset.filter === state.filter ? "true" : "false");
@@ -668,7 +694,8 @@
         + `<b>${counts.elo}</b> by our Elo model · `
         + `<b>${counts.standings}</b> by split standings · `
         + `<b>${counts.prior}</b> by a competition prior · `
-        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}). `
+        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}) · `
+        + `<b>${all.filter((m) => isTossUp(m)).length}</b> of the resolved picks are coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%). `
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }
     const psum = $("#probe-summary");
@@ -676,7 +703,7 @@
     const pbody = $("#probe-body");
     if (pbody) pbody.innerHTML = probeRows(d);
     const stat = $("#unresolved-counts");
-    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
+    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${all.filter((m) => isTossUp(m)).length}</b> coin-flip picks (favourite ≤${Math.round(TOSSUP_MAX * 100)}%) · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
   }
 
   function flagLabel(f) {
@@ -790,7 +817,7 @@
         <p class="small">${esc(m.tournament || "")} · ${esc(t.text)} <span title="${esc(t.title)}">· ${esc(whenUTC(m.start_utc))}</span> · ${esc(relative(m.start_utc))}</p>
         <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
         <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
-        <div class="pickline">${pickPill(m)}</div>
+        <div class="pickline">${pickPill(m)}${tossUpChip(m)}</div>
         <p class="small">${esc(m.evidence || "")}</p>
       </div>
       <div class="two-col">
@@ -910,6 +937,9 @@
     try {
       DATA = await load();
       setHeader(DATA);
+      // Re-evaluate a tab left open on a phone; do not keep yesterday's green badge.
+      window.addEventListener("focus", () => setHeader(DATA));
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) setHeader(DATA); });
       if (PAGE === "summary") renderIndex(DATA);
       if (PAGE === "leagues") renderLeagues(DATA);
       if (PAGE === "picks") { wirePicks(); renderPicks(DATA); }

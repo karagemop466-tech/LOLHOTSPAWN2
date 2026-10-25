@@ -225,6 +225,24 @@ async function main() {
   check("picks: ?filter=next24 deep link applies",
         filtered.document.querySelectorAll("#picks-body tr").length === next24,
         `${filtered.document.querySelectorAll("#picks-body tr").length} rows vs ${next24} in window`);
+  // coin-flip labelling: rows whose favourite is <=53% must say so, the count
+  // must match the payload, and the deep link from the summary must filter.
+  const tossUps = matches.filter((m) => m.method !== "UNRESOLVED" && (m.pick_prob ?? 1) <= 0.53);
+  const pillFlips = Array.from(pdoc.querySelectorAll("#picks-body .pick-pill"))
+    .filter((el) => el.textContent.includes("coin-flip")).length;
+  check("picks: every coin-flip row is labelled in its pick pill",
+        pillFlips === tossUps.length, `${pillFlips} labelled vs ${tossUps.length} in payload`);
+  check("picks: countline states the coin-flip count",
+        pdoc.querySelector("#countline").textContent.includes(`${tossUps.length} coin-flips`),
+        pdoc.querySelector("#countline").textContent.trim());
+  const tossView = await render("picks.html", { query: "?filter=tossup" });
+  check("picks: ?filter=tossup deep link applies",
+        tossView.document.querySelectorAll("#picks-body tr").length === tossUps.length,
+        `${tossView.document.querySelectorAll("#picks-body tr").length} rows vs ${tossUps.length} coin-flips`);
+  check("summary: unresolved section counts coin-flip picks and links the filter",
+        (idoc.querySelector("#unresolved-summary") || {}).textContent.includes("coin-flip")
+        && !!idoc.querySelector('#unresolved-summary a[href="picks.html?filter=tossup"]'));
+
   const market = matches.filter((m) => m.market).length;
   const marketView = await render("picks.html", { query: "?filter=market" });
   check("picks: ?filter=market deep link applies",
@@ -253,6 +271,10 @@ async function main() {
         (udoc.querySelector("#limitations") || {}).textContent.trim().length > 0);
   check("unresolved: unresolved and low-confidence lists rendered",
         !!udoc.querySelector("#unresolved-body") && !!udoc.querySelector("#lowconf-body"));
+  check("unresolved: stat line states the coin-flip count",
+        (udoc.querySelector("#unresolved-counts") || {}).textContent.includes(`${tossUps.length}`)
+        && (udoc.querySelector("#unresolved-counts") || {}).textContent.includes("coin-flip"),
+        (udoc.querySelector("#unresolved-counts") || {}).textContent.trim());
   check("unresolved: per-league limitations rendered",
         udoc.querySelectorAll("#league-limitations-body tr").length === leagues.length);
 
