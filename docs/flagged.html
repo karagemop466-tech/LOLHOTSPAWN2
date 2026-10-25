@@ -106,6 +106,64 @@
     </div>
   </section>
 
+  <section id="external-line-found">
+    <h2>External line found on fixtures we price with our model (researched 2026-10-25)</h2>
+    <p class="small">
+      A fresh pass over established LoL betting sites, esportsbooks and esports betting lines found one odds
+      comparison board — <a href="https://oddsdigger.com/e-sports/league-of-legends/upcoming" target="_blank" rel="noopener">OddsDigger's upcoming-LoL board ↗</a>
+      — that publishes a two-way <b>series winner</b> price for two fixtures none of our four production feeds
+      (Pinnacle, Unibet/Kambi, Bovada, Polymarket) price. Every earlier probe reported zero such sources, so this
+      is a change worth reading. Both rows were opened and read by hand on 2026-10-25; the named books on the page
+      are bet365, LuckyMate, Copybet, 10Bet and Spreadex. Prices shown are the best available per side, so the
+      implied probabilities are normalised by their sum rather than de-vigged against a single overround.
+      <b>Neither number is used in any published probability</b> — one of the two rows contradicts independent
+      evidence, so the source is not promoted. Full write-up:
+      <a href="../research/betting-sources.md">research/betting-sources.md §20</a>.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Ref</th><th scope="col">Fixture (as published)</th><th scope="col">OddsDigger line</th><th scope="col">Our published pick</th><th scope="col">Independent cross-check</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>F20.1</b></td>
+            <td><b>Mental Rush vs Vitality Rising Bees</b><br><span class="sub">LGC Rising 2026 Playoffs · 2026-10-27 17:00 UTC · BO5</span></td>
+            <td>Vitality Rising Bees 7/17 · Mental Rush 8/5 → <b>64.8% / 35.2%</b><br>
+              <a href="https://oddsdigger.com/e-sports/vitality-rising-bees-vs-mental-rush-23670799" target="_blank" rel="noopener">event page ↗</a></td>
+            <td>Vitality Rising Bees <b>64.5%</b> (MARKET_SINGLE from Polymarket)</td>
+            <td>Agrees within 0.3 pts. This row <i>confirms</i> the published pick.</td>
+            <td><span class="chip green">Corroborated</span> — no change needed</td>
+          </tr>
+          <tr>
+            <td><b>F20.2</b></td>
+            <td><b>Ground Zero Gaming vs Frank Esports</b><br><span class="sub">LCP 2027 Promotion · 2026-11-11 09:00 UTC · BO5</span></td>
+            <td>Ground Zero 1/67 · Frank Esports 22/3 → <b>89.1% / 10.9%</b><br>
+              <a href="https://oddsdigger.com/e-sports/ground-zero-vs-frank-esports-23662613" target="_blank" rel="noopener">event page ↗</a></td>
+            <td>Frank Esports <b>61.7%</b> (MODEL_ELO, Elo 1519 v 1642)</td>
+            <td><b>Direction conflict.</b>
+              <a href="https://egamersworld.com/lol/match/eDTgthgYk/ground-zero-gaming-vs-frank-esports-wvOLKhrveF" target="_blank" rel="noopener">eGamersWorld ↗</a>
+              rates Frank Esports above Ground Zero (530 v 448, 0–4 head-to-head, 7 v 2 wins in the last 10) and shows
+              no live price (1.80 / 1.80 placeholder);
+              <a href="https://rft.gg/match/71696-ground-zero-gaming-vs-frank-esports-2026-11-11" target="_blank" rel="noopener">rft.gg ↗</a>
+              records 0–9 head-to-head for Ground Zero.
+              <a href="https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season" target="_blank" rel="noopener">Leaguepedia ↗</a>
+              has Frank Esports as PCS 2026 Summer runner-up.</td>
+            <td><span class="chip red">Needs review</span> — pick left on our model, line published but unused</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warnbox" role="note">
+      <b>Why F20.2 did not change the pick.</b> Our cascade lets an external line override the model, but a source
+      earns that only after a sample row is verified by hand. Two rows were available to check: one agrees with our
+      Polymarket-sourced number to within 0.3 points, the other points the opposite way to our Elo <i>and</i> to two
+      independent community sources. One row in two is not enough to let an affiliate-rendered board flip a
+      published pick, so the disagreement is published here for review instead. The same board is now requested on
+      every 6-hour refresh and its measured status is printed on
+      <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a>; its fixture-matched evidence is in
+      <code>data/diag/line_probe.json</code>.
+    </div>
+  </section>
+
   <section id="source-limitations" class="warnbox">
     <h2>Source limitations: official vs. community data</h2>
     <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>

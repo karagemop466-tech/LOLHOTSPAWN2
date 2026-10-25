@@ -89,6 +89,21 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
      "https://www.bmbets.com/e-sports/world/lol---prime-league/", "aggregator-page", "market"),
     ("Strafe — LoL odds (Oddspedia feed)",
      "https://www.strafe.com/esports-betting/odds/league-of-legends/", "aggregator-page", "market"),
+    # --- added 2026-10-25 (session arena/419cd73a), each opened by hand first -------
+    # OddsDigger is the first comparison board this project has found that publishes a
+    # two-way winner price for a fixture the four production feeds do NOT price
+    # (LGC Rising 2026 Playoffs and LCP 2027 Promotion, both hand-verified 2026-10-25).
+    # It is probed every refresh so the site can state that from live evidence; it is
+    # still not a probability input — see research/betting-sources.md §20 for why.
+    ("OddsDigger — upcoming LoL board (two-way winner odds)",
+     "https://oddsdigger.com/e-sports/league-of-legends/upcoming", "aggregator-page", "market"),
+    ("OddsPortal — LoL Prime League comparison",
+     "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/",
+     "aggregator-page", "market"),
+    ("Esports Insider — LoL betting odds index",
+     "https://esportsinsider.com/betting-odds/lol", "odds-guide", "market"),
+    ("rft.gg — LoL matches (community pick'ems, H2H, rosters)",
+     "https://rft.gg/matches", "results-page", "results"),
     # Kambi powers several Unibet brands. `ub`/`ubca` are the feeds production uses;
     # these two prove per-brand feeds are not a route to lower-tier leagues: ubde is
     # rejected outright and the `market=` parameter does not widen coverage.

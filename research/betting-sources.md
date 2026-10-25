@@ -898,3 +898,82 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
+
+---
+
+## 20. Refresh 2026-10-25 — a comparison board that *does* price two model-only fixtures (session `arena/419cd73a`)
+
+Brief: re-run the search for the fixtures the featured (bookmaker-priced) picks cannot resolve, in the order the
+user asked for — established LoL betting sites → esportsbooks → esports betting lines → community — and record
+what was actually observed today, with links.
+
+**Headline: the "0 sources cover a single model-only fixture" conclusion recorded in §15 and repeated in the
+README is no longer correct.** OddsDigger's upcoming-LoL board carries a two-way series winner price for two
+fixtures that none of the four production feeds price. Both rows were opened and read by hand; one confirms a
+published pick, the other contradicts it. Neither is used in a probability, and the reason is recorded below.
+
+### 20.1 What was newly found (each link opened on 2026-10-25)
+
+| Source | Kind | What it actually showed today | Verdict |
+|---|---|---|---|
+| [OddsDigger — upcoming LoL](https://oddsdigger.com/e-sports/league-of-legends/upcoming) | odds comparison (UK fractional, best price per side) | 12–13 LoL fixtures: the Worlds slate **plus** `Vitality Rising Bees vs Mental Rush` (Tue 27 Oct, 17:00) and `Ground Zero vs Frank Esports` (Wed 11 Nov, 09:00). Books named on the event pages: bet365, LuckyMate, Copybet, 10Bet, Spreadex. | **First source in this project that prices a fixture the production feeds miss.** Fixture-matched probe added (`scripts/probe_lines.py::probe_oddsdigger`); **not** promoted to a probability input — see §20.2 |
+| [OddsPortal — LoL Prime League](https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/) | odds comparison | The league page exists but its own body says *"Next Matches will appear here as soon as bookmaker betting odds become available."* The LoL index above it lists exactly one competition: `League of Legends World Championship (10)`. | No Prime League price. Added to the per-refresh probe so the claim stays measured |
+| [BetExplorer — LoL](https://www.betexplorer.com/esports/league-of-legends/) | odds comparison | Empty body for both `/lol/` (CI, HTTP 404) and `/esports/league-of-legends/` (rendered page: no content). | Not usable — unchanged |
+| [Esports Insider — LoL betting odds](https://esportsinsider.com/betting-odds/lol) | editorial odds index | Tournament-level pages (e.g. *Prime League 1st Division Summer 2026*), no per-fixture prices for the amateur divisions Hotspawn lists. | Editorial only — added to the probe |
+| [EsportBet — LoL guide](https://esportbet.com/league-of-legends/) | affiliate guide | Lists tier-C events including *Prime League 2. Liga 2026 Fall* and *Arabian League 2nd Division Summer 2026* with a tier/region/dates table, but **no odds** — it links out to BetOnline/Bovada/SportsBetting.ag. | Confirms the leagues exist; supplies no price |
+| [rft.gg — matches](https://rft.gg/matches) | community stats / pick'ems | Server-rendered LoL fixture index (Worlds, LCP 2027 Promotion, …) with per-match rosters, recent form and head-to-head. No odds anywhere. | Corroboration source, not a line source — added to the probe |
+| [oddsdigger tournament menu](https://oddsdigger.com/e-sports/browse/categories) | — | 26 esports titles; LoL tournaments offered are Demacia Cup, European Circuit, VCS and an "Upcoming LoL" bucket. No PRM 3rd/2nd Division, RIVALS, Tunisian, Komplettligaen, LigaGG, 4 Nations or Arabian pages. | Bounds how much of our list it can ever cover |
+
+Still unchanged from §15/§19 and re-confirmed: Pinnacle's league index carries one LoL competition (World
+Championship); the nine Kambi/Unibet country markets return the same Worlds slate; the esportsbooks
+(GG.Bet, Thunderpick, Rivalry, Stake, Midnite, BC.Game) answer 403/503 to CI; the commercial odds APIs
+(OddsPapi, odds-api.io, The Odds API, PandaScore, Abios, SportsGameOdds) are key- or card-gated, which the
+"no manual input" requirement rules out.
+
+### 20.2 The two hand-verified OddsDigger rows
+
+Fractional prices are converted as `decimal = 1 + num/den`; because the board shows the *best* price per side
+(possibly from different books) the implied probabilities are normalised by their sum rather than de-vigged.
+
+| Fixture | Board price | Implied (normalised) | Our published row | Independent cross-check | Outcome |
+|---|---|---|---|---|---|
+| **Mental Rush vs Vitality Rising Bees** — LGC Rising 2026 Playoffs, 2026-10-27 17:00 UTC, BO5 · [event](https://oddsdigger.com/e-sports/vitality-rising-bees-vs-mental-rush-23670799) | VRB 7/17 (1.4118) · MR 8/5 (2.6000), overround 1.0929 | **VRB 64.8% / MR 35.2%** | `MARKET_SINGLE` from Polymarket: **VRB 64.5% / MR 35.5%** | §19.2: eGamersWorld's LGC board (Vave 1.40/2.73) → RB ≈ 66% | ✅ agrees within 0.3 pts — confirms the pick, no change |
+| **Ground Zero Gaming vs Frank Esports** — LCP 2027 Promotion, 2026-11-11 09:00 UTC, BO5 · [event](https://oddsdigger.com/e-sports/ground-zero-vs-frank-esports-23662613) | GZ 1/67 (1.0149) · FAK 22/3 (8.3333), overround 1.1053; Map 1 also GZ 3/20 → 87%, so the board is internally consistent | **GZ 89.1% / FAK 10.9%** | `MODEL_ELO`: **FAK 61.7% / GZ 38.3%** (Elo 1519 v 1642) | ❌ [eGamersWorld](https://egamersworld.com/lol/match/eDTgthgYk/ground-zero-gaming-vs-frank-esports-wvOLKhrveF) rates FAK 530 v GZ 448, head-to-head 0–4, last-10 wins 7 v 2, and shows only a 1.80/1.80 placeholder; [rft.gg](https://rft.gg/match/71696-ground-zero-gaming-vs-frank-esports-2026-11-11) records 0–9 head-to-head; [Leaguepedia PCS 2026 Summer](https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season) has Frank Esports as runner-up; [Liquipedia](https://liquipedia.net/leagueoflegends/LCP/2027/Promotion) confirms the BO5 Regional Merit slot | ⚠️ **direction conflict** — published pick left on the model, line published but unused, flagged for review |
+
+**Decision and its reasoning.** The cascade lets an external line override the model, but the project's own gate
+(promoted only after a probe shows structured per-match prices *and* a human verifies a sample row) exists for
+exactly this situation. Of the two rows available to verify, one matches production to 0.3 points and the other
+points the opposite way to our Elo and to two independent community sources. One row in two is not enough to let
+an affiliate-rendered comparison board flip a published pick, so F20.2 is published on *Flagged for review* with
+both numbers and every link, and the pick stays on the model. If the user prefers the market to win on
+disagreement, the change is a one-line promotion in `scripts/fetch_markets.py` — deliberately not taken
+autonomously here.
+
+### 20.3 What changed in the repository
+
+* `scripts/probe_lines.py` — `probe_oddsdigger()` + the pure `parse_oddsdigger()` parser (anchor-based, so
+  attribute order cannot break it; rejects `Map N`/`Game N`/handicap markets; requires a real book overround
+  `1.0 < Σ implied < 1.40`), plus `HAND_VERIFIED_VERDICTS` so the measured numbers are published next to the
+  human judgement instead of an automatic "usable" recommendation.
+* `verification/test_line_probe.py` — 29 offline assertions on the parser: the two verified price pairs, the
+  normalised percentages quoted above, kickoff extraction, Map-market rejection, overround rejection, the
+  title-less layout fallback, and the fixture matching that reports both rows as previously unpriced. This test
+  caught two real bugs while it was being written (a greedy `[^>]*` swallowing the `title` attribute, and a
+  forward-only time search that picked up the *next* row's kickoff).
+* `scripts/source_probe.py` — OddsDigger, OddsPortal Prime League, Esports Insider and rft.gg added to the list
+  re-requested once per production refresh, so the reachability claim is measured every 6 hours rather than
+  asserted.
+* `docs/flagged.html` — new *External line found on fixtures we price with our model* section (F20.1, F20.2).
+
+### 20.4 Irregularities found this session
+
+1. **F20.2 direction conflict** (above) — the only substantive one; needs a human decision.
+2. **`Mental Rush vs Vitality Rising Bees` is priced from a single market** (`MARKET_SINGLE`, Polymarket only).
+   OddsDigger and eGamersWorld independently corroborate it, which is reassuring but still one *production*
+   feed — the row stays Medium confidence by design.
+3. **The README and §15 both stated that no reachable source covers a single model-only fixture.** That was true
+   when measured (39 requests / 30 sites on 2026-10-24) and is false now. Both have been corrected rather than
+   left to contradict this section.
+4. **`docs/flagged.html` still carried a section dated 2026-10-24 referring to "the 160 fixtures without a
+   featured market"**; the current payload has 147. The new section quotes the current numbers; the older
+   section is left as a dated historical record.

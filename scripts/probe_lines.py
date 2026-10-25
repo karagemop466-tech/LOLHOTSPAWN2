@@ -498,6 +498,185 @@ def probe_bmbets():
             "error": None if r.get("status") == 200 else f"HTTP {r.get('status')}"}
 
 
+FRAC_RE = re.compile(r">\s*(\d{1,3})\s*/\s*(\d{1,3})\s*<")
+# Anchors are matched whole (attributes + inner text) because attribute order is
+# not guaranteed: a greedy `[^>]*` after `href` swallows a following `title`, which
+# is exactly the bug the offline self-test caught on 2026-10-25.
+ANCHOR_RE = re.compile(r"<a\b(?P<attrs>[^>]*)>(?P<inner>.*?)</a>", re.I | re.S)
+HREF_RE = re.compile(r'href="[^"]*?/e-sports/(?P<slug>[a-z0-9\-]+?)-(?P<eid>\d{5,})"', re.I)
+TITLE_RE = re.compile(r'title="(?P<title>[^"]{3,200})"', re.I)
+TAG_RE = re.compile(r"<[^>]+>")
+DAY_RE = re.compile(
+    r"\b(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\s+(\d{1,2})\s+"
+    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})",
+    re.I,
+)
+TIME_RE = re.compile(r"\b([01]?\d|2[0-3]):([0-5]\d)\b")
+VS_SPLIT_RE = re.compile(r"^(.{2,70}?)\s+vs\.?\s+(.{2,70}?)(?:\s+betting\s+odds)?$", re.I)
+MONTHS = {m.lower(): i + 1 for i, m in enumerate(
+    ["January", "February", "March", "April", "May", "June",
+     "July", "August", "September", "October", "November", "December"])}
+
+
+def _frac_to_decimal(num: int, den: int):
+    """UK fractional price -> decimal odds. 7/17 -> 1.4118 ; 8/5 -> 2.6."""
+    if den <= 0:
+        return None
+    return round(1.0 + num / den, 4)
+
+
+def parse_oddsdigger(text: str):
+    """Pure parser for OddsDigger's upcoming-LoL board -> (records, detail).
+
+    Kept separate from the network call so the extraction rules can be unit-tested
+    offline (`verification/test_line_probe.py`); `probe_oddsdigger` only adds the GET.
+    """
+    detail = {"event_links": 0, "events": 0, "odds_tokens": 0, "day_headings": 0, "excerpt": ""}
+    records: list[dict] = []
+    if not text:
+        return records, detail
+
+    # 1. Ordered, de-duplicated list of event links with their team pair.
+    hits = []
+    for a in ANCHOR_RE.finditer(text):
+        hm = HREF_RE.search(a.group("attrs"))
+        if not hm:
+            continue
+        tm = TITLE_RE.search(a.group("attrs"))
+        inner = re.sub(r"\s+", " ", TAG_RE.sub(" ", a.group("inner"))).strip()
+        hits.append({"pos": a.start(), "eid": hm.group("eid"), "slug": hm.group("slug"),
+                     "title": tm.group("title").strip() if tm else "", "inner": inner})
+    detail["event_links"] = len(hits)
+    events: list[dict] = []
+    seen: set[str] = set()
+    for h in hits:
+        eid = h["eid"]
+        if eid in seen:
+            continue
+        team_a = team_b = None
+        m = VS_SPLIT_RE.match(h["title"])
+        if m:
+            team_a, team_b = m.group(1).strip(), m.group(2).strip()
+        else:
+            # No title attribute: the board repeats one anchor per team, so take the
+            # first two distinct non-navigation labels that carry this event id.
+            names: list[str] = []
+            for x in hits:
+                if x["eid"] != eid or not x["inner"]:
+                    continue
+                if x["inner"].lower() in ("all odds", "odds", "bet now"):
+                    continue
+                if x["inner"] not in names:
+                    names.append(x["inner"])
+            if len(names) >= 2:
+                team_a, team_b = names[0], names[1]
+        if not team_a or not team_b or _key(team_a) == _key(team_b):
+            continue
+        seen.add(eid)
+        events.append({"eid": eid, "slug": h["slug"], "team_a": team_a, "team_b": team_b,
+                       "pos": h["pos"],
+                       "url": f"https://oddsdigger.com/e-sports/{h['slug']}-{eid}"})
+    detail["events"] = len(events)
+
+    # 2. Date headings, so a fixture can be matched on name AND kickoff.
+    days = [(d.start(), int(d.group(1)), MONTHS[d.group(2).lower()], int(d.group(3)))
+            for d in DAY_RE.finditer(text)]
+    detail["day_headings"] = len(days)
+
+    # 3. Slice the HTML between one event's link run and the next event's first link.
+    for i, ev in enumerate(events):
+        same = [h["pos"] for h in hits if h["eid"] == ev["eid"]]
+        lo = min(same)
+        nxt = [h["pos"] for h in hits if h["eid"] != ev["eid"] and h["pos"] > lo]
+        hi = min(nxt) if nxt else len(text)
+        chunk = text[lo:hi]
+        # A map/handicap market is not a series winner price — never use one.
+        if re.search(r"\bMap\s*\d|\bGame\s*\d|handicap|total\s*maps", chunk, re.I):
+            continue
+        fr = FRAC_RE.findall(chunk)
+        detail["odds_tokens"] += len(fr)
+        if len(fr) < 2:
+            continue
+        da = _frac_to_decimal(int(fr[0][0]), int(fr[0][1]))
+        db = _frac_to_decimal(int(fr[1][0]), int(fr[1][1]))
+        if not da or not db or da <= 1.0 or db <= 1.0:
+            continue
+        # Best-price-per-side sanity check: the pair must carry a book overround.
+        implied = 1.0 / da + 1.0 / db
+        if not (1.0 < implied < 1.40):
+            continue
+        # The board prints the kickoff immediately BEFORE the two team links, so the
+        # time is looked for in a short window behind the anchor, not inside the chunk
+        # (searching forward picks up the next row's time — caught by the self-test).
+        back = text[max(0, lo - 250):lo]
+        bms = list(TIME_RE.finditer(back))
+        tm = bms[-1] if bms else TIME_RE.search(chunk)
+        start = None
+        if tm and days:
+            prev = [d for d in days if d[0] < lo]
+            if prev:
+                _, dd, mm, yy = prev[-1]
+                try:
+                    start = datetime(yy, mm, dd, int(tm.group(1)), int(tm.group(2)),
+                                     tzinfo=timezone.utc)
+                except ValueError:
+                    start = None
+        rec = _two_way(records, "OddsDigger upcoming LoL board", ev["url"],
+                       "OddsDigger upcoming LoL", start, ev["team_a"], ev["team_b"], da, db,
+                       note=(f"best price per side {fr[0][0]}/{fr[0][1]} vs "
+                             f"{fr[1][0]}/{fr[1][1]} (implied sum {implied:.3f})"))
+        if rec:
+            records.append(rec)
+    detail["excerpt"] = re.sub(r"\s+", " ", text[:1500])
+    return records, detail
+
+
+def probe_oddsdigger():
+    """OddsDigger's upcoming-LoL board (HTML, UK fractional, best price per side).
+
+    Hand-verified 2026-10-25: this board carries a two-way *series* winner price for
+    `Vitality Rising Bees vs Mental Rush` (LGC Rising 2026 Playoffs, 2026-10-27 17:00
+    UTC, 7/17 vs 8/5) and for `Ground Zero vs Frank Esports` (LCP 2027 Promotion,
+    2026-11-11 09:00 UTC, 1/67 vs 22/3) — two fixtures the four production feeds do
+    not price. Books named on the page: bet365, LuckyMate, Copybet, 10Bet, Spreadex.
+
+    The parser is deliberately conservative: it only reads the *first two* fractional
+    prices that follow an event link run, drops anything under a "Map N" label, and
+    records an excerpt so a human can audit exactly what was seen. Prices shown are
+    the best available per side (possibly from different books), so the implied
+    probabilities are normalised rather than de-vigged against a single overround.
+    """
+    name = "OddsDigger upcoming LoL board"
+    url = "https://oddsdigger.com/e-sports/league-of-legends/upcoming"
+    r = fetch(url, timeout=25, retries=1)
+    text = r.get("text") or ""
+    status = r.get("status")
+    records, detail = parse_oddsdigger(text)
+    err = None if status == 200 else f"HTTP {status}"
+    return {"name": name, "kind": "aggregator-page", "url": url,
+            "http_status": status, "bytes": len(text.encode("utf-8", "ignore")),
+            "is_json": False, "records": records, "detail": detail, "error": err}
+
+
+# Verdicts a human reached by opening the page and cross-checking the row against
+# independent sources. A probe can measure coverage; it cannot judge whether the
+# orientation of a price is trustworthy, so that judgement is recorded here and
+# printed next to the measured numbers instead of being left implicit.
+HAND_VERIFIED_VERDICTS = {
+    "OddsDigger upcoming LoL board": (
+        "NOT promoted to a probability input (hand-verified 2026-10-25). It prices two fixtures "
+        "the four production feeds miss. Row 1 agrees with production: Vitality Rising Bees vs "
+        "Mental Rush, LGC Rising 2026 Playoffs, 7/17 vs 8/5 -> 64.8%/35.2%, against our published "
+        "Polymarket-sourced 64.5%/35.5%. Row 2 contradicts it: Ground Zero vs Frank Esports, LCP "
+        "2027 Promotion, 1/67 vs 22/3 -> 89.1%/10.9% for Ground Zero, while our Elo says Frank "
+        "Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 "
+        "head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an "
+        "affiliate-rendered board override the model, so the disagreement is published on the "
+        "Flagged page for review instead. research/betting-sources.md §20."
+    ),
+}
+
+
 def summarise(res, index: FixtureIndex) -> dict:
     recs = res.get("records") or []
     matched, unpriced_hits, samples = 0, 0, []
@@ -539,6 +718,11 @@ def summarise(res, index: FixtureIndex) -> dict:
                           + (f" ({res.get('error')})" if res.get("error") else ""))
     else:
         res["verdict"] = f"not usable from CI (HTTP {res.get('http_status')})"
+    override = HAND_VERIFIED_VERDICTS.get(res.get("name"))
+    if override:
+        # Keep the measured numbers; replace only the recommendation, which is a
+        # human judgement rather than something a probe can compute.
+        res["verdict"] = override
     return res
 
 
@@ -582,6 +766,7 @@ def main() -> int:
         add(probe_onexbet, host)
     add(probe_kambi_all_esports)
     add(probe_bmbets)
+    add(probe_oddsdigger)
     for name, url, kind in STATUS_ONLY:
         add(probe_status, name, url, kind)
 

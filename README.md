@@ -53,13 +53,24 @@ Promotion, LigaGG) were priced by our model. Two probes answer whether that is a
   name **and** start time, so it can report how many of our model-only rows a source would actually cover.
   Evidence: `data/diag/line_probe.json`; write-up: `research/betting-sources.md` §15.
 
-**Measured result (39 requests, 30 sites): 0 sources cover a single model-only fixture.** Pinnacle's league
-index lists one LoL league (World Championship); nine Kambi/Unibet country markets return the same eight
+**Measured result (39 requests, 30 sites, 2026-10-24): 0 sources covered a single model-only fixture.** Pinnacle's
+league index lists one LoL league (World Championship); nine Kambi/Unibet country markets return the same eight
 World Championship matches; bmbets' LoL index stops at Worlds, LCP and Game Changers Rising; SofaScore,
 eGamersWorld, Oddspedia, GGScore, Winamax, Marathonbet, Betano, Stake, GG.Bet, Thunderpick and others answer
 403/404/410/503 to CI; the 1xBet/Betwinner/Melbet LineFeed returns a geo-restriction stub; bo3.gg has no odds
-fields. A source is only promoted into `scripts/fetch_markets.py` when it returns prices for fixtures in the
-published list **and** a human has verified a sample row — neither probe ever writes a probability.
+fields.
+
+**Update 2026-10-25 — that "zero" is no longer correct.** [OddsDigger's upcoming-LoL
+board](https://oddsdigger.com/e-sports/league-of-legends/upcoming) publishes a two-way series winner price for
+**two** fixtures the four production feeds miss: `Mental Rush vs Vitality Rising Bees` (LGC Rising, 7/17 v 8/5 →
+64.8%/35.2%, which **agrees** with our Polymarket-sourced 64.5%/35.5% to within 0.3 pts) and
+`Ground Zero Gaming vs Frank Esports` (LCP 2027 Promotion, 1/67 v 22/3 → 89.1%/10.9%, which **contradicts** our
+Elo and two independent community sources). A source is only promoted into `scripts/fetch_markets.py` when it
+returns prices for fixtures in the published list **and** a human has verified a sample row — with one row in two
+disagreeing, OddsDigger is **not** promoted; the disagreement is published on *Flagged for review* with both
+numbers and every link. The board is now requested on every refresh and its parser is fixture-matched in
+`scripts/probe_lines.py` (evidence: `data/diag/line_probe.json`). Neither probe ever writes a probability.
+Full detail: `research/betting-sources.md` §20.
 
 ## Automation & Verification
 
@@ -89,6 +100,7 @@ python3 verification/check_dom_contract.py      # C1–C7: ids, header/nav skele
 python3 verification/test_dom_contract.py       # negative self-tests — every rule must fail on a broken page
 python3 verification/test_verifier.py           # verifier rule self-tests (incl. D22 probe + S11–S15 structure)
 python3 verification/test_entity_and_books.py   # entity & bookmaker unit tests (incl. Bovada period regression)
+python3 verification/test_line_probe.py         # OddsDigger line-source parser: prices, guards, fixture matching
 python3 verification/check_source_pages.py      # every cited Leaguepedia tournament page must exist (needs network)
 python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11–S15)
 python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)

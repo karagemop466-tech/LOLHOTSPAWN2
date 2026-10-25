@@ -76,10 +76,14 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
                  "rivalsleague.gg", "komplettligaen.no")
-# Research/manual-review links published on the Methodology page. They are never a
-# probability input (no row cites them); they are listed so a reader can repeat the
-# search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+# Research/manual-review links published on the Methodology and Flagged pages. They are
+# never a probability input (no row cites them); they are listed so a reader can repeat
+# the search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
+# The 2026-10-25 additions were each opened by hand that day and are cited on
+# docs/flagged.html#external-line-found (OddsDigger publishes the line; eGamersWorld and
+# rft.gg are the independent cross-checks that disagree with it on one fixture).
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
+                "oddsdigger.com", "egamersworld.com", "rft.gg")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
