@@ -514,6 +514,12 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   #picks-body td[data-label="Start"] { order: 4; }
 }
 
+/* Inline code on these pages carries source URLs and API paths. A URL has no break
+   opportunities, so at 320px a single long one forces the whole document wider than
+   the viewport (measured: scrollWidth 338 vs clientWidth 320 on flagged.html, caught
+   by the 320/390/768/1280 browser audit). Break inside them instead. */
+code { overflow-wrap: anywhere; word-break: break-word; }
+
 @media (max-width: 760px) {
   /* The picks page already has top/bottom navigation and quick filters. Avoid
      a third navigation row pushing the actual pick off a narrow phone. */
