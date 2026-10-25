@@ -87,6 +87,34 @@ CHECKED_UNAVAILABLE = [
     {"name": "Abios / Kambi Odds Feed+ (direct B2B)", "url": "https://abiosgaming.com/docs/en/content/odds/overview/intro",
      "observed": "Official docs (checked 2026-10-24): odds feed built for licensed sportsbooks, covering the largest LoL tournaments; full league list only via an account manager",
      "consequence": "No direct feed. Kambi prices are consumed only via Unibet's public Kambi CDN JSON, one deduplicated line per match."},
+    # Re-checked by hand on 2026-10-25 (session arena/6e003eec) after a search found
+    # pages that advertise Prime League 2nd Division pricing. Each line is what the
+    # page/endpoint actually returned; evidence in data/diag/prm_line_probe.json and
+    # research/betting-sources.md §20.
+    {"name": "Cloudbet — Prime League 2nd Division category", "url": "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
+     "observed": "HTTP 200 page, but the events tab reads 'No Prime League 2nd Division events available' (checked 2026-10-25); the pricing sentence is evergreen marketing copy",
+     "consequence": "No PRM line to read. Not used."},
+    {"name": "Cloudbet public sports API", "url": "https://sports-api.cloudbet.com/pub/v2/odds/sports",
+     "observed": "HTTP 401 on both the sport index and the LoL competitions endpoint (checked 2026-10-25) — the API requires a partner key, none is configured",
+     "consequence": "No key exists in this repository and none may be invented; nothing read."},
+    {"name": "BMBets — LoL Prime League 2nd Division", "url": "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
+     "observed": "HTTP 200; the comparison index lists only LoL World Championship (9), LoL – LCP (1) and Game Changers Rising (1) — no PRM fixture on the board (2026-10-25)",
+     "consequence": "No PRM price to compare; nothing copied."},
+    {"name": "Betmonitor — Prime League 2nd Division comparison", "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+     "observed": "HTTP 200 but the body served is the generic football/tennis/basketball comparison index; the Prime League rows shown in its search snippet are not in the HTML (2026-10-25)",
+     "consequence": "Nothing readable for esports; nothing copied."},
+    {"name": "esportbet.com — LoL tournament board", "url": "https://esportbet.com/league-of-legends/",
+     "observed": "HTTP 200; names 'Prime League 2. Liga 2026 Fall — LIVE' but publishes no match prices",
+     "consequence": "A directory, not a price source; nothing copied."},
+    {"name": "Tipico / NEO.bet / bwin / bet365 (German-licensed books)", "url": "https://www.tipico.de/en/esports/league-of-legends/",
+     "observed": "Tipico HTTP 200 with zero League of Legends references in the served HTML (client-rendered); NEO.bet, bwin and bet365.de HTTP 403 to automated requests (2026-10-25)",
+     "consequence": "The home market for Prime League is not machine-readable; no price copied."},
+    {"name": "Everygame esports LoL", "url": "https://www.everygame.eu/en/Esports/League-of-Legends",
+     "observed": "HTTP 404 at the stated LoL path (2026-10-25)",
+     "consequence": "Path does not exist; nothing used."},
+    {"name": "Oddspedia (generic LoL odds path)", "url": "https://oddspedia.com/league-of-legends/odds",
+     "observed": "HTTP 410 Gone — 'the resource you have requested has been permanently deleted' (checked by hand 2026-10-25)",
+     "consequence": "No aggregator prices; nothing used."},
     {"name": "Oracle's Elixir (community results CSVs)", "url": "https://oracleselixir.com/tools/downloads",
      "observed": "Official downloads page (checked 2026-10-24): free daily CSVs via Google Drive for LCS/LEC/LCK/LPL/PCS/CBLoL and more; no bookmaker odds; some content itself courtesy of Leaguepedia (CC-BY-SA 3.0)",
      "consequence": "Not ingested: majors-focused results would duplicate Leaguepedia MatchSchedule, which is the wider source for the tier-3/amateur fixtures Hotspawn lists."},
@@ -94,6 +122,7 @@ CHECKED_UNAVAILABLE = [
 
 LIMITATIONS = [
     "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
+    "Re-tested again on 2026-10-25 against the sources that advertise or list the exact competitions Hotspawn uses (Cloudbet Prime League 2nd Division, BMBets Prime League comparison, Betmonitor, esportbet, Tipico, NEO.bet, bwin, bet365.de, Everygame, eGamersWorld, 1xBet): 16 sources, 8 reachable, 0 published a two-way price for any of the 147 model-only fixtures (scripts/probe_prm_lines.py, evidence data/diag/prm_line_probe.json). Books that advertise Prime League coverage had no live board when checked; the rest block automated reads.",
     "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on recorded results and official standings.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",

@@ -28,7 +28,7 @@
     <li><a href="index.html" data-nav="summary">Summary</a></li>
     <li><a href="picks.html" data-nav="picks">All picks</a></li>
     <li><a href="leagues.html" data-nav="leagues">By league</a></li>
-    <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
+    <li><a href="unresolved.html" data-nav="unresolved">Limits &amp; no-book picks</a></li>
     <li><a href="flagged.html" data-nav="flagged">Flagged</a></li>
     <li><a href="methodology.html" data-nav="methodology">Methodology</a></li>
   </ul>
@@ -61,7 +61,7 @@
       <button class="chipbtn" type="button" data-filter="model" aria-pressed="false">🧮 Our model <span class="n"></span></button>
       <button class="chipbtn" type="button" data-filter="standings" aria-pressed="false">📊 Standings <span class="n"></span></button>
       <button class="chipbtn" type="button" data-filter="low" aria-pressed="false">⚠️ Low confidence <span class="n"></span></button>
-      <button class="chipbtn" type="button" data-filter="unresolved" aria-pressed="false">❔ Unresolved <span class="n"></span></button>
+      <button class="chipbtn" type="button" data-filter="unresolved" aria-pressed="false">❔ No pick (50/50) <span class="n"></span></button>
       <button class="chipbtn" type="button" data-filter="tossup" aria-pressed="false">🪙 Coin-flip ≤53% <span class="n"></span></button>
     </div>
     <div class="searchrow" style="margin-top:8px">
@@ -91,9 +91,9 @@
   </div>
 
   <p class="small" style="margin-top:12px">
-    <b>Reading the table:</b> 💰 market = de-vigged consensus of external bookmakers/markets · 🧮 model = our Elo model ·
-    📊 standings = official win-loss record in that league (no market line, Elo could not rate both sides) ·
-    ⚠️ low confidence = thin history or league prior used · ❔ unresolved = explicit 50/50 placeholder, not an edge.
+    <b>Reading the table:</b> 🧮 model rows are matches <b>no reachable bookmaker prices</b> — the pick is our own line, not a
+    bookmaker's · 💰 market rows use the bookmaker average · 📊 standings rows blend the current split table ·
+    ⚠️ low confidence = thin history or a league prior · ❔ no pick = explicit 50/50 placeholder, not an edge.
     Flags are explained on the <a href="flagged.html">Flagged for review</a> page; the full method is on
     <a href="methodology.html">Methodology &amp; sources</a>.
   </p>
@@ -112,7 +112,7 @@
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
   <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
-  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Limits</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>

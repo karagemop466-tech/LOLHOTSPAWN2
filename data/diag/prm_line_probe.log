@@ -1,0 +1,23 @@
+[2026-10-25T14:13:36+00:00] Cloudbet public sports API (sport index) -> HTTP 401 fixtures_matched=0 named=0
+[2026-10-25T14:13:36+00:00] Cloudbet public sports API (LoL competitions) -> HTTP 401 fixtures_matched=0 named=0
+[2026-10-25T14:13:36+00:00] Cloudbet — Prime League 2nd Division category page -> HTTP 200 fixtures_matched=0 named=1
+[2026-10-25T14:13:41+00:00] BMBets — LoL Prime League 2nd Division -> HTTP 200 fixtures_matched=0 named=1
+[2026-10-25T14:13:42+00:00] BMBets — LoL Prime League (1st Division) -> HTTP 200 fixtures_matched=0 named=1
+[2026-10-25T14:13:44+00:00] Betmonitor — Prime League 2nd Division comparison -> HTTP 200 fixtures_matched=0 named=1
+[2026-10-25T14:13:45+00:00] Betmonitor — esports hub -> HTTP 200 fixtures_matched=0 named=0
+[2026-10-25T14:13:46+00:00] Tipico (DE) esports -> HTTP 200 fixtures_matched=0 named=0
+[2026-10-25T14:13:46+00:00] NEO.bet (DE) esports -> HTTP 403 fixtures_matched=0 named=0
+[2026-10-25T14:13:47+00:00] bwin (DE) esports -> HTTP 403 fixtures_matched=0 named=0
+[2026-10-25T14:13:47+00:00] bet365 (DE) esports -> HTTP 403 fixtures_matched=0 named=0
+[2026-10-25T14:13:47+00:00] Everygame esports LoL -> HTTP 404 fixtures_matched=0 named=0
+[2026-10-25T14:13:47+00:00] eGamersWorld LoL odds board -> HTTP 403 fixtures_matched=0 named=0
+[2026-10-25T14:14:02+00:00] EsportBet LoL board -> HTTP 200 fixtures_matched=0 named=3
+[2026-10-25T14:14:03+00:00] Strafe LoL odds -> HTTP 200 fixtures_matched=0 named=0
+[2026-10-25T14:14:03+00:00] 1xBet LineFeed (esports, sport=3) -> HTTP 203 fixtures_matched=0 named=0
+{
+ "sources_probed": 16,
+ "reachable_200": 8,
+ "naming_one_of_our_competitions": 5,
+ "publishing_a_two_way_price_for_a_fixture": 0,
+ "conclusion": "No source returned a readable two-way price for any fixture that currently lacks an external line."
+}

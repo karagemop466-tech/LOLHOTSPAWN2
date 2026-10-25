@@ -1,0 +1,72 @@
+name: Diagnostic - low-tier LoL line probe (read-only)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/probe_prm_lines.py"
+      - ".github/workflows/prm-line-probe.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prm-line-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Probe sources for a price on fixtures that have no external line
+        run: |
+          mkdir -p data/diag
+          python3 scripts/probe_prm_lines.py 2>&1 | tee data/diag/prm_line_probe.log
+
+      - name: Publish a review summary
+        if: always()
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          p = Path("data/diag/prm_line_probe.json")
+          if not p.exists():
+              print("**probe did not write an output file**")
+              raise SystemExit(0)
+          d = json.loads(p.read_text())
+          print(f"## Low-tier line probe — {d['generated_at']}\n")
+          print(f"Fixtures without an external market: **{d['fixtures_without_external_market']}** "
+                f"of {d['fixtures_total']}; {d['fixtures_tested']} team pairings tested.\n")
+          print("| Source | HTTP | JSON | Fixtures with a candidate price | Competitions named | Verdict |")
+          print("|---|---|---|---|---|---|")
+          for s in d["sources"]:
+              print(f"| {s['name']} | {s['http_status']} | {'yes' if s['is_json'] else 'no'} | "
+                    f"{s['fixtures_matched']} | {', '.join(s.get('leagues_named') or []) or '—'} | "
+                    f"{s['verdict'][:180]} |")
+          print("\n**Summary:** " + json.dumps(d["summary"]))
+          PY
+
+      - name: Commit probe output
+        if: always()
+        run: |
+          git config user.name "picks-bot"
+          git config user.email "actions@github.com"
+          git add data/diag/prm_line_probe.json data/diag/prm_line_probe.log 2>/dev/null || true
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "diag: low-tier line probe [skip ci]"
+          for attempt in 1 2 3; do
+            git fetch -q origin "${GITHUB_REF_NAME}"
+            git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1 || git merge --abort >/dev/null 2>&1 || true
+            if git push -q origin "HEAD:${GITHUB_REF_NAME}"; then echo "pushed"; exit 0; fi
+            sleep 5
+          done
+          echo "could not push probe output" >&2
+          exit 1

@@ -1,0 +1,236 @@
+{
+ "generated_at": "2026-10-25T14:13:36.003990Z",
+ "query": "Which external sources publish a price for the Hotspawn LoL fixtures that currently have no external market?",
+ "fixtures_total": 156,
+ "fixtures_without_external_market": 147,
+ "fixtures_tested": 147,
+ "sources": [
+  {
+   "name": "Cloudbet public sports API (sport index)",
+   "url": "https://sports-api.cloudbet.com/pub/v2/odds/sports",
+   "kind": "json-api",
+   "note": "Cloudbet's own LoL page advertises Prime League 2nd Division pricing",
+   "http_status": 401,
+   "bytes": 0,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 401: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "Cloudbet public sports API (LoL competitions)",
+   "url": "https://sports-api.cloudbet.com/pub/v2/odds/sports/league-of-legends/competitions",
+   "kind": "json-api",
+   "note": "Competition list would name every LoL league Cloudbet prices",
+   "http_status": 401,
+   "bytes": 0,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 401: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "Cloudbet — Prime League 2nd Division category page",
+   "url": "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events",
+   "kind": "esportsbook-page",
+   "note": "Says it prices PRM 2nd Division through the split",
+   "http_status": 200,
+   "bytes": 206185,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [
+    "Prime League"
+   ],
+   "verdict": "names Prime League but publishes no two-way price for any current fixture (no window holds both teams and two prices)"
+  },
+  {
+   "name": "BMBets — LoL Prime League 2nd Division",
+   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
+   "kind": "aggregator-page",
+   "note": "Dedicated comparison page for the exact competition Hotspawn lists",
+   "http_status": 200,
+   "bytes": 857146,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [
+    "Prime League"
+   ],
+   "verdict": "names Prime League but publishes no two-way price for any current fixture (no window holds both teams and two prices)"
+  },
+  {
+   "name": "BMBets — LoL Prime League (1st Division)",
+   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league/",
+   "kind": "aggregator-page",
+   "note": "Sister page; shows whether the comparison site prices German LoL at all",
+   "http_status": 200,
+   "bytes": 857081,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [
+    "Prime League"
+   ],
+   "verdict": "names Prime League but publishes no two-way price for any current fixture (no window holds both teams and two prices)"
+  },
+  {
+   "name": "Betmonitor — Prime League 2nd Division comparison",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+   "kind": "aggregator-page",
+   "note": "German odds comparison; its search index shows bet365/ggbet prices here",
+   "http_status": 200,
+   "bytes": 318646,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [
+    "Prime League"
+   ],
+   "verdict": "names Prime League but publishes no two-way price for any current fixture (no window holds both teams and two prices)"
+  },
+  {
+   "name": "Betmonitor — esports hub",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/",
+   "kind": "aggregator-page",
+   "note": "League index: shows which esports competitions Betmonitor tracks",
+   "http_status": 200,
+   "bytes": 318546,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "reachable, but does not name these competitions or fixtures — the source does not cover these matches right now"
+  },
+  {
+   "name": "Tipico (DE) esports",
+   "url": "https://www.tipico.de/en/esports/league-of-legends/",
+   "kind": "sportsbook-page",
+   "note": "German-licensed book; Prime League is the German national league",
+   "http_status": 200,
+   "bytes": 364407,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "reachable, but does not name these competitions or fixtures — the source does not cover these matches right now"
+  },
+  {
+   "name": "NEO.bet (DE) esports",
+   "url": "https://www.neobet.de/sportwetten/esports",
+   "kind": "sportsbook-page",
+   "note": "German-licensed book",
+   "http_status": 403,
+   "bytes": 15438,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "bwin (DE) esports",
+   "url": "https://sports.bwin.de/en/sports/esports",
+   "kind": "sportsbook-page",
+   "note": "German-licensed book",
+   "http_status": 403,
+   "bytes": 54342,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "bet365 (DE) esports",
+   "url": "https://www.bet365.de/#/AS/B1/",
+   "kind": "sportsbook-page",
+   "note": "Largest global book; often prices Prime League",
+   "http_status": 403,
+   "bytes": 5649,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "Everygame esports LoL",
+   "url": "https://www.everygame.eu/en/Esports/League-of-Legends",
+   "kind": "sportsbook-page",
+   "note": "Review sites list Prime League in its LoL coverage",
+   "http_status": 404,
+   "bytes": 2857,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 404: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "eGamersWorld LoL odds board",
+   "url": "https://egamersworld.com/lol/bets",
+   "kind": "aggregator-page",
+   "note": "Aggregator with per-match bookmaker prices",
+   "http_status": 403,
+   "bytes": 5718,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "EsportBet LoL board",
+   "url": "https://esportbet.com/league-of-legends/",
+   "kind": "aggregator-page",
+   "note": "Lists Prime League 2. Liga as a live tournament",
+   "http_status": 200,
+   "bytes": 399303,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [
+    "Prime League",
+    "Arabian League",
+    "LGC Rising"
+   ],
+   "verdict": "names Prime League, Arabian League, LGC Rising but publishes no two-way price for any current fixture (no window holds both teams and two prices)"
+  },
+  {
+   "name": "Strafe LoL odds",
+   "url": "https://www.strafe.com/esports-betting/odds/league-of-legends/",
+   "kind": "aggregator-page",
+   "note": "Aggregator; previously returned 200 HTML",
+   "http_status": 200,
+   "bytes": 195082,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "reachable, but does not name these competitions or fixtures — the source does not cover these matches right now"
+  },
+  {
+   "name": "1xBet LineFeed (esports, sport=3)",
+   "url": "https://1xbet.com/LineFeed/Get1x2_VZip?sports=3&count=1000&lng=en&mode=4&country=1&partner=51",
+   "kind": "esportsbook-api",
+   "note": "Deep tier-3 coverage; geo-restricted in past runs",
+   "http_status": 203,
+   "bytes": 2644,
+   "is_json": false,
+   "fixtures_matched": 0,
+   "candidate_prices": [],
+   "leagues_named": [],
+   "verdict": "HTTP 203: no page body readable — no line can be extracted from this source in an automated run"
+  }
+ ],
+ "summary": {
+  "sources_probed": 16,
+  "reachable_200": 8,
+  "naming_one_of_our_competitions": 5,
+  "publishing_a_two_way_price_for_a_fixture": 0,
+  "conclusion": "No source returned a readable two-way price for any fixture that currently lacks an external line."
+ }
+}

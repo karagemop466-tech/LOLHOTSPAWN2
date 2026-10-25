@@ -42,6 +42,41 @@ Any session that needs a file in this scope must log a request here instead of e
 
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (done, merged)
 
+---
+
+## Session `arena/6e003eec-lolhotspawn2` — claim and results (kept from the merged branch)
+
+## Session `arena/6e003eec-lolhotspawn2` — 2026-10-25 (claim)
+
+No other session holds an open claim younger than 60 minutes; `main` is at `2173cc9` (scheduled refresh 2026-10-25T10:41:50Z, 156 fixtures / 156 resolved). This session works only inside its claimed scope; any conflict is logged here instead of edited.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T25 Verification pass: run every local suite (`verify_site.py`, `test_verifier.py`, `test_entity_and_books.py`, `test_standings_model.py`, `audit/test_model.py`, DOM contract), reconcile the published payload against Hotspawn's own counts, spot-check priced rows against their cited sources | done | arena/6e003eec | `verification/**`, `audit/**` (fixes only when a check is wrong) |
+| T26 Fresh pick-source research for fixtures with no book line (established LoL books → esportsbooks → esports betting lines → community), with link-verified results in the research log; add any usable source to the probe list | done | arena/6e003eec | `research/betting-sources.md`, `scripts/probe_sources.py`, `scripts/source_probe.py` |
+| T27 Mobile usability pass: phone-first executive summary with in-site links to the picks list, separate unresolved/limitations section in the summary, 390 px readability, no horizontal scroll on tables | done | arena/6e003eec | `docs/**` |
+| T28 Integration: run the live pipeline on this branch, re-verify combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge + deploy here | in progress | arena/6e003eec | `COORDINATION.md`, `docs/data/picks.json` (generated), `.github/workflows/**` |
+
+### Session `arena/6e003eec-lolhotspawn2` — results (2026-10-25 14:15 UTC)
+
+Branch `arena/6e003eec-lolhotspawn2` (session branch; Arena does not permit creating `session-<id>/<task>` branches, this one stands in for it). All work is inside the T25–T28 scope claimed at the top of this file; no other session's files were edited.
+
+**T25 verification — done (local + CI).** `scripts/verify_site.py` **44 PASS · 0 FAIL · 0 WARN · 1 SKIP** (D18 skip = no Leaguepedia snapshot offline; CI runs it with the snapshot). `verification/test_verifier.py` 45/45 · `test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS · `audit/test_model.py` 23/23 · `test_dom_contract.py` 7/7 · `check_dom_contract.py` PASS · `check_dom_render.js` **58/58** (5 new checks for the phone pick panel and the coverage strip) · new `verification/check_mobile_css.py` 10/10 (new, wired into `pipeline-test.yml`). Row-level audit of all 156 rows: probabilities sum to 1, pick = higher probability, pick_prob matches, unique ids, ≥2 https source links per row, market rows cite a book, model rows cite Leaguepedia → **0 issues**. `check_source_pages.py` (CI): **12 cited Leaguepedia pages, 12 exist, 0 missing**.
+
+**T26 source research — done, measured and published.** New this session: `scripts/probe_prm_lines.py` + `.github/workflows/prm-line-probe.yml` (16 sources, strict whole-name/same-window price test, output committed). Result **16 probed · 8 reachable · 5 name one of our competitions · 0 publish a two-way price** for any of the 147 model-only fixtures (`data/diag/prm_line_probe.json`, run 2026-10-25T14:13:41Z). Hand checks of the same leads are recorded in `research/betting-sources.md` **§20**: Cloudbet advertises PRM 2nd Division but shows "No Prime League 2nd Division events available" and its API is HTTP 401; BMBets has a PRM2 comparison page with no PRM prices; Betmonitor's PRM2 URL serves the generic index; esportbet names the league with no prices; Tipico serves 0 LoL references; NEO.bet/bwin/bet365.de 403; Everygame 404; Oddspedia 410. Nine newly measured sources were added to the payload's `checked_unavailable` (now 35 entries) and to `source_probe.py` (44 candidates re-checked every 6 h). **Irregularity found and fixed:** the first probe version reported 5 sources as "odds near a team"; all 5 were false positives (basketball fixture "Alba Berlin", CSS gradient, meta tag). Matcher replaced and pinned by 8 regression tests (`verification/test_prm_probe.py`).
+
+**T27 mobile/clarity — done.** Executive summary now opens with a five-number coverage strip (matches / have a pick / bookmaker line / model-priced / no pick at all) and a **"Picks for the next matches"** panel of the six soonest fixtures as full-width tap cards (team names 19 px, pick + probability on their own line, min-height 44 px), *before* any explanatory text. The old single "Unresolved: 0" figure — which read as "no picks" — is gone. The separate section is retitled **"Matches with no bookmaker line — and the limits"** and states 147 model-priced / 0 without a pick, with the per-league limits, the re-checked external sources and the written limitations. `unresolved.html` was rebuilt in the same vocabulary and order. Nav label changed on all 7 pages to "Limits & no-book picks" (bottom bar: "Limits"). `flagged.html` gained a **Session review items — 2026-10-25** table (5 items, each with source links).
+
+**T28 integration — in progress**: PR opened from this branch to `main`; merge + Pages deploy recorded below when confirmed.
+
+**Sources used (all opened this session, links for manual review):** Hotspawn lobby <https://play.hotspawn.com/lol-pickems> · Hotspawn fixtures API <https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures> · Leaguepedia PRM 2nd Division 2027 Fall <https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split> · Leaguepedia Worlds 2026 Main Event <https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event> · Cloudbet PRM2 <https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division> · Cloudbet API <https://sports-api.cloudbet.com/pub/v2/odds/sports> · BMBets PRM2 <https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/> · Betmonitor PRM2 <https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464> · esportbet <https://esportbet.com/league-of-legends/> · Tipico <https://www.tipico.de/en/esports/league-of-legends/> · Oddspedia (410) <https://oddspedia.com/league-of-legends/odds>.
+
+**Flagged (non-blocking, published on the site's Flagged page §Session review items):** R1 one scheduled refresh failed at 2026-10-25T03:05Z and its cause is unconfirmed (Actions log API rate-limited this session); R2 no reachable book prices the 147 model-only fixtures; R3 Cloudbet's PRM2 coverage claim is UNVERIFIED (no live events, API 401); R4 German books (Tipico/NEO.bet/bwin/bet365.de) are client-rendered or 403, so their PRM coverage is UNVERIFIED; R5 the probe false-positive bug (fixed, tests added).
+
+
+## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
+
+
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
 
 | Task | Status | Owner | Files (claimed scope) |

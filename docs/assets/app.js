@@ -134,6 +134,27 @@
     </article>`;
   }
 
+  // Phone-first card used by the executive summary's "Picks for the next matches"
+  // panel: the pick and both probabilities are the largest things on screen, and
+  // the whole card is one tap target into the match detail.
+  function compactCard(m) {
+    const cls = matchClass(m);
+    const t = whenLocal(m.start_utc);
+    const mi = methodInfo(m);
+    const pair = pctPair(m.prob_team1);
+    const pickText = m.method === "UNRESOLVED"
+      ? "⚠️ No pick — 50/50 placeholder"
+      : `✅ Pick: <b>${esc(m.pick)}</b>`;
+    return `<a class="pickcard ${cls}" href="match.html?id=${encodeURIComponent(m.id)}">
+      <span class="pc-top"><span class="pc-when">${esc(t.text)}</span><span class="pc-rel">${esc(relative(m.start_utc))}</span><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span></span>
+      <span class="pc-teams">${esc(m.team1)}<span class="pc-vs">vs</span>${esc(m.team2)}</span>
+      <span class="pc-bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></span>
+      <span class="pc-probs"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span>${esc(m.team2)} <b>${pair[1]}</b></span></span>
+      <span class="pc-pick">${pickText}<span class="pc-pct">${pct1(m.pick_prob)}</span></span>
+      <span class="pc-meta">${esc(m.tournament || "Tournament TBC")}${m.best_of ? ` · Bo${esc(m.best_of)}` : ""} · ${esc(m.confidence || "—")} confidence</span>
+    </a>`;
+  }
+
   function row(m) {
     const t = whenLocal(m.start_utc);
     const pair = pctPair(m.prob_team1);
@@ -329,11 +350,34 @@
     set("#here-leagues-count", computeLeagueBreakdown(d).length);
     set("#here-unresolved-count", cov0.unresolved ?? 0);
     set("#here-low-count", cov0.low_confidence ?? c.low_confidence ?? 0);
+    // Three different questions a visitor can ask, answered separately:
+    //   listed matches / have a pick / priced by a book / priced by the model / no pick at all.
+    // Before this, only "unresolved" was shown, which read as "no picks" even when
+    // every fixture had a model pick.
+    const bookCount = all0.filter((m) => m.market).length;
+    const noneCount = all0.filter((m) => m.method === "UNRESOLVED").length;
+    set("#now-all-count", all0.length);
+    set("#now-priced-count", Math.max(0, all0.length - noneCount));
+    set("#now-book-count", bookCount);
+    set("#now-model-count", Math.max(0, all0.length - bookCount - noneCount));
+    set("#now-none-count", noneCount);
+    set("#hero-count-unresolved", `(${Math.max(0, all0.length - bookCount)})`);
+    const soonBox = $("#picks-now-list");
+    if (soonBox) {
+      const soon = all0.filter((m) => new Date(m.start_utc).getTime() >= Date.now() - 300000)
+        .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
+        .slice(0, 6);
+      soonBox.innerHTML = soon.length
+        ? soon.map(compactCard).join("")
+        : `<div class="card">No Hotspawn matches are open right now. <a href="picks.html">See the full list →</a></div>`;
+    }
     // hero "find the picks" buttons carry the same counts, so a phone visitor sees
     // the size of each list before tapping it
     set("#hero-count-picks", all0.length ? `(${all0.length})` : "");
     set("#hero-count-next24", `(${n24})`);
-    set("#hero-count-unresolved", `(${cov0.unresolved ?? c.unresolved ?? 0})`);
+    // This button now points at the "no bookmaker line" section, so it must count
+    // model-priced matches, not the (usually zero) explicit 50/50 placeholders.
+    set("#hero-count-unresolved", `(${Math.max(0, all0.length - all0.filter((m) => m.market).length)})`);
     const hs = $("#hero-status");
     if (hs) {
       hs.innerHTML = `<b>Updated ${esc(whenLocal(d.generated_at).text)}</b> (${esc(whenUTC(d.generated_at))}) · `
@@ -441,13 +485,16 @@
     if (ubox) {
       // The headline sentence has to read correctly whether or not anything is
       // currently unresolved: "0 fixtures lack ..." is confusing on its own.
+      const noBook = all0.filter((m) => !m.market).length;
+      const withPick = all0.length - uCount;
       const headline = uCount > 0
-        ? `<b>${uCount}</b> fixture${uCount === 1 ? "" : "s"} lack external lines, recorded team
-           matches, and split standings — published strictly as an explicit <b>50.0% / 50.0% placeholder</b>
-           (never an edge).`
-        : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
-           external betting line, our Elo model, or a current-split standings record. Anything that later
-           loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
+        ? `<b>${noBook}</b> of <b>${all0.length}</b> matches have no bookmaker line, and <b>${uCount}</b> of them
+           also lack recorded results and split standings — those are published strictly as an explicit
+           <b>50.0% / 50.0% placeholder</b> (never an edge). The other <b>${Math.max(0, withPick - (all0.length - noBook))}</b>
+           model-priced matches do have a pick, sourced below.`
+        : `<b>${noBook}</b> of <b>${all0.length}</b> matches have no bookmaker line — those are picked by our model on
+           recorded results and split standings. <b>0 matches lack a pick</b>: everything listed has one. Anything that
+           later loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
       // Per-league limitations are part of the executive summary, not only on
       // the separate Unresolved page, so the reader sees which signal prices
       // each competition without leaving this page.
@@ -464,7 +511,8 @@
           </tr>`).join("")}</tbody>
         </table></div>` : "";
       const tCount = all0.filter((m) => isTossUp(m)).length;
-      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount}) &amp; 🪙 Coin-flip picks (${tCount})</h3>
+      const noBookN = all0.filter((m) => !m.market).length;
+      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ No bookmaker line (${noBookN}) · no pick at all (${uCount}) · low confidence (${lcCount}) · 🪙 coin-flips (${tCount})</h3>
       <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       ${perLeague}
@@ -586,7 +634,14 @@
     const rows = sortMatches(all.filter(applyFilter));
     tbody.innerHTML = rows.length ? rows.map(row).join("") : `<tr><td colspan="6"><div class="card">No matches match these filters. <button class="chipbtn" onclick="document.getElementById('reset').click()">Reset filters</button></div></td></tr>`;
     const count = $("#countline");
-    if (count) count.textContent = `Showing ${rows.length} of ${all.length} fixtures · ${all.filter((m) => m.market).length} with external lines · ${all.filter((m) => m.method === "UNRESOLVED").length} unresolved · ${all.filter((m) => isTossUp(m)).length} coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%)`;
+    if (count) {
+      const nb = all.filter((m) => m.market).length;
+      const np = all.filter((m) => m.method === "UNRESOLVED").length;
+      const nt = all.filter((m) => isTossUp(m)).length;
+      count.textContent = `Showing ${rows.length} of ${all.length} matches · ${nb} from a bookmaker line · `
+        + `${all.length - nb - np} model-priced (no book line) · ${np} with no pick · `
+        + `${nt} coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%)`;
+    }
     const counts = {
       all: all.length,
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
@@ -645,12 +700,12 @@
     if (mix) {
       const cov = d.coverage || {};
       const counts = pricingMix(d);
-      mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled fixtures published · `
-        + `<b>${counts.market}</b> priced by external betting lines · `
-        + `<b>${counts.elo}</b> by our Elo model · `
-        + `<b>${counts.standings}</b> by split standings · `
-        + `<b>${counts.prior}</b> by a competition prior · `
-        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}) · `
+      const noBookTotal = Math.max(0, counts.total - counts.market);
+      mix.innerHTML = `<b>${cov.fixtures ?? 0}</b> scheduled matches published · `
+        + `<b>${counts.market}</b> priced by a bookmaker or prediction-market line · `
+        + `<b>${noBookTotal}</b> with <b>no</b> bookmaker line (`
+        + `${counts.elo} Elo model, ${counts.standings} split standings, ${counts.prior} competition prior) · `
+        + `<b>${counts.unresolved}</b> with no pick at all (explicit 50/50 · total ${counts.total}) · `
         + `<b>${all.filter((m) => isTossUp(m)).length}</b> of the resolved picks are coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%). `
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }

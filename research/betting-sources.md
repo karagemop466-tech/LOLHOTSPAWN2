@@ -1032,3 +1032,90 @@ Community Elo projects (e.g. https://lolproelo.com/rankings, https://tgv-analyti
 `Mental Rush vs Vitality Rising Bees` (LGC Rising, `MARKET_SINGLE` Polymarket): live event page shows series Moneyline **Vitality Rising Bees 65¢ / Mental Rush 38¢** vs payload Mental Rush 0.355 → pick Vitality Rising Bees 64.5% — consistent within drift since the 10:41Z refresh. Source: https://polymarket.com/event/lol-rb-mr-2026-10-27. (Also confirms the selector takes the series Moneyline, not the Game-N child markets listed below it on the same page.)
 
 **Bottom line (unchanged, re-measured):** no new structured per-match line source qualified. Low-tier picks remain our own Elo/standings line; what changed is that the weakest of them now say "coin-flip" on the row itself.
+
+> Cross-reference: the Cloudbet Prime League 2nd Division claim was first flagged independently by session
+> `arena/964cb944` in **§21.1** (0 live events vs 36 Hotspawn fixtures). The pass below reaches the same
+> conclusion and adds the public-API status plus the comparison sites (BMBets, Betmonitor, esportbet) and the
+> German books. Neither section contradicts the other; both are kept.
+
+## 22. Refresh 2026-10-25 — established books → esportsbooks → esports lines, tested against the *current* unpriced fixtures (session `arena/6e003eec`)
+
+The brief for this pass was specific: for every match that cannot be resolved the way the featured picks are,
+look for information sources in this order — **established LoL betting sites → esportsbooks → esports betting
+lines** — and publish anything that still cannot be resolved separately, with its limitations. This section is the
+evidence for that pass. It was run twice: once by hand with a browser-equivalent fetch of each page, and once from
+GitHub Actions by `scripts/probe_prm_lines.py` (`data/diag/prm_line_probe.json`, 16 sources, one polite GET each).
+
+### 22.1 What the leads were (why these sources, not others)
+
+A web search for "Prime League 2nd Division odds" returns pages that *claim* to price exactly the competitions
+Hotspawn lists. Those claims were the starting point, and each was then opened and measured rather than trusted:
+
+| Lead | What it claims | Link |
+|---|---|---|
+| Cloudbet — Prime League 2nd Division | "prices the Prime League 2nd Division through the split, with the match winner, map handicap and total maps on every series" | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division |
+| BMBets — LoL Prime League 2nd Division | a dedicated odds-comparison page for the exact competition | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ |
+| Betmonitor — Prime League 2nd Division | German odds comparison; its search snippet shows bet365/ggbet prices on this page | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| esportbet.com — LoL tournament list | lists "Prime League 2. Liga 2026 Fall … LIVE" | https://esportbet.com/league-of-legends/ |
+| Everygame (review coverage) | review sites list Prime League inside its LoL coverage | https://www.everygame.eu/en/Esports/League-of-Legends |
+| Tipico / NEO.bet / bwin (DE) | German-licensed books; Prime League is the German national league | https://www.tipico.de/en/esports/league-of-legends/ · https://www.neobet.de/sportwetten/esports · https://sports.bwin.de/en/sports/esports |
+
+### 22.2 What was actually observed (hand check, 2026-10-25 ~14:0x UTC)
+
+| Source | Observed result | Can a price be read? |
+|---|---|---|
+| Cloudbet PRM 2nd Division page | Opens, but the events tab says **"No Prime League 2nd Division events available — Check back later"**. The page copy advertising PRM2 pricing is evergreen marketing text, not a live board. | **No** |
+| Cloudbet public sports API (`sports-api.cloudbet.com/pub/v2/odds/sports`, `…/league-of-legends/competitions`) | **HTTP 401** — a key is required (Cloudbet's API docs are for licensed/affiliate partners). No key exists in this repo and none may be invented. | **No** |
+| BMBets PRM 2nd Division page | HTTP 200, page exists, but the comparison index on it lists only *LoL World Championship (9)*, *LoL – LCP (1)* and *League of Legends – Game Changers Rising (1)*. No PRM fixtures are on the board. | **No** |
+| Betmonitor PRM 2nd Division page | HTTP 200, but the body served is the generic comparison index (football/tennis/basketball highlights). The Prime League rows that its search snippet showed are not in the served HTML. | **No** |
+| esportbet.com LoL board | HTTP 200 and the page *names* "Prime League 2. Liga 2026 Fall — Berlin — LIVE", but it is a tournament directory with no prices. | **No** |
+| Tipico (DE) | HTTP 200 with **zero** League of Legends match references in the served HTML (client-rendered board). | **No** |
+| NEO.bet (DE), bwin (DE), bet365 (DE) | HTTP **403** to an automated request. | **No** |
+| Everygame | HTTP **404** at the stated LoL path. | **No** |
+| eGamersWorld odds board | HTTP **403**. | **No** |
+| 1xBet LineFeed | HTTP **203** geo-restriction stub (as in every previous run). | **No** |
+| Oddspedia generic LoL odds path | HTTP **410 Gone** ("the resource you have requested has been permanently deleted") — checked by hand on 2026-10-25. | **No** |
+
+### 22.3 The strict, reproducible test (GitHub Actions, 2026-10-25T14:09:50Z)
+
+`scripts/probe_prm_lines.py` asks one question: *does any source show **both** team names of a currently unpriced
+fixture inside one 700-character window **together with two or more odds-like decimals** (1.01–30.00)?* It tests all
+147 model-only fixtures. Result — **16 sources probed, 8 reachable, 0 published a two-way price**:
+
+| Source | HTTP | Fixtures with a candidate price |
+|---|---|---|
+| Cloudbet API (sport index / LoL competitions) | 401 / 401 | 0 |
+| Cloudbet PRM2 category page | 200 | 0 |
+| BMBets PRM2 / Prime League | 200 / 200 | 0 / 0 |
+| Betmonitor PRM2 / esports hub | 200 / 200 | 0 / 0 |
+| Tipico (DE) | 200 | 0 |
+| NEO.bet / bwin / bet365 (DE) | 403 / 403 / 403 | 0 |
+| Everygame | 404 | 0 |
+| eGamersWorld | 403 | 0 |
+| esportbet.com | 200 (names Prime League 2. Liga, no prices) | 0 |
+| Strafe | 200 (guide content, no per-match prices) | 0 |
+| 1xBet LineFeed | 203 | 0 |
+
+**Version note (recorded because the first attempt was wrong).** The first version of this probe matched single
+generic words ("Berlin", "cloud", "atomic") within 240 characters of any number and reported **five** sources as
+"odds near a team". Every one of those hits was a false positive on inspection: a German *basketball* fixture
+("Alba Berlin — Ratiopharm Ulm"), a CSS gradient (`has-atomic-cream-gradient-background`), a page's meta
+description, and a table of league names. The matcher was replaced with the whole-name/same-window rule above and
+eight regression tests now pin it down (`verification/test_prm_probe.py`: a basketball page, a stylesheet, a
+league-name-only page, a single odd, names outside the window, timestamps and ids must all return **no** price).
+That is the difference between "a number appeared near a word" and "a book quoted this fixture".
+
+### 22.4 Conclusion for the 147 model-only fixtures
+
+**No established sportsbook, esportsbook, comparison site or esports betting-line source that we can reach
+publishes a readable two-way price for any of them.** The sources that *say* they price Prime League (Cloudbet) or
+*list* it (BMBets, Betmonitor, esportbet) had no live PRM board at the time of checking, and the ones that might
+(Tipico, NEO.bet, bwin, bet365, 1xBet) either return a client-rendered shell or block automated requests. The picks
+for those matches therefore remain **our own line**, built from Leaguepedia results and split standings, and they
+are published on the site's separate *"no bookmaker line"* section with the per-league limitation attached — never
+presented as a bookmaker price and never given a bookmaker's name.
+
+This is re-tested automatically: `scripts/probe_prm_lines.py` (manual workflow, deep test) and
+`scripts/source_probe.py` (one GET per source on **every** 6-hour refresh, results published in the payload's
+`market_probe` and on the site).
+
