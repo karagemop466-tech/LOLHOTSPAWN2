@@ -6,6 +6,10 @@
 <title>Methodology &amp; sources — Hotspawn LoL Picks</title>
 <meta name="description" content="How every Hotspawn LoL fixture gets a pick: deduplicated external bookmaker consensus, tier-anchored Elo, split standings fallback, schedule disambiguation, validation and CC BY-SA 3.0 source attributions.">
 <meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="LoL Picks">
+<meta name="application-name" content="LoL Picks">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-page="methodology">
@@ -34,6 +38,16 @@
   </ul>
 </nav>
 </header>
+<nav class="jumpbar" aria-label="Quick jumps">
+  <div class="wrap inner">
+    <a class="hot" href="picks.html">📋 All picks</a>
+    <a href="picks.html?filter=next24">⏰ Next 24 h</a>
+    <a href="index.html#nonfeatured">🧮 No book line</a>
+    <a href="leagues.html">🏆 By league</a>
+    <a href="unresolved.html">⚠️ Unresolved</a>
+    <a href="flagged.html">🚩 Flagged</a>
+  </div>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
@@ -50,6 +64,16 @@
     with Hotspawn's backend fixtures feed (<code>/api/v1/fixtures</code>) every 6 hours via GitHub Actions cron (<code>0 */6 * * *</code>).
     Cancelled or withdrawn upstream rows are excluded from pricing and audited on <a href="flagged.html#excluded">Flagged for review</a> (check D21).
     Exact UTC timestamps come directly from millisecond epoch fields.</p>
+    <p class="small"><b>Start times are shown exactly as Hotspawn's feed reports them</b>, because that feed is
+    what sets the Pick'em lock. Other sources sometimes give a different time for the same fixture; rather than
+    silently choosing one, every row like that is marked <b>⏱</b> and its match page lists the time reported by
+    <b>each</b> source (Hotspawn, Leaguepedia, and every book that priced it) with links. Measured 2026-10-25: the 10:41Z snapshot carried
+    <span class="flag">START_TIME_MISMATCH</span> on 10 fixtures (Hotspawn feed vs Leaguepedia), including four
+    Worlds fixtures — e.g. <i>Top Esports vs G2 Esports</i> was 17:00 UTC in the feed while Hotspawn's own match page,
+    Leaguepedia and Polymarket all said 18:00 UTC. <b>Nothing was edited by hand</b>: the next 6-hourly run (14:16Z)
+    re-read the feed and those four times corrected themselves to 17:00 / 18:00 / 19:00 / 22:00 UTC, leaving 0
+    <span class="flag">START_TIME_MISMATCH</span> in the current payload. The disagreement is an upstream data-quality
+    limit, and the site's job is to show it rather than hide it.</p>
   </section>
 
   <section class="card">
@@ -189,9 +213,9 @@
     </div>
     <p class="small">
       <b>Limitation this creates:</b> a model line is not a market line. It carries no bookmaker margin and no
-      roster/injury news, and it must not be read as an edge against a bookmaker price. 73 of 169 rows are capped at
-      Low confidence for thin samples (&lt;8 games in 365 days) or cross-league comparisons; 0 rows are unresolved in
-      the current snapshot. The per-league version of this table is on
+      roster/injury news, and it must not be read as an edge against a bookmaker price. On the 2026-10-25 14:16Z snapshot
+      11 of 156 rows are capped at Low confidence for thin samples (&lt;8 games in 365 days) or cross-league comparisons;
+      0 rows are unresolved. The per-league version of this table is on
       <a href="unresolved.html">Unresolved &amp; limitations</a>.
     </p>
   </section>
@@ -210,8 +234,10 @@
   </section>
   <section class="card" id="manual-checks">
     <h3>Manual verification log</h3>
-    <p class="small">Each row below was checked by hand (2026-10-23 and 2026-10-24), at the link shown, against the value this site
-    published at that moment. Nothing in this table is inferred: if a check had failed, the row would say so.</p>
+    <p class="small">Each row below was checked by hand on 2026-10-23, 2026-10-24 and 2026-10-25, at the link shown, against the value
+    this site published at that moment. Nothing in this table is inferred: if a check had failed, the row would say so.
+    The 12 items that came back irregular or unverifiable on 2026-10-25 are listed one per row, with their links, on
+    <a href="flagged.html#audit-2026-10-25">Flagged for review → 2026-10-25 audit</a>.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>What was checked</th><th>Source used (opens in a new tab)</th><th>Observed</th><th>Result</th></tr></thead>
@@ -241,10 +267,28 @@
             <td><span class="chip green">Matches</span> (13 rows have no match page and are flagged)</td>
           </tr>
           <tr>
-            <td>Published payload passes 36 structural checks</td>
+            <td>Published payload passes the structural verifier</td>
             <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39988004265" target="_blank" rel="noopener">verify workflow ↗</a></td>
-            <td>PASS · 36 pass · 0 fail · 0 warn · 1 skip</td>
+            <td>PASS · 46 pass · 0 fail · 0 warn · 1 skip on 2026-10-25 (the count grows as checks are added; the skill is in <code>scripts/verify_site.py</code>)</td>
             <td><span class="chip green">Pass</span></td>
+          </tr>
+          <tr>
+            <td><b>2026-10-25 re-check.</b> <i>Top Esports vs G2 Esports</i> — published pick G2 Esports 54.8% (<code>MARKET_CONSENSUS</code>, payload generated 2026-10-25 10:41Z)</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends/worlds/lol-tes-g2-2026-10-25" target="_blank" rel="noopener">Polymarket event ↗</a> · <a href="https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816" target="_blank" rel="noopener">Hotspawn match page ↗</a></td>
+            <td>Read 2026-10-25 14:0x UTC: Polymarket quoted <b>Top Esports 48¢ / G2 Esports 53¢</b> (47.5% / 52.5% de-vigged); the four book lines stored in the payload are Pinnacle 44.55%, Unibet 44.15%, Bovada 45.92%, Polymarket 47.50% for Top Esports, and the published consensus 45.24% sits inside that range. The Hotspawn page confirmed both teams and the tournament but showed <b>18:00</b> as the start time against the then-current feed value of 17:00 — recorded as an irregularity, never corrected by hand. The 14:16Z refresh then re-read the same feed field and moved it to <b>18:00</b> by itself, matching the page: see <a href="flagged.html#audit-2026-10-25">Flagged A1</a>.</td>
+            <td><span class="chip green">Matches</span> <span class="chip green">time agrees after refresh</span></td>
+          </tr>
+          <tr>
+            <td><b>2026-10-25 re-check.</b> Seven PRM 2nd Division fixtures (Babos Gaming vs Hannover 16:00Z, Reveal vs AceGaming 16:00Z, 404 vs VfB 18:30Z, Locked IN vs DKB 18:30Z, DKB vs PvB 17:00Z on 27 Oct, No Need Orga vs AceGaming 17:00Z, Hannover vs No Need Orga 19:30Z)</td>
+            <td><a href="https://www.hotspawn.com/league-of-legends/tournament/prm-2nd-division-26-27-fall" target="_blank" rel="noopener">Hotspawn PRM 2nd Division fixtures (times printed in UTC) ↗</a></td>
+            <td>Every one of the seven payload timestamps equals the UTC time printed on Hotspawn's own tournament page, checked 2026-10-25.</td>
+            <td><span class="chip green">7/7 match</span></td>
+          </tr>
+          <tr>
+            <td><b>2026-10-25 re-check.</b> Low-tier rows priced without a book line (147 of 156 fixtures)</td>
+            <td><a href="unresolved.html#sources-checked">every source tried, with status ↗</a> · <a href="https://cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events" target="_blank" rel="noopener">Cloudbet PRM 2nd Division ↗</a> · <a href="https://www.bmbets.com/e-sports/world/lol---prime-league/" target="_blank" rel="noopener">bmbets PRM comparison ↗</a></td>
+            <td>Re-read 2026-10-25: Cloudbet's own PRM 2nd Division page said "No Prime League 2nd Division events available"; bmbets' LoL index listed only Worlds, LCP and Game Changers Rising; Betmonitor's PRM comparison returned no LoL row on two separate reads. No book line exists to use, so the pick stays model-derived and is labelled as such — see <a href="flagged.html#audit-2026-10-25">Flagged A9–A12</a>.</td>
+            <td><span class="chip amber">No line found</span></td>
           </tr>
           <tr>
             <td>Top Esports vs Anyone's Legend — consensus 0.365 for Top Esports (payload generated 2026-10-24 15:28Z)</td>
@@ -262,7 +306,7 @@
             <td>Executive summary shows the picks list first, then a separate unresolved section listing every unresolved fixture and a per-league limitation row</td>
             <td><a href="index.html#unresolved-section">live section ↗</a> · harness: <code>verification/check_dom_render.js</code> (run by the Verify and Pipeline-test workflows)</td>
             <td>Harness renders all seven pages from the committed payload and asserts row counts, pick membership, probability sums and source links; a synthetic payload with two unresolved fixtures must list both.</td>
-            <td><span class="chip green">43/43 checks pass</span></td>
+            <td><span class="chip green">60/60 checks pass</span></td>
           </tr>
         </tbody>
       </table>

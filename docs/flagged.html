@@ -6,6 +6,10 @@
 <title>Flagged for review — Hotspawn LoL Picks</title>
 <meta name="description" content="Irregularities and unverified items: excluded cancelled rows, upstream team-tag collisions, schedule bridges, thin history, flex-schedule time shifts and model–market disagreements, every row with source links.">
 <meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="LoL Picks">
+<meta name="application-name" content="LoL Picks">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-page="flagged">
@@ -34,6 +38,16 @@
   </ul>
 </nav>
 </header>
+<nav class="jumpbar" aria-label="Quick jumps">
+  <div class="wrap inner">
+    <a class="hot" href="picks.html">📋 All picks</a>
+    <a href="picks.html?filter=next24">⏰ Next 24 h</a>
+    <a href="index.html#nonfeatured">🧮 No book line</a>
+    <a href="leagues.html">🏆 By league</a>
+    <a href="unresolved.html">⚠️ Unresolved</a>
+    <a href="flagged.html">🚩 Flagged</a>
+  </div>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
@@ -106,74 +120,164 @@
     </div>
   </section>
 
-  <section id="external-line-found">
-    <h2>External line found on fixtures we price with our model (researched 2026-10-25)</h2>
-    <p class="small">
-      A fresh pass over established LoL betting sites, esportsbooks and esports betting lines found one odds
-      comparison board — <a href="https://oddsdigger.com/e-sports/league-of-legends/upcoming" target="_blank" rel="noopener">OddsDigger's upcoming-LoL board ↗</a>
-      — that publishes a two-way <b>series winner</b> price for two fixtures none of our four production feeds
-      (Pinnacle, Unibet/Kambi, Bovada, Polymarket) price. Every earlier probe reported zero such sources, so this
-      is a change worth reading. Both rows were opened and read by hand on 2026-10-25; the named books on the page
-      are bet365, LuckyMate, Copybet, 10Bet and Spreadex. Prices shown are the best available per side, so the
-      implied probabilities are normalised by their sum rather than de-vigged against a single overround.
-      <b>Neither number is used in any published probability</b> — one of the two rows contradicts independent
-      evidence, and the board was separately caught listing the same Worlds fixture twice with opposite
-      favourites (F20.3), so the source is not promoted. Full write-up:
-      <a href="../research/betting-sources.md">research/betting-sources.md §20</a>.
-    </p>
+  <section id="audit-2026-10-25">
+    <h2>Line-by-line audit — items needing manual review (re-checked 2026-10-25)</h2>
+    <p class="small">Every row below was re-opened on 2026-10-25 and is reported exactly as it came back, including the ones
+    that came back empty. The full write-up with the fetched values is
+    <a href="../research/line-by-line-audit-2026-10-25.md">research/line-by-line-audit-2026-10-25.md</a>.</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th scope="col">Ref</th><th scope="col">Fixture (as published)</th><th scope="col">OddsDigger line</th><th scope="col">Our published pick</th><th scope="col">Independent cross-check</th><th scope="col">Status</th></tr></thead>
+        <thead><tr><th scope="col">Ref</th><th scope="col">What is irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>F20.1</b></td>
-            <td><b>Mental Rush vs Vitality Rising Bees</b><br><span class="sub">LGC Rising 2026 Playoffs · 2026-10-27 17:00 UTC · BO5</span></td>
-            <td>Vitality Rising Bees 7/17 · Mental Rush 8/5 → <b>64.8% / 35.2%</b><br>
-              <a href="https://oddsdigger.com/e-sports/vitality-rising-bees-vs-mental-rush-23670799" target="_blank" rel="noopener">event page ↗</a></td>
-            <td>Vitality Rising Bees <b>64.5%</b> (MARKET_SINGLE from Polymarket)</td>
-            <td>Agrees within 0.3 pts. This row <i>confirms</i> the published pick.</td>
-            <td><span class="chip green">Corroborated</span> — no change needed</td>
+            <td><b>A1</b></td>
+            <td><b>Worlds 2026, 25 Oct round — start times disagreed across sources.</b> The 10:41Z snapshot carried feed times
+            that were one to three hours off Hotspawn's own match pages, Leaguepedia and Polymarket for four fixtures
+            (TES–G2, IG–HLE, DK–KOI, Gen.G–LYON), and the payload's order of the last two was swapped. <b>Resolved upstream,
+            not by hand:</b> the 14:16Z refresh re-read the same feed field and all four corrected themselves to 17:00 / 18:00 /
+            19:00 / 22:00 UTC. <span class="flag">START_TIME_MISMATCH</span> now appears on <b>0</b> rows.</td>
+            <td><a href="https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816" target="_blank" rel="noopener">Hotspawn match page (TES–G2) ↗</a> ·
+            <a href="https://polymarket.com/esports/league-of-legends/worlds" target="_blank" rel="noopener">Polymarket Worlds board ↗</a></td>
+            <td><span class="chip green">Resolved by upstream refresh</span> — no manual edit</td>
           </tr>
           <tr>
-            <td><b>F20.2</b></td>
-            <td><b>Ground Zero Gaming vs Frank Esports</b><br><span class="sub">LCP 2027 Promotion · 2026-11-11 09:00 UTC · BO5</span></td>
-            <td>Ground Zero 1/67 · Frank Esports 22/3 → <b>89.1% / 10.9%</b><br>
-              <a href="https://oddsdigger.com/e-sports/ground-zero-vs-frank-esports-23662613" target="_blank" rel="noopener">event page ↗</a></td>
-            <td>Frank Esports <b>61.7%</b> (MODEL_ELO, Elo 1519 v 1642)</td>
-            <td><b>Direction conflict.</b>
-              <a href="https://egamersworld.com/lol/match/eDTgthgYk/ground-zero-gaming-vs-frank-esports-wvOLKhrveF" target="_blank" rel="noopener">eGamersWorld ↗</a>
-              rates Frank Esports above Ground Zero (530 v 448, 0–4 head-to-head, 7 v 2 wins in the last 10) and shows
-              no live price (1.80 / 1.80 placeholder);
-              <a href="https://rft.gg/match/71696-ground-zero-gaming-vs-frank-esports-2026-11-11" target="_blank" rel="noopener">rft.gg ↗</a>
-              records 0–9 head-to-head for Ground Zero.
-              <a href="https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season" target="_blank" rel="noopener">Leaguepedia ↗</a>
-              has Frank Esports as PCS 2026 Summer runner-up.</td>
-            <td><span class="chip red">Needs review</span> — pick left on our model, line published but unused</td>
+            <td><b>A2</b></td>
+            <td><b>Team-tag collision: “Phong Vũ Buffalo”.</b> Hotspawn expands the DACH tag <i>PvB</i> to the defunct Vietnamese
+            team name. The row is priced as <i>PvB (Swiss Team)</i>, a real Prime League 2nd Division entrant, and all 6 affected
+            rows carry <span class="flag">HOTSPAWN_NAME_COLLISION</span>.</td>
+            <td><a href="https://www.hotspawn.com/matches/dkb-xperion-nxt-vs-phong-vu-buffalo-prm-2nd-division-26-27-fall-1079031" target="_blank" rel="noopener">Hotspawn fixture ↗</a> ·
+            <a href="https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627" target="_blank" rel="noopener">Prime League 2nd Division ↗</a></td>
+            <td><span class="chip amber">Upstream naming</span> — resolved, flagged per row</td>
           </tr>
           <tr>
-            <td><b>F20.3</b></td>
-            <td><b>Top Esports vs G2 Esports</b><br><span class="sub">Worlds 2026 Main Event · 2026-10-25 17:00 UTC — already priced by Pinnacle + Unibet</span></td>
-            <td>The board lists this fixture <b>twice, under the same title, with opposite favourites</b>:
-              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672375" target="_blank" rel="noopener">event 23672375 ↗</a> 12/11 v 19/25 → G2 <b>47.8%</b>, but
-              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672755" target="_blank" rel="noopener">event 23672755 ↗</a> 8/11 v 1/1 → G2 <b>57.9%</b>.
-              Both anchors read <i>"G2 Esports vs Topsports betting odds"</i>.</td>
-            <td>G2 Esports <b>54.8%</b> (MARKET_CONSENSUS: Pinnacle 3.06/1.7353 + Unibet 2.08/1.67)</td>
-            <td>Our consensus sits between the board's two contradictory entries and agrees with the second. Recorded by the CI probe
-              <code>data/diag/line_probe.json</code> (run 40202775347, checked 2026-10-25T14:37:27Z, HTTP 200, 212 KB, 14 two-way prices read, 9 matched to published fixtures, <b>1</b> of them previously unpriced &mdash; F20.2).</td>
-            <td><span class="chip amber">Board is internally inconsistent</span> — the reason the source is not trusted automatically</td>
+            <td><b>A3</b></td>
+            <td><b>Tunisian Super League — organizer page is a template shell.</b> The TUNESF LoL event page reads
+            “Status: Finished · Registered Teams: 0”, so it cannot confirm any of the 24 Tunisian fixtures. No organizer
+            link is published for those rows; Leaguepedia + Hotspawn remain the sources.</td>
+            <td><a href="https://esports.tunesf.com/events/tunisian-league-of-legends-super-league" target="_blank" rel="noopener">TUNESF LoL event ↗</a></td>
+            <td><span class="chip amber">Unverified organizer</span> — not used as evidence</td>
+          </tr>
+          <tr>
+            <td><b>A4</b></td>
+            <td><b>4 Nations 2026 Halloween Heist — no organizer fixture page verified.</b> UKEL is the organizer, but no public
+            fixture page could be confirmed today; the 5 rows rest on Leaguepedia and Hotspawn only.</td>
+            <td><a href="https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist" target="_blank" rel="noopener">Leaguepedia: 4 Nations Halloween Heist ↗</a></td>
+            <td><span class="chip amber">Unverified organizer</span></td>
+          </tr>
+          <tr>
+            <td><b>A5</b></td>
+            <td><b>Arabian League 2nd Division — no official fixture page verified.</b> The competition is a Riot/Vanguard
+            regional league; no public fixture page was confirmed, so the 8 rows rest on Leaguepedia and Hotspawn.</td>
+            <td><a href="https://lol.fandom.com/wiki/Arabian_League_2nd_Division" target="_blank" rel="noopener">Leaguepedia: Arabian League 2nd Division ↗</a></td>
+            <td><span class="chip amber">Unverified organizer</span></td>
+          </tr>
+          <tr>
+            <td><b>A6</b></td>
+            <td><b>LigaGG CELOL A / B — no official fixture page verified.</b> Leaguepedia carries the splits; the organizer's
+            own fixture page was not confirmed, so those 8 rows keep Leaguepedia + Hotspawn sources.</td>
+            <td><a href="https://lol.fandom.com/wiki/LigaGG" target="_blank" rel="noopener">Leaguepedia: LigaGG ↗</a></td>
+            <td><span class="chip amber">Unverified organizer</span></td>
+          </tr>
+          <tr>
+            <td><b>A7</b></td>
+            <td><b>Komplettligaen Autumn Playoffs — fixtures not found on the organizer page.</b> The Norwegian site lists its
+            regular-season “Kommende kamper” and results, but no matching playoff fixture text for the 3 playoff rows was
+            found today. Times are therefore taken from Hotspawn only.</td>
+            <td><a href="https://www.komplettligaen.no/lol/" target="_blank" rel="noopener">Komplettligaen LoL ↗</a></td>
+            <td><span class="chip amber">Not confirmed</span> — flagged</td>
+          </tr>
+          <tr>
+            <td><b>A8</b></td>
+            <td><b>RIVALS LEAGUE Season 2 — bracket not filled in.</b> The Swedish organizer lists 146 teams and the Season 2
+            structure, but its Division 1 double-elimination bracket shows “TBD” for the rounds in question, so fixture
+            identity rests on Leaguepedia + Hotspawn.</td>
+            <td><a href="https://www.rivalsleague.gg/lol" target="_blank" rel="noopener">RIVALS LEAGUE ↗</a></td>
+            <td><span class="chip amber">Bracket TBD</span> — flagged</td>
+          </tr>
+          <tr>
+            <td><b>A9</b></td>
+            <td><b>Betmonitor PRM 2nd Division — the price table is not reproducible.</b> An earlier search-engine excerpt
+            showed PRM 2D prices; two direct reads of the page on 2026-10-25 returned only the site's generic
+            football/tennis/basketball highlights with no LoL row. Because the numbers cannot be re-read on the page itself,
+            <b>none of them is used</b> in any probability.</td>
+            <td><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">Betmonitor PRM 2D ↗</a></td>
+            <td><span class="chip amber">Client-rendered</span> — not used</td>
+          </tr>
+          <tr>
+            <td><b>A10</b></td>
+            <td><b>bmbets — no Prime League market at all.</b> Its LoL league index today lists
+            <i>LoL World Championship (9)</i>, <i>LoL – LCP (1)</i> and <i>League of Legends – Game Changers Rising (1)</i>; no PRM
+            competition exists there. The same page also renders an over-quota reCAPTCHA widget, which is why an earlier
+            attempt recorded the site as blocked — the league index itself did load.</td>
+            <td><a href="https://www.bmbets.com/e-sports/world/lol---prime-league/" target="_blank" rel="noopener">bmbets LoL – Prime League ↗</a></td>
+            <td><span class="chip amber">Coverage gap</span> — no PRM price</td>
+          </tr>
+          <tr>
+            <td><b>A11</b></td>
+            <td><b>Cloudbet — advertises PRM 2nd Division, has no events.</b> The division page states
+            “No Prime League 2nd Division events available — Check back later.”; the Cloudbet sports API needs an
+            <code>X-API-Key</code> from an account, and no key is configured. Nothing from Cloudbet is used.</td>
+            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events" target="_blank" rel="noopener">Cloudbet PRM 2D events ↗</a> ·
+            <a href="https://cloudbet.github.io/wiki/en/docs/sports/api/" target="_blank" rel="noopener">Cloudbet Sports API docs ↗</a></td>
+            <td><span class="chip amber">No events / key-gated</span> — not used</td>
+          </tr>
+          <tr>
+            <td><b>A12</b></td>
+            <td><b>Polymarket prices Prime League <i>1st</i> Division only.</b> Its 1st-division board carries per-map BO3
+            markets, but no 2nd/3rd Division fixture exists there, so it cannot price the 96 PRM rows in this payload.</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends/prime-league-1st-division" target="_blank" rel="noopener">Polymarket PRM 1st Division ↗</a></td>
+            <td><span class="chip amber">Division not covered</span> — not applicable</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="warnbox" role="note">
-      <b>Why F20.2 did not change the pick.</b> Our cascade lets an external line override the model, but a source
-      earns that only after a sample row is verified by hand. Two rows were available to check: one agrees with our
-      Polymarket-sourced number to within 0.3 points, the other points the opposite way to our Elo <i>and</i> to two
-      independent community sources. One row in two is not enough to let an affiliate-rendered board flip a
-      published pick, so the disagreement is published here for review instead. The same board is now requested on
-      every 6-hour refresh and its measured status is printed on
-      <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a>; its fixture-matched evidence is in
-      <code>data/diag/line_probe.json</code>.
+  </section>
+
+  <section id="source-coverage-flags-2026-10-25">
+    <h2>Coverage &amp; source flags found on 2026-10-25</h2>
+    <p class="small">Found while re-verifying coverage against the live lobby and re-checking established books for the
+      competitions that have no featured betting line. Each row links the page that was actually opened; the write-up
+      is <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md §22</a>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Ref</th><th scope="col">What was irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>F20.1</b></td>
+            <td>A fixture listed on the lobby had <b>no pick and no exclusion entry</b> in the 2026-10-25T10:41Z payload:
+              <i>Team Lucidity Esports vs Fritt Fall</i> (RIVALS LEAGUE Season 2, 2026-10-31T17:30Z, id 1090065). The priced
+              set was built from the fixtures-API rows only, so a lobby-listed fixture the API lagged on was dropped silently.</td>
+            <td><a href="https://www.hotspawn.com/matches/team-lucidity-esports-vs-fritt-fall-rivals-league-season-2-1090065" target="_blank" rel="noopener">Hotspawn match page ↗</a></td>
+            <td><span class="chip green">Fixed</span> — priced as MODEL_ELO_STANDINGS 60.0% (Medium) in the 14:20Z payload; the priced set is now the union of lobby and API, and a coverage gate fails a refresh on an unexplained gap</td>
+          </tr>
+          <tr>
+            <td><b>F20.2</b></td>
+            <td>Cloudbet markets Prime League 2nd Division but serves an empty board: “No Prime League 2nd Division events available”.</td>
+            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">Cloudbet Prime League 2nd Division ↗</a></td>
+            <td><span class="chip amber">Upstream</span> — no price exists to use</td>
+          </tr>
+          <tr>
+            <td><b>F20.3</b></td>
+            <td>bmbets has a Prime League 2nd Division URL, but the live board lists only LoL World Championship, LoL – LCP and LoL Game Changers Rising.</td>
+            <td><a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets Prime League 2nd Division ↗</a></td>
+            <td><span class="chip amber">Upstream</span> — competition not priced</td>
+          </tr>
+          <tr>
+            <td><b>F20.4</b></td>
+            <td>OddsPortal's League of Legends index lists one competition only (“League of Legends World Championship (10)”), and its Prime League page says prices “will appear here as soon as bookmaker betting odds become available”.</td>
+            <td><a href="https://www.oddsportal.com/esports/league-of-legends/" target="_blank" rel="noopener">OddsPortal LoL index ↗</a></td>
+            <td><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
+          </tr>
+          <tr>
+            <td><b>F20.5</b></td>
+            <td>The three Komplettligaen Playoffs lobby cards link to a placeholder (<code>https://www.hotspawn.com/?fixtures=waiting-for-information-2208</code>) instead of a match page, so no per-match permalink exists upstream. The rows keep the fixture id and link the competition page.</td>
+            <td><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a></td>
+            <td><span class="chip amber">Upstream</span> — no match page to link</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -262,6 +366,77 @@
 
   <div class="loading"><span class="spinner"></span>Loading flagged data…</div>
 </main>
+
+  <section id="external-line-found">
+    <h2>External line found on fixtures we price with our model (researched 2026-10-25)</h2>
+    <p class="small">
+      A fresh pass over established LoL betting sites, esportsbooks and esports betting lines found one odds
+      comparison board — <a href="https://oddsdigger.com/e-sports/league-of-legends/upcoming" target="_blank" rel="noopener">OddsDigger's upcoming-LoL board ↗</a>
+      — that publishes a two-way <b>series winner</b> price for two fixtures none of our four production feeds
+      (Pinnacle, Unibet/Kambi, Bovada, Polymarket) price. Every earlier probe reported zero such sources, so this
+      is a change worth reading. Both rows were opened and read by hand on 2026-10-25; the named books on the page
+      are bet365, LuckyMate, Copybet, 10Bet and Spreadex. Prices shown are the best available per side, so the
+      implied probabilities are normalised by their sum rather than de-vigged against a single overround.
+      <b>Neither number is used in any published probability</b> — one of the two rows contradicts independent
+      evidence, and the board was separately caught listing the same Worlds fixture twice with opposite
+      favourites (F24.3), so the source is not promoted. Full write-up:
+      <a href="../research/betting-sources.md">research/betting-sources.md §24</a>.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Ref</th><th scope="col">Fixture (as published)</th><th scope="col">OddsDigger line</th><th scope="col">Our published pick</th><th scope="col">Independent cross-check</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>F24.1</b></td>
+            <td><b>Mental Rush vs Vitality Rising Bees</b><br><span class="sub">LGC Rising 2026 Playoffs · 2026-10-27 17:00 UTC · BO5</span></td>
+            <td>Vitality Rising Bees 7/17 · Mental Rush 8/5 → <b>64.8% / 35.2%</b><br>
+              <a href="https://oddsdigger.com/e-sports/vitality-rising-bees-vs-mental-rush-23670799" target="_blank" rel="noopener">event page ↗</a></td>
+            <td>Vitality Rising Bees <b>64.5%</b> (MARKET_SINGLE from Polymarket)</td>
+            <td>Agrees within 0.3 pts. This row <i>confirms</i> the published pick.</td>
+            <td><span class="chip green">Corroborated</span> — no change needed</td>
+          </tr>
+          <tr>
+            <td><b>F24.2</b></td>
+            <td><b>Ground Zero Gaming vs Frank Esports</b><br><span class="sub">LCP 2027 Promotion · 2026-11-11 09:00 UTC · BO5</span></td>
+            <td>Ground Zero 1/67 · Frank Esports 22/3 → <b>89.1% / 10.9%</b><br>
+              <a href="https://oddsdigger.com/e-sports/ground-zero-vs-frank-esports-23662613" target="_blank" rel="noopener">event page ↗</a></td>
+            <td>Frank Esports <b>61.7%</b> (MODEL_ELO, Elo 1519 v 1642)</td>
+            <td><b>Direction conflict.</b>
+              <a href="https://egamersworld.com/lol/match/eDTgthgYk/ground-zero-gaming-vs-frank-esports-wvOLKhrveF" target="_blank" rel="noopener">eGamersWorld ↗</a>
+              rates Frank Esports above Ground Zero (530 v 448, 0–4 head-to-head, 7 v 2 wins in the last 10) and shows
+              no live price (1.80 / 1.80 placeholder);
+              <a href="https://rft.gg/match/71696-ground-zero-gaming-vs-frank-esports-2026-11-11" target="_blank" rel="noopener">rft.gg ↗</a>
+              records 0–9 head-to-head for Ground Zero.
+              <a href="https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season" target="_blank" rel="noopener">Leaguepedia ↗</a>
+              has Frank Esports as PCS 2026 Summer runner-up.</td>
+            <td><span class="chip red">Needs review</span> — pick left on our model, line published but unused</td>
+          </tr>
+          <tr>
+            <td><b>F24.3</b></td>
+            <td><b>Top Esports vs G2 Esports</b><br><span class="sub">Worlds 2026 Main Event · 2026-10-25 17:00 UTC — already priced by Pinnacle + Unibet</span></td>
+            <td>The board lists this fixture <b>twice, under the same title, with opposite favourites</b>:
+              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672375" target="_blank" rel="noopener">event 23672375 ↗</a> 12/11 v 19/25 → G2 <b>47.8%</b>, but
+              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672755" target="_blank" rel="noopener">event 23672755 ↗</a> 8/11 v 1/1 → G2 <b>57.9%</b>.
+              Both anchors read <i>"G2 Esports vs Topsports betting odds"</i>.</td>
+            <td>G2 Esports <b>54.8%</b> (MARKET_CONSENSUS: Pinnacle 3.06/1.7353 + Unibet 2.08/1.67)</td>
+            <td>Our consensus sits between the board's two contradictory entries and agrees with the second. Recorded by the CI probe
+              <code>data/diag/line_probe.json</code> (run 40202775347, checked 2026-10-25T14:37:27Z, HTTP 200, 212 KB, 14 two-way prices read, 9 matched to published fixtures, <b>1</b> of them previously unpriced &mdash; F24.2).</td>
+            <td><span class="chip amber">Board is internally inconsistent</span> — the reason the source is not trusted automatically</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warnbox" role="note">
+      <b>Why F24.2 did not change the pick.</b> Our cascade lets an external line override the model, but a source
+      earns that only after a sample row is verified by hand. Two rows were available to check: one agrees with our
+      Polymarket-sourced number to within 0.3 points, the other points the opposite way to our Elo <i>and</i> to two
+      independent community sources. One row in two is not enough to let an affiliate-rendered board flip a
+      published pick, so the disagreement is published here for review instead. The same board is now requested on
+      every 6-hour refresh and its measured status is printed on
+      <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a>; its fixture-matched evidence is in
+      <code>data/diag/line_probe.json</code>.
+    </div>
+  </section>
 
 <footer class="site-footer">
   <div class="wrap footer-grid">

@@ -22,6 +22,9 @@ two-way prices were extracted, and how many of the currently unpriced Hotspawn
 fixtures those prices would cover.
 
 Output: data/diag/line_probe.json (committed for manual review).
+Note (2026-10-25): run this from CI, not a restricted sandbox — a sandbox with
+no route to the candidate hosts reports HTTP 0 for every candidate, which is
+inconclusive and must be discarded, never recorded as a source verdict.
 A source is promoted into scripts/fetch_markets.py only if this probe shows
 structured per-match prices that match real fixtures, and the sample rows are
 re-checked by hand. The exit code is always 0: a probe must never break a run.
@@ -691,7 +694,7 @@ HAND_VERIFIED_VERDICTS = {
         "Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 "
         "head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an "
         "affiliate-rendered board override the model, so the disagreement is published on the "
-        "Flagged page for review instead. research/betting-sources.md §20."
+        "Flagged page for review instead. research/betting-sources.md §24."
     ),
 }
 
