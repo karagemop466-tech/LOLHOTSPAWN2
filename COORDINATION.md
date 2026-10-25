@@ -1523,3 +1523,17 @@ stale schedule snapshot or blocked source checks as freshly verified.
 - **PR #60** — https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/60 — merged 2026-10-25T14:12:23Z by merge commit `65de12bc5c75c7c721a965db1dc0e53941c8d0c5`.
 - Post-merge Pages build `1313374096` was still reported as `building` at the time of this record (source commit `65de12b`). The public dashboard was fetched successfully during the verification window and rendered the current snapshot: 156/156 picks, 9 bookmaker-line matches, 0 unresolved placeholders, 10 low-confidence, next refresh shown as 16:41Z. This confirms the existing published site content; it is not evidence that the new audit-only commit has finished deployment.
 - The site implementation and scheduled publisher were already present on `main`; PR #60 only adds this verification/coordination record. The GitHub Actions run list endpoint returned HTTP 403 rate-limit response, so no current action-run conclusion is asserted.
+
+---
+
+## Session `arena/07b651a3-lolhotspawn2` — 2026-10-25 (claim: data-consistency fixes, mobile stacked-table labels & live verification)
+
+> Branch note: Arena tracks this session on fixed branch `arena/07b651a3-lolhotspawn2`, which stands in for `session-<id>/<task>`. No active (<60 min) open claims exist on `main` (`arena/7dbe0fbd` completed PRs #60/#63; prior claims date to 2026-10-24).
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| A1 Line-by-line repo/payload verification + fix `unresolved.reasons` mismatch for 5–7 game `MODEL_ELO_THIN` rows (`scripts/update_picks.py`) + document 2026-10-25 line-by-line audit & fresh low-tier source findings | in progress | arena/07b651a3 | `scripts/update_picks.py`, `research/line-by-line-audit-2026-10-25.md`, `research/betting-sources.md` |
+| A2 Mobile UX & executive-summary audit fixes: remove duplicate sourceless per-league table inside `#unresolved-summary` on `index.html`, add missing mobile `data-label` attributes on all `<td>` cells (`match.html`, `flagged.html`, `methodology.html`, `app.js`), surface blended Elo on `match.html`, unify `viewport-fit=cover` + `color-scheme` + icon across all 7 pages, replace broken relative `../research/betting-sources.md` links, and replace stale hardcoded snapshot counts (`73 of 169`, `160 fixtures`, `31,752`) with live payload bindings | in progress | arena/07b651a3 | `docs/*.html`, `docs/assets/app.js`, `docs/assets/style.css` |
+| A3 Non-vacuous regression tests for mobile `data-label` coverage, no duplicate sourceless tables, no stale hardcoded counts / broken `.md` relative links, and `MODEL_ELO_THIN` reason tally consistency | in progress | arena/07b651a3 | `verification/check_dom_contract.py`, `verification/test_dom_contract.py`, `verification/check_dom_render.js`, `audit/test_model.py` |
+| A4 Live branch pipeline refresh, reconcile any concurrent `origin/main` merges without discarding other sessions' work, re-verify all suites, PR → `main`, merge, confirm GitHub Pages deployment, record results | in progress | arena/07b651a3 | `COORDINATION.md`, `docs/data/picks.json` (CI-generated) |
+
