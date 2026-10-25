@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-25T14:57:20.229951Z",
+ "generated_at": "2026-10-25T15:00:07.795639Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
@@ -68,7 +68,7 @@
   }
  },
  "payload": {
-  "generated_at": "2026-10-25T14:56:34.414516Z",
+  "generated_at": "2026-10-25T15:00:07.160291Z",
   "published_matches": 156
  },
  "required_future_fixtures": 165,
