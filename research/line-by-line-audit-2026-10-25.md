@@ -14,18 +14,26 @@ the reason. Hotspawn is used as the fixture source only. No Hotspawn crowd perce
 
 | Gate | Result |
 |---|---|
-| `python3 scripts/verify_site.py` | **PASS · 45 pass · 0 fail · 0 warn · 1 skip** (D18 skipped: no Leaguepedia API snapshot offline; CI supplies it) |
-| `python3 verification/test_verifier.py` | **50/50** (incl. 5 new negative tests for check S16) |
+| `python3 scripts/verify_site.py` | **PASS · 46 pass · 0 fail · 0 warn · 1 skip** (D18 skipped: no Leaguepedia API snapshot offline; CI supplies it). New this session: **S17**, which fails if any row of the manual-review tables on `flagged.html` loses its external source link |
+| `python3 verification/test_verifier.py` | **55/55** (incl. 5 negative tests for S16 and 5 for the new S17: all-linked, one bare row, missing section, shrunken table, missing page) |
 | `python3 verification/check_dom_contract.py` | **PASS** (7 pages) |
 | `python3 verification/test_dom_contract.py` | **7/7** |
 | `python3 verification/test_entity_and_books.py` | **17/17** |
 | `python3 verification/test_standings_model.py` | **ALL PASS** |
 | `python3 audit/test_model.py` | **23 passed · 0 failed** |
 | `node verification/render_check.cjs` | **PASS** (every page executes, theme toggle works) |
-| `node verification/check_dom_render.js` | **59/59** (was 50/50; +9 new assertions) |
+| `node verification/check_dom_render.js` | **60/60** (the start-time assertions now build a synthetic flagged payload, so they can never go vacuous when the live snapshot has no flagged fixture, and a negative control asserts an unflagged fixture is *not* reported as disagreeing) |
 | `node --check docs/assets/app.js` | **OK** |
 
 ---
+
+### 1.1 What the review tables now guarantee
+
+`docs/flagged.html` gained a dated section, **`#audit-2026-10-25`**, with one row per irregular or unverifiable item
+(A1–A12) and a source link on every row — including the items that came back *empty*. Checker **S17** walks both
+manual-review tables (`#audit-2026-10-25` and `#source-coverage-flags`), counts the rows, and fails if any row has no
+`https://` link or if either table shrinks below its recorded minimum. The intent is that a future edit cannot quietly
+drop a source and leave an unsourced claim behind.
 
 ## 2. Fixture identity and start times — checked row by row
 
@@ -120,9 +128,14 @@ Full write-up with links: `research/betting-sources.md` §20. Headline evidence 
 |---|---|---|
 | [Cloudbet — Prime League 2nd Division](https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events) | Its own copy claims it prices the split; the events tab said **“No Prime League 2nd Division events available — Check back later.”** | no prices |
 | [Cloudbet sports API](https://cloudbet.github.io/wiki/en/docs/sports/api/) | Requires an `X-API-Key` issued via an account; no key is configured and the brief forbids manual sign-up | blocked |
-| [bmbets — LoL Prime League](https://www.bmbets.com/e-sports/world/lol---prime-league/) | Its LoL league index listed only **World Championship (9)**, **LCP (1)** and **Game Changers Rising (1)**; no PRM fixture | no prices |
-| [Betmonitor — PRM 2nd Division comparison](https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464) | Returned the site's generic football/tennis/basketball highlights; no LoL match row, no PRM price | client-rendered, unusable |
+| [bmbets — LoL Prime League](https://www.bmbets.com/e-sports/world/lol---prime-league/) | The page renders a cross-esport league index that contains exactly three LoL competitions: **LoL World Championship (9)**, **LoL – LCP (1)**, **League of Legends – Game Changers Rising (1)**. There is no Prime League competition in the index, so no PRM price can exist there. The same page also prints an over-quota **reCAPTCHA** widget (the reason an earlier attempt logged this host as blocked — the index itself did load) | no prices |
+| [Betmonitor — PRM 2nd Division comparison](https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464) | Read twice on 2026-10-25 (≈10:07 and ≈14:2x local-page time). Both reads returned the site's generic multi-sport *Highlights* index (La Liga, Bundesliga, ATP, NBA, darts, futsal, handball …) under the correct page title **“Prime League 2nd Division — Check the best betting odds”**; no LoL row and no PRM price appeared in either read. **Reconciliation:** an earlier search-engine excerpt surfaced a PRM 2D price table (bet365 1.90, ggbet 2.12, …), but that table could not be reproduced on the page itself, so it is treated as unverified and is not used anywhere | client-rendered, unusable |
 | [Polymarket — Prime League **1st** Division](https://polymarket.com/esports/league-of-legends/prime-league-1st-division) | Live markets exist, but that division has no fixture in this payload | not applicable today |
+
+Two cross-checks therefore **failed to reproduce** and are recorded here as failures rather than as evidence: the
+Betmonitor PRM 2D price table (visible only in an earlier search-engine excerpt) and any bmbets PRM market (absent from
+the league index). Neither value appears in `picks.json`, and both are listed on
+[Flagged for review](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html#audit-2026-10-25) as A9 / A10.
 
 So the 147 model rows are not an oversight: the leagues involved (PRM 2nd/3rd Division, Tunisian Super League,
 RIVALS LEAGUE, 4 Nations, Arabian League 2nd Division, Komplettligaen Playoffs, LCP Promotion, LigaGG CELOL A/B,

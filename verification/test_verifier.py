@@ -272,6 +272,54 @@ def main() -> int:
     c = install_checks({**files_ok, "manifest.webmanifest": no_mask}, good_page_s16)
     results.append(assert_status(c, "S16", vs.FAIL, "no maskable icon fails S16"))
 
+    # ---- S17: every manual-review row carries a source link --------------------
+    def review_checks(sections_html):
+        with tempfile.TemporaryDirectory() as td:
+            with open(os.path.join(td, "flagged.html"), "w") as fh:
+                fh.write(sections_html)
+            rep = vs.Report()
+            vs.verify_review_rows(rep, td)
+            return {c["id"]: c for c in rep.checks}
+
+    def review_sections(audit_rows, coverage_rows):
+        def body(rows):
+            return "".join(f"<tr>{r}</tr>" for r in rows)
+        return (
+            '<section id="source-coverage-flags"><table><tbody>'
+            + body(coverage_rows) + "</tbody></table></section>"
+            '<section id="audit-2026-10-25"><table><tbody>'
+            + body(audit_rows) + "</tbody></table></section>"
+        )
+
+    row_linked = '<td>A</td><td>x</td><td><a href="https://example.org/a">src ↗</a></td><td>ok</td>'
+    row_bare = '<td>B</td><td>x</td><td>no link at all</td><td>ok</td>'
+    cov = [row_linked] * 3
+    audit = [row_linked] * 8
+
+    c = review_checks(review_sections(audit, cov))
+    results.append(assert_status(c, "S17", vs.PASS, "all rows linked pass S17"))
+
+    # one audit row silently loses its link
+    c = review_checks(review_sections(audit[:7] + [row_bare], cov))
+    results.append(assert_status(c, "S17", vs.FAIL, "a row without a source link fails S17"))
+
+    # a whole section disappears
+    only_cov = ('<section id="source-coverage-flags"><table><tbody>'
+                + "".join(f"<tr>{r}</tr>" for r in cov) + "</tbody></table></section>")
+    c = review_checks(only_cov)
+    results.append(assert_status(c, "S17", vs.FAIL, "missing audit section fails S17"))
+
+    # too few rows to be a real review (guards against an empty table passing)
+    c = review_checks(review_sections(audit[:2], cov))
+    results.append(assert_status(c, "S17", vs.FAIL, "a shrunken audit table fails S17"))
+
+    # file missing entirely
+    with tempfile.TemporaryDirectory() as td:
+        rep = vs.Report()
+        vs.verify_review_rows(rep, td)
+        results.append(assert_status({c2["id"]: c2 for c2 in rep.checks}, "S17", vs.FAIL,
+                                     "missing flagged.html fails S17"))
+
     # helper parsing
     helper_ok = (vs.html_class_names('<div class="a b">') == {"a", "b"}
                  and vs.css_class_names(".a{x} /* .z{} */ .b>.c{x}") == {"a", "b", "c"}
