@@ -1523,6 +1523,23 @@ failures observed on this branch today:
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
 
+---
+
+## Session `arena/964cb944-lolhotspawn2` — 2026-10-25 (claim)
+
+Baseline at claim (branch == `main` @ `2173cc9`, payload generated 2026-10-25T10:41:50Z): **156 fixtures · 156 resolved (100%) · 0 UNRESOLVED** · 8 `MARKET_CONSENSUS` + 1 `MARKET_SINGLE` · 92 `MODEL_ELO` · 53 `MODEL_ELO_STANDINGS` · 2 `MODEL_ELO_THIN` · 10 Low-confidence · 9 cancelled excluded. `verify_site.py` **44 PASS / 0 FAIL / 0 WARN / 1 SKIP**; verifier 45/45, standings ALL PASS, entity/books 17/17, audit 23/23, DOM contract PASS. Pages `built` for `2173cc9`. Open PRs #20/#26/#48/#50/#55/#59 belong to other sessions (stale, 2026-10-23/24) — not touched. Remaining gaps this session targets: **62 rows priced within ±3 pts of 50/50** (picks exist but are near coin-flips — must be labelled as toss-ups on mobile, not presented as edges); **5 of 10 Low rows involve VfB eSports** (`CROSS_LEAGUE_MODEL` inside its own tournament — investigate before touching); fresh 2026-10-25 low-tier source research.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Toss-up transparency: label near-50/50 model rows as coin-flips in exec summary + picks + unresolved views so a phone user can see which picks are weak; count them in the exec-summary unresolved/limitations section | claimed | arena/964cb944 | `docs/index.html`, `docs/picks.html`, `docs/unresolved.html`, `docs/assets/app.js`, `docs/assets/style.css`, `scripts/verify_site.py` (new check only), `verification/check_dom_render.js` |
+| T28 Investigate VfB eSports cross-league cluster + near-50 concentration; fix only if a verified defect (wrong anchor/alias), otherwise document with Leaguepedia links | claimed | arena/964cb944 | `scripts/model.py`, `data/aliases.json` (only if defect proven), `research/betting-sources.md` |
+| T29 Fresh source research 2026-10-25 for low-tier fixtures (established books → esportsbooks → lines/aggregators → community ratings e.g. gol.gg); add any genuinely new candidate to the CI probe, never copy a price without a structured feed + human-verifiable sample | claimed | arena/964cb944 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/probe_lines.py` |
+| T30 Integration: live pipeline on branch, line-by-line re-verify, PR → merge, Pages confirmation, record here | claimed | arena/964cb944 | `COORDINATION.md`, generated payload |
+
+Any session needing a file in this scope must log a request here instead of editing it.
+
+---
+
 ## Session arena/f931cee9 — 2026-10-25
 Branch fixed by Arena: `arena/f931cee9-lolhotspawn2`. Previous claims are older than 60 minutes. Claim: freshness/verification audit and targeted mobile data-quality fixes; scope `docs/assets/app.js`, `docs/assets/style.css`, `verification/test_freshness.cjs`, `verification/session-2026-10-25.md`, `COORDINATION.md`. No other open PR scopes will be modified intentionally. Status: in progress. Research will use existing official-source adapters through GitHub Actions because this sandbox only permits GitHub/package-registry outbound hosts. Community estimates are not official verified facts.
 
