@@ -101,6 +101,40 @@ Safety rules built into the script, because a wrong number is worse than no numb
 5. Report headers and the CI job summary carry the line: **"a price found here is a line, not a
    probability — nothing in this table is used in a probability until the market matcher adopts it"**.
 
+## B2. First live run of the automated sweep (CI, 2026-10-25T17:02:20Z)
+
+Run [`40214473210`](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473210) — workflow `Row audit & low-tier line sweep`, branch
+`arena/e5e9f360-lolhotspawn2`, against payload `2026-10-25T15:32:40Z`. Machine record:
+`data/diag/lowtier_sweep.json`; human record: [`research/low-tier-sweep-latest.md`](low-tier-sweep-latest.md)
+(both committed back to the branch by the workflow itself).
+
+**19 candidates · 7 answered HTTP 200 · 0 exposed a readable two-way price · 0 priced one of the 147
+unpriced fixtures · 102 team names scanned.**
+
+| Status from CI | Candidates |
+|---|---|
+| 200, no readable price | Oddsdigger LoL board + upcoming list, esportsinsider LoL odds index, Betmonitor esports hub, bmbets PRM 2nd Division page, rft.gg `/matches` + PRM 2nd Division event path |
+| 403 blocked | Oddschecker esports, SportsBetting.ag coupon API, SofaScore scheduled-events |
+| 404 / 410 gone | bmbets PRM 3rd Division, BetOnline coupon API, Everygame esports, gol.gg league list, Oddsdigger PRM 2nd Division (410) |
+| 203 geo-interstitial | 1xBet LineFeed |
+| 429 rate-limited | Kambi operator slugs `bs` (SE) and `nb` (NO) — the control question "does another Kambi brand expose lower tiers?" stayed unanswered this run |
+| network error | EsportBet odds board |
+
+Where the two network paths disagree, both readings are recorded and neither is treated as the truth:
+
+| Source | This session's path (~15:00Z) | CI's path (17:02Z) |
+|---|---|---|
+| Oddschecker `/esports/` | 404 | 403 |
+| Kambi slugs `bs` / `nb` | 200, body "No access" | 429 |
+| rft.gg `/event/prime-league-2nd-division-26-27-fall` | 404 | 200, and the page mentions `primeleague2nddivision` but carries no price |
+
+Two things the CI run adds that a hand sweep could not: the **team-name and league-name hit counts**
+per source (e.g. gol.gg's league list mentions 15 of our low-tier team names while returning 404 for
+the section itself, and rft.gg's match list mentions `arabianleague`, `lcp2027promotion` and
+`primeleague`) — evidence that these sites *know* the competitions but publish no line for them — and
+a repeating measurement, so the "nothing covers these leagues" claim is re-tested every 6 hours
+instead of remembered from one afternoon.
+
 ## C. Conclusion, stated without softening it
 
 For the 10 competitions above there is **no reachable bookmaker line**, so no row among the 147 can

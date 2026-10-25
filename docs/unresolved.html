@@ -208,11 +208,16 @@
           </tr>
           <tr>
             <td data-label="What was re-read">A bookmaker line for the 147 fixtures no book covers</td>
-            <td data-label="Result"><b>None found.</b> 20 endpoints measured by hand today plus a 19-candidate automated sweep; Kambi,
-              Oddsdigger, BMBets, Betmonitor, Oddschecker, EsportBet, rft.gg, Polymarket search, SofaScore, 1xBet and
-              Fon.bet all came back empty, blocked, geo-stubbed or client-rendered. This is why those rows say
-              <span class="flag">NO_EXTERNAL_MARKET</span> and are labelled "Own estimate · community records".</td>
-            <td data-label="Source"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/research" target="_blank" rel="noopener">research/low-tier-sweep-2026-10-25.md ↗</a></td>
+            <td data-label="Result"><b>None found.</b> 20 endpoints measured by hand today, plus a 19-candidate
+              automated sweep that ran live in CI at 17:02:20Z: <b>7 of 19 answered HTTP 200, 0 exposed a readable
+              two-way price, and 0 priced any of the 147 fixtures</b> — the rest were 403/404/410/203/429 or a network
+              error (Kambi, Oddsdigger, bmbets, Betmonitor, Oddschecker, EsportBet, rft.gg, Polymarket search,
+              SofaScore, 1xBet, Everygame, gol.gg, the Bodog-group coupon APIs). Some of them clearly know the
+              competitions — rft.gg's match list mentions the Prime League, Arabian League and LCP promotion — and
+              still publish no line. This is why those rows say <span class="flag">NO_EXTERNAL_MARKET</span> and are
+              labelled "Own estimate · community records".</td>
+            <td data-label="Source"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473210" target="_blank" rel="noopener">CI sweep run 40214473210 ↗</a> ·
+                <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/research" target="_blank" rel="noopener">research/low-tier-sweep-2026-10-25.md ↗</a></td>
           </tr>
         </tbody>
       </table>
