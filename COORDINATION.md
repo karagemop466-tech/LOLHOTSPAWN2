@@ -1702,7 +1702,7 @@ this session takes over the stale integration/re-verification scope. Baseline is
 | V1 Audit current coverage, provenance, stale data and unresolved/tied recommendations; add targeted regression gates | done | arena/81e6a4e3 | `scripts/**`, `verification/**`, `audit/**` |
 | V2 Research missing-line alternatives using established books, esportsbooks and community sources; distinguish unreachable from verified | done | arena/81e6a4e3 | `research/**`, `data/diag/**` |
 | V3 Mobile picks/executive-summary clarity and honest evidence labels; integrate tested fixes | done | arena/81e6a4e3 | `docs/**`, `README.md` |
-| V4 Live workflow, PR/merge, Pages confirmation and coordination evidence | in progress | arena/81e6a4e3 | `.github/workflows/**`, `COORDINATION.md` |
+| V4 Live workflow, PR/merge, Pages confirmation and coordination evidence | done | arena/81e6a4e3 | `.github/workflows/**`, `COORDINATION.md` |
 
 Initial blocker: GitHub Actions REST request returned HTTP 403 API rate limit exceeded
 at 2026-10-25T14:09Z; git fetch succeeds. External hosts are unavailable directly from
@@ -1961,3 +1961,20 @@ that run, main advanced only via the #76 coordination/report record: both board
 appends are preserved and this run's verifier report retained. No tested code
 changed in this last merge. PR #67 is ready for immediate autonomous merge;
 Pages publication will be confirmed separately below.
+
+### Session arena/81e6a4e3 — publication complete (2026-10-25)
+
+| Item | Verified result / source |
+|---|---|
+| PR | [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67) **MERGED** 2026-10-25T14:43:30Z; merge commit `bc38b0b8c9430058fa60bd6dfd2314328dc24c53` |
+| Final combined branch verification | [40203290312](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203290312) **SUCCESS**; 50 PASS / 0 FAIL / 1 WARN (blocked sources), DOM 78/78, real Chromium 28/28, 50/50 cited wiki pages exist, union and independent coverage gates pass |
+| Pages deployment of merged site | [40203578912](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203578912) **SUCCESS**, Jekyll build and deploy both successful for `bc38b0b` |
+| Post-merge verification of live site | [40203579452](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203579452) **SUCCESS**, including external source/live Pages checks, both DOM suites, real phone/tablet browser gate, source-page audit and coverage tests |
+| Production automatic publisher | [40203579379](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203579379) **SUCCESS**; snapshot 2026-10-25T14:45:47Z: 156 fixtures, 9 market, 147 model, 54 standings/blend, 0 unresolved, 11 Low, 9 cancelled excluded; next nominal refresh 18:00 UTC |
+| Pages deployment of refreshed payload | [40203768505](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203768505) **SUCCESS**, source commit `53a6dbf7c21303742f1b9fb8d2ef9c61f0cbb709` |
+| Site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ · [all picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/picks.html) · [Flagged](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html#evidence-limits) |
+| Remaining limitations | **needs review**, not blockers: 147 model rows lack retrieved bookmaker lines; blocked books' coverage is unknown; community results are not independently organizer-verified; exact ties/unresolved rows have no preferred team. Flagged page/source links disclose these limits. No bookmaker line was fabricated. |
+| Tasks V1–V4 | **done**; all implementation, integration and publication checks complete |
+
+The follow-up commit containing this record changes documentation only. It does
+not regenerate, manually patch, or replace the already published source data.
