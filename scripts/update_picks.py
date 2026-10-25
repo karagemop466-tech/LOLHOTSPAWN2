@@ -243,7 +243,12 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         else:
             reasons["Other model uncertainty"] += 1
 
-    next_24h = [m for m in matches if m["start_utc"] <= utc_iso(now + timedelta(hours=24))]
+    # Same window the site uses client-side (5-minute grace for a match that
+    # started while the page was open), so the payload count, the stored ID
+    # list and the rendered cards can never disagree.
+    next_24h = [m for m in matches
+                if utc_iso(now - timedelta(minutes=5)) <= m["start_utc"]
+                <= utc_iso(now + timedelta(hours=24))]
     tournaments = Counter(m["tournament"] for m in matches)
 
     # Per-league resolution breakdown: which signal prices each league, so the
