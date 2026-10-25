@@ -208,9 +208,29 @@ def main() -> int:
     apart, _ = parse_oddsdigger(
         '<h2>Tuesday 27 October 2026</h2>'
         + ev_link("far-apart-vs-row", "23600006", "Far Apart", "Row")
-        + '<span class="odd">4/6</span>' + '<i>padding</i>' * 120
+        + '<span class="odd">4/6</span>' + '<i>padding</i>' * 400
         + '<span class="odd">6/5</span>')
     check(apart == [], "two prices separated by another row's markup are not paired")
+
+    # Regression for the second bug, found by the next CI run (14:28:26Z): a 1500-char
+    # budget between the team links and the prices was far too tight for the real markup
+    # (badges, book logos, SureBet widget), so the live page yielded ZERO records. The
+    # bound is now structural (the row ends at its own trailing "All Odds" anchor), so
+    # the amount of markup in between does not matter.
+    heavy = ('<div class="badges">' + '<img src="/static/x.svg" alt="">' * 40 + '</div>'
+             + '<div class="books">' + '<span class="provider">bet365</span>' * 60 + '</div>')
+    href2 = "https://oddsdigger.com/e-sports/heavy-markup-vs-row-23600007"
+    heavy_row, _ = parse_oddsdigger(
+        '<h2>Tuesday 27 October 2026</h2><div><span>17:00</span>'
+        f'<a href="{href2}" title="Heavy Markup vs Row betting odds">Heavy Markup</a>'
+        + heavy
+        + f'<a href="{href2}" title="Heavy Markup vs Row betting odds">Row</a>'
+        + heavy
+        + '<span class="odd">5/6</span><span class="odd">6/5</span>'
+        f'<a href="{href2}">All Odds</a></div>')
+    check(len(heavy_row) == 1 and heavy_row[0]["decimal_a"] == 1.8333,
+          f"~{len(heavy) * 2} chars of markup between the team links and the prices still parse "
+          f"(got {len(heavy_row)} record(s))")
 
     print(f"\n{PASS} passed / {FAIL} failed")
     return 1 if FAIL else 0

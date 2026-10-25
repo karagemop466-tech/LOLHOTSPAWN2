@@ -585,23 +585,29 @@ def parse_oddsdigger(text: str):
 
     # 3. Slice the HTML between one event's link run and the next event's first link.
     for i, ev in enumerate(events):
-        same = [h["pos"] for h in hits if h["eid"] == ev["eid"]]
-        lo = min(same)
-        nxt = [h["pos"] for h in hits if h["eid"] != ev["eid"] and h["pos"] > lo]
-        hi = min(nxt) if nxt else len(text)
+        same = sorted(h["pos"] for h in hits if h["eid"] == ev["eid"])
+        lo = same[0]
+        # Structural row bound: the board renders each row as
+        #   <a>team A</a> <a>team B</a> <price A> <price B> <a>All Odds</a>
+        # and every one of those anchors carries the SAME event href, so the last
+        # anchor of this event is the end of its own row. Bounding on characters
+        # instead was wrong in both directions: an unbounded slice ran into the page
+        # footer (losing the last row, CI run 40201818801) and a 1500-char budget was
+        # far too tight for the real markup between the team links and the prices
+        # (0 records extracted, CI run at 14:28:26Z).
+        if len(same) > 1:
+            hi = same[-1]
+        else:
+            nxt = [h["pos"] for h in hits if h["eid"] != ev["eid"] and h["pos"] > lo]
+            hi = min(nxt) if nxt else min(len(text), lo + 6000)
         chunk = text[lo:hi]
         fr = list(FRAC_RE.finditer(chunk))
         detail["odds_tokens"] += len(fr)
         if len(fr) < 2:
             continue
         first, second = fr[0], fr[1]
-        # The prices must belong to THIS row: the last row on the board has no next
-        # event to bound its chunk, so an unbounded slice runs into the page footer
-        # (which contains "Handicap" navigation and unrelated prices) and both
-        # discards a real row and can pair prices from two different rows.
-        if first.start() > 1500:
-            continue
-        if second.start() - first.end() > 300:
+        # Sanity only — the structural bound above does the real work.
+        if second.start() - first.end() > 2000:
             continue
         # A map/handicap market is not a series winner price — never use one. Checked
         # only on the text between the team links and the first price, not the footer.
