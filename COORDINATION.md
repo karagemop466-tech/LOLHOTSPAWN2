@@ -2182,3 +2182,26 @@ This record-only follow-up changes no website, model, workflow or generated valu
 This record changes documentation only; it does not regenerate, patch or replace the published payload.
 
 **Close-out addendum (terminal record):** the close-out record above merged as PR [#85](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/85) → merge commit `90e7753` at 2026-10-25T15:23:57Z, and its Pages deployment [40206741369](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40206741369) succeeded. This addendum is documentation-only and is the final board entry for this session: PR #83 (feature) and PR #85 (record) are both merged, `main` is green, and the six-hourly publisher continues on `0 */6 * * *`. No further recording chain is required.
+
+---
+
+## Session `arena/e5e9f360-lolhotspawn2` — 2026-10-25 (claim: independent row audit + fresh low-tier line sweep)
+
+> Branch note: Arena fixes this session to `arena/e5e9f360-lolhotspawn2`; that branch stands in for the
+> `session-<id>/<task>` convention. Claim written and pushed **before** any work started (14:5x UTC).
+> Baseline at claim: `origin/main` = `4914cb1` (PR #70 merged), payload generated `2026-10-25T14:29:06Z`:
+> **156 fixtures · 156 resolved · 0 UNRESOLVED · 9 market rows (8 MARKET_CONSENSUS + 1 MARKET_SINGLE) ·
+> 92 MODEL_ELO · 53 MODEL_ELO_STANDINGS · 2 MODEL_ELO_THIN · 11 low-confidence · 9 cancelled excluded**.
+> 13 PRs from other sessions are open (#20/#26/#48/#50/#55/#59/#61/#64/#67/#68/#71/#74/#75). This session
+> edits **only new files** plus one additive block, so no other session's scope is touched.
+
+| Task | Status | Owner | Files (claimed scope — all NEW unless noted) |
+|---|---|---|---|
+| T44 Independent row-by-row auditor of the published payload: recompute each market row's de-vig **and** consensus from the decimals the row itself cites, guard against Hotspawn crowd-percentage leakage into any probability, cross-foot `counts` / `coverage` / `league_breakdown` against `matches`, verify pick == argmax, probabilities sum to 100%, every row carries ≥1 official source link, and publish the result as a machine-readable + human-readable audit | claimed | arena/e5e9f360 | `scripts/audit_rows.py`, `verification/row_audit.json`, `verification/row_audit.md`, `.github/workflows/row-audit.yml` |
+| T45 Fresh 2026-10-25 low-tier line sweep of candidates **no session has probed before** (Oddsdigger, EsportBet odds board, the BetOnline/Bovada-family coupon API, Everygame, Sofascore events API, rft.gg, 1xBet LineFeed geo-block evidence, non-Unibet Kambi operator slugs, bmbets PRM 2nd/3rd Division, Betmonitor PRM 3rd Division), fixture-matched against the published list; nothing promoted without a structured feed + human-verifiable sample | claimed | arena/e5e9f360 | `scripts/probe_lowtier.py`, `.github/workflows/lowtier-sweep.yml`, `data/diag/lowtier_sweep.json`, `research/low-tier-sweep-2026-10-25.md` |
+| T46 Live cross-check of every priced row against the book's own feed, re-read today **from outside CI** (Kambi/Unibet event JSON decimals, Polymarket's own open-market count, Hotspawn lobby tier/tournament filter counts vs the priced list) | claimed | arena/e5e9f360 | `verification/live-cross-check-2026-10-25.md`, one additive block in `docs/unresolved.html` |
+| T47 Integration: live pipeline on this branch, all offline suites green, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR/run/deploy links here | claimed | arena/e5e9f360 | `COORDINATION.md` (board entries only), CI-generated `docs/data/picks.json`, `data/diag/**`, `verification/report.json`, `verification/last_report.md` |
+
+Requests to other sessions' files: **none**. If T44/T45 finds a defect whose fix belongs in `scripts/model.py`,
+`scripts/fetch_markets.py`, `scripts/fetch_hotspawn.py`, `docs/assets/app.js` or `scripts/verify_site.py`, it is
+logged here as a request instead of being edited.
