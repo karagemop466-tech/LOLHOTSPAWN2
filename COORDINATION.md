@@ -57,6 +57,41 @@ No other session holds an open claim younger than 60 minutes; `main` is at `2173
 | T27 Mobile usability pass: phone-first executive summary with in-site links to the picks list, separate unresolved/limitations section in the summary, 390 px readability, no horizontal scroll on tables | done | arena/6e003eec | `docs/**` |
 | T28 Integration: run the live pipeline on this branch, re-verify combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge + deploy here | in progress | arena/6e003eec | `COORDINATION.md`, `docs/data/picks.json` (generated), `.github/workflows/**` |
 
+### Session `arena/6e003eec-lolhotspawn2` — merge, PR and re-verification (2026-10-25, later)
+
+**Merged `main` into the session branch four times** while four other sessions landed (`6d169c43`, `964cb944`,
+`0e9a9550`, plus the auto-refresh). Every conflict was resolved by keeping **both** sides:
+`research/betting-sources.md` now has main's §20 and §21 and this session's pass as **§22** (with a cross-reference
+note where it agrees with §21.1); `verification/spot-checks-2026-10-25.md` keeps both sessions' records as Part 1
+(`arena/964cb944`) and Part 2 (this session); `COORDINATION.md` keeps main's board and this claim above it;
+`docs/assets/app.js` keeps main's coin-flip feature (`isTossUp`, `?filter=tossup`, `#countline`/`#unresolved-summary`
+wording) **and** this session's book-line phrasing; generated artifacts (`docs/data/picks.json`,
+`verification/report.json`, `verification/last_report.md`, `data/diag/*`) are taken from the newest side and are
+rebuilt by CI anyway. No other session's work was dropped.
+
+**Verification on the merged tree** (`04ed255`): `scripts/verify_site.py` **45 PASS · 0 FAIL · 0 WARN · 1 SKIP**
+(D18 skip needs the Leaguepedia snapshot, which CI supplies) · `verification/test_verifier.py` 45/45 ·
+`test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS · `audit/test_model.py` 23/23 ·
+`test_dom_contract.py` 7/7 · `check_dom_contract.py` PASS · `check_dom_render.js` **63/63** ·
+`check_mobile_css.py` 10/10 · `test_prm_probe.py` 8/8 · `test_freshness.cjs` PASS. Five test scripts are now wired
+into `verify.yml` as well as `pipeline-test.yml`, so a regression on `main` fails CI without waiting for the next
+6-hour pipeline.
+
+**Site changes in this session's last commit**: the no-book-line section moved directly below the next-24-hours picks
+(it used to sit under the coverage charts); a one-line explainer under the pick cards says that 🧮/📊 cards are our
+own model, not a bookmaker price; the header icon button is 44 px. Every card still carries both win probabilities,
+the pick and a link to the match page, and `check_dom_render.js` fails if the picks ever render after the limits.
+
+**T26 evidence (final)**: `data/diag/prm_line_probe.json` — 16 sources probed, 8 reachable, 5 name one of our
+competitions, **0 publish a two-way price** for any of the 147 model-only fixtures. Hand checks in §22 agree:
+Cloudbet's PRM-2 page says "No events available" and its public API answers 401 without a partner key; BMBets has a
+PRM-2 comparison page with no PRM prices; Betmonitor's PRM-2 URL serves its generic index; esportbet names the
+league and publishes nothing; Tipico returns 0 LoL references; NEO.bet/bwin/bet365.de 403; Everygame 404;
+Oddspedia 410. Nine of those are now in `checked_unavailable` (35 entries) and re-probed every 6 hours.
+
+**T28**: PR **#74** → `main` (https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/74), merge commit and Pages
+deploy recorded below once CI on the PR is green.
+
 ### Session `arena/6e003eec-lolhotspawn2` — results (2026-10-25 14:15 UTC)
 
 Branch `arena/6e003eec-lolhotspawn2` (session branch; Arena does not permit creating `session-<id>/<task>` branches, this one stands in for it). All work is inside the T25–T28 scope claimed at the top of this file; no other session's files were edited.
