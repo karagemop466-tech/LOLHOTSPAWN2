@@ -17,6 +17,7 @@ import fetch_markets
 import model
 from lib_common import load_json, log, now_utc, parse_iso, utc_iso, write_json
 from source_probe import probe_sources
+from provenance import annotate_matches
 from standings_and_books import probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
@@ -93,8 +94,8 @@ CHECKED_UNAVAILABLE = [
 ]
 
 LIMITATIONS = [
-    "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
-    "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on community-recorded results and standings, not organizer-verified odds.",
+    "The configured adapters found no usable external line for most tier-3/amateur fixtures in the saved research snapshot. This is not proof that no bookmaker offers one. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
+    "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on community-reported results and standings, not independently organizer-confirmed records.",
     "On 2026-10-25 the production probe was expanded with 13 independently measured sources (37 to 50 on this branch; 56 total after the parallel Cloudbet/esportsinsider additions the same day), adding the established books bwin, DraftKings, FanDuel, Betsson, NordicBet, Tipico and MyBookie plus the esports-specialist books Unikrn, Loot.bet, Cyber.bet and Duelbits and Riot's official schedule page (research log: research/betting-sources.md §24, per-source HTTP status in this payload's market_probe block and on the Unresolved & Limitations page). Public documentation of every new entrant describes major-event LoL coverage (Worlds/MSI/top regionals) only; none documents the national/amateur divisions on Hotspawn's list. German-licensed books such as Tipico are additionally barred from esports markets by the Gluecksspielstaatsvertrag (State Treaty on Gambling), so the German Prime League divisions cannot be priced by the regulated domestic market at all. Specialist books render odds in client-side JavaScript and geo-block automated readers, so a single polite request can record reachability but never a citable price; no headless browser, account or key is used.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
@@ -191,11 +192,11 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
         elif mkt > 0:
             lim = f"{mkt}/{len(ms)} match(es) have external market odds; remaining matches rely on Leaguepedia recorded history{standings_note}."
         elif unres > 0:
-            lim = f"No external line was retrieved for this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
+            lim = f"No usable external line was found by the configured adapters for this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
         elif prior > 0:
-            lim = f"No external line was retrieved for this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
+            lim = f"No usable external line was found by the configured adapters for this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
         else:
-            lim = ("No external line was retrieved for this division; 100% of fixtures resolved via "
+            lim = ("No usable external line was found by the configured adapters for this division; 100% of fixtures resolved via "
                    f"Leaguepedia recorded match results{standings_note}.")
         rows.append({
             "tournament": tour,
@@ -218,7 +219,7 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
 
 def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     now = now_utc()
-    matches = picks["matches"]
+    matches = annotate_matches(picks["matches"])
     unresolved = [m for m in matches if m["method"] == "UNRESOLVED"]
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
@@ -384,6 +385,14 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         "fixtures_without_page": [{"team1": m["team1"], "team2": m["team2"], "start_utc": m["start_utc"]}
                                   for m in matches if not m.get("hotspawn_url")],
         "matches": matches,
+    }
+    payload["evidence_policy"] = {
+        "version": 1,
+        "fixture_authority": "Hotspawn confirms only its own fixture listing.",
+        "results_authority": "Leaguepedia is community reporting, not an official organizer results feed.",
+        "probabilities": "Derived market/model estimates, never verified outcomes.",
+        "missing_values": "Official result confirmation remains null until independently checked against primary organizer records.",
+        "source_availability": "No usable line found means no line matched by configured adapters, not that no bookmaker offers one.",
     }
     return payload
 

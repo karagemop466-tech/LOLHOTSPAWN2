@@ -1275,6 +1275,10 @@ counter-examples to the “just use the book line” assumption, and both are li
   `verification/test_verifier.py`, and the rendering of the new section is asserted in
   `verification/check_dom_render.js`.
 
+## Correction — A12 category claim (2026-10-25, c1e74f5e)
+
+The earlier entries claiming live Prime League 1st Division prices at the dedicated Polymarket category URL are **not currently verified**. Integrated source check [40202840025](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025) observed HTTP 404 for path `/esports/league-of-legends/prime-league-1st-division`. That does not establish any active market or the absence of other divisions. The Flagged page A12 now states this limitation and links the [publisher homepage](https://polymarket.com/) and dated check, rather than offering broken navigation or implying those prices were confirmed. No value from the category is used in a probability. Valid matched individual event markets from the production Gamma adapter are unaffected.
+
 ## 24. Refresh 2026-10-25 — fresh independent source research for the model-only (low-tier) fixtures (session `arena/b5f85948`)
 
 Brief. The 2026-10-25T10:41Z payload carries **156 upcoming Hotspawn LoL fixtures, all 156 priced, 0 unresolved**.
