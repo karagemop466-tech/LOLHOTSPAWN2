@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-25T17:04:37.387524+00:00",
+ "verified_at": "2026-10-25T17:10:35.208208+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 52,
@@ -9,23 +9,23 @@
  },
  "data_matches": 139,
  "methods": {
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO": 83,
-  "MARKET_SINGLE": 1,
-  "MODEL_ELO_THIN": 2,
-  "MARKET_CONSENSUS": 7,
   "UNRESOLVED": 0,
-  "MODEL_ELO_STANDINGS": 46,
+  "MODEL_ELO_THIN": 2,
   "MODEL_STANDINGS": 0,
-  "MARKET_POLYMARKET": 0,
-  "MARKET_BOOKS": 0
+  "MARKET_CONSENSUS": 7,
+  "MARKET_SINGLE": 1,
+  "MODEL_ELO": 83,
+  "MARKET_BOOKS": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO_STANDINGS": 46,
+  "MARKET_POLYMARKET": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "139 matches, generated_at=2026-10-25T17:03:55.791951Z (0.0h old)"
+   "detail": "139 matches, generated_at=2026-10-25T17:09:41.319576Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -169,7 +169,7 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "122/122 matched fixture times agree with Leaguepedia; 17 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T17:02:03.313583+00:00 (0.0h old)."
+   "detail": "122/122 matched fixture times agree with Leaguepedia; 17 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T17:07:50.912405+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -277,7 +277,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "50 external link(s) collected for manual review; 0 plain-http"
+   "detail": "51 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "S11",
@@ -337,7 +337,7 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "40/50 returned 2xx/3xx; 8 blocked by the host; 1 transient/5xx; 0 dead (404/410)",
+   "detail": "41/51 returned 2xx/3xx; 8 blocked by the host; 1 transient/5xx; 0 dead (404/410)",
    "items": [
     "https://www.oddsportal.com/esports/league-of-legends/ -> 503",
     "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist -> 403",
