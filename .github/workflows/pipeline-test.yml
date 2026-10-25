@@ -66,7 +66,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: always()
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Render checks (jsdom renders every page from this run's payload)
         if: always()
@@ -77,8 +77,12 @@ jobs:
 
       - name: Real phone and tablet layout checks (Chromium)
         run: |
-          npm install --no-save --no-package-lock --no-audit --no-fund jsdom playwright-core @sparticuz/chromium
-          node verification/check_browser.cjs
+          set -o pipefail
+          mkdir -p data/diag
+          {
+            npm install --no-save --no-package-lock --no-audit --no-fund jsdom playwright-core @sparticuz/chromium
+            BROWSER_REPORT=data/diag/browser.json node verification/check_browser.cjs
+          } 2>&1 | tee data/diag/browser.log
 
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
@@ -136,6 +140,10 @@ jobs:
             rc=$?
             fail_publish "git add failed (${rc}): ${out}"
           fi
+          # Preserve diagnostics even when Chromium cannot launch; source data
+          # can pass while the browser gate fails. Do not lose the actual error.
+          if [ -f data/diag/browser.log ]; then git add data/diag/browser.log; fi
+          if [ -f data/diag/browser.json ]; then git add data/diag/browser.json; fi
           if git diff --cached --quiet; then
             echo "no changes"
             exit 0

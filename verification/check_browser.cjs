@@ -16,7 +16,8 @@ async function main() {
     const bundle = require('@sparticuz/chromium');
     // The sandbox is not Lambda, but lacks NSS. Extract only the bundled libs
     // locally; no apt install or extra host download is needed.
-    if (process.platform === 'linux' && process.arch === 'x64') {
+    if (process.platform === 'linux' && process.arch === 'x64'
+        && !fs.existsSync('/usr/lib/x86_64-linux-gnu/libnss3.so')) {
       const root = path.dirname(require.resolve('@sparticuz/chromium'));
       const libs = await bundle.inflate(path.resolve(root, '../bin/al2023.tar.br'));
       bundle.setupLambdaEnvironment(path.join(libs, 'lib'));

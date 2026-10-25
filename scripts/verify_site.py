@@ -956,6 +956,25 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             f"harness {'present' if os.path.exists(harness) else 'MISSING'}; "
             f"wired into {', '.join(wired) if wired else 'no workflow'}")
 
+    # S16: coin-flip picks (favourite <= TOSSUP_MAX) must be labelled as such,
+    # counted in the executive summary's unresolved/limitations section and
+    # reachable through the All-picks tossup filter. A pick for every match is
+    # only honest if the near-50/50 ones say so on the row itself.
+    def _read_or_empty(path):
+        return open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+    app_js = _read_or_empty(os.path.join(DOCS, "assets", "app.js"))
+    picks_html = _read_or_empty(os.path.join(DOCS, "picks.html"))
+    s16_missing = []
+    for needle in ("TOSSUP_MAX", "isTossUp", "tossup-chip", "picks.html?filter=tossup"):
+        if needle not in app_js:
+            s16_missing.append(f"app.js: {needle}")
+    if 'data-filter="tossup"' not in picks_html:
+        s16_missing.append('picks.html: data-filter="tossup"')
+    rep.add("S16", "coin-flip picks are labelled, counted in the summary and filterable",
+            PASS if not s16_missing else FAIL,
+            "toss-up threshold, chip, summary link and picks filter present"
+            if not s16_missing else f"missing: {', '.join(s16_missing)}")
+
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
             "all pages declare a responsive viewport" if not viewport_bad
