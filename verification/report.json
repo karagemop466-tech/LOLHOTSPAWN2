@@ -1,31 +1,33 @@
 {
- "verified_at": "2026-10-25T14:23:10.374041+00:00",
- "status": "PASS",
+ "verified_at": "2026-10-25T14:27:55.554589+00:00",
+ "status": "FAIL",
  "counts": {
-  "PASS": 46,
-  "FAIL": 0,
-  "WARN": 1,
+  "PASS": 48,
+  "FAIL": 1,
+  "WARN": 0,
   "SKIP": 0
  },
  "data_matches": 156,
  "methods": {
-  "MARKET_SINGLE": 1,
   "MARKET_CONSENSUS": 8,
-  "MODEL_ELO_STANDINGS": 54,
-  "MARKET_BOOKS": 0,
-  "MARKET_POLYMARKET": 0,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO": 91,
   "MODEL_ELO_THIN": 2,
+  "MODEL_ELO": 91,
   "MODEL_STANDINGS": 0,
-  "UNRESOLVED": 0
+  "UNRESOLVED": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MARKET_SINGLE": 1,
+  "MODEL_ELO_THIN": 2,
+  "MODEL_ELO_STANDINGS": 54,
+  "MARKET_CONSENSUS": 8,
+  "MARKET_BOOKS": 0,
+  "MARKET_POLYMARKET": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "156 matches, generated_at=2026-10-25T14:22:49.309162Z (0.0h old)"
+   "detail": "156 matches, generated_at=2026-10-25T14:27:32.145171Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -145,7 +147,7 @@
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "39 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "43 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
@@ -157,7 +159,7 @@
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:21:11.499072+00:00 (0.0h old)."
+   "detail": "133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:25:49.453230+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -265,7 +267,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "18 external link(s) collected for manual review; 0 plain-http"
+   "detail": "35 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "S11",
@@ -278,6 +280,18 @@
    "title": "all pages share one navigation, freshness slot and unique ids",
    "status": "PASS",
    "detail": "7 pages, identical nav with 6 primary targets"
+  },
+  {
+   "id": "S16",
+   "title": "site is installable on a phone home screen (manifest, icons, per-page links)",
+   "status": "PASS",
+   "detail": "7 pages link the manifest + apple-touch-icon; 3 declared icon(s) present with matching sizes"
+  },
+  {
+   "id": "S17",
+   "title": "manual-review tables link a source on every row",
+   "status": "PASS",
+   "detail": "16 reviewed row(s) across 2 section(s), every one links an external page"
   },
   {
    "id": "W1",
@@ -300,11 +314,16 @@
   {
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
-   "status": "WARN",
-   "detail": "15/18 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "status": "FAIL",
+   "detail": "27/35 returned 2xx/3xx; 6 blocked by the host; 0 transient/5xx; 1 dead (404/410)",
    "items": [
+    "https://polymarket.com/esports/league-of-legends/prime-league-1st-division -> 404",
+    "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist -> 403",
+    "https://lol.fandom.com/wiki/Arabian_League_2nd_Division -> 403",
+    "https://lol.fandom.com/wiki/LigaGG -> 403",
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
-    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
+    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403",
+    "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 -> 403"
    ]
   },
   {

@@ -7,6 +7,10 @@
 <title>Executive Summary — Every Hotspawn LoL Match, Priced · Independent Picks</title>
 <meta name="description" content="Independent League of Legends picks and win probabilities for every fixture on Hotspawn's Pick'em lobby: external betting lines first, otherwise our own model. Links to every picks list on this site.">
 <meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="LoL Picks">
+<meta name="application-name" content="LoL Picks">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b5fff'/%3E%3Ctext x='16' y='22' font-family='system-ui,sans-serif' font-size='16' font-weight='800' fill='white' text-anchor='middle'%3ELP%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -72,7 +76,7 @@
 
   <section id="picks-here" aria-labelledby="picks-here-heading">
     <h2 id="picks-here-heading">📌 Where the updated picks are</h2>
-    <p class="small">Four taps — every list on this site is one of these. All lists refresh automatically every 6 hours.</p>
+    <p class="small">Five taps — every list on this site is one of these. All lists refresh automatically every 6 hours.</p>
     <div class="linkgrid">
       <a class="linkcard" href="picks.html" id="here-all">
         <span class="ico" aria-hidden="true">📋</span>
@@ -87,6 +91,11 @@
       <a class="linkcard" href="leagues.html" id="here-leagues">
         <span class="ico" aria-hidden="true">🏆</span>
         <span><b>Picks by league &amp; tier</b><span>Worlds, EMEA Masters, PRM, RIVALS, national divisions. <b class="n" id="here-leagues-count">—</b> competitions</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="linkcard" href="flagged.html" id="here-flagged">
+        <span class="ico" aria-hidden="true">🚩</span>
+        <span><b>Flagged for review</b><span>Source disagreements, name collisions, excluded fixtures and every other irregularity. <b class="n" id="here-flagged-count">—</b> flag types</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="unresolved.html" id="here-unresolved">
@@ -107,6 +116,9 @@
         <span class="chip red">⚠️ Unresolved</span><span class="legend-t">explicit 50/50 placeholder — never an edge, listed separately</span>
       </div>
     </details>
+    <p class="small" id="phone-tip">📱 <b>On a phone:</b> this page can be added to your home screen
+      (Safari: Share → Add to Home Screen · Chrome: ⋮ → Add to Home screen). The fixed bar at the bottom
+      of every page always has <b>Picks</b>, <b>Leagues</b> and <b>Unresolved</b> one tap away.</p>
   </section>
 
   <section aria-label="Coverage metrics">
