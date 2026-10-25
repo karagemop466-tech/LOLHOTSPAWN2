@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>All picks — Hotspawn LoL Picks</title>
 <meta name="description" content="Every League of Legends fixture on Hotspawn's Pick'em list with a pick, both teams' win probabilities, the method used and source links.">
 <meta name="theme-color" content="#0b1220">
@@ -52,9 +53,11 @@
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
+  <div id="input-health" class="hidden" role="status"></div>
 
   <h1>All picks</h1>
-  <p class="lede">One row per Hotspawn LoL fixture. Every row links to the Hotspawn fixture and to the evidence used — an external betting line, a Leaguepedia tournament page, or both. Rows with no verified signal are still published, flagged and linked to the <a href="unresolved.html">unresolved explanation</a>.</p>
+  <p class="lede">Every upcoming LoL match. One pick, both win chances.</p>
+  <p class="small">Estimates, not guarantees. <a href="flagged.html#official-results-audit">Evidence limits</a>.</p>
 
   <section class="filters" aria-label="Filter picks">
     <div class="searchrow">
@@ -106,7 +109,7 @@
 
   <p class="small" style="margin-top:12px">
     <b>Reading the table:</b> 💰 market = de-vigged consensus of external bookmakers/markets · 🧮 model = our Elo model ·
-    📊 standings = official win-loss record in that league (no market line, Elo could not rate both sides) ·
+    📊 standings = community-reported win-loss record in that league (no market line, Elo could not rate both sides) ·
     ⚠️ low confidence = thin history or league prior used · ❔ unresolved = explicit 50/50 placeholder, not an edge.
     Flags are explained on the <a href="flagged.html">Flagged for review</a> page; the full method is on
     <a href="methodology.html">Methodology &amp; sources</a>.

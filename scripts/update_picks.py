@@ -8,6 +8,9 @@ list, never a probability.
 from __future__ import annotations
 
 import argparse
+import os
+import subprocess
+import sys
 from collections import Counter
 from datetime import timedelta
 
@@ -15,8 +18,9 @@ import fetch_hotspawn
 import fetch_leaguepedia
 import fetch_markets
 import model
-from lib_common import load_json, log, now_utc, utc_iso, write_json
+from lib_common import load_json, log, now_utc, parse_iso, utc_iso, write_json
 from source_probe import probe_sources
+from provenance import annotate_matches
 from standings_and_books import probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
@@ -57,13 +61,13 @@ CHECKED_UNAVAILABLE = [
     # that currently rely on the model; evidence in data/diag/line_probe.json.
     {"name": "Pinnacle league index (every LoL league)", "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
      "observed": "HTTP 200; the only League of Legends league listed is 'League of Legends - World Championship'",
-     "consequence": "No Pinnacle line exists for PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG."},
+     "consequence": "This public feed returned no line for PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG."},
     {"name": "Kambi/Unibet country markets (GB, DE, SE, IT, NL, FR, PL, AU, ZZ)", "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
      "observed": "HTTP 200 in every market; each returns the same 8 World Championship matches and no other LoL competition",
      "consequence": "The German market does not carry Prime League either; no extra line is available."},
     {"name": "Kambi/Betsson, NordicBet, LeoVegas, Betcity", "url": "https://eu-offering-api.kambicdn.com/offering/v2018/betsson/listView/esports/league_of_legends/all/all/matches.json",
      "observed": "HTTP 429 (Betsson, NordicBet) and HTTP 400 (LeoVegas, Betcity) from a CI runner",
-     "consequence": "Same Kambi odds pool as Unibet; no extra line."},
+     "consequence": "Other operator coverage remains unverified because these requests failed; no extra line was read."},
     {"name": "bmbets esports odds comparison", "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
      "observed": "HTTP 200 HTML; the LoL league index lists only 'LoL World Championship', 'LoL - LCP' and 'Game Changers Rising' on 2026-10-24",
      "consequence": "The comparison site does not cover the unpriced competitions either; not parsed."},
@@ -93,8 +97,8 @@ CHECKED_UNAVAILABLE = [
 ]
 
 LIMITATIONS = [
-    "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
-    "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on recorded results and official standings.",
+    "The configured adapters found no usable external line for most tier-3/amateur fixtures in the saved research snapshot. This is not proof that no bookmaker offers one. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
+    "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on community-reported results and standings, not independently organizer-confirmed records.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
@@ -190,11 +194,11 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
         elif mkt > 0:
             lim = f"{mkt}/{len(ms)} match(es) have external market odds; remaining matches rely on Leaguepedia recorded history{standings_note}."
         elif unres > 0:
-            lim = f"No external bookmaker prices this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
+            lim = f"No usable external line was found by the configured adapters for this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
         elif prior > 0:
-            lim = f"No bookmaker prices this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
+            lim = f"No usable external line was found by the configured adapters for this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
         else:
-            lim = ("No external sportsbook prices this division; 100% of fixtures resolved via "
+            lim = ("No usable external line was found by the configured adapters for this division; 100% of fixtures resolved via "
                    f"Leaguepedia recorded match results{standings_note}.")
         rows.append({
             "tournament": tour,
@@ -215,9 +219,66 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     return rows
 
 
+PREFLIGHT_SCRIPT = os.path.join("scripts", "verify_site.py")
+
+
+def preflight_verification(timeout: int = 900) -> int:
+    """Run the project's own verifier on the payload this run just published and
+    write its verdict into the build log.
+
+    Why this exists (2026-10-25): the publisher runs ``scripts/verify_site.py`` in a
+    later workflow step. When that step fails, the Actions job keeps only
+    ``data/diag/pipeline.log`` -- the one file the failure step commits -- so the
+    verifier's own report dies with the runner. Scheduled run 40156916426
+    (2026-10-25T03:05Z) failed at that step and left no check name, no row and no
+    reason behind: only "step 6 failed". Running the same verifier here puts the
+    failing check ids and the offending rows into the log that survives.
+
+    This function never changes what is published: it does not edit the payload, does
+    not raise, and its exit status is ignored by the caller (the workflow step stays
+    the gate). It only makes a failure explainable.
+    """
+    if not os.path.exists(PREFLIGHT_SCRIPT):
+        log(f"preflight: {PREFLIGHT_SCRIPT} not found; skipped")
+        return 0
+    try:
+        proc = subprocess.run([sys.executable, PREFLIGHT_SCRIPT],
+                              capture_output=True, text=True, timeout=timeout)
+    except Exception as e:  # noqa: BLE001 - a pre-flight must never break the pipeline
+        log(f"preflight: could not run {PREFLIGHT_SCRIPT}: {e!r}")
+        return 0
+    out = (proc.stdout or "") + (proc.stderr or "")
+    summary = next((ln.strip() for ln in reversed(out.splitlines()) if ln.strip()), "")
+    if proc.returncode == 0:
+        log(f"preflight: verify_site.py PASS (exit 0) - {summary}")
+        return 0
+    log(f"preflight: verify_site.py FAILED (exit {proc.returncode}) - the verifier's own "
+        f"output follows so this run stays diagnosable from the committed log")
+    keep = [ln for ln in out.splitlines()
+            if ln.startswith("[FAIL]") or ln.startswith("         ·")
+            or ln.startswith("== ") or "Traceback" in ln or "Error" in ln]
+    for ln in (keep or out.splitlines()[-40:]):
+        print(ln, file=sys.stderr, flush=True)
+    log(f"preflight: {len(keep)} failing/annotation line(s) reproduced above; the payload "
+        f"was still written and the workflow's own verify step remains the gate")
+    return 1
+
+
+def _low_conf_reason(m: dict) -> str:
+    if m["method"] == "MODEL_STANDINGS":
+        return "Standings-based line (few decided series)"
+    if "ONE_TEAM_NO_HISTORY" in m["flags"]:
+        return "One team has no recorded history (league prior used)"
+    if "CROSS_LEAGUE_MODEL" in m["flags"]:
+        return "Cross-league comparison (confidence capped at Low)"
+    if m["method"] in ("MODEL_ELO_THIN", "MODEL_ELO_STANDINGS") or "THIN_HISTORY" in m["flags"]:
+        return "Thin history (<8 games in 365 days)"
+    return "Other model uncertainty"
+
+
 def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     now = now_utc()
-    matches = picks["matches"]
+    matches = annotate_matches(picks["matches"])
     unresolved = [m for m in matches if m["method"] == "UNRESOLVED"]
     low_conf = [m for m in matches if m["method"] != "UNRESOLVED" and
                 (m["method"] in ("MODEL_ELO_THIN", "MODEL_LEAGUE_PRIOR") or m["confidence"] == "Low")]
@@ -232,23 +293,10 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if m["method"] in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
-            reasons["Standings-based line (few decided series)"] += 1
-        elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
-            reasons["One team has no recorded history (league prior used)"] += 1
-        elif "CROSS_LEAGUE_MODEL" in m["flags"]:
-            reasons["Cross-league comparison (confidence capped at Low)"] += 1
-        elif "THIN_HISTORY" in m["flags"]:
-            reasons["Thin history (<5 games in 365 days)"] += 1
-        else:
-            reasons["Other model uncertainty"] += 1
+        reasons[_low_conf_reason(m)] += 1
 
-    # Same window the site uses client-side (5-minute grace for a match that
-    # started while the page was open), so the payload count, the stored ID
-    # list and the rendered cards can never disagree.
-    next_24h = [m for m in matches
-                if utc_iso(now - timedelta(minutes=5)) <= m["start_utc"]
-                <= utc_iso(now + timedelta(hours=24))]
+    next_24h = [m for m in matches if (start := parse_iso(m.get("start_utc")))
+                and now <= start <= now + timedelta(hours=24)]
     tournaments = Counter(m["tournament"] for m in matches)
 
     # Per-league resolution breakdown: which signal prices each league, so the
@@ -279,7 +327,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         b["best_signal"] = ("External betting lines" if b["market"]
                             else "Elo + split standings" if b["elo"] and b["standings"]
                             else "Elo on recorded results" if b["elo"]
-                            else "Official standings record" if b["standings"]
+                            else "Community standings record" if b["standings"]
                             else "League prior only" if b["prior_only"]
                             else "No verified signal")
         b["limitation"] = league_limits.get(b["tournament"])
@@ -305,7 +353,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     st_used = sum(1 for m in matches if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"))
     source_status.append({"name": "Leaguepedia Standings",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
-                          "status": "ok" if st_count > 0 else "no_data",
+                          "status": ("degraded" if lp_degraded else "ok") if st_count > 0 else "no_data",
                           "count": st_count,
                           "note": (f"Split series/game records for low-tier & amateur leagues "
                                    f"(CC BY-SA 3.0): {st_count} rows across {st_pages} competition page(s); "
@@ -323,8 +371,23 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     payload = {
         "schema_version": 3,
         "generated_at": utc_iso(now),
-        "next_update_utc": utc_iso(now + timedelta(hours=6)),
+        "next_update_utc": utc_iso(now.replace(minute=0, second=0, microsecond=0)
+                                   + timedelta(hours=6 - now.hour % 6)),
         "stale_after_utc": utc_iso(now + timedelta(hours=8)),
+        "input_freshness": [
+            {"name": "Hotspawn fixtures", "as_of": fixtures.get("generated_at"),
+             "status": "ok", "url": fixtures["lobby"],
+             "note": "Publisher fixture list only; not probability evidence."},
+            {"name": "External market feeds", "as_of": markets.get("generated_at"),
+             "status": "partial" if any(s.get("status") != "ok" for s in markets.get("statuses", [])) else "ok",
+             "url": "methodology.html",
+             "note": "Collection timestamp, not a guarantee that each quote is executable or still open."},
+            {"name": "Leaguepedia community records", "as_of": leaguepedia.get("generated_at"),
+             "status": "degraded" if lp_degraded else "ok",
+             "last_attempt_utc": leaguepedia.get("last_attempt_utc"),
+             "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+             "note": leaguepedia.get("degraded_reason") or "Community records; not independently organizer-verified. Model probabilities are estimates."},
+        ],
         "hotspawn_lobby": fixtures["lobby"],
         "hotspawn_lobby_generic": fixtures.get("lobby_generic"),
         "counts": {
@@ -349,12 +412,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
             "low_confidence_count": len(low_conf),
             "reasons": [{"reason": k, "count": v} for k, v in reasons.most_common()],
             "low_confidence_reasons": [{"reason": k, "count": v}
-                                       for k, v in Counter(
-                                           "One team has no recorded history (league prior used)"
-                                           if "ONE_TEAM_NO_HISTORY" in m["flags"] else
-                                           "Cross-league comparison" if "CROSS_LEAGUE_MODEL" in m["flags"] else
-                                           "Thin history (<8 games in 365 days)"
-                                           for m in low_conf).most_common()],
+                                       for k, v in Counter(_low_conf_reason(m) for m in low_conf).most_common()],
             "limitations": LIMITATIONS,
             "by_league": by_league_list,
         },
@@ -373,12 +431,22 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
                                   for m in matches if not m.get("hotspawn_url")],
         "matches": matches,
     }
+    payload["evidence_policy"] = {
+        "version": 1,
+        "fixture_authority": "Hotspawn confirms only its own fixture listing.",
+        "results_authority": "Leaguepedia is community reporting, not an official organizer results feed.",
+        "probabilities": "Derived market/model estimates, never verified outcomes.",
+        "missing_values": "Official result confirmation remains null until independently checked against primary organizer records.",
+        "source_availability": "No usable line found means no line matched by configured adapters, not that no bookmaker offers one.",
+    }
     return payload
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--use-cache", action="store_true", help="reuse data/cache/*.json (local debugging)")
+    ap.add_argument("--skip-preflight", action="store_true",
+                    help="do not re-run scripts/verify_site.py inside this run (diagnostics only)")
     args = ap.parse_args()
     if not args.use_cache:
         fetch_hotspawn.main()
@@ -405,6 +473,8 @@ def main() -> int:
     payload = build_payload(fixtures, markets, leaguepedia, picks, market_probe)
     write_json(DOCS_DATA, payload, compact=True)
     log(f"wrote {DOCS_DATA}: {payload['counts']}")
+    if not args.skip_preflight:
+        preflight_verification()
     return 0
 
 

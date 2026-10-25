@@ -1,5 +1,80 @@
 # Coordination Board
 
+## Session `arena/91450d23-lolhotspawn2` — 2026-10-25 (reliability + diagnosability)
+
+> Branch note: Arena fixes this session to `arena/91450d23-lolhotspawn2`; the tooling does not permit creating other
+> branches, so that branch stands in for `session-<id>/<task>`.
+
+**Overlap resolved.** This session first claimed the same four workstreams as session `arena/6e003eec` (T25–T28,
+claimed 14:06:54Z — three minutes before this session's first claim). Under the board rule *never start a task another
+session has claimed*, this session dropped verification/research/site/integration and kept only the reliability work
+below. `main` meanwhile advanced through PRs #67/#68/#70/#73 and more sessions; this branch was then **reset onto
+`main` (`bc38b0b`)** so it carries exactly one change on top of current `main`.
+
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| W1 Forensics: why did the scheduled refresh `40156916426` (2026-10-25T03:05Z) fail? | done | arena/91450d23 | `COORDINATION.md` |
+| W2 Diagnosability: a failed refresh must explain itself in the one log the workflow keeps | done | arena/91450d23 | `scripts/update_picks.py` |
+| W3 Independent verification of `main` at `bc38b0b` (all suites + verifier + jsdom render) | done | arena/91450d23 | `COORDINATION.md` |
+| W4 Takeover of another session's tasks | not needed — no claim went stale while this session ran | — | — |
+| PR + merge + deploy record | done — PR #80 merged, publisher and Pages green | arena/91450d23 | `COORDINATION.md` |
+
+### W1 — what is established, and what is not
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Which step failed? | Step 6 **“Verify the published payload”** of run [40156916426](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40156916426); steps 1–5 succeeded, step 7 (failure log) succeeded, step 8 (commit) was skipped. | job `121060138275`, step list via the Actions API |
+| Did the generator work? | Yes. The committed log reads `hotspawn: 145 future LoL fixtures`, `markets: Pinnacle ok (8) · Unibet ok (8) · Bovada ok (6) · Polymarket ok (9)`, `leaguepedia: 31739 results … 2880 standings`, `model: 145 fixtures, 145 resolved, 0 unresolved`, `wrote docs/data/picks.json`. | `git show 195d230:data/diag/pipeline.log` |
+| Which verifier check failed? | **Not established and not guessed.** The step's console log is only served through a 302 to `productionresultssa5.blob.core.windows.net`, which this sandbox cannot reach (curl exit 000); the step uploaded no artifact, and the only file the failure step commits is `pipeline.log` — the generator's own output. | attempts on `/actions/jobs/121060138275/logs` → 302 → host unreachable |
+| User-visible effect | The site kept the 2026-10-24T20:10Z payload until the next successful run (2026-10-25T10:39Z) — 6 h 18 m — and because `stale_after_utc` is 8 h the freshness banner never fired, so nothing on the site said a refresh had failed. | run list; payload `generated_at` before/after |
+
+### W2 — the fix (this branch's only code change)
+
+`scripts/update_picks.py` now re-runs `scripts/verify_site.py` on the payload it just wrote and copies the failing check
+ids plus their annotation lines into stderr — the stream the workflow tees into `data/diag/pipeline.log`, the one file a
+failed run commits. It never edits the payload, never raises, and its exit status is ignored: the workflow's own verify
+step stays the gate.
+
+* Live proof on the earlier branch run [40202018891](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202018891):
+  the committed log contains `preflight: verify_site.py PASS (exit 0) — == PASS · pass 44 · fail 0 · warn 0 · skip 1 ==`.
+* Non-vacuity proof: corrupting three fields (a probability that no longer sums to 1, a pick that is not a team, a
+  duplicated fixture) drops the verifier to **37 pass / 7 fail** and the pre-flight reproduces the failing check ids and
+  rows in the log; restoring the payload returns **49 pass / 0 fail**.
+
+### W3 — verification of `main` at `bc38b0b` (independent of the other sessions)
+
+| Gate | Result |
+|---|---|
+| `python3 scripts/verify_site.py` | **49 PASS · 0 FAIL · 0 WARN · 1 SKIP** (D18 skipped without a schedule snapshot) |
+| `verification/check_dom_contract.py` / `test_dom_contract.py` | PASS / 7/7 |
+| `verification/test_verifier.py` | 64/64 (includes the new `S19` phone-layout self-tests) |
+| `verification/test_entity_and_books.py` | 17/17 |
+| `verification/test_standings_model.py` / `test_evidence_scope.py` | ALL PASS / OK |
+| `audit/test_model.py` | 23 passed · 0 failed |
+| `node verification/render_check.cjs` / `check_dom_render.js` | RENDER CHECK PASS / 67/67 |
+
+### Irregularities found during this session
+
+| ID | Item | State |
+|---|---|---|
+| R1 | **Dead external citation blocked `main`'s own verification.** `docs/flagged.html` row A12 linked `https://polymarket.com/esports/league-of-legends/prime-league-1st-division`, which returns **404**; `main`'s scheduled *Verify picks and site* run [40202537346](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202537346) failed at step 6 for that reason, and this branch's live run [40202799707](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202799707) reproduced it (`X1 … 1 dead (404/410)`). | **Fixed upstream** while this session ran: another session rewrote A12 as “Historical Polymarket PRM category link is unverified” (no price inferred). Verified present in `main@bc38b0b`; this branch deliberately carries no duplicate edit. |
+| R2 | A failed production refresh keeps **no verifier output**, so its cause cannot be recovered afterwards (W1). | Mitigated in the generator by W2. The remaining gap is a workflow line this session does not own: add `verification/report.json` and `verification/last_report.md` to the failure step's `git add` in `.github/workflows/update-picks.yml`. |
+| R3 | This session's first branch state silently reverted newer `main` files (`-X theirs` applied to the branch's own pipeline-test merge). Caught by `verification/test_verifier.py` — 9 self-tests failed because `S19` was missing from `scripts/verify_site.py`. | **Fixed** by resetting the branch onto `main@bc38b0b` and re-applying only the pre-flight; no other session's work was involved or lost (`backup-91450d23` kept locally for audit). |
+
+### PR & deploy record (this session)
+
+| Item | Result |
+|---|---|
+| PR | [#80](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/80) — **merged** 2026-10-25T14:59Z (merge commit `1944655`), 2 code/doc files plus generated artefacts, no probability, pick or layout change |
+| Branch checks before merge | Pipeline test [40204771866](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204771866) **success** on head `ab0e409` (live pipeline + all suites + jsdom 82/82 + external link check) |
+| Post-merge publisher | *Update Hotspawn LoL picks* run [40204777006](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204777006) **success** on `1944655` (payload 2026-10-25T14:59Z) |
+| Post-merge Pages | *pages build and deployment* run [40204776704](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204776704) **success** for `1944655`; Pages API `status: built` |
+| Pre-flight in production | `main`'s published `data/diag/pipeline.log` now ends every refresh with e.g. `[2026-10-25T15:02:30+00:00] preflight: verify_site.py PASS (exit 0) - == PASS · pass 51 · fail 0 · warn 0 · skip 1 ==` — the next failure will name its check and row instead of only "step 6 failed" |
+| Live snapshot after the merge | payload `generated_at 2026-10-25T15:02:30.411019Z` · **156 fixtures · 156 resolved · 0 unresolved** · 9 with external market (8 four-book consensus + 1 single Polymarket line) · 54 priced with split standings · 11 low-confidence, all flagged · 9 cancelled fixtures excluded and listed |
+| Site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ (root `index.html` redirects to `docs/`) |
+
+Any other session that needs a file in this scope must log a request here instead of editing it.
+
 ## Session `arena/0e9a9550-lolhotspawn2` — 2026-10-25 (claim, pushed before work)
 
 No other session has an active claim on the files below as of 2026-10-25 14:15 UTC: the newest board entry
@@ -1823,6 +1898,77 @@ failures observed on this branch today:
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
 
+## Session `arena/c1e74f5e-lolhotspawn2` — 2026-10-25 (claim)
+
+All earlier claims are over 60 minutes old; baseline `2173cc9` is the current main. This session uses the Arena-fixed branch above (no alternate branch). No other active claim was found in the board; existing open PRs are left untouched.
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| C1 Audit current coverage, provenance and unresolved semantics; fix defects with regression tests | done | arena/c1e74f5e | `scripts/**`, `verification/**`, `audit/**` |
+| C2 Research external line availability using fresh CI probes; document official vs community evidence and limitations | done | arena/c1e74f5e | `research/**`, `data/diag/**`, `README.md` |
+| C3 Mobile summary/picks/limitations integration and honest evidence labels | done | arena/c1e74f5e | `docs/**` |
+| C4 Integration, live refresh, tests, PR merge and Pages confirmation | done | arena/c1e74f5e | `.github/workflows/**`, `COORDINATION.md` |
+
+Network note: this sandbox allows GitHub/npm/PyPI only. Source verification requiring other hosts must run in GitHub Actions, with timestamped artifacts; blocked local requests will not be described as source verification.
+
+**Parallel-session discovery (2026-10-25 14:13 UTC):** main advanced to PR #60's audit-only records after this session's claim. PR #62 concurrently edits `docs/assets/app.js` freshness and the phrase "verified pick"; this session does not change freshness behavior and will preserve that session's result during integration. Our distinct work is per-row source authority metadata, blank primary-organizer confirmation, the match-by-match unverified evidence table, and regression checks for those contracts. Any textual overlap is limited to removing false verification claims. PR #61 is audit documentation only. Existing reports are not overwritten as final findings; generated verifier reports are rebuilt by CI.
+
+## Session `arena/81e6a4e3-lolhotspawn2` — 2026-10-25 (claim)
+
+All earlier open claims in this board are dated 2026-10-24 or earlier (>60 minutes old);
+this session takes over the stale integration/re-verification scope. Baseline is main
+`2173cc9`. Arena requires the fixed branch `arena/81e6a4e3-lolhotspawn2` (no extra branches).
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| V1 Audit current coverage, provenance, stale data and unresolved/tied recommendations; add targeted regression gates | done | arena/81e6a4e3 | `scripts/**`, `verification/**`, `audit/**` |
+| V2 Research missing-line alternatives using established books, esportsbooks and community sources; distinguish unreachable from verified | done | arena/81e6a4e3 | `research/**`, `data/diag/**` |
+| V3 Mobile picks/executive-summary clarity and honest evidence labels; integrate tested fixes | done | arena/81e6a4e3 | `docs/**`, `README.md` |
+| V4 Live workflow, PR/merge, Pages confirmation and coordination evidence | done | arena/81e6a4e3 | `.github/workflows/**`, `COORDINATION.md` |
+
+Initial blocker: GitHub Actions REST request returned HTTP 403 API rate limit exceeded
+at 2026-10-25T14:09Z; git fetch succeeds. External hosts are unavailable directly from
+this sandbox; live source verification must run through GitHub Actions, not be claimed
+from cached data. No verified status will be inferred from a source link alone.
+
+**Concurrent-claim discovery (2026-10-25, during the audit):** Actions revealed three other Oct-25
+sessions that claimed on their own branches, invisible in this checkout at the
+initial read: `arena/964cb944` (toss-up labels / VfB aliases / sources),
+`arena/57975298` (missing-market counts / sources), `arena/6e003eec` (line probe).
+Request to final integrators: retain their work; this session's changes are confined
+to source timestamp/provenance presentation, explicit no-pick on exact 50/50,
+passed-lock/24h boundaries, and checks of ALL cited history pages. No formula,
+market adapter or alias is changed here. Shared-file integration requests:
+`docs/assets/app.js` keep their summary/toss-up features alongside this session's
+`pickPill`, `setHeader`, source labels and time-bound fixes;
+`scripts/update_picks.py` keep their source-list additions alongside input timestamps;
+`scripts/model.py` keep their alias/rating changes alongside latest-history source links.
+This is an integration claim, not permission to overwrite their implementations.
+
+**V1–V3 findings:** live run `40201225832` fetched/builds all 156 fixtures (9 market,
+147 model; 0 unresolved; 11 Low). DOM rendering 59/59; evidence regression 8/8;
+verifier self-tests 45/45; contracts 7/7; books/entity 17/17; audit 23/23.
+Its external-link check correctly failed on a new Pinnacle retail link (404);
+fixed to the observed-200 public guest endpoint, pending rerun. Fresh line-probe
+`40201225819` success at 14:14:25Z: 38 requests, 147 model-only fixtures, zero new
+validated coverage. Research: `research/evidence-audit-2026-10-25.md`.
+
+**Mobile defect verified and fixed:** real Chromium 153/Playwright showed Picks
+and Leagues scrolling to 430px on a 390px phone because long pick names inherited
+`white-space: nowrap`. Scoped mobile badge wrapping now passes 28/28 page–viewport
+checks (7 pages × 320/390/768/1280px), nav target heights 60px. Script and measured
+report are in `verification/check_browser.cjs` / `mobile-browser-2026-10-25.json`.
+This session requests CSS integrators retain this additive @media block alongside
+any toss-up styling. Browser packages remain ignored under node_modules.
+
+---
+
+## Session `arena/964cb944-lolhotspawn2` — 2026-10-25 (claim)
+
+Baseline at claim (branch == `main` @ `2173cc9`, payload generated 2026-10-25T10:41:50Z): **156 fixtures · 156 resolved (100%) · 0 UNRESOLVED** · 8 `MARKET_CONSENSUS` + 1 `MARKET_SINGLE` · 92 `MODEL_ELO` · 53 `MODEL_ELO_STANDINGS` · 2 `MODEL_ELO_THIN` · 10 Low-confidence · 9 cancelled excluded. `verify_site.py` **44 PASS / 0 FAIL / 0 WARN / 1 SKIP**; verifier 45/45, standings ALL PASS, entity/books 17/17, audit 23/23, DOM contract PASS. Pages `built` for `2173cc9`. Open PRs #20/#26/#48/#50/#55/#59 belong to other sessions (stale, 2026-10-23/24) — not touched. Remaining gaps this session targets: **62 rows priced within ±3 pts of 50/50** (picks exist but are near coin-flips — must be labelled as toss-ups on mobile, not presented as edges); **5 of 10 Low rows involve VfB eSports** (`CROSS_LEAGUE_MODEL` inside its own tournament — investigate before touching); fresh 2026-10-25 low-tier source research.
+
+| Task | Status | Owner | Files (claimed scope) |
+
 ## Session `arena/c7fd40e5-lolhotspawn2` — 2026-10-25 (claimed)
 | Task | Status | Owner | Files |
 |---|---|---|---|
@@ -1873,7 +2019,84 @@ stale schedule snapshot or blocked source checks as freshly verified.
 - **PR #60** — https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/60 — merged 2026-10-25T14:12:23Z by merge commit `65de12bc5c75c7c721a965db1dc0e53941c8d0c5`.
 - Post-merge Pages build `1313374096` was still reported as `building` at the time of this record (source commit `65de12b`). The public dashboard was fetched successfully during the verification window and rendered the current snapshot: 156/156 picks, 9 bookmaker-line matches, 0 unresolved placeholders, 10 low-confidence, next refresh shown as 16:41Z. This confirms the existing published site content; it is not evidence that the new audit-only commit has finished deployment.
 - The site implementation and scheduled publisher were already present on `main`; PR #60 only adds this verification/coordination record. The GitHub Actions run list endpoint returned HTTP 403 rate-limit response, so no current action-run conclusion is asserted.
+
+---
+
+## Session `arena/07b651a3-lolhotspawn2` — 2026-10-25 (claim: data-consistency fixes, mobile stacked-table labels & live verification)
+
+> Branch note: Arena tracks this session on fixed branch `arena/07b651a3-lolhotspawn2`, which stands in for `session-<id>/<task>`. No active (<60 min) open claims exist on `main` (`arena/7dbe0fbd` completed PRs #60/#63; prior claims date to 2026-10-24).
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| A1 Line-by-line repo/payload verification + fix `unresolved.reasons` mismatch for 5–7 game `MODEL_ELO_THIN` rows (`scripts/update_picks.py`) + document 2026-10-25 line-by-line audit & fresh low-tier source findings | done | arena/07b651a3 | `scripts/update_picks.py`, `scripts/model.py`, `research/line-by-line-audit-2026-10-25.md`, `research/betting-sources.md` |
+| A2 Mobile UX & executive-summary audit fixes: remove duplicate sourceless per-league table inside `#unresolved-summary` on `index.html`, add missing mobile `data-label` attributes on all `<td>` cells (`match.html`, `flagged.html`, `methodology.html`, `app.js`), surface blended Elo on `match.html`, unify `viewport-fit=cover` + `color-scheme` + icon across all 7 pages, replace broken relative `../research/betting-sources.md` links, and replace stale hardcoded snapshot counts (`73 of 169`, `160 fixtures`, `31,752`) with live payload bindings | done | arena/07b651a3 | `docs/*.html`, `docs/assets/app.js` |
+| A3 Non-vacuous regression tests for mobile `data-label` coverage, no duplicate sourceless tables, no stale hardcoded counts / broken `.md` relative links, and `MODEL_ELO_THIN` reason tally consistency | done | arena/07b651a3 | `verification/check_dom_contract.py`, `verification/test_dom_contract.py`, `verification/check_dom_render.js`, `audit/test_model.py` |
+| A4 Live branch pipeline refresh, reconcile any concurrent `origin/main` merges without discarding other sessions' work, re-verify all suites, PR → `main`, merge, confirm GitHub Pages deployment, record results | in progress — merged PRs #67/#68/#70/#71/#72/#76, running final combined CI gate | arena/07b651a3 | `COORDINATION.md`, `docs/data/picks.json` (CI-generated) |
+
+
+---
+
 Reconciliation f931cee9: main advanced via audit-only PR #60; both coordination entries preserved in the append-only conflict. No feature or generated payload conflict. Branch live pipeline 40201194918 SUCCESS (all fetch, render, external verification and probe steps); refreshed 14:15:07 UTC: 156 fixtures, 9 market, 147 model, 54 standings, 11 low-confidence, zero unresolved.
+
+**Integration reconciliation (14:21 UTC, c1e74f5e):** merged `origin/main` `7a8b8d1` (PRs #60/#63 audit, #62 freshness, #66 collapsed method legend). Coordination append conflict keeps both sessions' entries. `app.js` conflict was the same removal of “verified pick”; adopted #62's “published pick or estimate” wording, retaining its fail-closed freshness and focus handlers plus this session's provenance labels. `index.html` automatically preserves #66's collapsed legend and our above-fold action. Generated data/log/report conflicts keep the newer branch live snapshot (14:15:45 vs main 14:15:07), including provenance metadata, pending another complete regeneration; no generated rows hand-merged. No source fact or other session's feature discarded. Browser audit caught and fixed actual 320px badge overflow, not just a CSS contract check.
+
+**Safe rebase note:** after the main integration merge, a routine `git pull --rebase` tried to flatten/replay already integrated main commits and hit the append-only coordination conflict. Rebase was immediately aborted; the completed integration merge and all other sessions' changes remain intact. Subsequent pulls use merge-preserving rebases; no force push or history discard.
+
+**Final integration reconciliation (2026-10-25 14:26 UTC):** main advanced through PR #65 (near-50% coin-flip labels/filter, extra source probes). Adopted all toss-up/filter/count tests and new candidates, retained no-recommendation behavior for unsupported UNRESOLVED rows and per-row provenance. Combined both descriptions in match cards/detail and kept community-not-official labeling. Append-only board keeps both claims. Generated snapshot/log/report files adopted main's newer 14:24:11 run pending full branch regeneration; no hand-merging generated rows. Mobile CSS keeps all badges wrapping, including coin-flip labels.
+
+### C1–C3 completion evidence (`arena/c1e74f5e`, 2026-10-25)
+
+| Task | Status | Evidence |
+|---|---|---|
+| C1 Coverage, authority and arithmetic | done | First full live pipeline [40201255132](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40201255132) success. Additive `verification` metadata deliberately leaves primary-organizer confirmation null; source authority is hostname-based, not inferred from a source's name. D24 checks every row. D25 independently recomputes saved no-vig/consensus arithmetic. **55/55** verifier positive/negative tests, source-policy tests **4/4**, entity/book tests **17/17**, model **23/23**, standings ALL PASS. |
+| C2 Fresh low-tier source research | done | Dedicated [40201699912](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40201699912) success: 38 source/market variants at 14:20:34 UTC, 0 newly covered fixtures among 147 non-market matches. Full dated publisher URLs and observed statuses in `research/source-audit-2026-10-25-c1e74f5e.md`; 37-source broad probe at 14:15:45 UTC. Historical and current observations are distinguished, no price from an unparsed endpoint. |
+| C3 Phone-first UI and evidence audit | done | Real Chromium on seven pages × four widths (320/390/768/1280): **78/78**, including primary CTA and first pick + both chances above the phone fold. Fixed real 320px overflow without clipping names. Integrated concurrent freshness/legend/toss-up work; combined JSDOM **63/63**; DOM contract PASS. No arbitrary team recommendation for UNRESOLVED placeholders. |
+| C4 Integration / PR / Pages | in progress | Final branch CI and deploy confirmation to follow; no owner review requested. |
+| Primary-organizer result audit | needs review | Not implemented/claimed. Every affected non-market fixture is published on `docs/flagged.html#official-results-audit` with null official-confirmation fields and source references. Leaguepedia page existence is not primary-source verification. |
+
+The source audit's dated counts describe that exact snapshot. Later refreshes and added candidates from concurrent sessions may change counts; the live executive summary and source tables always derive from the latest payload. No browser binary, npm dependencies, or screenshots are committed.
+
+### T27–T30 results (session `arena/964cb944`, 2026-10-25) — PR #65 MERGED
+
+**Integration reconciliation:** main advanced via PR #62 (f931cee9 fail-closed
+freshness) and #66 (6d169c43 mobile navigation/source notes). Merged main locally:
+kept their stricter `isFresh`/freshness wording and navigation changes; retained
+our separate input-health/source timestamps. Coordination append conflict keeps
+both complete session logs. All research/flagged additions from main retained.
+Generated payload/log conflicts temporarily keep the newer 14:15:22 branch
+snapshot (it contains the new input timestamps); verifier report adopts main's
+copy pending CI regeneration. No model/alias/formula work from another session
+was discarded. Re-running integration/browser/freshness checks before publishing.
+
+**Second reconciliation / CI gate:** PR #65 merged the concurrent <=53% coin-flip
+filter, labels and source candidates. All are retained; exact 50/50 still says
+"no preferred team" and also carries the coin-flip label. Mobile wrap CSS remains
+additive. Board append conflict retains both sessions' records; generated data
+is regenerated rather than hand-merged. Run `40201686037` passed live collection,
+DOM and external/source-page checks (50/50 cited wiki pages exist), but the new
+real-browser gate failed. Logs could not be downloaded from the restricted
+results-receiver host. Browser diagnostics are now committed on success/failure,
+Node is upgraded to supported 24, and bundled Lambda libraries are used only if
+system NSS is absent (needed in the sandbox, not on standard Ubuntu runners).
+No failed browser gate is waived; the next run must pass before PR #67 merges.
+
+**V1–V3 complete; V4 ready to merge:** PR [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67).
+Final live run [40202147232](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202147232)
+**SUCCESS** (2m31s): snapshot 14:27:19Z, 156/156 upcoming lobby fixtures, 9 market,
+147 model, 54 standings/blend, 0 unresolved, 11 Low; zero missing; 9 cancelled
+excluded. Verifier **46 PASS / 0 FAIL / 1 WARN** (blocked external hosts). Source
+page API audit **50/50 exist**, not a claim of official value verification.
+Real Chromium CI **28/28**, integrated DOM **64/64**, freshness **10/10**, evidence
+**8/8**. The browser runtime fix passed, not waived. Evidence in
+`data/diag/browser.{json,log}`, `source_pages.log`, `verification/report.json`, and
+`research/evidence-audit-2026-10-25.md`.
+
+After the green run, main's scheduled refresh `85ab307` conflicted only in the
+machine-generated payload/log: main timestamp 14:24:11Z vs branch 14:27:19Z. The
+newer verified branch copy was retained. No source/model/site code changed in
+that reconciliation; local combined DOM/freshness/evidence checks re-passed.
+Unverified community organizer confirmation / inaccessible betting lines remain
+**needs review** on `docs/flagged.html#evidence-limits` and do not block publication.
 
 ---
 
@@ -1913,6 +2136,10 @@ Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appen
 | T29 verification | `verify_site.py` **46 PASS / 0 FAIL / 0 WARN / 1 SKIP**; `test_verifier.py` **55/55**; `check_dom_render.js` **60/60**; `render_check.cjs` PASS; `check_dom_contract.py` PASS; `test_dom_contract` 7/7; `test_entity_and_books` 17/17; `test_standings_model` ALL PASS; `audit/test_model` 23/0. | `scripts/verify_site.py`, `verification/**` |
 | T30 integration | `research/line-by-line-audit-2026-10-25.md` (gates, PRM 2D 7/7 time table, Worlds irregularities, PvB collision, 6 market rows vs Polymarket, 147-no-line evidence, organizer coverage, "could not verify" table); `docs/flagged.html` `#audit-2026-10-25` A1–A12 with a source link on **every** row; new verifier **S17** enforcing exactly that. | `research/**`, `docs/flagged.html`, `docs/methodology.html`, `scripts/verify_site.py` |
 
+Merge reconciliations (main advanced via PRs #62/#63 + `arena/6d169c43` §20 during this session): nothing discarded — generated files took main's whole side, COORDINATION kept both blocks, main's legend restructure adopted (coin-flip legend line dropped with it; explained instead in the unresolved section + chip tooltip), this session's research renumbered **§21**. Verification on merged tree: `verify_site.py` 45 PASS/0 FAIL, jsdom 58/58, all unit suites green incl. `test_freshness.cjs`. Spot-check: Polymarket Mental Rush vs Vitality Rising Bees series ML 65¢/38¢ vs payload 64.5% pick ✓. Flagged (non-blocking): 61 coin-flip picks now labelled; Cloudbet/Kalshi probe-only; Liquipedia metadata probe degraded one run (published).
+
+**Artifact-only reconciliation (14:30 UTC):** PR #75 opened. Main advanced through #72/#73 source-research records; merge `47cee78` retains all board/research entries and adopts main's generated diagnostics (no generated row hand-merge). The only production-independent code change is a diagnostic bo3.gg probe header. Dashboard/model functionality is unchanged from the successful local integrated audits. Fresh CI will regenerate the complete payload with source authority and blank official-confirmation fields before PR merge.
+
 ### Resolved irregularities (evidence, not assertions)
 
 * **I-Worlds-times** — the 10:41Z payload carried 25 Oct Worlds times 1–3 h off Hotspawn's own match pages, Leaguepedia and
@@ -1940,3 +2167,116 @@ Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appen
 No Hotspawn crowd percentage and no Hotspawn price is used as an input; every probability is either a de-vigged
 multi-book consensus or our own Elo/standings model; every table row on the review pages links an external page
 (now enforced by S17); nothing was inferred from a blocked source.
+
+**Full integration refresh (14:34 UTC):** latest code run [40202349776](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202349776) passed every step, including real browser checks and fresh source verification. Main then advanced through PWA #70, deeper audit #68 and other sessions' records. Adopted their install assets, complete next-24h rendering (no six-card truncation), short why-lines, source-time warnings, official-audit findings and new probe candidates. Kept our shorter hero, above-fold controls, per-row provenance, unsupported-row NO PICK behavior, blank official-confirmation audit and odds arithmetic. Resolved append-only board and section-placement conflicts by retaining both; generated files adopt newer main until CI regeneration. Found integration duplicate check ID S16 (coin-flip and installability): renamed only installability to S18 plus its self-tests; both tests remain enforced. No conflicting feature silently dropped.
+
+**Final CI correction and coverage integration (14:40 UTC):** run 40202840025 passed fetch, JSDOM and real mobile checks, then correctly failed X1 on one real 404: an A12 Polymarket category reference added by a parallel audit. A12 is now explicitly unverified, its historical claim superseded, with the attempted path retained as text plus working publisher/check references; no external checks were weakened. Main advanced through lobby-union coverage safeguards and in-page refresh controls: retained their code/workflows/regression suites, combining appended CSS. Generated artifacts adopt main pending final union-aware refresh. User-facing source facts remain blank/unverified where the failed category cannot confirm them. Both earlier live successes and this detected failure are recorded, not hidden.
+
+**Final integration race:** PR #67 merge attempt was correctly rejected because
+main advanced while it was being checked: PRs #70/#72/#73 (per-row reasons,
+start-time-by-source disclosure, installability, audit table and new research).
+Their code, icons, manifest, tests and notes have all been retained by merging
+main. Only append-only coordination and generated evidence conflicted; both
+coordination blocks were preserved and main's generated files adopted pending
+one final pipeline regeneration of the new input-timestamp fields. Nothing is
+force-merged, and source fields are not manually edited. Full combined gates
+must pass again before merging #67.
+
+**404 caught in combined upstream work:** run `40202528210` passed collection,
+all DOM tests and real Chromium, but failed X1 on the newly merged static A12
+Polymarket Prime League category link (HTTP 404). A12 now explicitly records
+that historical coverage claim as **unverified / needs review** and links the
+reachable official Gamma API plus dated failure evidence instead of presenting
+a dead category as current coverage. No check was weakened. Main #68's full
+next-24h summary cards, phone-first reorder and limitation de-duplication are
+also retained; the 5-minute grace was removed consistently from both payload
+and UI so a passed lock is never included as an upcoming pick. All docs/site
+changes require a new green integration run before merge.
+
+**Coverage integration:** final green pre-union run `40202944643` passed all live,
+DOM, browser and external-source gates. While it completed, main #71 added a
+necessary union fix: a lobby-only RIVALS fixture (1090065) can be absent from the
+backend API, so using their intersection was not full coverage. This session
+retains the union parser and all independent coverage gates/unit tests from
+#71, its new nonfeatured summary, and both phone CSS additions. Conflicts were
+append-only UI sections/CSS/workflow tests plus generated data; both sets of
+features are kept. Main's union-generated payload is adopted pending fresh CI.
+New wording again identifies Leaguepedia as community records, never an official
+organizer source. A final union-aware live run is required before #67 merges.
+
+### T30 integration result — PR, merge, deploy (recorded 2026-10-25)
+
+| Item | Value |
+|---|---|
+| Pull request | **[#70](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/70)** — "Phone-first picks site: start-time-by-source evidence, audit table A1-A12, installability + stricter verifier" |
+| Merged | **2026-10-25T14:28:07Z**, merge commit **`331e753c761985d96699e67244769b7c74323aef`** (merge without waiting for review, as the brief requires) |
+| Merge conflicts | `COORDINATION.md` (append-only → resolved with `scripts/resolve_coordination_conflict.py`, both sessions' blocks kept), `research/betting-sources.md` (my new section renumbered **§20 → §22** because two other sessions already own §20/§21), `docs/index.html` (kept the other session's method-chip legend **and** the phone tip), and the generated artifacts (`verification/report.json`, `verification/last_report.md`, `data/diag/source_probe.json`, `docs/data/picks.json`) → took the incoming/CI copy, never hand-merged |
+| Rebase hygiene | the two `pipeline: test run [skip ci]` commits on this branch had already committed **conflict markers** into `docs/data/picks.json` / `data/diag/*` during a rebase; they were **dropped** and the payload re-taken verbatim from CI. Verifier D23 ("no committed artifact contains conflict markers") now passes on `main` |
+| Pages builds | `028c5a56` built 14:31:32Z · `9714344` built 14:36:37Z (both contain this work; earlier `31c989d4` errored on an unrelated concurrent merge) |
+| Live pipeline after merge | `picks: scheduled refresh [skip ci]` published **`generated_at 2026-10-25T14:31:30Z`** — 156 fixtures, 156 priced, 0 unresolved, 9 market, 147 model, 11 Low, 9 excluded, **43 probe sources** (up from 41: Cloudbet PRM-2D events, bmbets, Betmonitor, esportsinsider now probed every run) |
+| Verification on `main` after the merge | `verify_site.py` **49 PASS / 0 FAIL / 0 WARN / 1 SKIP** · `test_verifier.py` **64/64** · `check_dom_contract.py` PASS · `audit/test_model.py` 23/0 (run in a throw-away worktree of `origin/main`) |
+
+**Measured outcome of the start-time finding:** `START_TIME_MISMATCH` went 10 → **0** between the 10:41:50Z and 14:24:11Z
+payloads with no code change — the upstream feed corrected itself, and the four 25 Oct Worlds rows now read 17:00 / 18:00 /
+19:00 / 22:00 UTC. Two rows still carry `START_TIME_DISAGREES_WITH_BOOKS` (Unibet's own kickoff field 1.0 h and 3.0 h off).
+The full evidence trail is `research/line-by-line-audit-2026-10-25.md` §2.2 and `flagged.html#audit-2026-10-25` A1.
+
+**Final union-aware gate SUCCESS:** [40203290312](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203290312)
+completed successfully, including live collection, actual Chromium, all source
+checks, union unit tests, and the independent lobby/API coverage gate. After
+that run, main advanced only via the #76 coordination/report record: both board
+appends are preserved and this run's verifier report retained. No tested code
+changed in this last merge. PR #67 is ready for immediate autonomous merge;
+Pages publication will be confirmed separately below.
+
+### Session `arena/07b651a3-lolhotspawn2` — A1–A3 results & combined verification (2026-10-25)
+
+- **A1 (Data consistency & audit documentation):** Unified low-confidence reason classification via `_low_conf_reason(m)` in `scripts/update_picks.py` so 5–7 game `MODEL_ELO_THIN` rows (`1081741` locked IN vs ZennIT, `1081742` Senshi eSports vs Coalesce) are counted consistently in both `unresolved.reasons` and `unresolved.low_confidence_reasons` (`Cross-league comparison: 9`, `Thin history (<8 games in 365 days): 2`, zero `"Other model uncertainty"` drift); synced `DEFAULT_ALIASES` fallback in `scripts/model.py` with `data/aliases.json`; documented full findings in `research/line-by-line-audit-2026-10-25.md` §7 and `research/betting-sources.md` §25.
+- **A2 (Mobile stacked-table labels, live bindings & broken relative-link elimination):** Added `data-label` attributes to every static and JS-rendered `<tbody>` `<td>` across all 7 HTML pages and `docs/assets/app.js` (so CSS `@media (max-width:700px)` stacked mobile cards never render unlabelled cells); removed the redundant sourceless inner `<table>` inside `#unresolved-summary` on `docs/index.html` while keeping `#exec-league-limits-body` (with verified external `https://` source links on every row); surfaced `Blended Elo` (`standings_blend.blended_elo1`/`blended_elo2`), both teams' raw decimal odds (`odds_team1`/`odds_team2`), and `elo_known`/`elo_prior` sample breakdown on `docs/match.html`; replaced broken `../research/*.md` links across `docs/` with canonical GitHub blob URLs; bound prose counts on `methodology.html` / `leagues.html` / `flagged.html` to live `picks.json` values; and unified `viewport-fit=cover` + `color-scheme: light dark` across all 7 pages. Also replaced the dead seasonal Polymarket Prime League 1st Division link (`HTTP 404`) in `docs/flagged.html` `A12` with the live Gamma LoL events endpoint (`HTTP 200`) + dated failure evidence link.
+- **A3 (Non-vacuous regression coverage):** Added static DOM contract rules `C6` (`viewport-fit=cover` + `color-scheme` on all 7 pages), `C7` (every static `<tbody>` `<td>` carries `data-label`), and `C8` (no `../` parent-escape relative links in `docs/`) with 3 negative self-tests in `verification/test_dom_contract.py` (`9/9`); added runtime jsdom assertions across all 7 rendered pages in `verification/check_dom_render.js` (`89/89`); and added low-confidence reason-tally parity assertion in `audit/test_model.py` (`24/24`).
+- **Combined tree verification (after merging `origin/main` through PRs #67, #68, #70, #71, #72, #76):** `check_dom_contract.py` PASS · `test_dom_contract.py` `9/9` · `test_verifier.py` `64/64` · `test_lobby_union.py` `5/5` · `test_evidence_scope.py` `8/8` · `test_entity_and_books.py` `17/17` · `test_standings_model.py` ALL PASS · `audit/test_model.py` `24/24` · `verify_site.py` `49 PASS / 0 FAIL` · `render_check.cjs` PASS · `check_dom_render.js` `89/89` · `test_freshness.cjs` `10/10`.
+
+
+---
+
+---
+
+**Final combined evidence integration (14:46 UTC):** full union-aware run [40203413920](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203413920) SUCCESS: 156 fixtures, 9 market, 147 model, 54 standings, 11 Low, 0 unresolved; verifier 52 PASS / 0 FAIL, blocked-source warning only, zero dead links. Main then merged #67/#76 evidence-age disclosure and another real-browser audit. Retained input collection timestamps/degraded-cache warnings, recent historical competition links, neutral exact ties, passed-lock labels, new source findings and both browser harnesses; source authority/null official-confirmation metadata remains additive. A12 correction combined by retaining the explicit attempted path, observed 404 and working publisher/check links. All other text conflicts used the more limited “no usable line found by configured adapters” phrasing. Adopted main's generated files until next refresh. No new source quote or outcome inferred.
+
+### Session arena/81e6a4e3 — publication complete (2026-10-25)
+
+| Item | Verified result / source |
+|---|---|
+| PR | [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67) **MERGED** 2026-10-25T14:43:30Z; merge commit `bc38b0b8c9430058fa60bd6dfd2314328dc24c53` |
+| Final combined branch verification | [40203290312](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203290312) **SUCCESS**; 50 PASS / 0 FAIL / 1 WARN (blocked sources), DOM 78/78, real Chromium 28/28, 50/50 cited wiki pages exist, union and independent coverage gates pass |
+| Pages deployment of merged site | [40203578912](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203578912) **SUCCESS**, Jekyll build and deploy both successful for `bc38b0b` |
+| Post-merge verification of live site | [40203579452](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203579452) **SUCCESS**, including external source/live Pages checks, both DOM suites, real phone/tablet browser gate, source-page audit and coverage tests |
+| Production automatic publisher | [40203579379](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203579379) **SUCCESS**; snapshot 2026-10-25T14:45:47Z: 156 fixtures, 9 market, 147 model, 54 standings/blend, 0 unresolved, 11 Low, 9 cancelled excluded; next nominal refresh 18:00 UTC |
+| Pages deployment of refreshed payload | [40203768505](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203768505) **SUCCESS**, source commit `53a6dbf7c21303742f1b9fb8d2ef9c61f0cbb709` |
+| Site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ · [all picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/picks.html) · [Flagged](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html#evidence-limits) |
+| Remaining limitations | **needs review**, not blockers: 147 model rows lack retrieved bookmaker lines; blocked books' coverage is unknown; community results are not independently organizer-verified; exact ties/unresolved rows have no preferred team. Flagged page/source links disclose these limits. No bookmaker line was fabricated. |
+| Tasks V1–V4 | **done**; all implementation, integration and publication checks complete |
+
+The follow-up commit containing this record changes documentation only. It does
+not regenerate, manually patch, or replace the already published source data.
+
+### Publication gate — PR #75 (`arena/c1e74f5e`, 2026-10-25)
+
+Final **full integrated** pipeline [40203809275](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203809275) **SUCCESS** (2m54s): all live fetches, both real Chromium suites, JSDOM, source/page verification, lobby-union tests and independent coverage gate passed. Snapshot `2026-10-25T14:48:26Z`: 156 fixtures, 9 market, 147 model, 54 Elo+standings, 11 Low confidence, 0 unresolved. Broader probe 43 candidates. Verifier **52 PASS / 0 FAIL / 1 WARN** (7 host-blocked URLs, no 404/410); arithmetic/provenance and official-confirmation-null gates passed on all rows. Local combined suites: verifier 74/74, JSDOM 82/82, phone/browser 78/78, independent browser all layouts PASS, evidence-scope 8/8, provenance/CSS 5/5, entity/books 17/17, model 23/23, freshness 10/10, union ALL PASS.
+
+Main advanced only through generated files and publication notes after that tested code base (`bc38b0b` → `0c33092`): this final reconciliation retains the **tested 14:48:26 payload/coverage/log as a unit** and both sessions' append-only publication records. No source, model, website or workflow code changed after the successful integrated run. This artifact-only commit uses `[skip ci]` to avoid re-fetching sources and racing another generated-file commit; all local invariants are rechecked before merge. PR: https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/75 . Merge and Pages result will be appended after the operation.
+
+
+### PR #75 merged; production and Pages verified (`arena/c1e74f5e`, 2026-10-25)
+
+| Item | Confirmed result |
+|---|---|
+| Feature PR | [#75](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/75) **MERGED** 2026-10-25T14:51:04Z; merge commit `6603cee2f438f001d984ee3625077d252559f973`. No owner approval wait. |
+| Final pre-merge complete CI | [40203809275](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203809275) **SUCCESS**: fresh sources, 82/82 JSDOM, 78/78 mobile suite plus independent real-browser suite, source verification, model/evidence/unit tests, and union-aware independent coverage gate. No dead external links; host-blocked references remain explicit warnings. |
+| Post-merge main verification | [40204165842](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204165842) **SUCCESS**, including the live GitHub Pages URL, PWA/site contracts, external links, cited pages and both browser suites. |
+| Merge Pages deployment | [40204165046](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204165046) **SUCCESS**, exact source commit `6603cee`; GitHub Pages API matched this commit during deployment. |
+| Production six-hour publisher | [40204165856](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204165856) **SUCCESS** (2m21s); refresh commit `0c31956`, payload `2026-10-25T14:53:17Z`: 156 fixtures, 9 external-market estimates, 147 model estimates, 54 standings blend, 11 Low, 0 unresolved; 43 probed candidates; official-results-confirmation remains null on all 156 rows. Schedule stays `0 */6 * * *` (00/06/12/18 UTC). |
+| Public dashboard | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ — direct picks `/docs/picks.html`, unverified match evidence `/docs/flagged.html#official-results-audit`, unresolved/limitations `/docs/unresolved.html`. |
+| C1 / C2 / C3 / C4 | **done**. Primary-organizer result-by-result confirmation remains **needs review**, explicitly published with blank official-confirmation fields; not silently represented as verified. |
+
+This record-only follow-up changes no website, model, workflow or generated value. The primary PR is merged and the deployed feature code, production publisher and live-site verifier have all succeeded. Runtime deprecation/Ubuntu migration annotations are infrastructure notices, not failed checks; both browser suites ran successfully on the current runner.

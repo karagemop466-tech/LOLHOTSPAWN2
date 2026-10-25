@@ -694,7 +694,7 @@ HAND_VERIFIED_VERDICTS = {
         "Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 "
         "head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an "
         "affiliate-rendered board override the model, so the disagreement is published on the "
-        "Flagged page for review instead. research/betting-sources.md §24."
+        "Flagged page for review instead. research/betting-sources.md §26."
     ),
 }
 
@@ -803,6 +803,8 @@ def main() -> int:
     write_json(OUT, {
         "checked_at": utc_iso(now_utc()),
         "fixture_count": len(matches),
+        "fixture_snapshot_at": (picks or {}).get("generated_at"),
+        "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
         "fixtures_without_external_line": len(index.unpriced),
         "candidates_with_new_coverage": [r["name"] for r in usable],
         "candidates": results,

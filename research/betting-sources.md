@@ -1184,7 +1184,7 @@ book prices by a future session — their match pages distinguish the two explic
 
 ---
 
-## 23. Refresh 2026-10-25 — a real coverage hole (found + fixed) and a fresh per-competition book check (session `arena/0e9a9550`)
+## 24. Refresh 2026-10-25 — a real coverage hole (found + fixed) and a fresh per-competition book check (session `arena/0e9a9550`)
 
 Brief: every match listed on Hotspawn must have a pick; where the featured (bookmaker-priced) picks cannot
 resolve a match, find another source; and keep the unresolved/limitations section in the executive summary.
@@ -1275,9 +1275,19 @@ counter-examples to the “just use the book line” assumption, and both are li
   `verification/test_verifier.py`, and the rendering of the new section is asserted in
   `verification/check_dom_render.js`.
 
+## Correction — A12 category claim (2026-10-25, c1e74f5e)
+
+The earlier entries claiming live Prime League 1st Division prices at the dedicated Polymarket category URL are **not currently verified**. Integrated source check [40202840025](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025) observed HTTP 404 for path `/esports/league-of-legends/prime-league-1st-division`. That does not establish any active market or the absence of other divisions. The Flagged page A12 now states this limitation and links the reachable Gamma LoL feed and dated check, rather than offering broken navigation or implying those prices were confirmed. No value from the category is used in a probability. Valid matched individual event markets from the production Gamma adapter are unaffected.
+
 ---
 
-## 24. Refresh 2026-10-25 — a comparison board that *does* price two model-only fixtures (session `arena/419cd73a`)
+## 25. Addendum 2026-10-25 — Reason-Tally, Dead-Link & Mobile Audit Verification (session `arena/07b651a3`)
+
+Verified the 14:39Z 43-candidate `market_probe` (`18` reachable, `6` structured JSON, `4` with LoL references — zero adding prices outside the 9 covered Worlds + LGC Rising matches), fixed `A12`'s dead `HTTP 404` Polymarket seasonal path in `docs/flagged.html` (replacing it with the live HTTP 200 Gamma LoL feed URL), and confirmed all 11 Low-confidence non-market rows (`9` `CROSS_LEAGUE_MODEL` across PRM 2nd Div / Tunisian / 4 Nations + `2` `MODEL_ELO_THIN` in LCP 2027 Promotion) reconcile identically between `unresolved.reasons` and `unresolved.low_confidence_reasons` after fixing `_low_conf_reason(m)` in `scripts/update_picks.py`.
+
+---
+
+## 26. Refresh 2026-10-25 — a comparison board that *does* price two model-only fixtures (session `arena/419cd73a`)
 
 Brief: re-run the search for the fixtures the featured (bookmaker-priced) picks cannot resolve, in the order the
 user asked for — established LoL betting sites → esportsbooks → esports betting lines → community — and record
@@ -1288,11 +1298,11 @@ README is no longer correct.** OddsDigger's upcoming-LoL board carries a two-way
 fixtures that none of the four production feeds price. Both rows were opened and read by hand; one confirms a
 published pick, the other contradicts it. Neither is used in a probability, and the reason is recorded below.
 
-### 24.1 What was newly found (each link opened on 2026-10-25)
+### 26.1 What was newly found (each link opened on 2026-10-25)
 
 | Source | Kind | What it actually showed today | Verdict |
 |---|---|---|---|
-| [OddsDigger — upcoming LoL](https://oddsdigger.com/e-sports/league-of-legends/upcoming) | odds comparison (UK fractional, best price per side) | 12–13 LoL fixtures: the Worlds slate **plus** `Vitality Rising Bees vs Mental Rush` (Tue 27 Oct, 17:00) and `Ground Zero vs Frank Esports` (Wed 11 Nov, 09:00). Books named on the event pages: bet365, LuckyMate, Copybet, 10Bet, Spreadex. | **First source in this project that prices a fixture the production feeds miss.** Fixture-matched probe added (`scripts/probe_lines.py::probe_oddsdigger`); **not** promoted to a probability input — see §24.2 |
+| [OddsDigger — upcoming LoL](https://oddsdigger.com/e-sports/league-of-legends/upcoming) | odds comparison (UK fractional, best price per side) | 12–13 LoL fixtures: the Worlds slate **plus** `Vitality Rising Bees vs Mental Rush` (Tue 27 Oct, 17:00) and `Ground Zero vs Frank Esports` (Wed 11 Nov, 09:00). Books named on the event pages: bet365, LuckyMate, Copybet, 10Bet, Spreadex. | **First source in this project that prices a fixture the production feeds miss.** Fixture-matched probe added (`scripts/probe_lines.py::probe_oddsdigger`); **not** promoted to a probability input — see §26.2 |
 | [OddsPortal — LoL Prime League](https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/) | odds comparison | The league page exists but its own body says *"Next Matches will appear here as soon as bookmaker betting odds become available."* The LoL index above it lists exactly one competition: `League of Legends World Championship (10)`. | No Prime League price. Added to the per-refresh probe so the claim stays measured |
 | [BetExplorer — LoL](https://www.betexplorer.com/esports/league-of-legends/) | odds comparison | Empty body for both `/lol/` (CI, HTTP 404) and `/esports/league-of-legends/` (rendered page: no content). | Not usable — unchanged |
 | [Esports Insider — LoL betting odds](https://esportsinsider.com/betting-odds/lol) | editorial odds index | Tournament-level pages (e.g. *Prime League 1st Division Summer 2026*), no per-fixture prices for the amateur divisions Hotspawn lists. | Editorial only — added to the probe |
@@ -1306,7 +1316,7 @@ Championship); the nine Kambi/Unibet country markets return the same Worlds slat
 (OddsPapi, odds-api.io, The Odds API, PandaScore, Abios, SportsGameOdds) are key- or card-gated, which the
 "no manual input" requirement rules out.
 
-### 24.2 The two hand-verified OddsDigger rows
+### 26.2 The two hand-verified OddsDigger rows
 
 Fractional prices are converted as `decimal = 1 + num/den`; because the board shows the *best* price per side
 (possibly from different books) the implied probabilities are normalised by their sum rather than de-vigged.
@@ -1325,7 +1335,7 @@ both numbers and every link, and the pick stays on the model. If the user prefer
 disagreement, the change is a one-line promotion in `scripts/fetch_markets.py` — deliberately not taken
 autonomously here.
 
-### 24.3 What changed in the repository
+### 26.3 What changed in the repository
 
 * `scripts/probe_lines.py` — `probe_oddsdigger()` + the pure `parse_oddsdigger()` parser (anchor-based, so
   attribute order cannot break it; rejects `Map N`/`Game N`/handicap markets; requires a real book overround
@@ -1341,7 +1351,7 @@ autonomously here.
   asserted.
 * `docs/flagged.html` — new *External line found on fixtures we price with our model* section (F20.1, F20.2).
 
-### 24.4 Irregularities found this session
+### 26.4 Irregularities found this session
 
 1. **F20.2 direction conflict** (above) — the only substantive one; needs a human decision.
 2. **`Mental Rush vs Vitality Rising Bees` is priced from a single market** (`MARKET_SINGLE`, Polymarket only).
@@ -1354,7 +1364,7 @@ autonomously here.
    featured market"**; the current payload has 147. The new section quotes the current numbers; the older
    section is left as a dated historical record.
 
-### 24.5 What the live CI probe measured (Actions run `40201818801`, checked 2026-10-25T14:23:17Z)
+### 26.5 What the live CI probe measured (Actions run `40201818801`, checked 2026-10-25T14:23:17Z)
 
 The first live run of `probe_oddsdigger()` against the real page — the evidence that matters, because the
 offline self-tests can only pin the rules, not the markup:
@@ -1386,14 +1396,14 @@ added (`verification/test_line_probe.py`, 33 assertions).
 Both anchors read *"G2 Esports vs Topsports betting odds"*. Our published consensus for that fixture
 (Pinnacle 3.06/1.7353 + Unibet 2.08/1.67 → G2 **54.8%**) agrees with the second entry and contradicts the
 first. A board that carries two opposite favourites for one match cannot be promoted on the strength of one
-agreeing row, which is exactly the situation §24.2 described for Ground Zero vs Frank Esports. **Decision
+agreeing row, which is exactly the situation §26.2 described for Ground Zero vs Frank Esports. **Decision
 stands: OddsDigger is probed and published every refresh, and never feeds a probability.**
 
 The run also shows why `fixtures_matched_and_previously_unpriced` was 0 rather than 1: `Mental Rush vs
 Vitality Rising Bees` already carries a Polymarket line in the payload, so it is not counted as "previously
 unpriced", and the Ground Zero row was the one lost to the footer bug. The next run should report 1.
 
-### 24.6 The corrected parser, measured live (Actions run `40202775347`, checked 2026-10-25T14:37:27Z)
+### 26.6 The corrected parser, measured live (Actions run `40202775347`, checked 2026-10-25T14:37:27Z)
 
 The third attempt bounded each row structurally — the row ends at its own trailing *All Odds* anchor, which
 carries the same event href — instead of by a character budget. Measured against the real page:
@@ -1407,7 +1417,7 @@ carries the same event href — instead of by a character budget. Measured again
 | **Fixtures matched that had no external line** | 0 | 0 | **1** |
 | `candidates_with_new_coverage` | `[]` | `[]` | **`["OddsDigger upcoming LoL board"]`** |
 
-The single new-coverage row is the one §24.2 flagged:
+The single new-coverage row is the one §26.2 flagged:
 
 ```
 Ground Zero vs Frank Esports   1.0149 / 8.3333

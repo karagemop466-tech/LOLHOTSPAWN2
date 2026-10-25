@@ -113,7 +113,9 @@ function assertPicks(win, selector, label, expected) {
     const named = matches.filter((m) => text.includes(m.team1) && text.includes(m.team2));
     // The same pair can be listed twice (different competitions), so accept any
     // candidate whose own pick matches the pill.
-    if (!named.length || !named.some((m) => pillText.includes(m.pick))) badPick++;
+    if (!named.length || !named.some((m) => m.method === "UNRESOLVED"
+        ? /no pick/i.test(pillText)
+        : Number(m.prob_team1) === 0.5 ? /no preferred team/.test(pillText) : pillText.includes(m.pick))) badPick++;
     else {
       const bad = named.filter((m) => Math.abs((m.prob_team1 || 0) + (m.prob_team2 || 0) - 1) > 0.001);
       if (bad.length) badProb++;
@@ -184,7 +186,7 @@ async function main() {
   // to render 6 cards under a count of 28.)
   const soonExpected = matches.filter((m) => {
     const t = new Date(m.start_utc).getTime();
-    return t >= Date.now() - 300000 && t <= Date.now() + 86400000;
+    return t >= Date.now() && t <= Date.now() + 86400000;
   }).length;
   const soonCards = idoc.querySelectorAll("#next24 article.match").length;
   check("summary: every next-24h match gets a card (no truncation)",
@@ -281,7 +283,7 @@ async function main() {
   // filter deep-links used by the summary must actually filter
   const next24 = matches.filter((m) => {
     const t = new Date(m.start_utc).getTime();
-    return t >= Date.now() - 300000 && t <= Date.now() + 86400000;
+    return t >= Date.now() && t <= Date.now() + 86400000;
   }).length;
   const filtered = await render("picks.html", { query: "?filter=next24" });
   check("picks: ?filter=next24 deep link applies",
@@ -368,11 +370,49 @@ async function main() {
         fpage.document.querySelectorAll("#excluded-body tr").length === (PAYLOAD.excluded_fixtures || []).length,
         `${fpage.document.querySelectorAll("#excluded-body tr").length} rows`);
 
+  const modelRows = matches.filter((m) => !m.market).length;
+  const evidenceRows = Array.from(fpage.document.querySelectorAll("#official-results-body tr"));
+  check("flagged: every non-market fixture has an evidence audit row", evidenceRows.length === Math.max(1, modelRows));
+  check("flagged: official confirmation is explicitly blank and unverified", modelRows === 0 || evidenceRows.every((r) => /—.*Unverified/.test(r.textContent)));
+  check("flagged: every evidence row links a first-party Hotspawn listing", modelRows === 0 || evidenceRows.every((r) => r.querySelector("a[href*='hotspawn.com/']")));
+  check("picks: estimates are not labelled verified picks", !/verified pick|verified link/.test(pdoc.querySelector("#picks-body").textContent));
+
   // ---------- methodology page ---------------------------------------------
   const mpage = await render("methodology.html");
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));
   check("methodology: backtest block rendered",
         (mpage.document.querySelector("#backtest") || {}).textContent.trim().length > 0);
+  const lowConfText = (mpage.document.querySelector("#meth-lowconf-summary") || {}).textContent || "";
+  check("methodology: live low-confidence count matches payload",
+        lowConfText.includes(`${PAYLOAD.counts.low_confidence} of ${PAYLOAD.counts.fixtures} rows`),
+        lowConfText.slice(0, 120));
+
+  // ---------- executive summary de-duplication & mobile labels -------------
+  check("summary: #unresolved-summary does not duplicate a sourceless inner table",
+        idoc.querySelectorAll("#unresolved-summary table").length === 0,
+        `${idoc.querySelectorAll("#unresolved-summary table").length} inner table(s)`);
+  check("summary: #exec-league-limits-body links a verified https source on every row",
+        Array.from(idoc.querySelectorAll("#exec-league-limits-body tr"))
+          .every((r) => r.querySelector("a[href^='https://']")));
+
+  function countUnlabelledTds(d) {
+    return Array.from(d.querySelectorAll("tbody tr td"))
+      .filter((td) => !td.hasAttribute("colspan") && !(td.getAttribute("data-label") || "").trim())
+      .length;
+  }
+
+  for (const [label, win] of [
+    ["index.html", idx],
+    ["picks.html", picks],
+    ["leagues.html", lpage],
+    ["unresolved.html", upage],
+    ["flagged.html", fpage],
+    ["methodology.html", mpage],
+  ]) {
+    const missingLabels = countUnlabelledTds(win.document);
+    check(`mobile labels: every <td> on ${label} has data-label`,
+          missingLabels === 0, `${missingLabels} unlabelled <td>`);
+  }
 
   // ---------- match detail --------------------------------------------------
   if (firstId) {
@@ -382,6 +422,20 @@ async function main() {
     check("match detail: no JS error", (dpage.__errors || []).length === 0, (dpage.__errors || []).join(" | "));
     check("match detail: renders both teams", dtext.includes(m.team1) && dtext.includes(m.team2));
     check("match detail: renders the pick", dtext.includes(m.pick));
+    const mktMatch = matches.find((x) => x.market && (x.market.sources || []).length);
+    if (mktMatch) {
+      const mktPage = await render("match.html", { query: `?id=${encodeURIComponent(mktMatch.id)}` });
+      const unlbl = countUnlabelledTds(mktPage.document);
+      check("match detail (market): every external-line <td> has data-label",
+            unlbl === 0, `${unlbl} unlabelled <td>`);
+    }
+    const blendMatch = matches.find((x) => x.method === "MODEL_ELO_STANDINGS" && x.model && x.model.blended_elo_team1 != null);
+    if (blendMatch) {
+      const bPage = await render("match.html", { query: `?id=${encodeURIComponent(blendMatch.id)}` });
+      check("match detail (standings blend): surfaces Blended Elo",
+            bPage.document.body.textContent.includes("Blended Elo")
+            && bPage.document.body.textContent.includes(String(blendMatch.model.blended_elo_team1)));
+    }
   }
 
   // ---------- match detail: start times by source ----------------------------
@@ -436,6 +490,30 @@ async function main() {
         sdoc.querySelector("#stat-unresolved").textContent.trim() === "2");
   check("self-test: hero unresolved counter reflects the payload",
         sdoc.querySelector("#hero-count-unresolved").textContent.includes("2"));
+
+  check("self-test: unresolved cards never recommend the first team",
+        Array.from(sdoc.querySelectorAll("#unresolved-list .pick-pill")).every((p) =>
+          /no pick/i.test(p.textContent) && !p.textContent.includes(synthetic.matches[0].team1)));
+  const tied = JSON.parse(JSON.stringify(PAYLOAD));
+  tied.matches[0] = Object.assign({}, tied.matches[0], { method: "MODEL_STANDINGS", prob_team1: 0.5, prob_team2: 0.5, pick_prob: 0.5 });
+  const tieDetail = await render("match.html", { query: `?id=${tied.matches[0].id}`, payload: tied });
+  check("self-test: equal model probabilities have no preferred team",
+        /no preferred team/.test(tieDetail.document.querySelector(".pick-pill").textContent));
+  check("picks: source links do not claim value verification",
+        !/verified link/.test(pdoc.querySelector("#picks-body").textContent));
+  const degraded = JSON.parse(JSON.stringify(PAYLOAD));
+  degraded.input_freshness = [{ name: "Leaguepedia community records", as_of: "2026-10-01T00:00:00Z", status: "degraded", url: "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule", note: "using cached snapshot" }];
+  const degradedView = await render("picks.html", { payload: degraded });
+  const health = degradedView.document.querySelector("#input-health");
+  check("self-test: fresh dashboard still warns about degraded cached evidence",
+        health && !health.classList.contains("hidden") && /2026-10-01/.test(health.textContent));
+  const locked = JSON.parse(JSON.stringify(PAYLOAD));
+  locked.matches[0] = Object.assign({}, locked.matches[0], { start_utc: "2020-01-01T00:00:00Z", prob_team1: 0.6, method: "MODEL_ELO" });
+  const lockedView = await render("match.html", { query: `?id=${locked.matches[0].id}`, payload: locked });
+  check("self-test: passed lock times are not labelled upcoming picks",
+        /LOCK TIME PASSED/.test(lockedView.document.querySelector(".pick-pill").textContent));
+  check("summary: evidence timestamp section is reachable",
+        !!idoc.querySelector("#input-freshness [data-input-freshness]"));
 
   const failed = results.filter((r) => !r.ok);
   console.log(`\nDOM render check: ${results.length - failed.length}/${results.length} passed` +

@@ -18,6 +18,7 @@ import re
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
+from urllib.parse import quote
 
 from lib_common import (clamp, load_json, log, median, norm, now_utc, prob_from_elo,
                         utc_iso, write_json)
@@ -71,7 +72,17 @@ DEFAULT_ALIASES = {
                 "note": ("Hotspawn expands the 'PVB' tag to defunct Vietnamese team Phong Vũ Buffalo; "
                          "verified Prime League 2nd Division 26-27 Fall participant is PvB (Swiss Team)."),
             }
-        }
+        },
+        "4 Nations 2026 Halloween Heist": {
+            "4 Nations 2026 Halloween Heist": {
+                "canonical": "Inari Esports",
+                "flag": "HOTSPAWN_NAME_COLLISION",
+                "source_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+                "note": ("Hotspawn backend feed carries competition string '4 Nations 2026 Halloween Heist' "
+                         "as team1 for the 2026-10-26 19:00 UTC fixture vs Bulldog Esports; Leaguepedia "
+                         "MatchSchedule confirms the opponent is Inari Esports."),
+            }
+        },
     },
     "market_aliases": {
         "pinnacle": {
@@ -123,6 +134,9 @@ DEFAULT_ALIASES = {
         "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
         "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
         "LigaGG CELOL B 2026 Split 2 Playoffs": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs",
+        "NLC 2026 Summer": "NLC/2026 Season/Summer Season",
+        "NLC 2026 Summer Playoffs": "NLC/2026 Season/Summer Playoffs",
+        "LFL 2026 Summer": "LFL/2026 Season/Summer Season",
     },
 }
 
@@ -1049,7 +1063,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         if eff_page:
             lp_url = "https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")
             claim_note = (f"Recorded results & schedule ({eff_page})." if row
-                          else f"Verified tournament overview & standings ({eff_page}; pairing not yet on MatchSchedule).")
+                          else f"Community-reported tournament overview & standings ({eff_page}; pairing not yet on MatchSchedule).")
             sources.append({"name": "Leaguepedia tournament", "url": lp_url, "claim": claim_note})
         elif model_method:
             sources.append({"name": "Leaguepedia results",
@@ -1070,6 +1084,17 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
                 sources.append({"name": "Leaguepedia Standings table",
                                 "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
                                 "claim": "Current-split series/game record used for this row."})
+        # The upcoming split page may contain no past results (e.g. a new
+        # season). Link the actual latest recorded competition for each rated
+        # side too, without claiming that the latest page is the entire history.
+        if model_method:
+            for side, team in ((1, t1), (2, t2)):
+                page = model.get(f"team{side}_recent_competition")
+                if page:
+                    url = "https://lol.fandom.com/wiki/" + quote(page.replace(" ", "_"), safe="/()")
+                    if not any(s.get("url") == url for s in sources):
+                        sources.append({"name": f"Leaguepedia history: {team}", "url": url,
+                                        "claim": f"Latest recorded competition for {team}; Elo pools earlier competitions too. Community-maintained, not organizer verification."})
         for meta in (meta1, meta2):
             if meta and meta.get("source_url"):
                 u = meta["source_url"]
