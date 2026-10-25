@@ -71,8 +71,11 @@ comment.
   re-derived from the decimals the row cites by auditor rule **R4** (24/24 conversions exact).
 * Bovada's coupon endpoint returned an empty object (`{}`) to this network path at 15:10Z
   (<https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en>),
-  while CI read `status: ok, count: 8` at 14:29:06Z. Recorded as **UNVERIFIED from this path**,
-  not as a defect: an empty body over a proxy is not evidence about the book.
+  while CI read `status: ok, count: 8` at 14:29:06Z. At the time of writing that looked like a
+  sandbox artefact, so it was recorded as **UNVERIFIED from this path**. **It was not:** the next
+  scheduled refresh (payload `2026-10-25T15:32:40Z`, fetched 15:30:52Z) records
+  `sources_status → Bovada: status "error", count 0, note "coupon feed HTTP 200 (no event groups)"`
+  from CI's own runner. See X6.
 
 ## 4. Hotspawn lobby — the fixture list the payload claims to mirror
 
@@ -100,12 +103,15 @@ Lobby re-read at ~14:35Z: <https://play.hotspawn.com/lol-pickems>
 ## 5. Row-by-row arithmetic audit of the same payload
 
 `scripts/audit_rows.py` (new this session) re-derives each row's arithmetic from the numbers that
-row cites, offline: **20 PASS · 0 FAIL · 0 WARN · 1 INFO over 156 rows**;
+row cites, offline: **20 PASS · 0 FAIL · 0 WARN · 1 INFO over 156 rows** — the same result on the
+`14:29:06Z` payload audited in this pass and on the `15:32:40Z` payload that replaced it (which has
+three books per row instead of four, and two new top-level keys), so the auditor is not tuned to one
+snapshot;
 `verification/test_row_audit.py` proves all 21 rules fail on a payload that breaks them
 (**32/32 negative self-tests**). Full table: [`verification/row_audit.md`](row_audit.md).
 
-Highlights: 24/24 cited decimal prices re-convert to the probability published for that source
-(R4); 9/9 market rows' consensus recomputes from their own sources — median with ≥3 books,
+Highlights: every cited decimal price re-converts to the probability published for that source
+(R4 — 24/24 on the 14:29:06Z payload, 16/16 on the 15:32:40Z one after Bovada's feed went empty); 9/9 market rows' consensus recomputes from their own sources — median with ≥3 books,
 weighted mean otherwise (R5); `counts`, `coverage` and all 12 `league_breakdown` rows re-foot
 against the rows they summarise (R9/R9b/R10); no cancelled fixture is priced (R12); every row
 cites ≥1 https source and ≥1 source that is not Hotspawn (R8).
@@ -116,11 +122,12 @@ cites ≥1 https source and ≥1 source that is not Hotspawn (R8).
 
 | ID | Irregularity | Evidence | Status |
 |---|---|---|---|
-| X1 | **Two rows carry a start-time warning the source no longer supports.** Rows 1075819 (Dplus KIA vs Movistar KOI) and 1075818 (Gen.G vs LYON) are flagged `START_TIME_DISAGREES_WITH_BOOKS` and four Oct-25 rows publish `time_spread_hours` of 1.0/3.0, all derived from Unibet start times recorded at 14:29Z (17:00Z for the 18:00Z fixture, 18:00Z for the 17:00Z fixture, 19:00Z for the 22:00Z fixture, 22:00Z for the 19:00Z fixture). Re-reading the *same Kambi event ids* at ~15:45Z on **both** feeds returns starts that agree with Hotspawn exactly (17:00 / 18:00 / 19:00 / 22:00 UTC), i.e. the upstream feed's start times moved, not our arithmetic. | Kambi feed links in §1; payload rows 1075816–1075819; auditor rules R15/R16 both **PASS**, which is what proves our arithmetic is internally consistent with the timestamps it cites | Flagged. Expected to clear on the next scheduled refresh (16:29Z) because the value is re-read live every run. If it persists, the flag wording should state that the disagreement is with the feed as read at generation time. |
+| X1 | **Two rows carried a start-time warning the source no longer supports — RESOLVED, verified.** In the 14:29:06Z payload, rows 1075819 (Dplus KIA vs Movistar KOI) and 1075818 (Gen.G vs LYON) were flagged `START_TIME_DISAGREES_WITH_BOOKS` and four Oct-25 rows published `time_spread_hours` of 1.0/3.0, all derived from Unibet start times recorded at 14:29Z (17:00Z for the 18:00Z fixture, 18:00Z for the 17:00Z fixture, 19:00Z for the 22:00Z fixture, 22:00Z for the 19:00Z fixture). Re-reading the *same Kambi event ids* at ~15:45Z on **both** feeds returns starts that agree with Hotspawn exactly (17:00 / 18:00 / 19:00 / 22:00 UTC), i.e. the upstream feed's start times moved, not our arithmetic. | Kambi feed links in §1; payload rows 1075816–1075819; auditor rules R15/R16 both **PASS**, which is what proves our arithmetic is internally consistent with the timestamps it cites | **Cleared without any manual edit.** The next scheduled refresh (payload `2026-10-25T15:32:40Z`, feeds read 15:30:52Z) re-read the same field: all 8 Unibet `start_utc` values now equal Hotspawn's exactly, every row's `time_spread_hours` is 0.2 (Pinnacle's own listing convention of quoting 15 min early) and **0 rows** carry `START_TIME_DISAGREES_WITH_BOOKS`. Auditor rule R16 re-checked 25 book start times against their fixtures with 0 disagreements. |
 | X2 | **`start_delta_hours` is unsigned.** `scripts/model.py` matches books to fixtures on `abs(delta)`, so a book whose start is *earlier* than Hotspawn's publishes a positive number (row 1075816: Unibet 17:00Z vs fixture 18:00Z → published `1.0`, not `-1.0`). The match page prints both timestamps beside the delta, so the direction is visible to a reader; the number itself is not wrong, but it cannot be read as "later". | `scripts/model.py` line with `delta_h = abs(...)`; payload rows above | Logged as a request to the session that owns `scripts/model.py` / `docs/assets/app.js` (both claimed by open PRs #67/#70/#71) — not edited here. |
 | X3 | **108 of 156 rows carry Hotspawn's own placeholder tier string** `waiting for information` (upper-cased by `scripts/fetch_hotspawn.py` when the API returns no tier). The site renders it as "Tier not published" and never as a strength claim, and no tier is invented for those rows. | auditor rule **R11** (INFO): `WAITING FOR INFORMATION=108, C=36, S=11, A=1`; `docs/assets/app.js` `/^WAITING/i` branch | Verified as handled; recorded so the string is not mistaken for data. |
 | X4 | **Behind 10 rows the Elo rating was built in a different competition than the fixture.** A team's rating follows its most recent recorded series wherever it was played: row 1079054 (The Bandits Prime vs VfB eSports, PRM 2nd Division, 50.2/49.8, Low) rests partly on a `Kanji Cup 2026` record for one side (8 games in 365d vs 51 for the other) and row 1080934 (JSK Esports vs Olympique Mnihla, Tunisian Super League, 57.4/42.6, Low) on an `Arabian League/2026 Season/Spring Split` record. Both carry `CROSS_LEAGUE_MODEL`. Across all 156 rows, **236 team-sides** have their most recent series in another competition than the fixture they appear in. The *citations* are unaffected — **0 of 156 rows** link a Leaguepedia page other than their own tournament page (checked by comparing every row's `sources[].url` title with its `leaguepedia_page`). | payload rows 1079054, 1080934, 1075821; `model.teamN_recent_competition` / `model.cross_league` | Disclosed on the row and on the Unresolved page; no change made. |
 | X5 | **Per-league lobby differences were not itemised card by card** in this pass (see §4). | this file §4 | Open item for the next verification pass; the union gate D21 covers it in CI. |
+| X6 | **Bovada's coupon feed went empty upstream and 8 rows lost a book.** The refresh at 15:30:52Z read `HTTP 200` with **no event groups**, so `sources_status` records `Bovada: error, count 0` and all eight Worlds consensus rows now rest on **3 books** (Pinnacle, Unibet/Kambi, Polymarket) instead of 4. The consensus is still the median of the books present (rule R5 recomputes all 9 rows exactly), so the published probabilities moved only as much as losing one vote should: row `1075817` consensus 0.273 → 0.281, dispersion 0.040 → 0.0179. Nothing was edited and no row lost its pick. | payload `2026-10-25T15:32:40Z` → `sources_status`, rows 1075816–1075823 `market.sources`; the same empty body was read from this network path at 15:10Z (§3) | Flagged as an upstream outage, not a code defect: the feed is re-read every 6 h and the row count self-heals when Bovada publishes again. If it is still empty at the next refresh, the site's source table already shows the book as `error` rather than silently dropping it. |
 
 ### Checked and found clean (recorded so it is not re-investigated)
 
@@ -141,3 +148,4 @@ cites ≥1 https source and ≥1 source that is not Hotspawn (R8).
 | Bovada's 8 rows re-read from the live coupon JSON | empty body (`{}`) over this network path; CI read 8 events at 14:29:06Z. |
 | Itemised list of the 78 already-played lobby fixtures | the lobby page renders them without a machine-readable id in the fetched HTML; not itemised rather than guessed. |
 | Any bookmaker line for the 147 model-only fixtures | none exists on any source measured today — see `research/low-tier-sweep-2026-10-25.md`. |
+| Bovada's 8 rows re-read from the live coupon JSON | the feed itself was empty at 15:10Z from this path **and** at 15:30:52Z from CI (X6), so there was nothing to re-read. The prices the rows still carry are from the 14:29:06Z read and are re-derived from those rows' own cited decimals by rule R4. |

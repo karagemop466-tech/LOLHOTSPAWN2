@@ -31,6 +31,11 @@ bands: Medium 121, High 15, Low 11. Other flags present: `TIER_UNVERIFIED` 108,
 
 **Result: 0 of 147 fixtures have a published bookmaker line on any source measured today.**
 
+The same scope was recomputed against the newer payload `2026-10-25T15:32:40Z` published while this
+sweep was being written: 147 unpriced rows, 105 team names and the same per-competition counts, so
+the table above is not a stale snapshot. `scripts/audit_rows.py` re-audited that newer payload to
+**20 PASS · 0 FAIL · 0 WARN · 1 INFO over 156 rows**.
+
 ---
 
 ## A. Measured today from this network path (2026-10-25, 14:30–15:55Z)
@@ -52,7 +57,7 @@ bands: Medium 121, High 15, Low 11. Other flags present: `TIER_UNVERIFIED` 108,
 | Polymarket LoL hub | <https://polymarket.com/esports/league-of-legends> | HTTP 200, **"LoL (9)"** = LGC Rising (1) + Worlds (8). Nothing else open. |
 | Polymarket search "prime league" | <https://gamma-api.polymarket.com/public-search?q=prime%20league> | HTTP 200, Prime League **1st** Division markets only and **all closed** (e.g. `lol-big1-g2nord-2026-08-27`, endDate 2026-08-27). |
 | Pinnacle guest API | <https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues?all=true> | HTTP **401** `No authorization token provided` without `x-api-key`; `/0.1/sports` shows E Sports = id 12 with Worlds as the only league CI can reach. |
-| Bovada coupon JSON | <https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en> | empty object `{}` from this network path (CI reads 8 Worlds events from it). **UNVERIFIED from here**, not evidence of absence. |
+| Bovada coupon JSON | <https://www.bovada.lv/services/sports/event/coupon/events/A/description/esports/league-of-legends?marketFilterId=def&preMatchOnly=true&lang=en> | empty object `{}` from this network path at 15:10Z. **Confirmed upstream, not a sandbox artefact:** CI's own read at 15:30:52Z recorded `Bovada: status "error", count 0, "coupon feed HTTP 200 (no event groups)"` (payload `2026-10-25T15:32:40Z`), so the 8 Worlds rows lost that book for that refresh. |
 | SofaScore scheduled events | <https://api.sofascore.com/api/v1/sport/esports/scheduled-events/2026-10-25> | HTTP **403** (blocked at the edge). |
 | 1xBet / LineFeed | <https://1xbet.com/LineFeed/Get1x2_VZip?sports=12&count=400&lng=en&mode=4&country=71&getEmpty=true> | redirected to `1xbet.com/en/block` — geo-blocked from this path. |
 | Fon.bet line feed | <https://fon.bet/streams/v6/sports> | HTTP 200, JSON shell of sport ids; **no LoL events or prices**. |

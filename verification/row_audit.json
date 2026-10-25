@@ -1,6 +1,6 @@
 {
- "audited_at": "2026-10-25T15:45:27+00:00",
- "payload_generated_at": "2026-10-25T14:29:06.319763Z",
+ "audited_at": "2026-10-25T16:56:39+00:00",
+ "payload_generated_at": "2026-10-25T15:32:40.608816Z",
  "rows": 156,
  "summary": {
   "PASS": 20,
@@ -42,7 +42,7 @@
    "id": "R4",
    "title": "every cited decimal price re-converts to the probability published for that source",
    "status": "PASS",
-   "detail": "24 de-vig conversions recomputed; 0 disagree by >0.2pt",
+   "detail": "16 de-vig conversions recomputed; 0 disagree by >0.2pt",
    "evidence": []
   },
   {
@@ -63,7 +63,7 @@
    "id": "R7",
    "title": "Hotspawn crowd percentages are not the published probability",
    "status": "PASS",
-   "detail": "147 model rows compared with the crowd number: mean |published - crowd| = 0.3672, 0 row(s) (0.0%) within 0.5pt (coincidence, not a copy)",
+   "detail": "147 model rows compared with the crowd number: mean |published - crowd| = 0.3677, 0 row(s) (0.0%) within 0.5pt (coincidence, not a copy)",
    "evidence": []
   },
   {
@@ -84,7 +84,7 @@
    "id": "R8b",
    "title": "every cited host is on the approved provenance allowlist",
    "status": "PASS",
-   "detail": "0 citation(s) to an unapproved host; hosts seen: lol.fandom.com(210), www.hotspawn.com(156), polymarket.com(9), guest.api.arcadia.pinnacle.com(8), www.unibet.com.au(8), www.bovada.lv(8)",
+   "detail": "0 citation(s) to an unapproved host; hosts seen: lol.fandom.com(415), www.hotspawn.com(156), polymarket.com(9), guest.api.arcadia.pinnacle.com(8), www.unibet.com.au(8)",
    "evidence": []
   },
   {
@@ -154,7 +154,7 @@
    "id": "R16",
    "title": "every per-source start delta recomputes (unsigned by design, both timestamps shown)",
    "status": "PASS",
-   "detail": "33 book start times compared with their fixture; 0 disagree",
+   "detail": "25 book start times compared with their fixture; 0 disagree",
    "evidence": []
   }
  ],
@@ -183,17 +183,6 @@
     "delta": 0.0
    },
    {
-    "fixture": "1075817",
-    "source": "Bovada",
-    "decimal": [
-     3.85,
-     1.2353
-    ],
-    "published": 0.2429,
-    "recomputed": 0.2429,
-    "delta": 0.0
-   },
-   {
     "fixture": "1075816",
     "source": "Pinnacle",
     "decimal": [
@@ -213,17 +202,6 @@
     ],
     "published": 0.4453,
     "recomputed": 0.4453,
-    "delta": 0.0
-   },
-   {
-    "fixture": "1075816",
-    "source": "Bovada",
-    "decimal": [
-     2.1,
-     1.69
-    ],
-    "published": 0.4459,
-    "recomputed": 0.4459,
     "delta": 0.0
    },
    {
@@ -249,17 +227,6 @@
     "delta": 0.0
    },
    {
-    "fixture": "1075819",
-    "source": "Bovada",
-    "decimal": [
-     1.2353,
-     3.85
-    ],
-    "published": 0.7571,
-    "recomputed": 0.7571,
-    "delta": 0.0
-   },
-   {
     "fixture": "1075818",
     "source": "Pinnacle",
     "decimal": [
@@ -279,17 +246,6 @@
     ],
     "published": 0.8751,
     "recomputed": 0.8751,
-    "delta": 0.0
-   },
-   {
-    "fixture": "1075818",
-    "source": "Bovada",
-    "decimal": [
-     1.0556,
-     9.0
-    ],
-    "published": 0.895,
-    "recomputed": 0.895,
     "delta": 0.0
    },
    {
@@ -315,17 +271,6 @@
     "delta": 0.0
    },
    {
-    "fixture": "1075821",
-    "source": "Bovada",
-    "decimal": [
-     1.125,
-     5.75
-    ],
-    "published": 0.8364,
-    "recomputed": 0.8364,
-    "delta": 0.0
-   },
-   {
     "fixture": "1075820",
     "source": "Pinnacle",
     "decimal": [
@@ -345,17 +290,6 @@
     ],
     "published": 0.3262,
     "recomputed": 0.3262,
-    "delta": 0.0
-   },
-   {
-    "fixture": "1075820",
-    "source": "Bovada",
-    "decimal": [
-     2.9,
-     1.3846
-    ],
-    "published": 0.3232,
-    "recomputed": 0.3232,
     "delta": 0.0
    },
    {
@@ -381,17 +315,6 @@
     "delta": 0.0
    },
    {
-    "fixture": "1075822",
-    "source": "Bovada",
-    "decimal": [
-     2.85,
-     1.4
-    ],
-    "published": 0.3294,
-    "recomputed": 0.3294,
-    "delta": 0.0
-   },
-   {
     "fixture": "1075823",
     "source": "Pinnacle",
     "decimal": [
@@ -412,83 +335,72 @@
     "published": 0.3333,
     "recomputed": 0.3333,
     "delta": 0.0
-   },
-   {
-    "fixture": "1075823",
-    "source": "Bovada",
-    "decimal": [
-     3.0,
-     1.3636
-    ],
-    "published": 0.3125,
-    "recomputed": 0.3125,
-    "delta": 0.0
    }
   ],
   "consensus": [
    {
     "fixture": "1075817",
     "match": "Invictus Gaming vs Hanwha Life Esports",
-    "sources": 4,
-    "recomputed_consensus": 0.273,
-    "published_consensus": 0.273,
-    "row_prob_team1": 0.273
+    "sources": 3,
+    "recomputed_consensus": 0.281,
+    "published_consensus": 0.281,
+    "row_prob_team1": 0.281
    },
    {
     "fixture": "1075816",
     "match": "Top Esports vs G2 Esports",
-    "sources": 4,
-    "recomputed_consensus": 0.4476,
-    "published_consensus": 0.4476,
-    "row_prob_team1": 0.4476
+    "sources": 3,
+    "recomputed_consensus": 0.4493,
+    "published_consensus": 0.4493,
+    "row_prob_team1": 0.4493
    },
    {
     "fixture": "1075819",
     "match": "Dplus KIA vs Movistar KOI",
-    "sources": 4,
-    "recomputed_consensus": 0.7581,
-    "published_consensus": 0.7581,
-    "row_prob_team1": 0.7581
+    "sources": 3,
+    "recomputed_consensus": 0.7592,
+    "published_consensus": 0.7592,
+    "row_prob_team1": 0.7592
    },
    {
     "fixture": "1075818",
     "match": "Gen.G vs LYON",
-    "sources": 4,
-    "recomputed_consensus": 0.8956,
-    "published_consensus": 0.8956,
-    "row_prob_team1": 0.8956
+    "sources": 3,
+    "recomputed_consensus": 0.8962,
+    "published_consensus": 0.8962,
+    "row_prob_team1": 0.8962
    },
    {
     "fixture": "1075821",
     "match": "T1 vs CTBC Flying Oyster",
-    "sources": 4,
-    "recomputed_consensus": 0.8396,
-    "published_consensus": 0.8396,
-    "row_prob_team1": 0.8396
+    "sources": 3,
+    "recomputed_consensus": 0.8428,
+    "published_consensus": 0.8428,
+    "row_prob_team1": 0.8428
    },
    {
     "fixture": "1075820",
     "match": "Karmine Corp vs Bilibili Gaming",
-    "sources": 4,
-    "recomputed_consensus": 0.318,
-    "published_consensus": 0.318,
-    "row_prob_team1": 0.318
+    "sources": 3,
+    "recomputed_consensus": 0.3129,
+    "published_consensus": 0.3129,
+    "row_prob_team1": 0.3129
    },
    {
     "fixture": "1075822",
     "match": "L\u00d8S vs Team Secret Whales",
-    "sources": 4,
-    "recomputed_consensus": 0.3557,
-    "published_consensus": 0.3557,
-    "row_prob_team1": 0.3557
+    "sources": 3,
+    "recomputed_consensus": 0.3564,
+    "published_consensus": 0.3564,
+    "row_prob_team1": 0.3564
    },
    {
     "fixture": "1075823",
     "match": "Team Liquid vs Anyone's Legend",
-    "sources": 4,
-    "recomputed_consensus": 0.3133,
-    "published_consensus": 0.3133,
-    "row_prob_team1": 0.3133
+    "sources": 3,
+    "recomputed_consensus": 0.3141,
+    "published_consensus": 0.3141,
+    "row_prob_team1": 0.3141
    },
    {
     "fixture": "1079080",
@@ -501,10 +413,9 @@
   ],
   "hosts": {
    "www.hotspawn.com": 156,
-   "lol.fandom.com": 210,
+   "lol.fandom.com": 415,
    "guest.api.arcadia.pinnacle.com": 8,
    "www.unibet.com.au": 8,
-   "www.bovada.lv": 8,
    "polymarket.com": 9
   },
   "tiers": {
@@ -513,6 +424,6 @@
    "S": 11,
    "A": 1
   },
-  "crowd_mean_abs_diff": 0.3672
+  "crowd_mean_abs_diff": 0.3677
  }
 }

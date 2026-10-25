@@ -2274,3 +2274,49 @@ logged here as a request instead of being edited.
 `test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS · `audit/test_model.py` 23 passed · 0 failed ·
 `node verification/render_check.cjs` RENDER CHECK PASS · `node verification/check_dom_render.js` 65/65 ·
 `verification/test_row_audit.py` 32/32 · `verification/test_lowtier_sweep.py` 42/42.
+
+### T47 in progress — rebase onto `main`, conflicts, and what the newer payload showed
+
+* **Rebased** this branch onto `origin/main` = `f91c3ff` (174 commits past the `4914cb1` baseline this session
+  claimed at). Three conflicts, all resolved by keeping both sides' work:
+  * `COORDINATION.md` — both sessions appended at the tail; kept main's entries then this session's claim block, and
+    inserted the blank line before this session's `---` separator so main's last paragraph is not turned into a
+    setext heading.
+  * `docs/unresolved.html` — main added `#lowtier-books` (established books checked for a low-tier line) at the same
+    insertion point as this session's `#recheck-2026-10-25`; **both sections are kept**, main's first.
+  * `docs/flagged.html` — **this session's A12 edit was dropped in favour of main's.** Main had already repaired the
+    same dead Polymarket PRM 1st Division URL (its 14:40Z board entry records the X1 404 and rewrites A12 as
+    "category claim not confirmed", keeping the path as `<code>` text rather than a link). Nothing was lost: the
+    finding is identical, main's wording is already merged.
+* **Auditor re-run against main's newer payload `2026-10-25T15:32:40Z`** (the 6-hourly publisher ran while this
+  session was writing): **20 PASS · 0 FAIL · 0 WARN · 1 INFO over 156 rows** — the same result as on the
+  `14:29:06Z` snapshot, on a payload that has three books per market row instead of four and two new top-level keys
+  (`evidence_policy`, `input_freshness`). `verification/row_audit.{json,md}` in this commit are that newer run.
+  Rule counts moved for a real reason, not a code change: R4 24 → 16 de-vig conversions and R16 33 → 25 book start
+  times, both because **Bovada's coupon feed came back empty** (see X6).
+* **X1 is verified cleared, not merely predicted.** In the `15:32:40Z` payload all 8 Unibet `start_utc` values equal
+  Hotspawn's exactly, every `time_spread_hours` is 0.2 (Pinnacle's 15-minutes-early listing convention) and **0 rows**
+  carry `START_TIME_DISAGREES_WITH_BOOKS`. No manual edit was made at any point — the 6-hourly re-read fixed it, which
+  is the behaviour the site claims.
+* **X6 (new): Bovada's coupon feed went empty upstream.** CI's own read at 15:30:52Z recorded
+  `Bovada: status "error", count 0, "coupon feed HTTP 200 (no event groups)"`, so the eight Worlds consensus rows now
+  rest on 3 books (Pinnacle, Unibet/Kambi, Polymarket) instead of 4. Consensus is still the median of the books present
+  and recomputes exactly (R5 9/9): row `1075817` moved 0.273 → 0.281 with dispersion 0.040 → 0.018. This also confirms
+  the empty `{}` body this session read from a second network path at 15:10Z was upstream, not a sandbox artefact.
+  No code change; the feed is re-read every 6 h and the source table shows the book as `error` rather than hiding it.
+* **Two repo gates this session had to comply with after the rebase** (both new on `main`, both now satisfied):
+  * `check_dom_contract.py` requires `data-label` on **every** `<td>` for the mobile card layout → 36 labels added to
+    the two new tables in `docs/unresolved.html`.
+  * **C8 forbids parent-relative hrefs escaping `docs/`** ("break for repo `.md` files on GitHub Pages"). The working
+    papers are therefore linked as `github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/verification` (and `/research`)
+    with the exact filename as the link label, because a `blob/main/<file>` link to a file that only lands with this PR
+    would 404 in the pre-merge X1 external-link check and fail the run. **Follow-up for whoever integrates next:** once
+    this PR is merged, those four links can be flipped to `blob/main/<path>` for one-click precision — X1 will be green
+    by then. `scripts/model.py` (X2 evidence) already links `blob/main` since that file is on main.
+* **Gates re-run after the rebase, all green:** `scripts/verify_site.py` **51 PASS · 0 FAIL · 0 WARN · 1 SKIP** ·
+  `check_dom_contract.py` PASS · `test_dom_contract.py` 9/9 · `test_verifier.py` 74/74 · `audit/test_model.py` 24/0 ·
+  `test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS · `node render_check.cjs` PASS ·
+  `node check_dom_render.js` 98/98 · `test_row_audit.py` 32/32 · `test_lowtier_sweep.py` 42/42.
+  `verification/report.json` / `last_report.md` were deliberately **not** committed: this sandbox has no route to the
+  internet, so a local run cannot perform X1 and its report would omit exactly the check that matters here. CI
+  regenerates both with `--check-external`.
