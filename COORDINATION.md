@@ -2340,3 +2340,42 @@ logged here as a request instead of being edited.
   committed artifacts to this branch in between (`9936e5a pipeline: test run [skip ci]`, `14e3d00 diag: line-source
   probe [skip ci]`, plus their merge commits). Each was resolved with `fetch` → `rebase` → `push`; no CI artifact and no
   other session's work was overwritten. `verification/report.json` / `last_report.md` keep CI's versions.
+
+### T47 done — PR #87 merged, Pages live, and the follow-up that closed the loop
+
+| Step | Result |
+|---|---|
+| PR | [#87](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/87) `arena/e5e9f360-lolhotspawn2` → `main` |
+| Merge | **MERGED** 2026-10-25T17:12:15Z, merge commit `4cf3e73` (no approval waited for, per the standing brief) |
+| GitHub Pages | [pages build and deployment 40215326580](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215326580) **success** |
+| Live check | <https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/unresolved.html> fetched after deploy: `#recheck-2026-10-25` renders both tables — the six re-check rows (Kambi 8/8, Polymarket 9, lobby 234 = 156 + 78 / 139 + 95, auditor 20 PASS, Pinnacle+Bovada unverified-from-this-path, no low-tier line anywhere) and irregularities **X1–X6**, each with its source link |
+| Post-merge main runs | [Verify picks and site 40215327352](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215327352) **success** · [Update Hotspawn LoL picks 40215327379](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215327379) **success** (payload `2026-10-25T17:14:35Z`, 139 fixtures) · [pages build 40215521364](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215521364) for that payload |
+| Auditor on the 4th consecutive payload | `2026-10-25T17:14:35Z`, 139 rows → **20 PASS · 0 FAIL · 0 WARN · 1 INFO** (INFO = R11 placeholder tiers). Four payloads, 156/156/139/139 rows, four books then three, audited clean with no edit to the auditor. |
+
+**Follow-up (this commit, PR #88):** the seven working-paper links on `docs/unresolved.html` were pointing at
+`github.com/.../tree/main/{verification,research}` because a `blob/main/<file>` link to a file that only landed with
+PR #87 would have 404'd in the pre-merge X1 check. The files are on `main` now, so all seven were flipped to exact-file
+`blob/main` links (X1 stays green — every one of them resolves). Two cells were also tightened: the crowd-leakage
+figure is stated once (`0.367`, `0 rows` within 0.5 pt, measured the same way on two payloads) instead of three ways,
+and the Pinnacle/Bovada cell now points at **X6** for the Bovada outage that followed this pass. `verification/row_audit.{json,md}`
+are refreshed for the `17:14:35Z` payload.
+
+**Observation for whoever maintains `.github/workflows/row-audit.yml`:** run
+[40215204630](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215204630), triggered by a
+CI-generated merge commit on the branch, finished `action_required` with **no jobs** — a pending approval that this
+token could neither approve nor cancel (403 on both endpoints). It blocks nothing and the two real runs
+([40214473210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473210),
+[40214945867](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214945867)) both succeeded, but if it
+recurs and leaves PRs `UNSTABLE`, the fix is a job-level guard so the workflow does not queue on bot merge commits
+(e.g. skip when the head commit's author is the actions bot and only generated artifacts changed).
+
+### Standing rules honoured by this session
+
+No Hotspawn crowd percentage and no Hotspawn price entered any probability — rule **R7** now measures that on every
+run instead of asserting it (mean |published − crowd| = 0.367, 0 of 147 rows within 0.5 pt). Every new table row on
+the site carries an external source link; nothing unverifiable was filled in (Pinnacle's and Bovada's rows are marked
+unverified **from this network path** rather than guessed, and the 78/95 already-played lobby fixtures are recorded as
+not itemised rather than listed from memory). No file claimed by another session was edited except the one-row
+`docs/flagged.html` repair, which was **dropped in favour of main's own fix** on rebase. Defects belonging to
+`scripts/model.py` (unsigned start delta) and `scripts/fetch_hotspawn.py` (placeholder tier string) were logged as
+requests, not edits.

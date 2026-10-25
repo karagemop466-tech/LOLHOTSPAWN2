@@ -1,6 +1,6 @@
 # Row-by-row audit of the published payload
 
-Payload `docs/data/picks.json` generated **2026-10-25T17:03:55.791951Z** (schema 3): 139 fixtures, 139 resolved, 0 unresolved, 8 with an external line.
+Payload `docs/data/picks.json` generated **2026-10-25T17:14:35.027608Z** (schema 3): 139 fixtures, 139 resolved, 0 unresolved, 8 with an external line.
 
 Auditor: `scripts/audit_rows.py` — offline, read-only, recomputes each row's arithmetic from the numbers that row cites. It never invents a value: anything it cannot confirm is reported as `UNVERIFIED`.
 
@@ -22,7 +22,7 @@ Auditor: `scripts/audit_rows.py` — offline, read-only, recomputes each row's a
 | R9b the coverage block re-foots against the rows | PASS | 0 mismatch(es) |
 | R10 every per-league row re-foots against the rows it summarises | PASS | 12 league rows, 139 fixtures; 0 mismatch(es); leagues missing from the breakdown: none |
 | R11 Hotspawn tier values as published (never inferred) | INFO | 94 of 139 rows carry no tier from Hotspawn and are shown as 'Tier not published'; observed values: WAITING FOR INFORMATION=94, C=34, S=10, A=1 |
-| R12 no cancelled/excluded fixture is priced | PASS | 18 excluded fixture(s); 0 also priced |
+| R12 no cancelled/excluded fixture is priced | PASS | 9 excluded fixture(s); 0 also priced |
 | R13 the same pair in the same competition on the same day is listed once | PASS | 0 duplicate listing(s) |
 | R14 the featured and next-24h lists point at real rows inside their window | PASS | 0 problem(s) |
 | R15 the published book/Hotspawn time spread recomputes from the timestamps on the row | PASS | 0 market row(s) whose time_spread_hours does not follow from the start times it cites |
