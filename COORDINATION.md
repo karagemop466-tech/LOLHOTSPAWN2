@@ -17,6 +17,7 @@ below. `main` meanwhile advanced through PRs #67/#68/#70/#73 and more sessions; 
 | W2 Diagnosability: a failed refresh must explain itself in the one log the workflow keeps | done | arena/91450d23 | `scripts/update_picks.py` |
 | W3 Independent verification of `main` at `bc38b0b` (all suites + verifier + jsdom render) | done | arena/91450d23 | `COORDINATION.md` |
 | W4 Takeover of another session's tasks | not needed — no claim went stale while this session ran | — | — |
+| PR + merge + deploy record | done — PR #80 merged, publisher and Pages green | arena/91450d23 | `COORDINATION.md` |
 
 ### W1 — what is established, and what is not
 
@@ -59,6 +60,18 @@ step stays the gate.
 | R1 | **Dead external citation blocked `main`'s own verification.** `docs/flagged.html` row A12 linked `https://polymarket.com/esports/league-of-legends/prime-league-1st-division`, which returns **404**; `main`'s scheduled *Verify picks and site* run [40202537346](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202537346) failed at step 6 for that reason, and this branch's live run [40202799707](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202799707) reproduced it (`X1 … 1 dead (404/410)`). | **Fixed upstream** while this session ran: another session rewrote A12 as “Historical Polymarket PRM category link is unverified” (no price inferred). Verified present in `main@bc38b0b`; this branch deliberately carries no duplicate edit. |
 | R2 | A failed production refresh keeps **no verifier output**, so its cause cannot be recovered afterwards (W1). | Mitigated in the generator by W2. The remaining gap is a workflow line this session does not own: add `verification/report.json` and `verification/last_report.md` to the failure step's `git add` in `.github/workflows/update-picks.yml`. |
 | R3 | This session's first branch state silently reverted newer `main` files (`-X theirs` applied to the branch's own pipeline-test merge). Caught by `verification/test_verifier.py` — 9 self-tests failed because `S19` was missing from `scripts/verify_site.py`. | **Fixed** by resetting the branch onto `main@bc38b0b` and re-applying only the pre-flight; no other session's work was involved or lost (`backup-91450d23` kept locally for audit). |
+
+### PR & deploy record (this session)
+
+| Item | Result |
+|---|---|
+| PR | [#80](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/80) — **merged** 2026-10-25T14:59Z (merge commit `1944655`), 2 code/doc files plus generated artefacts, no probability, pick or layout change |
+| Branch checks before merge | Pipeline test [40204771866](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204771866) **success** on head `ab0e409` (live pipeline + all suites + jsdom 82/82 + external link check) |
+| Post-merge publisher | *Update Hotspawn LoL picks* run [40204777006](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204777006) **success** on `1944655` (payload 2026-10-25T14:59Z) |
+| Post-merge Pages | *pages build and deployment* run [40204776704](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204776704) **success** for `1944655`; Pages API `status: built` |
+| Pre-flight in production | `main`'s published `data/diag/pipeline.log` now ends every refresh with e.g. `[2026-10-25T15:02:30+00:00] preflight: verify_site.py PASS (exit 0) - == PASS · pass 51 · fail 0 · warn 0 · skip 1 ==` — the next failure will name its check and row instead of only "step 6 failed" |
+| Live snapshot after the merge | payload `generated_at 2026-10-25T15:02:30.411019Z` · **156 fixtures · 156 resolved · 0 unresolved** · 9 with external market (8 four-book consensus + 1 single Polymarket line) · 54 priced with split standings · 11 low-confidence, all flagged · 9 cancelled fixtures excluded and listed |
+| Site | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ (root `index.html` redirects to `docs/`) |
 
 Any other session that needs a file in this scope must log a request here instead of editing it.
 

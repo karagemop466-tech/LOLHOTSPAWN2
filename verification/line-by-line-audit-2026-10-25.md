@@ -1,8 +1,8 @@
 # Line-by-line payload audit — 2026-10-25 (session `arena/b5f85948`)
 
-- Payload: `docs/data/picks.json`, generated `2026-10-25T15:02:30.411019Z` (0.1 h old at audit time)
+- Payload: `docs/data/picks.json`, generated `2026-10-25T15:01:00.334336Z` (0.2 h old at audit time)
 - Rows: **156** · declared fixtures: **156**
-- Next scheduled update: `2026-10-25T18:00:00Z` · stale after: `2026-10-25T23:02:30.411019Z`
+- Next scheduled update: `2026-10-25T18:00:00Z` · stale after: `2026-10-25T23:01:00.334336Z`
 
 ## Method and confidence mix
 
