@@ -1,31 +1,31 @@
 {
- "verified_at": "2026-10-25T14:45:13.066550+00:00",
+ "verified_at": "2026-10-25T14:48:42.692823+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 44,
+  "PASS": 45,
   "FAIL": 0,
-  "WARN": 0,
-  "SKIP": 1
+  "WARN": 1,
+  "SKIP": 0
  },
  "data_matches": 156,
  "methods": {
-  "MARKET_POLYMARKET": 0,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO_STANDINGS": 54,
   "MARKET_SINGLE": 0,
-  "MARKET_CONSENSUS": 9,
-  "MODEL_STANDINGS": 0,
   "MARKET_BOOKS": 0,
-  "MODEL_ELO_THIN": 2,
   "UNRESOLVED": 0,
-  "MODEL_ELO": 91
+  "MODEL_ELO_THIN": 2,
+  "MARKET_CONSENSUS": 9,
+  "MODEL_ELO": 91,
+  "MARKET_POLYMARKET": 0,
+  "MODEL_ELO_STANDINGS": 54,
+  "MODEL_STANDINGS": 0,
+  "MODEL_LEAGUE_PRIOR": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "156 matches, generated_at=2026-10-25T14:36:13.336490Z (0.1h old)"
+   "detail": "156 matches, generated_at=2026-10-25T14:48:11.512880Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -156,8 +156,8 @@
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "SKIP",
-   "detail": "no --leaguepedia-schedule snapshot supplied"
+   "status": "PASS",
+   "detail": "133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:46:10.616856+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -290,6 +290,21 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
+  },
+  {
+   "id": "X1",
+   "title": "external links reachable (official-source links resolve)",
+   "status": "WARN",
+   "detail": "23/31 returned 2xx/3xx; 7 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "items": [
+    "https://eu-offering-api.kambicdn.com/offering/v2018/bs/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true -> 429",
+    "https://kalshi.com/markets/kxlolgame/g2-esports-vs-top-esports/kxlolgame-26oct251300g2tes -> 429",
+    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
+    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403",
+    "https://www.oddschecker.com/esports -> 403",
+    "https://www.primeleague.gg/en/liga2 -> 403",
+    "https://www.primeleague.gg/en/liga3 -> 403"
+   ]
   },
   {
    "id": "REQ",
