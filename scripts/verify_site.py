@@ -563,6 +563,37 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         rep.add("D22", "external-source probe rows are sourced and never carry a probability",
                 WARN, "no market_probe block in this payload (probe did not run)")
 
+    # Additive provenance contract: do not treat community records as primary
+    # organizer verification, even when the model is confident or a URL works.
+    if payload.get("evidence_policy", {}).get("version") == 1:
+        from provenance import source_kind
+        errors = []
+        for r in rows:
+            v = r.get("verification") or {}
+            expected = ("unavailable" if r.get("method") == "UNRESOLVED" else
+                        "market_derived" if r.get("market") else "model_estimate")
+            if v.get("probability_kind") != expected:
+                errors.append(f"{r.get('id')}: wrong probability evidence kind")
+            if ("official_results_confirmed" not in v or v["official_results_confirmed"] is not None
+                    or "official_results_source" not in v or v["official_results_source"] is not None):
+                errors.append(f"{r.get('id')}: official confirmation must remain blank")
+            if not v.get("limitation"):
+                errors.append(f"{r.get('id')}: missing evidence limitation")
+            for src in r.get("sources") or []:
+                if src.get("source_kind") != source_kind(src.get("url")):
+                    errors.append(f"{r.get('id')}: incorrect source authority")
+        rep.add("D24", "estimates are distinguished from official results verification",
+                FAIL if errors else PASS, f"{len(rows)} rows audited; official confirmation left blank", errors)
+    else:
+        rep.add("D24", "estimates are distinguished from official results verification", SKIP,
+                "legacy payload; next refresh adds provenance metadata")
+
+    from provenance import market_arithmetic_errors
+    arithmetic_errors = market_arithmetic_errors(rows)
+    rep.add("D25", "saved decimal prices reproduce no-vig probabilities and consensus",
+            FAIL if arithmetic_errors else PASS,
+            "Recomputed from saved values only, not a current quote or outcome guarantee", arithmetic_errors)
+
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
     def lacks_evidence(r):
@@ -1314,7 +1345,7 @@ def verify_review_rows(rep: Report, docs_dir: str) -> None:
 
 
 def verify_phone_install(rep: Report, docs_dir: str) -> None:
-    """S16: the dashboard must be installable on a phone home screen.
+    """S18: the dashboard must be installable on a phone home screen.
 
     The brief asks that a visitor can open the site on a phone and find the picks
     without hunting. A manifest + apple-touch-icon is what makes the picks list a
@@ -1390,7 +1421,7 @@ def verify_phone_install(rep: Report, docs_dir: str) -> None:
     elif _png_size(apple) is None:
         problems.append("apple-touch-icon.png is not a readable PNG")
 
-    rep.add("S16", "site is installable on a phone home screen (manifest, icons, per-page links)",
+    rep.add("S18", "site is installable on a phone home screen (manifest, icons, per-page links)",
             PASS if not problems else FAIL,
             (f"{len(linked)} pages link the manifest + apple-touch-icon; "
              f"{len(icons)} declared icon(s) present with matching sizes")

@@ -444,6 +444,22 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   .legend-t { margin: 0 0 8px; }
 }
 
+/* Actual 320/390px Chromium audit: long team and league names must wrap,
+   not push the entire dashboard wider than the phone. Keep filter strips
+   horizontally scrollable, but never let individual result badges overflow. */
+@media (max-width: 760px) {
+  .pickcell, .pick-pill, td .chip, .cat-nav .chipbtn {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+  .pick-pill { display: inline-block; }
+  .cat-nav .chipbtn { min-width: 0; }
+  .probrow { flex-wrap: wrap; }
+  .kv { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .kv dd { overflow-wrap: anywhere; }
+}
+
 /* phone readability pass (2026-10-25): the pick is the reason the page exists, so on
    a narrow screen it gets the largest type on the card and the probabilities stay
    on one line each, with the tap targets kept at >= 44px. */
@@ -460,4 +476,46 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   h2 { font-size: 20px; }
   .stats-mini { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats-mini b { font-size: 22px; }
+}
+
+/* Narrow phones: never let a long team name or league label widen the page.
+   Do not hide overflow: retain every character and wrap the badge instead. */
+@media (max-width: 760px) {
+  .pickcell { white-space: normal; }
+  .pick-pill, .chip {
+    max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere;
+  }
+  .chips .chip { flex-shrink: 0; white-space: nowrap; }
+  .probrow > span { min-width: 0; overflow-wrap: anywhere; }
+}
+@media (max-width: 760px) {
+  .cat-nav .chipbtn { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+}
+
+/* On phones lead with the teams, pick and probabilities, not timestamp metadata. */
+@media (max-width: 760px) {
+  #picks-body tr { display: flex; flex-direction: column; }
+  #picks-body td { order: 4; }
+  #picks-body .teams-cell { order: 0; }
+  #picks-body .pickcell { order: 1; }
+  #picks-body .probcell { order: 2; }
+  #picks-body td[data-label="Start"] { order: 3; }
+}
+@media (max-width: 760px) {
+  /* Keep the integrated why-line, but place it after the two probabilities so
+     phone users do not have to scroll past analysis to see the actual chance. */
+  #picks-body td { order: 5; }
+  #picks-body .teams-cell { order: 0; }
+  #picks-body .pickcell { display: contents; }
+  #picks-body .pickcell::before { display: none; }
+  #picks-body .pickcell > .pick-pill { order: 1; align-self: flex-start; margin: 6px 0; }
+  #picks-body .probcell { order: 2; }
+  #picks-body .pickcell > .sub { order: 3; }
+  #picks-body td[data-label="Start"] { order: 4; }
+}
+
+@media (max-width: 760px) {
+  /* The picks page already has top/bottom navigation and quick filters. Avoid
+     a third navigation row pushing the actual pick off a narrow phone. */
+  body[data-page="picks"] > .jumpbar { display: none; }
 }

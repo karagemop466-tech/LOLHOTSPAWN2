@@ -30,7 +30,12 @@ jobs:
           python-version: "3.12"
 
       - name: Verifier self-tests (each rule must fail on bad data)
-        run: python3 verification/test_verifier.py
+        run: |
+          python3 verification/test_provenance.py
+          python3 verification/test_verifier.py
+
+      - name: Evidence scope regression tests
+        run: python3 verification/test_evidence_scope.py
 
       - name: Fixture-coverage union unit tests (lobby + fixtures API)
         run: python3 verification/test_lobby_union.py
@@ -68,12 +73,39 @@ jobs:
           fi
           exit "$rc"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Render checks (jsdom executes the real pages against the payload)
         run: |
-          npm i --no-save --no-audit --no-fund --no-package-lock jsdom >/dev/null 2>&1 || \
-            echo "jsdom not installed; render checks will SKIP"
+          npm i --no-save --no-audit --no-fund --no-package-lock jsdom@30.1.3 playwright@1.64.1 @sparticuz/chromium@153.0.0
           node verification/render_check.cjs
           node verification/check_dom_render.js
+          node verification/test_freshness.cjs
+
+      - name: Real mobile browser audit (320, 390, 768, 1280px)
+        run: |
+          python3 -m http.server 8080 --bind 0.0.0.0 > "$RUNNER_TEMP/mobile-server.log" 2>&1 &
+          server=$!
+          trap 'kill "$server"' EXIT
+          MOBILE_REPORT="$RUNNER_TEMP/mobile-browser.json" node verification/check_mobile_browser.cjs
+
+      - name: Upload mobile browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-browser
+          path: ${{ runner.temp }}/mobile-browser.json
+
+      - name: Real phone and tablet layout checks (Chromium)
+        run: |
+          set -o pipefail
+          mkdir -p data/diag
+          {
+            npm install --no-save --no-package-lock --no-audit --no-fund jsdom@30.1.3 playwright@1.64.1 playwright-core@1.64.1 @sparticuz/chromium@153.0.0
+            BROWSER_REPORT=data/diag/browser.json node verification/check_browser.cjs
+          } 2>&1 | tee data/diag/browser.log
 
       - name: Upload verification artifacts
         if: always()

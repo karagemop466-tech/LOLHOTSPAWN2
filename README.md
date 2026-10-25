@@ -12,7 +12,11 @@ unresolved & limits) and repeats the unresolved-picks + limitations section in f
 
 Every upcoming scheduled League of Legends fixture listed on
 [Hotspawn's Pick'em lobby](https://play.hotspawn.com/lol-pickems) gets a clear pick and win
-probability (%) for both teams. Cancelled upstream fixtures are excluded and audited on Flagged.
+probability estimate (%) for both teams when a signal exists; evidence-free rows remain unresolved with no recommendation. Cancelled upstream fixtures are excluded and audited on Flagged.
+**Evidence standard:** these are estimates, not verified outcomes. Leaguepedia is community reporting. The pipeline does not independently confirm every historical result against primary organizer records; each row’s `verification.official_results_confirmed` and `official_results_source` remain `null`. The [match-by-match evidence audit](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html#official-results-audit) explicitly flags this gap. Every fixture still links its first-party Hotspawn listing. “No line found” means no usable match in configured adapters, not proof that no bookmaker offers odds. Source URLs are tagged by authority in `sources[].source_kind`.
+
+Fresh research and reproducible checks: [2026-10-25 source audit](research/source-audit-2026-10-25-c1e74f5e.md). Production refresh remains automatic every six hours; no manual input is required. Unresolved internal 50/50 placeholders never become arbitrary team recommendations in the interface.
+
 Rows are priced in a strict 5-tier cascade:
 
 > **Finding the picks on a phone.** Every page carries the same six-target **quick-jump
@@ -156,3 +160,22 @@ freshness slot and unique ids). `verification/render_check.cjs` loads each page 
 payload and asserts that the picks, tables and counts actually render.
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.
+
+### Evidence freshness and phone-layout audit (2026-10-25)
+
+The dashboard now publishes the **actual input snapshot timestamps**, separately
+from the dashboard generation timestamp. Cached/degraded community results trigger
+a visible warning even if the dashboard was just rebuilt. Source links are not
+labelled as official value verification. History citations include the latest
+recorded competition for each rated side, not just the new/upcoming split.
+
+Exact 50/50 rows have no preferred team; an unresolved JSON `pick` is a legacy
+placeholder, not a recommendation. Passed lock times are clearly labelled. The
+next-refresh timestamp identifies the next 00/06/12/18 UTC scheduled tick, not
+simply six hours after a manual build (GitHub Actions may run late).
+
+Real Chromium layout checks now run in branch and scheduled verification CI at
+320/390/768/1280px, complementing jsdom. This caught and fixed phone overflow on
+long team names that DOM-only checks missed. See
+[the evidence/source audit](research/evidence-audit-2026-10-25.md) and
+[the reproducible browser test](verification/check_browser.cjs).
