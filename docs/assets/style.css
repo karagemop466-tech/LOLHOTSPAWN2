@@ -460,6 +460,7 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   h2 { font-size: 20px; }
   .stats-mini { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats-mini b { font-size: 22px; }
+}
 
 /* Narrow phones: never let a long team name or league label widen the page.
    Do not hide overflow: retain every character and wrap the badge instead. */
@@ -495,4 +496,10 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   #picks-body .probcell { order: 2; }
   #picks-body .pickcell > .sub { order: 3; }
   #picks-body td[data-label="Start"] { order: 4; }
+}
+
+@media (max-width: 760px) {
+  /* The picks page already has top/bottom navigation and quick filters. Avoid
+     a third navigation row pushing the actual pick off a narrow phone. */
+  body[data-page="picks"] > .jumpbar { display: none; }
 }

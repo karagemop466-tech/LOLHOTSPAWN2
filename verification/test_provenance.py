@@ -43,6 +43,12 @@ class ProvenanceTests(unittest.TestCase):
             self.assertIn('configured adapters', lim)
             self.assertNotIn('No bookmaker prices', lim)
 
+    def test_css_block_balance(self):
+        import re
+        root = Path(__file__).resolve().parents[1]
+        css = re.sub(r'/\*.*?\*/', '', (root/'docs/assets/style.css').read_text(), flags=re.S)
+        self.assertEqual(css.count('{'), css.count('}'), 'integration must not nest the phone rules accidentally')
+
     def test_policy_ui_has_no_false_authority(self):
         root = Path(__file__).resolve().parents[1]
         for path in (root/'docs').glob('*.html'):
