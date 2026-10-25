@@ -164,6 +164,23 @@ async function main() {
         `${quickRows.length} rows`);
   check("summary: starting-soon cards render", idoc.querySelectorAll("#next24 article.match").length > 0,
         `${idoc.querySelectorAll("#next24 article.match").length} cards`);
+  // The section heading publishes the size of the next-24h window, so the
+  // card list must be the whole window, never a truncated preview. (It used
+  // to render 6 cards under a count of 28.)
+  const soonExpected = matches.filter((m) => {
+    const t = new Date(m.start_utc).getTime();
+    return t >= Date.now() && t <= Date.now() + 86400000;
+  }).length;
+  const soonCards = idoc.querySelectorAll("#next24 article.match").length;
+  check("summary: every next-24h match gets a card (no truncation)",
+        soonExpected === 0 ? soonCards > 0 : soonCards === soonExpected,
+        `${soonCards} cards vs ${soonExpected} in the next-24h window`);
+  // Picks must be findable before the navigation/coverage blocks on a phone:
+  // the starting-soon picks precede the "where the picks are" link grid.
+  const soonEl = idoc.querySelector("#starting-soon");
+  const hereEl = idoc.querySelector("#picks-here");
+  check("summary: starting-soon picks come before the link grid",
+        soonEl && hereEl && (soonEl.compareDocumentPosition(hereEl) & 4) === 4);
 
   // separate unresolved section: fixture list + per-league limitations, both in the summary
   const uList = idoc.querySelector("#unresolved-list");

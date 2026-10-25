@@ -1121,3 +1121,63 @@ Added to the production probe (so every refresh re-measures them instead of trus
   routes are blocked by an API key (Cloudbet) or client rendering (Betmonitor).
 * **Open item for review:** if Cloudbet or Betmonitor ever list a PRM 2nd/3rd fixture, an adapter is possible, but it
   needs either an API key (forbidden by “no manual input”) or a terms-of-use review before scraping. Neither is done.
+
+## 23. Refresh 2026-10-25 — three more candidates checked (session `arena/b95df72a`)
+
+Question restated for this pass: the 147 of 156 currently listed fixtures that no reachable
+book prices (payload generated 2026-10-25T10:41:50Z: 9 market · 92 `MODEL_ELO` · 53
+`MODEL_ELO_STANDINGS` · 2 `MODEL_ELO_THIN` · 0 unresolved · 10 low-confidence) — does any
+established LoL betting site, esportsbook or betting-line board not yet in §§13–19 quote the
+low-tier divisions (PRM 2nd/3rd Division, Tunisian Super League, RIVALS LEAGUE, 4 Nations,
+Arabian League 2nd Div, Komplettligaen, LigaGG, LCP Promotion)? Three candidates surfaced by
+fresh search were opened and read on 2026-10-25. Observations only; nothing below is used in
+any probability.
+
+### 23.1 Established / esportsbook candidates — observed
+
+| Source | What was observed on 2026-10-25 | Verdict |
+|---|---|---|
+| [Cloudbet — Prime League 2nd Division](https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division) | The page copy claims "Cloudbet prices the Prime League 2nd Division through the split… Odds for the next matchday go up once the schedule is confirmed", but the events panel itself reads **"No Prime League 2nd Division events available"** — on a day when Hotspawn lists 36 upcoming PRM 2nd Division fixtures (next ones today, 2026-10-25 16:00 UTC). Marketing copy is not a board. Session `arena/964cb944` independently recorded the identical observation (§21.1) and added Cloudbet to the production probe — two sessions, same result. | No price available today; no structured feed. **Not usable.** Re-check manually if their board ever populates. |
+| [BookMaker public lines (`lines.bookmaker.eu`)](https://lines.bookmaker.eu/en/sports/e-gaming/) | The indexed LoL path (`/en/sports/e-sports/lol/`) returns **404 "Page not found"**. The live e-gaming board carries only simulated leagues (Esoccer / Ebasketball / Efootball H2H, "429 e-gaming games … in 3 leagues") — no League of Legends at any tier. | **Not usable.** |
+| [Esports Insider LoL odds board](https://esportsinsider.com/betting-odds/lol) | Server-rendered and current ("Updated October 25, 2026 · Live from the ESI esports feed"; 12 upcoming series / 3 active tournaments). Coverage today: Worlds 2026 (8 series), LGC Rising 2026 (Vitality Rising Bees vs Mental Rush, best book prices 1.43 / 2.78) and LCP Promotion 2027 (FENNEL vs Nothin'Here shown as **62% / 38%**). No PRM 2nd/3rd Division, Tunisian, RIVALS, 4 Nations, Arabian, Komplettligaen or LigaGG fixture appears. | Human cross-check only — see 20.2. **Not ingested.** |
+
+### 23.2 The one overlapping low-tier fixture, checked line by line
+
+FENNEL vs Nothin'Here (LCP 2027 Promotion, 2026-11-10T05:00:00Z, Bo5) is one of our two
+`MODEL_ELO_THIN` low-confidence rows (our line: FENNEL 56.5%). ESI lists the identical
+fixture (same teams, 10 Nov 05:00 GMT, BO5), but its own match page states under
+"Match Winner Odds": **"No bookmaker prices yet — None of the books we track are pricing
+this match. The ESI model view is in the sidebar."**
+([match page](https://esportsinsider.com/betting-odds/lol/match/fennel-league-of-legends-vs-nothin-here-1766739)).
+So the board's 62/38 is ESI's proprietary model percentage, not a bookmaker line, and its
+basis is undisclosed (their form widget on the same page shows FENNEL 0W–6L vs Nothin'Here
+3W–0L, which points the other way). It agrees with our pick's *direction*; it is **not** a
+market source and is not used as one. The other overlap, Mental Rush vs Vitality Rising
+Bees (2026-10-27), is already market-priced here from Polymarket (MR 35.5%); ESI's
+unattributed "best price across books" 2.78 / 1.43 de-vigs to ≈ MR 34.0% — same side,
+within ~1.5 pts, recorded as corroboration only because ESI does not name the book behind
+the price and this project never publishes a line it cannot attribute to a source.
+
+### 23.3 Vendor confirmation from the supply side
+
+OddsPapi's own esports-odds-API guide (Aug 2026) lists its League of Legends tournaments
+with odds coverage as "Worlds, LEC, LCS, LCK, LPL, CBLOL, LJL, **Prime League Pro
+Division**" — i.e. the commercial aggregated board stops at the Prime League *1st*
+Division and does not claim the 2nd/3rd Divisions or any of our other model-only leagues
+([oddspapi.io guide](https://oddspapi.io/blog/esports-odds-api-guide-how-to-get-pinnacle-cs2-lol-data-for-free/)).
+It remains key-gated in any case (§19.3).
+
+### 23.4 Outcome (limitations, as published on the site)
+
+No new structured, attributable line source exists for the model-only fixtures as of
+2026-10-25. Every currently listed Hotspawn LoL fixture still carries a pick and both win
+probabilities via the documented cascade — external market (Pinnacle / Unibet-Kambi /
+Bovada / Polymarket) → Leaguepedia-results Elo → Elo blended with current-split standings
+→ (competition prior) → explicit 50/50 `UNRESOLVED`. The 10 low-confidence rows and the
+per-league signal limits are published in the executive summary's separate
+"Unresolved picks & limitations" section and in full on
+[Unresolved & limitations](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/unresolved.html).
+Flagged for manual review (non-blocking): **F23.1** Cloudbet's empty PRM 2nd Division
+board vs its pricing claim — worth a human re-check on a PRM matchday before anyone
+concludes they never price it; **F23.2** ESI's model percentages must not be mistaken for
+book prices by a future session — their match pages distinguish the two explicitly.

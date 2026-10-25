@@ -46,3 +46,7 @@ Published on [Flagged for Review](../docs/flagged.html#evidence-limits): communi
 - Integrated DOM suite: **64/64**; strict freshness **10/10**; evidence-scope **8/8**. Earlier negative/failed runs remain documented above, not relabelled as successes.
 
 The only reconciliation after this successful run was with main's scheduled data refresh (14:24:11Z). The newer verified branch payload (14:27:19Z) was retained; no tested code changed. PR: [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67).
+
+### Combined upstream 404 finding
+
+After main added the A1–A12 source audit, run [40202528210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202528210) passed DOM and Chromium checks but **failed** external-link verification: the historical `polymarket.com/esports/league-of-legends/prime-league-1st-division` category returned **404**. Earlier research claims about live markets on that path are historical, **not confirmed current coverage**. A12 on Flagged now says this explicitly and links the [official Gamma API](https://gamma-api.polymarket.com), which the collector actually uses. No substitute market, price or absence of coverage was inferred from a 404. Main #68's complete next-24h cards and phone-first order were also preserved in the integration.
