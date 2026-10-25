@@ -608,7 +608,12 @@
     const rows = sortMatches(all.filter(applyFilter));
     tbody.innerHTML = rows.length ? rows.map(row).join("") : `<tr><td colspan="6"><div class="card">No matches match these filters. <button class="chipbtn" onclick="document.getElementById('reset').click()">Reset filters</button></div></td></tr>`;
     const count = $("#countline");
-    if (count) count.textContent = `Showing ${rows.length} of ${all.length} fixtures · ${all.filter((m) => m.market).length} with external lines · ${all.filter((m) => m.method === "UNRESOLVED").length} unresolved`;
+    if (count) {
+      const nb = all.filter((m) => m.market).length;
+      const np = all.filter((m) => m.method === "UNRESOLVED").length;
+      count.textContent = `Showing ${rows.length} of ${all.length} matches · ${nb} from a bookmaker line · `
+        + `${all.length - nb - np} model-priced (no book line) · ${np} with no pick`;
+    }
     const counts = {
       all: all.length,
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,

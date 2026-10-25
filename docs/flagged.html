@@ -58,6 +58,51 @@
     </div>
   </section>
 
+  <section id="review-2026-10-25">
+    <h2>Session review items — 2026-10-25</h2>
+    <p class="small">Findings from this refresh that need a human decision. None of them blocks publication; each row links
+      the page that was actually read, and the long-form notes are in
+      <a href="../research/betting-sources.md">research/betting-sources.md §20</a> and
+      <a href="../verification/spot-checks-2026-10-25.md">verification/spot-checks-2026-10-25.md</a>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Ref</th><th scope="col">What is irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td data-label="Ref"><b>R1</b></td>
+            <td data-label="What is irregular">One scheduled refresh failed at 2026-10-25T03:05Z; the next run (10:39Z) rebuilt the payload. The exact failure reason could not be read because the Actions log API was rate-limited during this session.</td>
+            <td data-label="Source checked"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions" target="_blank" rel="noopener">GitHub Actions history ↗</a></td>
+            <td data-label="Status"><span class="chip amber">needs review</span></td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>R2</b></td>
+            <td data-label="What is irregular">No reachable book publishes a two-way price for the 147 matches that have no bookmaker line (16 sources probed: Cloudbet, BMBets, Betmonitor, Tipico, NEO.bet, bwin, bet365.de, Everygame, eGamersWorld, esportbet, Strafe, 1xBet). Those picks are therefore our model's line, not a market price.</td>
+            <td data-label="Source checked"><a href="data/picks.json" target="_blank" rel="noopener">payload market_probe ↗</a> · <a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">Cloudbet PRM2 ↗</a> · <a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">BMBets PRM2 ↗</a></td>
+            <td data-label="Status"><span class="chip amber">documented limit</span></td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>R3</b></td>
+            <td data-label="What is irregular">Cloudbet advertises Prime League 2nd Division pricing, but its events tab reported no PRM 2nd Division events when checked, and its public API answers HTTP 401. Its coverage claim is <b>UNVERIFIED</b>; no price is used from it.</td>
+            <td data-label="Source checked"><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events" target="_blank" rel="noopener">cloudbet.com PRM2 events ↗</a> · <a href="https://sports-api.cloudbet.com/pub/v2/odds/sports" target="_blank" rel="noopener">Cloudbet API ↗</a></td>
+            <td data-label="Status"><span class="chip amber">unverified</span></td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>R4</b></td>
+            <td data-label="What is irregular">German-licensed books in the league's home market (Tipico, NEO.bet, bwin, bet365.de) serve either a client-rendered shell with no League of Legends markup or HTTP 403. Whether they price Prime League is <b>UNVERIFIED</b>; their prices are not claimed.</td>
+            <td data-label="Source checked"><a href="https://www.tipico.de/en/esports/league-of-legends/" target="_blank" rel="noopener">Tipico ↗</a> · <a href="https://www.neobet.de/sportwetten/esports" target="_blank" rel="noopener">NEO.bet ↗</a> · <a href="https://sports.bwin.de/en/sports/esports" target="_blank" rel="noopener">bwin ↗</a></td>
+            <td data-label="Status"><span class="chip amber">unverified</span></td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>R5</b></td>
+            <td data-label="What is irregular">An earlier version of the new line probe reported five sources as showing "odds near a team". Every hit was a false positive (a basketball fixture, a CSS gradient, a meta tag). The matcher was replaced with a whole-name/same-window rule and eight regression tests; no value from the flawed run was ever published.</td>
+            <td data-label="Source checked"><a href="../verification/test_prm_probe.py">verification/test_prm_probe.py</a></td>
+            <td data-label="Status"><span class="chip green">fixed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="excluded">
     <h2>Excluded from picks (cancelled / withdrawn on Hotspawn lobby)</h2>
     <p class="small">These fixtures still appear in Hotspawn's backend fixtures API with a future timestamp, but have status <b>cancelled</b> and are withdrawn from the Pick'em lobby. They receive <b>no pick</b> and no probability is published for them.</p>

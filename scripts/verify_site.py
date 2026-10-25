@@ -79,7 +79,12 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
 # Research/manual-review links published on the Methodology page. They are never a
 # probability input (no row cites them); they are listed so a reader can repeat the
 # search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+# Added 2026-10-25 (session arena/6e003eec): the sources that advertise or list the
+# exact low-tier competitions Hotspawn uses, opened by hand and recorded in
+# research/betting-sources.md §20 and verification/spot-checks-2026-10-25.md.
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
+                "cloudbet.com", "bmbets.com", "tipico.de", "neobet.de", "bwin.de",
+                "everygame.eu", "egamersworld.com", "oddspedia.com", "strafe.com")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
