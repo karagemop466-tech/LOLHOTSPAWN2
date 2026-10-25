@@ -1490,3 +1490,6 @@ failures observed on this branch today:
 | T39 Verify exec-summary → picks links, separate unresolved/limitations section, 390px mobile readability; fix only if a check fails | claimed | arena/c7fd40e5 | `docs/**` (fixes only), `verification/**` |
 | T40 Live refresh on branch, re-verify, PR→main, merge, confirm Pages deploy | claimed | arena/c7fd40e5 | `COORDINATION.md`, `docs/data/picks.json` (CI-generated) |
 Baseline 2026-10-25: payload 2026-10-25T10:41Z, 156 fixtures, 156 resolved, 9 market, 0 unresolved, verify_site 44 PASS/0 FAIL.
+
+### Session `arena/c7fd40e5` results (2026-10-25)
+T38 done: CI line-probe 40201469095 — 38 candidates, 0 cover any of 147 model-only fixtures (research §20). T39 done: verify_site 44 PASS/0 FAIL, DOM render 53/53, verifier 45/45, entity/books 17/17; exec summary hero "Find every pick" + Where-the-picks-are cards + separate `#unresolved-section` confirmed in `docs/index.html`. T40: PR/merge/Pages recorded below. Irregularity: local sandbox probe HTTP 0 for all hosts — discarded, CI is authoritative (now documented in `scripts/probe_lines.py`); GitHub API secondary rate-limit delayed dispatch, push-triggered runs succeeded.

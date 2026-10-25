@@ -916,3 +916,10 @@ are the low-tier fixtures (e.g. PRM 2nd Division) that no book in §19 priced.
 * Resolution path for any future unpriced match remains: external market → Leaguepedia
   MatchSchedule Elo → split Standings → league prior → explicit 50/50 `UNRESOLVED` listed in
   the separate Unresolved & Limitations section linked from the executive summary.
+CI re-run 2026-10-25T14:18Z (runs 40201469095 line-probe + 40201468996 pipeline, both success;
+evidence `data/diag/line_probe.json` checked 14:18:48Z): 38 candidates, **0 with new coverage**
+of the 147 model-only fixtures. Kambi/Unibet (9 country markets) returns the same 8 priced
+matches, all already market-priced; Pinnacle lists 8 LoL matches and Polymarket 17, none in a
+model-only competition; bo3.gg/bmbets/BetOnline/BC.Game/Vave/RIVALS official answer 200 with no
+two-way price fields; SofaScore/Stake/GG.Bet/Thunderpick/eGamersWorld etc. 403, Oddspedia 410,
+Rivalry 503, 1xBet-family 203 geo-stub. Fresh payload 14:18Z: 156/156 resolved, 0 unresolved.
