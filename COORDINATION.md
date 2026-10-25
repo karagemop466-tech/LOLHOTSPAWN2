@@ -27,7 +27,32 @@ Defects found at baseline (verified in code, not inferred):
 | T27 Fresh 2026-10-25 source research for low-tier/unpriced matches (established LoL betting sites → esportsbooks → betting-line aggregators → community), link-verified, appended to the research log | claimed | arena/b95df72a | `research/betting-sources.md` |
 | T28 Integration: re-verify (unit suites + `verify_site.py` + jsdom DOM), live pipeline on this branch, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge here | claimed | arena/b95df72a | `COORDINATION.md`, `docs/data/picks.json` (generated) |
 
-Any session that needs a file in this scope must log a request here instead of editing it.
+**Results (2026-10-25, arena/b95df72a):**
+- **T25 done.** Live CI payload generated 2026-10-25T14:18:04Z on this branch: 156 fixtures ·
+  9 market · 147 model (54 standings-blended) · 0 unresolved · 11 low-confidence ·
+  `counts.next_24h` 27 **and** 27 stored `next_24h` IDs (previously count 28 vs 8 IDs, 6 cards
+  rendered). DOM harness now asserts card-count == window size: "27 cards vs 27 in the
+  next-24h window".
+- **T26 done.** Summary order on a phone is now hero → starting-soon picks (all of them) →
+  featured market picks → "Where the updated picks are" link grid → coverage →
+  per-competition → separate Unresolved-picks-&-limitations section → sources. The method
+  legend is tap-to-expand; the per-league table and written limitations render once
+  (in-page anchors `#exec-per-league`, `#exec-written-limits`).
+- **T27 done.** `research/betting-sources.md` §20: Cloudbet's PRM 2nd Division board empty
+  despite its pricing claim; BookMaker public lines have no LoL; Esports Insider's
+  FENNEL–Nothin'Here 62/38 is their own model ("No bookmaker prices yet" on their match
+  page), direction-agreeing with our thin-Elo 56.5% but not a market line; OddsPapi's own
+  covered-tournament list stops at Prime League Pro Division. No new attributable structured
+  source for low-tier fixtures; flagged F20.1/F20.2 (non-blocking).
+- **Line-by-line verification of the fresh payload:** all 156 rows — probabilities sum to 1,
+  pick = argmax, pick_prob consistent, every row has ≥1 https source; de-vig recomputed from
+  stored decimals for every book on all 9 market rows (Pinnacle/Unibet/Bovada/Polymarket):
+  no discrepancies. Independent cross-check against today's Esports Insider best-price board:
+  TES–G2 ours 44.8% vs ESI-implied 44.9%; DK–KOI 75.8% vs 76.6%; GenG–LYON 89.6% vs 90.4%.
+  `verify_site.py` 44 PASS / 0 FAIL; jsdom 55/55; render_check PASS; unit suites
+  (dom-contract 7/7, verifier 45/45, standings, entity/books 17/17, model audit 23/23) PASS;
+  CI-committed `verification/report.json` PASS and Leaguepedia source-page existence PASS.
+- **T28:** PR + merge + Pages confirmation recorded below in this entry once executed.
 
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim, stale — taken over above)
 
