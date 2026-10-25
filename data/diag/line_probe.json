@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-25T14:34:06.555114Z",
+ "checked_at": "2026-10-25T14:49:03.755132Z",
  "fixture_count": 156,
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [],
@@ -11,10 +11,14 @@
    "http_status": 200,
    "bytes": 0,
    "is_json": true,
-   "competitions": [],
-   "schedule_records": 0,
+   "competitions": [
+    "League of Legends - World Championship"
+   ],
+   "schedule_records": 8,
    "detail": {
-    "leagues": []
+    "leagues": [
+     "League of Legends - World Championship"
+    ]
    },
    "error": null,
    "priced_records": 0,
@@ -22,14 +26,14 @@
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
+   "verdict": "reachable; lists 8 LoL match(es), but none in a competition we cannot already price from a book"
   },
   {
    "name": "Polymarket (control)",
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4582575,
+   "bytes": 4583656,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -158,7 +162,7 @@
      "team_a": "G2 Esports",
      "team_b": "Top Esports",
      "competition": "Worlds 2026",
-     "start": "2026-10-25T21:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.8692,
      "decimal_b": 2.1505,
      "matched_fixture": {
@@ -166,7 +170,7 @@
       "team1": "Top Esports",
       "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T17:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -177,7 +181,7 @@
      "team_a": "Invictus Gaming",
      "team_b": "Hanwha Life Esports",
      "competition": "Worlds 2026",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T18:00:00Z",
      "decimal_a": 3.6364,
      "decimal_b": 1.3793,
      "matched_fixture": {
@@ -185,7 +189,7 @@
       "team1": "Invictus Gaming",
       "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
+      "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -196,7 +200,7 @@
      "team_a": "LYON",
      "team_b": "Gen.G",
      "competition": "Worlds 2026",
-     "start": "2026-10-25T23:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 10.5263,
      "decimal_b": 1.1173,
      "matched_fixture": {
@@ -204,7 +208,7 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
+      "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -215,7 +219,7 @@
      "team_a": "Movistar KOI",
      "team_b": "Dplus KIA",
      "competition": "Worlds 2026",
-     "start": "2026-10-26T02:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 4.6512,
      "decimal_b": 1.2739,
      "matched_fixture": {
@@ -223,7 +227,7 @@
       "team1": "Dplus KIA",
       "team2": "Movistar KOI",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -234,7 +238,7 @@
      "team_a": "Bilibili Gaming",
      "team_b": "Karmine Corp",
      "competition": "Worlds 2026",
-     "start": "2026-10-26T21:00:00Z",
+     "start": "2026-10-26T17:00:00Z",
      "decimal_a": 1.4599,
      "decimal_b": 3.3898,
      "matched_fixture": {
@@ -242,7 +246,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -253,7 +257,7 @@
      "team_a": "CTBC Flying Oyster",
      "team_b": "T1",
      "competition": "Worlds 2026",
-     "start": "2026-10-26T22:00:00Z",
+     "start": "2026-10-26T18:00:00Z",
      "decimal_a": 8.0,
      "decimal_b": 1.1429,
      "matched_fixture": {
@@ -261,7 +265,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -288,16 +292,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -307,18 +311,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -329,7 +352,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -337,28 +360,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
@@ -375,7 +379,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -394,7 +398,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -421,16 +425,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -440,18 +444,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -462,7 +485,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -470,28 +493,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
@@ -508,7 +512,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -527,7 +531,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -554,16 +558,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -573,18 +577,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -595,7 +618,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -603,28 +626,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
@@ -641,7 +645,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -660,7 +664,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -687,16 +691,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -706,18 +710,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -728,7 +751,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -736,28 +759,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
@@ -774,7 +778,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -793,7 +797,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -820,16 +824,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -839,18 +843,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -861,7 +884,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -869,28 +892,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
@@ -907,7 +911,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -926,7 +930,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -953,16 +957,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -972,18 +976,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -994,7 +1017,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -1002,28 +1025,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
@@ -1040,7 +1044,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1059,7 +1063,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1086,16 +1090,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -1105,18 +1109,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1127,7 +1150,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -1135,28 +1158,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
@@ -1173,7 +1177,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1192,7 +1196,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1219,16 +1223,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -1238,18 +1242,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1260,7 +1283,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -1268,28 +1291,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
@@ -1306,7 +1310,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1325,7 +1329,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1352,16 +1356,16 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
      "competition": "World Championship",
      "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
      "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
       "had_market": true,
@@ -1371,18 +1375,37 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
      "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T18:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
+    },
+    {
+     "team_a": "Dplus KIA",
+     "team_b": "Movistar KOI",
+     "competition": "World Championship",
+     "start": "2026-10-25T19:00:00Z",
+     "decimal_a": 1.27,
+     "decimal_b": 3.45,
+     "matched_fixture": {
+      "id": "1075819",
+      "team1": "Dplus KIA",
+      "team2": "Movistar KOI",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1393,7 +1416,7 @@
      "team_a": "Gen.G Esports",
      "team_b": "Lyon Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
+     "start": "2026-10-25T22:00:00Z",
      "decimal_a": 1.07,
      "decimal_b": 7.5,
      "matched_fixture": {
@@ -1401,28 +1424,9 @@
       "team1": "Gen.G",
       "team2": "LYON",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T19:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
-    },
-    {
-     "team_a": "Dplus KIA",
-     "team_b": "Movistar KOI",
-     "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
-     "matched_fixture": {
-      "id": "1075819",
-      "team1": "Dplus KIA",
-      "team2": "Movistar KOI",
-      "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T22:00:00Z",
       "had_market": true,
-      "name_score": 1.0
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
@@ -1439,7 +1443,7 @@
       "team1": "T1",
       "team2": "CTBC Flying Oyster",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T18:00:00Z",
+      "start_utc": "2026-10-26T17:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1458,7 +1462,7 @@
       "team1": "Karmine Corp",
       "team2": "Bilibili Gaming",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-26T17:00:00Z",
+      "start_utc": "2026-10-26T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1494,7 +1498,7 @@
    "kind": "esports-aggregator",
    "url": "https://api.bo3.gg/api/v1/matches",
    "http_status": 200,
-   "bytes": 201433,
+   "bytes": 201434,
    "is_json": true,
    "schedule_records": 0,
    "detail": {
@@ -1590,7 +1594,7 @@
      },
      {
       "sport_id": 109,
-      "status": 203
+      "status": 0
      }
     ]
    },
@@ -1629,7 +1633,7 @@
      },
      {
       "sport_id": 109,
-      "status": 203
+      "status": 0
      }
     ]
    },
@@ -1665,7 +1669,7 @@
    "kind": "aggregator-page",
    "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
    "http_status": 200,
-   "bytes": 879285,
+   "bytes": 880872,
    "is_json": false,
    "detail": {
     "odd_cells": 18,
@@ -1732,7 +1736,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366114,
+   "bytes": 366115,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
@@ -1748,7 +1752,7 @@
    "kind": "established-sportsbook",
    "url": "https://sportsbetting.ag/sportsbook/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5845,
+   "bytes": 5824,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
