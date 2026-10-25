@@ -120,7 +120,7 @@
         <tbody>
           <tr>
             <td><b>F20.1</b></td>
-            <td><b>Kalshi's <code>occurrence_datetime</code> runs ~4 h ahead of the real match start</b> on all 7 open LoL events read (G2 vs Top Esports: real start 17:00 UTC, field says 21:00 UTC). The true start is only printed inside the market's rules text, so our adapter parses that text and falls back to the field. Anyone else consuming this API would mis-time every LoL row.</td>
+            <td><b>Kalshi's <code>occurrence_datetime</code> runs ~4 h ahead of the real match start</b> on all 9 open LoL events read (G2 vs Top Esports: real start 17:00 UTC, field says 21:00 UTC). The true start is only printed inside the market's rules text, so our adapter parses that text and falls back to the field. Anyone else consuming this API would mis-time every LoL row.</td>
             <td><a href="https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME&amp;status=open&amp;with_nested_markets=true&amp;limit=200" target="_blank" rel="noopener">Kalshi trade API (LoL events) ↗</a> · <a href="https://kalshi.com/markets/kxlolgame/g2-esports-vs-top-esports/kxlolgame-26oct251300g2tes" target="_blank" rel="noopener">market page ↗</a></td>
             <td><span class="chip green">Handled</span> — parsed from rules text, unit-tested</td>
           </tr>
@@ -138,8 +138,8 @@
           </tr>
           <tr>
             <td><b>F20.4</b></td>
-            <td>Odds comparison pages that <i>name</i> Prime League 2nd Division expose no machine-readable price: OddsDigger's Prime League path is <b>HTTP 410</b>, OddsPortal's says next matches "will appear here as soon as bookmaker betting odds become available", and bmbets' comparison table is empty (client-rendered).</td>
-            <td><a href="https://oddsdigger.com/e-sports/league-of-legends/prime-league" target="_blank" rel="noopener">OddsDigger (410) ↗</a> · <a href="https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/" target="_blank" rel="noopener">OddsPortal Prime League ↗</a> · <a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets PRM 2nd Division ↗</a></td>
+            <td>Odds comparison pages that <i>name</i> Prime League 2nd Division expose no machine-readable price: OddsDigger's Prime League path returns <b>HTTP 410 "Page permanently removed"</b> (not linked here, so the site carries no dead link; the live LoL board is linked), OddsPortal's says next matches "will appear here as soon as bookmaker betting odds become available", and bmbets' comparison table is empty (client-rendered).</td>
+            <td><a href="https://oddsdigger.com/e-sports/league-of-legends/upcoming" target="_blank" rel="noopener">OddsDigger LoL board ↗</a> · <a href="https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/" target="_blank" rel="noopener">OddsPortal Prime League ↗</a> · <a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets PRM 2nd Division ↗</a></td>
             <td><span class="chip amber">Manual review</span> — no feed, nothing used</td>
           </tr>
           <tr>

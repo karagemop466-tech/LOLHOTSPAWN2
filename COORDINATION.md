@@ -1509,8 +1509,12 @@ fetched and read by hand on 2026-10-25 (`research/betting-sources.md` §20, ever
 * **One genuinely new structured source: Kalshi.** `api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME`
   answers **with no API key** and returns two mutually exclusive match-winner markets per event with yes bid/ask
   (G2 Esports 53¢/54¢ vs Top Esports 46¢/47¢, mid 0.535/0.465 — the market page shows the same 53/47). Its LoL board is
-  **Worlds 2026 only**, so it covers **0** of the 147 model-only rows; it was nevertheless **promoted into production**
-  (`scripts/fetch_markets.py::fetch_kalshi`, weight 0.75) as a fifth independent price for the featured rows. Earlier
+  **Worlds 2026 (8 events) plus one LGC Rising 2026 (Game Changers) event, 9 in total** — all of them fixtures the other
+  sources already price, so it covers **0** of the 147 model-only rows; it was nevertheless **promoted into production**
+  (`scripts/fetch_markets.py::fetch_kalshi`, weight 0.75) as a fifth independent price for the featured rows (median of
+  5 instead of 4) and as the second book that turns the LGC Rising row from a single Polymarket line into a 2-book
+  consensus. The Game Changers event was missed on the first read of the JSON (paginated across 7 chunks) and only
+  surfaced when the production fetcher matched it to a published fixture. Earlier
   sessions recorded Kalshi as "no LoL series" because they queried `/series?category=Esports`, which Kalshi answers
   with `{"series":null}` — the esports series are filed under `category=Sports` and are reachable by `series_ticker`.
 * **No source prices a single low-tier fixture.** Also measured this pass: OddsDigger (live Worlds board; its Prime

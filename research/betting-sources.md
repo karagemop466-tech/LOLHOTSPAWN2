@@ -932,8 +932,12 @@ fixtures by team name and start time.
 
 **Promoted into production** (`scripts/fetch_markets.py::fetch_kalshi`, weight 0.75) because it is an independent
 CFTC-regulated exchange with a real two-sided book, and a sample row was verified by hand against the market page.
-It does not change any pick for a low-tier fixture — it adds a fifth independent price to the featured Worlds rows
-(median of 5 instead of 4). Unit tests: `verification/test_entity_and_books.py` (13 new checks, incl. the EDT/EST
+It does not price a single low-tier fixture — its board carries **Worlds 2026 (8 events) plus one LGC Rising 2026
+(Game Changers) event, 9 in total**, all already covered by the other sources. What it does add: a fifth independent
+price to the 8 Worlds rows (median of 5 instead of 4) and a second source for the LGC Rising row, which was a
+single-source (Polymarket) line and is now a 2-book consensus. The Game Changers event was missed on the first
+read of the JSON (the response is paginated across 7 chunks) and only surfaced when the production fetcher matched
+it to a published fixture — a good reminder that this source must be re-read in full, not from its first page. Unit tests: `verification/test_entity_and_books.py` (13 new checks, incl. the EDT/EST
 start-time parse and the 4-hour `occurrence_datetime` offset Kalshi prints).
 
 ### 20.2 Candidates fetched this session and what they returned
@@ -975,7 +979,7 @@ status.
   (verifier check D22). No probe row ever carries a probability.
 * `scripts/probe_lines.py`: new `probe_kalshi()` — structured two-way prices, matched to the published fixtures by
   team name and start time, so `data/diag/line_probe.json` reports how many currently model-only rows Kalshi would
-  cover (measured: 0).
+  cover (measured: 0 — its 9 events all duplicate rows that already had a line).
 * `scripts/fetch_markets.py`: new `fetch_kalshi()` + `data/diag/kalshi_lol.json` snapshot per run.
 * `scripts/model.py`: `WEIGHTS` gains `"kalshi": 0.75` (only shapes the weighted mean used below 3 sources; ≥3
   sources use the exact median).
@@ -988,7 +992,7 @@ status.
 
 ### 20.5 Irregularities found this session (non-blocking, published on Flagged)
 
-1. **Kalshi's `occurrence_datetime` runs ~4 h ahead of the real start** on all 7 open LoL events read
+1. **Kalshi's `occurrence_datetime` runs ~4 h ahead of the real start** on all 9 open LoL events read
    (e.g. G2 vs Top Esports: real start 2026-10-25T17:00Z, `occurrence_datetime` 2026-10-25T21:00Z). The true start
    is printed inside the market's `rules_primary` ("originally scheduled for Oct 25, 2026 at 1:00 PM EDT"), so
    `fetch_kalshi()` parses that text and only falls back to `occurrence_datetime`. A consumer that trusted the
