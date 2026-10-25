@@ -326,6 +326,27 @@ async function main() {
     check("match detail: renders the pick", dtext.includes(m.pick));
   }
 
+  // ---------- match detail: start times by source ----------------------------
+  // A fixture whose sources disagree on the start time must SAY so and list each
+  // reported time, instead of quietly publishing one number. Without this check the
+  // honest-disclosure card could be dropped and nothing would fail.
+  const timeMismatch = matches.find((m) => (m.flags || []).includes("START_TIME_MISMATCH")
+    && (m.market?.sources || []).some((s) => s.start_utc));
+  if (timeMismatch) {
+    const tpage = await render("match.html", { query: `?id=${encodeURIComponent(timeMismatch.id)}` });
+    const card = Array.from(tpage.document.querySelectorAll("#match-detail .card"))
+      .find((c) => /Start time by source/.test(c.textContent));
+    check("match detail: start-time-by-source card renders on a flagged fixture", !!card);
+    if (card) {
+      const bookTimes = (timeMismatch.market?.sources || []).filter((s) => s.start_utc).length;
+      check("match detail: every book's reported start time is listed",
+            bookTimes > 0 && card.querySelectorAll("li").length >= bookTimes + 1,
+            `${card.querySelectorAll("li").length} lines vs 1 Hotspawn + ${bookTimes} book time(s)`);
+      check("match detail: the disagreement is stated in words",
+            /disagrees on this fixture|differs/i.test(card.textContent));
+    }
+  }
+
   // ---------- self-test: the separate unresolved section must not be vacuous ----
   // Build a payload with two forced-unresolved fixtures and prove they are listed
   // inline on the executive summary with an explicit 50/50 placeholder.

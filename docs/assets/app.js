@@ -358,6 +358,8 @@
     set("#here-leagues-count", computeLeagueBreakdown(d).length);
     set("#here-unresolved-count", cov0.unresolved ?? 0);
     set("#here-low-count", cov0.low_confidence ?? c.low_confidence ?? 0);
+    // distinct flag types across this snapshot — the "Flagged for review" card count
+    set("#here-flagged-count", new Set(all0.flatMap((m) => m.flags || [])).size);
     // hero "find the picks" buttons carry the same counts, so a phone visitor sees
     // the size of each list before tapping it
     set("#hero-count-picks", all0.length ? `(${all0.length})` : "");
@@ -825,6 +827,16 @@
           </div>
         </div>
         <div>
+          <div class="card"><h3>⏱ Start time by source</h3>
+            <p class="small">Hotspawn's own feed sets the pick'em lock, so that is the time this site lists.
+              When another source reports a different time it is shown here rather than silently replaced —
+              ${(m.flags || []).includes("START_TIME_MISMATCH") ? "<b>at least one source disagrees on this fixture.</b>" : "no disagreement flagged for this fixture."}</p>
+            <ul class="clean small">
+              <li><b>Hotspawn pick'em feed (used here):</b> ${esc(whenUTC(m.start_utc))}${(m.flags || []).includes("START_TIME_MISMATCH") ? ' <span class="chip amber">Leaguepedia differs</span>' : ""}
+                ${m.hotspawn_url ? `· <a href="${esc(m.hotspawn_url)}" target="_blank" rel="noopener">Hotspawn fixture ↗</a>` : ""}</li>
+              ${(m.market?.sources || []).filter((s) => s.start_utc).map((s) => `<li><b>${esc(s.source)}:</b> ${esc(whenUTC(s.start_utc))}${s.start_delta_hours ? ` <span class="small">(${Number(s.start_delta_hours).toFixed(1)} h vs ours)</span>` : ""} · <a href="${esc(s.url)}" target="_blank" rel="noopener">market ↗</a></li>`).join("")}
+            </ul>
+          </div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
           <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
           <p class="tiny">Crowd context (never used in probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
