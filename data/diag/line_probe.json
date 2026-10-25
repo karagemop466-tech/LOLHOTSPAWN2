@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-25T14:37:27.323127Z",
+ "checked_at": "2026-10-25T14:45:38.524426Z",
  "fixture_count": 156,
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [
@@ -36,7 +36,7 @@
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4582579,
+   "bytes": 4583579,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -1285,7 +1285,7 @@
      "team_a": "TOP Esports",
      "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
+     "start": "2026-10-25T18:00:00Z",
      "decimal_a": 2.08,
      "decimal_b": 1.67,
      "matched_fixture": {
@@ -1454,29 +1454,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -1485,6 +1466,25 @@
       "team2": "Hanwha Life Esports",
       "tournament": "Worlds 2026 Main Event",
       "start_utc": "2026-10-25T17:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
+    },
+    {
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
+     "competition": "World Championship",
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
+     "matched_fixture": {
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
       "name_score": 1.0
      },
@@ -1636,7 +1636,7 @@
    "kind": "esports-aggregator",
    "url": "https://api.bo3.gg/api/v1/matches",
    "http_status": 200,
-   "bytes": 201433,
+   "bytes": 201434,
    "is_json": true,
    "schedule_records": 0,
    "detail": {
@@ -1671,30 +1671,30 @@
    "name": "1xBet-family / 1xbet.com",
    "kind": "esportsbook",
    "url": "https://1xbet.com/en/line/",
-   "http_status": 404,
+   "http_status": 203,
    "bytes": 0,
    "is_json": true,
    "detail": {
     "sport_attempts": [
      {
       "sport_id": 3,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 12,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 70,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 85,
-      "status": 0
+      "status": 203
      },
      {
       "sport_id": 109,
-      "status": 404
+      "status": 203
      }
     ]
    },
@@ -1705,36 +1705,36 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "not usable from CI (HTTP 404)"
+   "verdict": "not usable from CI (HTTP 203)"
   },
   {
    "name": "1xBet-family / betwinner.com",
    "kind": "esportsbook",
    "url": "https://betwinner.com/en/line/",
-   "http_status": 404,
+   "http_status": 203,
    "bytes": 0,
    "is_json": true,
    "detail": {
     "sport_attempts": [
      {
       "sport_id": 3,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 12,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 70,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 85,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 109,
-      "status": 0
+      "status": 203
      }
     ]
    },
@@ -1745,36 +1745,36 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "not usable from CI (HTTP 404)"
+   "verdict": "not usable from CI (HTTP 203)"
   },
   {
    "name": "1xBet-family / melbet.com",
    "kind": "esportsbook",
    "url": "https://melbet.com/en/line/",
-   "http_status": 404,
+   "http_status": 203,
    "bytes": 0,
    "is_json": true,
    "detail": {
     "sport_attempts": [
      {
       "sport_id": 3,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 12,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 70,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 85,
-      "status": 404
+      "status": 203
      },
      {
       "sport_id": 109,
-      "status": 404
+      "status": 203
      }
     ]
    },
@@ -1785,7 +1785,7 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "not usable from CI (HTTP 404)"
+   "verdict": "not usable from CI (HTTP 203)"
   },
   {
    "name": "Kambi / Unibet (all esports view)",
@@ -1812,7 +1812,7 @@
    "kind": "aggregator-page",
    "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
    "http_status": 200,
-   "bytes": 879285,
+   "bytes": 880872,
    "is_json": false,
    "detail": {
     "odd_cells": 18,
@@ -1855,7 +1855,7 @@
     "events": 14,
     "odds_tokens": 28,
     "day_headings": 4,
-    "excerpt": "<!DOCTYPE html> <html lang=\"en-GB\"> <head> <meta name=\"csrf-param\" content=\"_csrf\"> <meta name=\"csrf-token\" content=\"d2Y8kIaCfhMJZ0taooDN_3QnGIA8-WyFNFXSqYYvGcE9Ug6o_MovUV8fejTv6bSdBAoq9Q-YDdJsZpCe9mhNrA==\"> <title>Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom</title> <link rel=\"stylesheet\" href=\"/static/desktop/site_1/v2/css/main.min.css?v=1789562510\"> <meta charset=\"UTF-8\"> <meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> <meta name=\"viewport\" content=\"width=1244\"> <meta name=\"format-detection\" content=\"telephone=no\"> <meta name=\"HandheldFriendly\" content=\"true\"> <meta name=\"theme-color\" content=\"#ffffff\"> <meta name=\"description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:type\" content=\"article\"> <meta property=\"og:title\" content=\"Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom\"> <meta property=\"og:description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:url\" content=\"/e-sports/league-of-legends/upcoming\"> <meta property=\"og:image\" content"
+    "excerpt": "<!DOCTYPE html> <html lang=\"en-GB\"> <head> <meta name=\"csrf-param\" content=\"_csrf\"> <meta name=\"csrf-token\" content=\"ZnfPVzWtwUqSb8z2oOa4tsqHR3gHOtTUF9IoHFG3E_RWHYU6QcOILPYeuYT0v-rDlapqQCpRvKBZkUloK_thrg==\"> <title>Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom</title> <link rel=\"stylesheet\" href=\"/static/desktop/site_1/v2/css/main.min.css?v=1789562510\"> <meta charset=\"UTF-8\"> <meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> <meta name=\"viewport\" content=\"width=1244\"> <meta name=\"format-detection\" content=\"telephone=no\"> <meta name=\"HandheldFriendly\" content=\"true\"> <meta name=\"theme-color\" content=\"#ffffff\"> <meta name=\"description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:type\" content=\"article\"> <meta property=\"og:title\" content=\"Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom\"> <meta property=\"og:description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:url\" content=\"/e-sports/league-of-legends/upcoming\"> <meta property=\"og:image\" content"
    },
    "error": null,
    "priced_records": 14,
@@ -1981,17 +1981,6 @@
      "url": "https://oddsdigger.com/e-sports/koi-vs-dplus-23672376"
     },
     {
-     "team_a": "T1 Esports",
-     "team_b": "CTBC Flying Oyster",
-     "competition": "OddsDigger upcoming LoL",
-     "start": "2026-10-26T17:00:00Z",
-     "decimal_a": 1.1395,
-     "decimal_b": 5.25,
-     "matched_fixture": null,
-     "note": "best price per side 6/43 vs 17/4 (implied sum 1.068)",
-     "url": "https://oddsdigger.com/e-sports/ctbc-flying-oyster-vs-t1-esports-23672373"
-    },
-    {
      "team_a": "T1",
      "team_b": "CTBC Flying Oyster",
      "competition": "OddsDigger upcoming LoL",
@@ -2009,6 +1998,17 @@
      },
      "note": "best price per side 3/25 vs 29/6 (implied sum 1.064)",
      "url": "https://oddsdigger.com/e-sports/t1-vs-ctbc-flying-oyster-23672381"
+    },
+    {
+     "team_a": "T1 Esports",
+     "team_b": "CTBC Flying Oyster",
+     "competition": "OddsDigger upcoming LoL",
+     "start": "2026-10-26T18:00:00Z",
+     "decimal_a": 1.1395,
+     "decimal_b": 5.25,
+     "matched_fixture": null,
+     "note": "best price per side 6/43 vs 17/4 (implied sum 1.068)",
+     "url": "https://oddsdigger.com/e-sports/ctbc-flying-oyster-vs-t1-esports-23672373"
     },
     {
      "team_a": "Karmine Corp",
@@ -2093,28 +2093,28 @@
    "records_not_matched": [
     "KOI vs Dplus @ 2026-10-25T19:00:00Z",
     "KOI vs Dplus @ 2026-10-25T22:00:00Z",
-    "T1 Esports vs CTBC Flying Oyster @ 2026-10-26T17:00:00Z",
+    "T1 Esports vs CTBC Flying Oyster @ 2026-10-26T18:00:00Z",
     "Los Grandes vs Team Secret Whales @ 2026-10-26T19:00:00Z",
     "Team Liquid vs Anyone&#039;s Legend.Young @ 2026-10-26T22:00:00Z"
    ],
-   "verdict": "NOT promoted to a probability input (hand-verified 2026-10-25). It prices two fixtures the four production feeds miss. Row 1 agrees with production: Vitality Rising Bees vs Mental Rush, LGC Rising 2026 Playoffs, 7/17 vs 8/5 -> 64.8%/35.2%, against our published Polymarket-sourced 64.5%/35.5%. Row 2 contradicts it: Ground Zero vs Frank Esports, LCP 2027 Promotion, 1/67 vs 22/3 -> 89.1%/10.9% for Ground Zero, while our Elo says Frank Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an affiliate-rendered board override the model, so the disagreement is published on the Flagged page for review instead. research/betting-sources.md §20."
+   "verdict": "NOT promoted to a probability input (hand-verified 2026-10-25). It prices two fixtures the four production feeds miss. Row 1 agrees with production: Vitality Rising Bees vs Mental Rush, LGC Rising 2026 Playoffs, 7/17 vs 8/5 -> 64.8%/35.2%, against our published Polymarket-sourced 64.5%/35.5%. Row 2 contradicts it: Ground Zero vs Frank Esports, LCP 2027 Promotion, 1/67 vs 22/3 -> 89.1%/10.9% for Ground Zero, while our Elo says Frank Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an affiliate-rendered board override the model, so the disagreement is published on the Flagged page for review instead. research/betting-sources.md §24."
   },
   {
    "name": "Prime League official (organizer)",
    "kind": "organizer-results",
    "url": "https://www.primeleague.gg/en/liga2",
-   "http_status": 0,
-   "bytes": 0,
+   "http_status": 403,
+   "bytes": 2182,
    "is_json": false,
    "lol_mentions": null,
-   "error": "HTTP 0",
+   "error": "HTTP 403",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "not usable from CI (HTTP 0)"
+   "verdict": "not usable from CI (HTTP 403)"
   },
   {
    "name": "RIVALS LEAGUE official (organizer)",
@@ -2138,7 +2138,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366115,
+   "bytes": 366116,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
@@ -2155,7 +2155,7 @@
    "kind": "established-sportsbook",
    "url": "https://sportsbetting.ag/sportsbook/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5845,
+   "bytes": 5866,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -2222,18 +2222,18 @@
    "name": "Parimatch LoL",
    "kind": "established-sportsbook",
    "url": "https://www.parimatch.com/en/esports/league-of-legends",
-   "http_status": 200,
-   "bytes": 1097418,
+   "http_status": 403,
+   "bytes": 3816,
    "is_json": false,
    "lol_mentions": null,
-   "error": null,
+   "error": "HTTP 403",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
+   "verdict": "not usable from CI (HTTP 403)"
   },
   {
    "name": "eGamersWorld LoL odds",
@@ -2257,7 +2257,7 @@
    "kind": "aggregator-page",
    "url": "https://oddspedia.com/esports/league-of-legends",
    "http_status": 410,
-   "bytes": 341194,
+   "bytes": 341184,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 410",
@@ -2324,35 +2324,35 @@
    "name": "Marathonbet esports",
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
-   "http_status": 200,
-   "bytes": 336262,
+   "http_status": 403,
+   "bytes": 5850,
    "is_json": false,
-   "lol_mentions": 8,
-   "error": null,
+   "lol_mentions": null,
+   "error": "HTTP 403",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
+   "verdict": "not usable from CI (HTTP 403)"
   },
   {
    "name": "Betano esports",
    "kind": "established-sportsbook",
    "url": "https://www.betano.de/esports/",
-   "http_status": 200,
-   "bytes": 10657,
+   "http_status": 403,
+   "bytes": 1657,
    "is_json": false,
    "lol_mentions": null,
-   "error": null,
+   "error": "HTTP 403",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "reachable, but no two-way per-match price was extracted"
+   "verdict": "not usable from CI (HTTP 403)"
   },
   {
    "name": "Vave esports",
@@ -2409,18 +2409,18 @@
    "name": "GG.Bet LoL",
    "kind": "esportsbook",
    "url": "https://gg.bet/en/esports/lol",
-   "http_status": 404,
-   "bytes": 5143,
+   "http_status": 403,
+   "bytes": 126,
    "is_json": false,
    "lol_mentions": null,
-   "error": "HTTP 404",
+   "error": "HTTP 403",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "not usable from CI (HTTP 404)"
+   "verdict": "not usable from CI (HTTP 403)"
   },
   {
    "name": "Rivalry LoL",
