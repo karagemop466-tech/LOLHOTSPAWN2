@@ -1697,10 +1697,10 @@ All earlier claims are over 60 minutes old; baseline `2173cc9` is the current ma
 
 | Task | Status | Owner | File scope |
 |---|---|---|---|
-| C1 Audit current coverage, provenance and unresolved semantics; fix defects with regression tests | in progress | arena/c1e74f5e | `scripts/**`, `verification/**`, `audit/**` |
-| C2 Research external line availability using fresh CI probes; document official vs community evidence and limitations | in progress | arena/c1e74f5e | `research/**`, `data/diag/**`, `README.md` |
-| C3 Mobile summary/picks/limitations integration and honest evidence labels | in progress | arena/c1e74f5e | `docs/**` |
-| C4 Integration, live refresh, tests, PR merge and Pages confirmation | in progress | arena/c1e74f5e | `.github/workflows/**`, `COORDINATION.md` |
+| C1 Audit current coverage, provenance and unresolved semantics; fix defects with regression tests | done | arena/c1e74f5e | `scripts/**`, `verification/**`, `audit/**` |
+| C2 Research external line availability using fresh CI probes; document official vs community evidence and limitations | done | arena/c1e74f5e | `research/**`, `data/diag/**`, `README.md` |
+| C3 Mobile summary/picks/limitations integration and honest evidence labels | done | arena/c1e74f5e | `docs/**` |
+| C4 Integration, live refresh, tests, PR merge and Pages confirmation | done | arena/c1e74f5e | `.github/workflows/**`, `COORDINATION.md` |
 
 Network note: this sandbox allows GitHub/npm/PyPI only. Source verification requiring other hosts must run in GitHub Actions, with timestamped artifacts; blocked local requests will not be described as source verification.
 
@@ -2029,3 +2029,18 @@ not regenerate, manually patch, or replace the already published source data.
 Final **full integrated** pipeline [40203809275](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203809275) **SUCCESS** (2m54s): all live fetches, both real Chromium suites, JSDOM, source/page verification, lobby-union tests and independent coverage gate passed. Snapshot `2026-10-25T14:48:26Z`: 156 fixtures, 9 market, 147 model, 54 Elo+standings, 11 Low confidence, 0 unresolved. Broader probe 43 candidates. Verifier **52 PASS / 0 FAIL / 1 WARN** (7 host-blocked URLs, no 404/410); arithmetic/provenance and official-confirmation-null gates passed on all rows. Local combined suites: verifier 74/74, JSDOM 82/82, phone/browser 78/78, independent browser all layouts PASS, evidence-scope 8/8, provenance/CSS 5/5, entity/books 17/17, model 23/23, freshness 10/10, union ALL PASS.
 
 Main advanced only through generated files and publication notes after that tested code base (`bc38b0b` → `0c33092`): this final reconciliation retains the **tested 14:48:26 payload/coverage/log as a unit** and both sessions' append-only publication records. No source, model, website or workflow code changed after the successful integrated run. This artifact-only commit uses `[skip ci]` to avoid re-fetching sources and racing another generated-file commit; all local invariants are rechecked before merge. PR: https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/75 . Merge and Pages result will be appended after the operation.
+
+
+### PR #75 merged; production and Pages verified (`arena/c1e74f5e`, 2026-10-25)
+
+| Item | Confirmed result |
+|---|---|
+| Feature PR | [#75](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/75) **MERGED** 2026-10-25T14:51:04Z; merge commit `6603cee2f438f001d984ee3625077d252559f973`. No owner approval wait. |
+| Final pre-merge complete CI | [40203809275](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203809275) **SUCCESS**: fresh sources, 82/82 JSDOM, 78/78 mobile suite plus independent real-browser suite, source verification, model/evidence/unit tests, and union-aware independent coverage gate. No dead external links; host-blocked references remain explicit warnings. |
+| Post-merge main verification | [40204165842](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204165842) **SUCCESS**, including the live GitHub Pages URL, PWA/site contracts, external links, cited pages and both browser suites. |
+| Merge Pages deployment | [40204165046](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204165046) **SUCCESS**, exact source commit `6603cee`; GitHub Pages API matched this commit during deployment. |
+| Production six-hour publisher | [40204165856](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40204165856) **SUCCESS** (2m21s); refresh commit `0c31956`, payload `2026-10-25T14:53:17Z`: 156 fixtures, 9 external-market estimates, 147 model estimates, 54 standings blend, 11 Low, 0 unresolved; 43 probed candidates; official-results-confirmation remains null on all 156 rows. Schedule stays `0 */6 * * *` (00/06/12/18 UTC). |
+| Public dashboard | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ — direct picks `/docs/picks.html`, unverified match evidence `/docs/flagged.html#official-results-audit`, unresolved/limitations `/docs/unresolved.html`. |
+| C1 / C2 / C3 / C4 | **done**. Primary-organizer result-by-result confirmation remains **needs review**, explicitly published with blank official-confirmation fields; not silently represented as verified. |
+
+This record-only follow-up changes no website, model, workflow or generated value. The primary PR is merged and the deployed feature code, production publisher and live-site verifier have all succeeded. Runtime deprecation/Ubuntu migration annotations are infrastructure notices, not failed checks; both browser suites ran successfully on the current runner.
