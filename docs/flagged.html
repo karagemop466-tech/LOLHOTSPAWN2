@@ -223,10 +223,15 @@
           </tr>
           <tr>
             <td><b>A12</b></td>
-            <td><b>Polymarket prices Prime League <i>1st</i> Division only.</b> Its 1st-division board carries per-map BO3
-            markets, but no 2nd/3rd Division fixture exists there, so it cannot price the 96 PRM rows in this payload.</td>
-            <td><a href="https://polymarket.com/esports/league-of-legends/prime-league-1st-division" target="_blank" rel="noopener">Polymarket PRM 1st Division ↗</a></td>
-            <td><span class="chip amber">Division not covered</span> — not applicable</td>
+            <td><b>Polymarket carries no Prime League board at all.</b> Polymarket's own LoL index lists exactly two
+            tournaments — <i>LGC Rising</i> (1 market) and <i>Worlds</i> (8) — so it cannot price the 96 PRM rows in
+            this payload. An earlier version of this row cited a
+            <code>polymarket.com/esports/league-of-legends/prime-league-1st-division</code> page and asserted that a
+            1st-division board existed; re-checked 2026-10-25 that URL returns
+            <b>404 “Page not found”</b> and the index shows no such board, so the 1st-division claim is recorded as
+            <b>unverified</b> rather than repeated here. See F24.4.</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">Polymarket LoL index ↗</a> — LGC Rising (1) + Worlds (8) only</td>
+            <td><span class="chip amber">No board for this competition</span> — not applicable</td>
           </tr>
         </tbody>
       </table>
@@ -422,6 +427,21 @@
             <td>Our consensus sits between the board's two contradictory entries and agrees with the second. Recorded by the CI probe
               <code>data/diag/line_probe.json</code> (run 40202775347, checked 2026-10-25T14:37:27Z, HTTP 200, 212 KB, 14 two-way prices read, 9 matched to published fixtures, <b>1</b> of them previously unpriced &mdash; F24.2).</td>
             <td><span class="chip amber">Board is internally inconsistent</span> — the reason the source is not trusted automatically</td>
+          </tr>
+          <tr>
+            <td><b>F24.4</b></td>
+            <td><b>A cited source page turned out to be dead</b><br><span class="sub">Polymarket Prime League 1st Division — caught by the merged-branch pipeline, 2026-10-25</span></td>
+            <td>Row A12 above cited
+              <code>https://polymarket.com/esports/league-of-legends/prime-league-1st-division</code> and asserted a
+              1st-division board exists. The verifier's link check (rule <b>X1</b>) returned <b>404</b> for it on the
+              CI runner, and opening it by hand returns Polymarket's own <i>“Page not found”</i> page.</td>
+            <td>Not applicable — the citation supported a <i>negative</i> finding (no price for our fixtures), so no
+              pick ever depended on it. No probability changed.</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">Polymarket's LoL index ↗</a>
+              (200 OK, checked 2026-10-25) lists exactly two LoL tournaments: <b>LGC Rising (1)</b> and
+              <b>Worlds (8)</b>. There is no Prime League board of any division, which is consistent with our
+              production Polymarket adapter matching only Worlds and Game Changers Rising rows.</td>
+            <td><span class="chip red">Dead citation removed</span> — the 1st-division claim is now recorded as <b>unverified</b>, and the row links the working index instead</td>
           </tr>
         </tbody>
       </table>
