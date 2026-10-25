@@ -898,3 +898,21 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
+
+## 20. Session `arena/c7fd40e5` — 2026-10-25 re-check for model-only fixtures
+
+Snapshot re-verified locally: 156 Hotspawn fixtures, 156 resolved, **0 UNRESOLVED**,
+9 with an external market (8 `MARKET_CONSENSUS` + 1 `MARKET_SINGLE`), 147 priced by our own
+model (92 `MODEL_ELO`, 53 `MODEL_ELO_STANDINGS`, 2 `MODEL_ELO_THIN`). The 147 model-only rows
+are the low-tier fixtures (e.g. PRM 2nd Division) that no book in §19 priced.
+
+* Local re-run of `scripts/probe_lines.py` from this sandbox returned HTTP 0 for all 38
+  candidates — this sandbox has no direct route to those hosts, so that run is **inconclusive
+  and was discarded** (`data/diag/line_probe.json` restored to the CI-generated copy). It is
+  not evidence about any source.
+* The authoritative fixture-matched evidence remains the CI probe (§15/§19): 0 sources cover
+  a single model-only fixture; Pinnacle/Kambi list Worlds only. No source was promoted, and
+  no probability changed, on the basis of an unreachable or unverified source.
+* Resolution path for any future unpriced match remains: external market → Leaguepedia
+  MatchSchedule Elo → split Standings → league prior → explicit 50/50 `UNRESOLVED` listed in
+  the separate Unresolved & Limitations section linked from the executive summary.
