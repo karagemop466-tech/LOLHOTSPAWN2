@@ -50,3 +50,11 @@ The only reconciliation after this successful run was with main's scheduled data
 ### Combined upstream 404 finding
 
 After main added the A1–A12 source audit, run [40202528210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202528210) passed DOM and Chromium checks but **failed** external-link verification: the historical `polymarket.com/esports/league-of-legends/prime-league-1st-division` category returned **404**. Earlier research claims about live markets on that path are historical, **not confirmed current coverage**. A12 on Flagged now says this explicitly and links the [official Gamma API](https://gamma-api.polymarket.com), which the collector actually uses. No substitute market, price or absence of coverage was inferred from a 404. Main #68's complete next-24h cards and phone-first order were also preserved in the integration.
+
+## Published result
+
+PR [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67) merged **2026-10-25T14:43:30Z** (`bc38b0b`). The final union-aware branch run [40203290312](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203290312) succeeded: **50 PASS, 0 FAIL, 1 WARN**, DOM **78/78**, actual browser layouts **28/28**, cited source pages **50/50 exist**. The union parser and independent Hotspawn coverage audit also passed. Prior integration snapshots above remain dated observations, not the current count.
+
+Post-merge [site verification 40203579452](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203579452), [production refresh 40203579379](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203579379), and Pages deploys [40203578912](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203578912) / [40203768505](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203768505) all **succeeded**. Latest production snapshot verified here: **14:45:47Z**, **156 matches, 9 market, 147 model, 0 unresolved, 11 Low confidence**. Next nominal cron refresh: **18:00 UTC**, subject to GitHub scheduling delays.
+
+[Live executive summary](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/) · [All picks](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/picks.html) · [Flagged evidence limitations](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html#evidence-limits).
