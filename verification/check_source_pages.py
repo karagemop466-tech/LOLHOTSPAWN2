@@ -38,11 +38,18 @@ def titles_from(payload: dict) -> dict[str, int]:
     """distinct cited page titles -> number of rows citing them."""
     cited: dict[str, int] = {}
     for m in payload.get("matches") or []:
-        url = (m.get("leaguepedia_url") or "").strip()
-        if not url.startswith(PREFIX):
-            continue
-        title = urllib.parse.unquote(url[len(PREFIX):]).split("#")[0].replace("_", " ").strip()
-        if title:
+        # Check every cited tournament/history page, not just the upcoming
+        # leaguepedia_url. Cargo table indexes are query endpoints, not titles.
+        urls = {(m.get("leaguepedia_url") or "").strip()}
+        urls.update(str(s.get("url") or "").strip() for s in m.get("sources") or [])
+        row_titles = set()
+        for url in urls:
+            if not url.startswith(PREFIX):
+                continue
+            title = urllib.parse.unquote(url[len(PREFIX):]).split("#")[0].replace("_", " ").strip()
+            if title and not title.startswith("Special:"):
+                row_titles.add(title)
+        for title in row_titles:
             cited[title] = cited.get(title, 0) + 1
     return cited
 

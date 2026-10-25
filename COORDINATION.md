@@ -1500,3 +1500,17 @@ Initial blocker: GitHub Actions REST request returned HTTP 403 API rate limit ex
 at 2026-10-25T14:09Z; git fetch succeeds. External hosts are unavailable directly from
 this sandbox; live source verification must run through GitHub Actions, not be claimed
 from cached data. No verified status will be inferred from a source link alone.
+
+**Concurrent-claim discovery (14:18 UTC):** Actions revealed three other Oct-25
+sessions that claimed on their own branches, invisible in this checkout at the
+initial read: `arena/964cb944` (toss-up labels / VfB aliases / sources),
+`arena/57975298` (missing-market counts / sources), `arena/6e003eec` (line probe).
+Request to final integrators: retain their work; this session's changes are confined
+to source timestamp/provenance presentation, explicit no-pick on exact 50/50,
+passed-lock/24h boundaries, and checks of ALL cited history pages. No formula,
+market adapter or alias is changed here. Shared-file integration requests:
+`docs/assets/app.js` keep their summary/toss-up features alongside this session's
+`pickPill`, `setHeader`, source labels and time-bound fixes;
+`scripts/update_picks.py` keep their source-list additions alongside input timestamps;
+`scripts/model.py` keep their alias/rating changes alongside latest-history source links.
+This is an integration claim, not permission to overwrite their implementations.

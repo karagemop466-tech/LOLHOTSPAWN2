@@ -38,6 +38,7 @@
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
+  <div id="input-health" class="hidden" role="status"></div>
 
   <p class="eyebrow">Nothing is hidden</p>
   <h1>Flagged for review</h1>
@@ -45,6 +46,19 @@
     Every irregularity, cancelled upstream row, team-tag collision, thin-history warning, or unverified field is published here in table format
     with direct links to the external sources checked. Flags never block publication — every item is documented for manual review.
   </p>
+
+  <section id="evidence-limits">
+    <h2>Evidence limits — unverified organizer confirmation</h2>
+    <p class="small">A source URL is not proof that every linked value was officially verified. Fixture facts come from Hotspawn; historical results and standings come from community-maintained Leaguepedia. Organizer-level confirmation of those community records is <b>unverified</b>. Model ratings and win probabilities are our calculations, not published official values. No absent bookmaker price is filled in.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Item</th><th>Limitation</th><th>Review source</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Item">Community results &amp; standings</td><td data-label="Limitation">Not independently organizer-verified. Cached evidence may be older than this dashboard. “High confidence” describes the model rule, not official verification.</td><td data-label="Review source"><a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule">Leaguepedia MatchSchedule</a> · <a href="https://lol.fandom.com/wiki/Special:CargoTables/Standings">Standings</a></td></tr>
+        <tr><td data-label="Item">Unavailable betting lines</td><td data-label="Limitation">Blocked, key-gated or unparsed endpoints do not prove that a book offers no line. Only successfully retrieved, validated full-match quotes are used.</td><td data-label="Review source"><a href="https://www.pinnacle.com/en/esports/league-of-legends">Pinnacle</a> · <a href="unresolved.html#sources-checked">Observed source checks</a></td></tr>
+        <tr><td data-label="Item">50/50 placeholders &amp; passed lock times</td><td data-label="Limitation">No preferred team for unresolved or equal-probability matches. Passed lock times are not actionable upcoming picks; kept for snapshot coverage.</td><td data-label="Review source"><a href="https://play.hotspawn.com/lol-pickems">Hotspawn lobby</a> · <a href="methodology.html#input-freshness">Evidence scope</a></td></tr>
+      </tbody>
+    </table></div>
+  </section>
 
   <section>
     <h2>Flag summary counts</h2>

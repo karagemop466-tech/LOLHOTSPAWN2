@@ -121,7 +121,9 @@ VS_RE = re.compile(r"\bvs\.?\b|\bv\b", re.I)
 def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str) -> str:
     results_kind = kind in ("results-page", "wiki-api", "official-api")
     if status == 401 or status == 402:
-        return "requires an API key / paid plan — no key is configured, so nothing is used"
+        return "access denied / authentication or payment required — exact requirements unverified; nothing used"
+    if status == 429:
+        return "rate limited (HTTP 429) — coverage unverified; nothing used"
     if status == 403:
         return "blocked to automated requests (HTTP 403) — no line can be read"
     if status in (202, 203):
@@ -138,7 +140,7 @@ def _verdict(status: int | None, is_json: bool, lol_hits: int | None, kind: str)
         if lol_hits:
             return ("reachable JSON with League of Legends references — candidate for an adapter only "
                     "after a human verifies a sample price; not used in any probability yet")
-        return ("reachable JSON without any League of Legends match market in the response — nothing used")
+        return ("reachable JSON with no detected League of Legends text reference — match-market coverage unverified; nothing used")
     if status == 200:
         return ("reachable HTML only — no structured per-match prices parsed; human cross-check only, "
                 "never used in a probability")
@@ -183,8 +185,8 @@ def probe_candidate(name: str, url: str, kind: str, category: str) -> dict:
         row["vs_style_items"] = vs_items
         row["verdict"] = _verdict(status, row["is_json"], lol_hits, kind)
         if "no key configured" in name.lower() and status == 200:
-            row["verdict"] = ("endpoint answers without a key, but the payload carries no League of Legends "
-                              "match market — its data needs a paid API key that is not configured here; nothing used")
+            row["verdict"] = ("endpoint answered HTTP 200 without a configured key; price availability and "
+                              "authentication requirements are unverified — diagnostic only, nothing used")
     except Exception as e:  # noqa: BLE001 - a probe must never break the run
         row["verdict"] = f"probe error: {repr(e)[:120]}"
         row["http_status"] = 0

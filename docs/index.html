@@ -40,6 +40,7 @@
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
+  <div id="input-health" class="hidden" role="status"></div>
 
   <section class="hero">
     <p class="eyebrow">Executive summary · refreshed every 6 hours</p>
@@ -90,7 +91,7 @@
       </a>
       <a class="linkcard" href="picks.html?filter=next24" id="here-24">
         <span class="ico" aria-hidden="true">⏰</span>
-        <span><b>Next 24 hours only</b><span>What locks soonest, biggest win probability first. <b class="n" id="here-24-count">—</b> matches</span></span>
+        <span><b>Next 24 hours only</b><span>Upcoming lock times, soonest first. <b class="n" id="here-24-count">—</b> matches</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="leagues.html" id="here-leagues">
@@ -130,6 +131,13 @@
     </div>
   </section>
 
+  <details class="card" id="input-freshness">
+    <summary><b>When was the underlying evidence collected?</b></summary>
+    <p class="small">Dashboard generation and input collection are different timestamps. Community results can come from a cached snapshot after an upstream failure; the warning above remains visible even when this dashboard was just rebuilt.</p>
+    <div data-input-freshness></div>
+    <a href="methodology.html#input-freshness">Full evidence and verification limits →</a>
+  </details>
+
   <section id="starting-soon">
     <h2>Next 24 hours — immediate picks</h2>
     <p class="small"><span id="soon-count">Next scheduled matches locking soonest on Hotspawn.</span>
@@ -159,7 +167,7 @@
 
   <section>
     <h2>Per-competition breakdown</h2>
-    <p class="small">Every active competition on Hotspawn with its pricing mix and verified source link
+    <p class="small">Every active competition on Hotspawn with its pricing mix and source link
       (<a href="leagues.html">open the full By-League page →</a>).</p>
     <div class="table-wrap">
       <table>
@@ -203,7 +211,7 @@
 
     <h3 style="margin-top:18px">Per-league limits — which signal prices each league</h3>
     <p class="small">No external sportsbook we can reach prices these divisions, so the pick comes from recorded results and split
-      standings. Each row links the competition's verified results page
+      standings. Each row links the competition's community results page
       (<a href="unresolved.html#by-league">full table with organizer links →</a>).</p>
     <div class="table-wrap">
       <table>

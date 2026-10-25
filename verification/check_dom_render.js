@@ -113,7 +113,9 @@ function assertPicks(win, selector, label, expected) {
     const named = matches.filter((m) => text.includes(m.team1) && text.includes(m.team2));
     // The same pair can be listed twice (different competitions), so accept any
     // candidate whose own pick matches the pill.
-    if (!named.length || !named.some((m) => pillText.includes(m.pick))) badPick++;
+    if (!named.length || !named.some((m) => m.method === "UNRESOLVED"
+        ? /no pick/.test(pillText)
+        : Number(m.prob_team1) === 0.5 ? /no preferred team/.test(pillText) : pillText.includes(m.pick))) badPick++;
     else {
       const bad = named.filter((m) => Math.abs((m.prob_team1 || 0) + (m.prob_team2 || 0) - 1) > 0.001);
       if (bad.length) badProb++;
@@ -195,7 +197,7 @@ async function main() {
   // filter deep-links used by the summary must actually filter
   const next24 = matches.filter((m) => {
     const t = new Date(m.start_utc).getTime();
-    return t >= Date.now() - 300000 && t <= Date.now() + 86400000;
+    return t >= Date.now() && t <= Date.now() + 86400000;
   }).length;
   const filtered = await render("picks.html", { query: "?filter=next24" });
   check("picks: ?filter=next24 deep link applies",
@@ -300,6 +302,30 @@ async function main() {
         sdoc.querySelector("#stat-unresolved").textContent.trim() === "2");
   check("self-test: hero unresolved counter reflects the payload",
         sdoc.querySelector("#hero-count-unresolved").textContent.includes("2"));
+
+  check("self-test: unresolved cards never recommend the first team",
+        Array.from(sdoc.querySelectorAll("#unresolved-list .pick-pill")).every((p) =>
+          /no pick/.test(p.textContent) && !p.textContent.includes(synthetic.matches[0].team1)));
+  const tied = JSON.parse(JSON.stringify(PAYLOAD));
+  tied.matches[0] = Object.assign({}, tied.matches[0], { method: "MODEL_STANDINGS", prob_team1: 0.5, prob_team2: 0.5, pick_prob: 0.5 });
+  const tieDetail = await render("match.html", { query: `?id=${tied.matches[0].id}`, payload: tied });
+  check("self-test: equal model probabilities have no preferred team",
+        /no preferred team/.test(tieDetail.document.querySelector(".pick-pill").textContent));
+  check("picks: source links do not claim value verification",
+        !/verified link/.test(pdoc.querySelector("#picks-body").textContent));
+  const degraded = JSON.parse(JSON.stringify(PAYLOAD));
+  degraded.input_freshness = [{ name: "Leaguepedia community records", as_of: "2026-10-01T00:00:00Z", status: "degraded", url: "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule", note: "using cached snapshot" }];
+  const degradedView = await render("picks.html", { payload: degraded });
+  const health = degradedView.document.querySelector("#input-health");
+  check("self-test: fresh dashboard still warns about degraded cached evidence",
+        health && !health.classList.contains("hidden") && /2026-10-01/.test(health.textContent));
+  const locked = JSON.parse(JSON.stringify(PAYLOAD));
+  locked.matches[0] = Object.assign({}, locked.matches[0], { start_utc: "2020-01-01T00:00:00Z", prob_team1: 0.6, method: "MODEL_ELO" });
+  const lockedView = await render("match.html", { query: `?id=${locked.matches[0].id}`, payload: locked });
+  check("self-test: passed lock times are not labelled upcoming picks",
+        /LOCK TIME PASSED/.test(lockedView.document.querySelector(".pick-pill").textContent));
+  check("summary: evidence timestamp section is reachable",
+        !!idoc.querySelector("#input-freshness [data-input-freshness]"));
 
   const failed = results.filter((r) => !r.ok);
   console.log(`\nDOM render check: ${results.length - failed.length}/${results.length} passed` +
