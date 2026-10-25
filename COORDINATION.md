@@ -1936,3 +1936,28 @@ append-only UI sections/CSS/workflow tests plus generated data; both sets of
 features are kept. Main's union-generated payload is adopted pending fresh CI.
 New wording again identifies Leaguepedia as community records, never an official
 organizer source. A final union-aware live run is required before #67 merges.
+
+### T30 integration result — PR, merge, deploy (recorded 2026-10-25)
+
+| Item | Value |
+|---|---|
+| Pull request | **[#70](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/70)** — "Phone-first picks site: start-time-by-source evidence, audit table A1-A12, installability + stricter verifier" |
+| Merged | **2026-10-25T14:28:07Z**, merge commit **`331e753c761985d96699e67244769b7c74323aef`** (merge without waiting for review, as the brief requires) |
+| Merge conflicts | `COORDINATION.md` (append-only → resolved with `scripts/resolve_coordination_conflict.py`, both sessions' blocks kept), `research/betting-sources.md` (my new section renumbered **§20 → §22** because two other sessions already own §20/§21), `docs/index.html` (kept the other session's method-chip legend **and** the phone tip), and the generated artifacts (`verification/report.json`, `verification/last_report.md`, `data/diag/source_probe.json`, `docs/data/picks.json`) → took the incoming/CI copy, never hand-merged |
+| Rebase hygiene | the two `pipeline: test run [skip ci]` commits on this branch had already committed **conflict markers** into `docs/data/picks.json` / `data/diag/*` during a rebase; they were **dropped** and the payload re-taken verbatim from CI. Verifier D23 ("no committed artifact contains conflict markers") now passes on `main` |
+| Pages builds | `028c5a56` built 14:31:32Z · `9714344` built 14:36:37Z (both contain this work; earlier `31c989d4` errored on an unrelated concurrent merge) |
+| Live pipeline after merge | `picks: scheduled refresh [skip ci]` published **`generated_at 2026-10-25T14:31:30Z`** — 156 fixtures, 156 priced, 0 unresolved, 9 market, 147 model, 11 Low, 9 excluded, **43 probe sources** (up from 41: Cloudbet PRM-2D events, bmbets, Betmonitor, esportsinsider now probed every run) |
+| Verification on `main` after the merge | `verify_site.py` **49 PASS / 0 FAIL / 0 WARN / 1 SKIP** · `test_verifier.py` **64/64** · `check_dom_contract.py` PASS · `audit/test_model.py` 23/0 (run in a throw-away worktree of `origin/main`) |
+
+**Measured outcome of the start-time finding:** `START_TIME_MISMATCH` went 10 → **0** between the 10:41:50Z and 14:24:11Z
+payloads with no code change — the upstream feed corrected itself, and the four 25 Oct Worlds rows now read 17:00 / 18:00 /
+19:00 / 22:00 UTC. Two rows still carry `START_TIME_DISAGREES_WITH_BOOKS` (Unibet's own kickoff field 1.0 h and 3.0 h off).
+The full evidence trail is `research/line-by-line-audit-2026-10-25.md` §2.2 and `flagged.html#audit-2026-10-25` A1.
+
+**Final union-aware gate SUCCESS:** [40203290312](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40203290312)
+completed successfully, including live collection, actual Chromium, all source
+checks, union unit tests, and the independent lobby/API coverage gate. After
+that run, main advanced only via the #76 coordination/report record: both board
+appends are preserved and this run's verifier report retained. No tested code
+changed in this last merge. PR #67 is ready for immediate autonomous merge;
+Pages publication will be confirmed separately below.
