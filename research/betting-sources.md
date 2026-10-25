@@ -898,3 +898,38 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
+
+---
+
+## 20. Refresh 2026-10-25 — Cloudbet PRM-2 claim tested, Kalshi claim re-tested, coin-flip transparency (session `arena/964cb944`)
+
+Baseline (payload 2026-10-25T10:41:50Z): 156 fixtures · 156 resolved · 0 unresolved · 9 market (8 four-book Worlds consensus + 1 Polymarket single) · 147 model · 10 Low · 62 coin-flips (favourite ≤53%, newly counted/labelled — see below).
+
+### 20.1 New candidate: Cloudbet (established crypto sportsbook / esportsbook)
+
+| Check | Observed 2026-10-25 | Source |
+|---|---|---|
+| Cloudbet publishes a dedicated page claiming it "prices the Prime League 2nd Division through the split, with the match winner, map handicap, and total maps on every series" | The same page's Events section read **"No Prime League 2nd Division events available"** on 2026-10-25 while Hotspawn listed **36 upcoming PRM 2nd Division fixtures**. The claim is therefore *unverified in practice* today — marketing copy, not a live board. | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division |
+| Machine-readable feed | None found/documented; page is a client-rendered sportsbook. No price was copied. Both the PRM-2 page and the LoL hub were added to `scripts/source_probe.py`, so every 6-hour run re-tests reachability and would surface a change. | https://www.cloudbet.com/en/esports/league-of-legends |
+
+### 20.2 Kalshi LoL claim — third-party article vs the exchange's own API
+
+An August 2026 affiliate article states LoL "trades on Kalshi" with per-match markets (https://www.oddsshopper.com/articles/prediction-markets/league-of-legends-betting-odds). Our production probe queries Kalshi's official series API every run and again on 2026-10-25T10:41Z found **JSON 200 but no League of Legends series** (https://api.elections.kalshi.com/trade-api/v2/series?category=Esports). The exchange's own API outranks the article: **no Kalshi line is used**, and the probe keeps re-testing so a future LoL series would be detected the run it appears.
+
+### 20.3 Community ratings (gol.gg / power rankings) — do they cover the amateur rows?
+
+Community Elo projects (e.g. https://lolproelo.com/rankings, https://tgv-analytics.com/teams, Riot/Liquipedia Global Power Rankings https://liquipedia.net/leagueoflegends/Global_Power_Rankings) rate professional tier-1/2/3 teams. None rates PRM 3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen or LigaGG rosters — precisely the competitions our model prices. They therefore cannot resolve any fixture the featured picks cannot; not used, listed here so the check is on record.
+
+### 20.4 VfB eSports "cross-league inside its own tournament" — investigated, not a defect
+
+5 of the 10 Low-confidence rows involve VfB eSports, all `CROSS_LEAGUE_MODEL`. Per-row model data shows why: VfB's recent competition is **Prime League 1st Division 2026 Spring** (competition base 1560) while its PRM 2nd Division opponents anchor to 1460–1490 bases — a relegated team being compared across league anchors, exactly what the flag exists for. Evidence per row, e.g. "Elo 1511 vs 1512 (51/33 games in 365d; competition bases 1560/1480)", tournament page https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split. **No model change made**; the Low cap is the honest treatment.
+
+### 20.5 Coin-flip picks — the real remaining gap, now labelled
+
+62 of 156 picks (40%) have their favourite at ≤53% — the pick exists but is a practical coin-flip, concentrated in PRM 3rd/RIVALS/Tunisian model rows where shrinkage toward the competition prior dominates. Previously nothing on a row said so. This session adds (verifier S16 + DOM render checks): a `🪙 coin-flip ≤53%` chip on every such card/match page, "· coin-flip" in the pick pill, an **All picks → 🪙 Coin-flip** filter (`picks.html?filter=tossup`), the count in the picks count-line, in the executive summary's unresolved/limitations section (with the deep link), and on the Unresolved page. Threshold is single-sourced (`TOSSUP_MAX = 0.53` in `docs/assets/app.js`).
+
+### 20.6 Live spot-check (2026-10-25)
+
+`Mental Rush vs Vitality Rising Bees` (LGC Rising, `MARKET_SINGLE` Polymarket): live event page shows series Moneyline **Vitality Rising Bees 65¢ / Mental Rush 38¢** vs payload Mental Rush 0.355 → pick Vitality Rising Bees 64.5% — consistent within drift since the 10:41Z refresh. Source: https://polymarket.com/event/lol-rb-mr-2026-10-27. (Also confirms the selector takes the series Moneyline, not the Game-N child markets listed below it on the same page.)
+
+**Bottom line (unchanged, re-measured):** no new structured per-match line source qualified. Low-tier picks remain our own Elo/standings line; what changed is that the weakest of them now say "coin-flip" on the row itself.
