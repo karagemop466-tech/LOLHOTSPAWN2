@@ -20,6 +20,62 @@ work is discarded — `main` is adopted as the baseline and only additive change
 
 Any session that needs a file in this scope must log a request here instead of editing it.
 
+### T27–T29 results (`arena/419cd73a`, 2026-10-25)
+
+**T27 — fresh line-source research. The project's standing conclusion was wrong and is now corrected.**
+`research/betting-sources.md` §15 and the README both stated that *no reachable source covers a single
+model-only fixture* (measured 2026-10-24: 39 requests / 30 sites). On 2026-10-25
+[OddsDigger's upcoming-LoL board](https://oddsdigger.com/e-sports/league-of-legends/upcoming) was found to
+publish a two-way **series winner** price for **two** fixtures the four production feeds (Pinnacle,
+Unibet/Kambi, Bovada, Polymarket) do not price. Both rows were opened and read by hand:
+
+| Fixture | Board price | Normalised | Our published row | Independent cross-check | Outcome |
+|---|---|---|---|---|---|
+| Mental Rush vs Vitality Rising Bees (LGC Rising, 2026-10-27 17:00Z) | 7/17 v 8/5 | VRB **64.8%** | `MARKET_SINGLE` Polymarket **64.5%** | [Polymarket market 6036989](https://gamma-api.polymarket.com/markets/6036989) `Match Winner` 0.63/0.37 · eGamersWorld LGC board ≈66% | ✅ agrees to 0.3 pts |
+| Ground Zero Gaming vs Frank Esports (LCP 2027 Promotion, 2026-11-11 09:00Z) | 1/67 v 22/3 | GZ **89.1%** | `MODEL_ELO` FAK **61.7%** | [eGamersWorld](https://egamersworld.com/lol/match/eDTgthgYk/ground-zero-gaming-vs-frank-esports-wvOLKhrveF) 0–4 H2H, rating 530 v 448 · [rft.gg](https://rft.gg/match/71696-ground-zero-gaming-vs-frank-esports-2026-11-11) 0–9 H2H · [Leaguepedia PCS 2026 Summer](https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season) FAK runner-up | ⚠️ direction conflict |
+
+**Decision: OddsDigger is NOT promoted to a probability input.** One row in two agreeing is not enough to let an
+affiliate-rendered board override the model, and CI then caught decisive counter-evidence (**F20.3**): the board
+lists *G2 Esports vs Topsports* **twice under the identical title with opposite favourites**
+([event 23672375](https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672375) → G2 47.8%,
+[event 23672755](https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672755) → G2 57.9%) while our
+Pinnacle+Unibet consensus says G2 54.8%. The board is now probed every refresh, its parser is fixture-matched in
+`scripts/probe_lines.py`, and the disagreement is published on *Flagged for review* with both numbers and every
+link. Four new candidates added to `scripts/source_probe.py` (OddsDigger, OddsPortal Prime League, Esports
+Insider, rft.gg) — all measured **HTTP 200** from CI on 2026-10-25 (`data/diag/source_probe.json`, 41 candidates).
+
+**T28 — line-by-line verification** (`verification/spot-checks-2026-10-25.md`). Two market rows verified
+**digit-for-digit** against the exact feeds they cite: Pinnacle matchup `1639227252` (+206/−254 → 3.06/1.3937 →
+0.3129/0.6871) and Kambi event `1029621121` (1120/5400 → 0.8282/0.1718, `changedDate` 06:38Z, before the
+snapshot). Four more differ only by post-snapshot line movement. The Polymarket selector is confirmed to use the
+`groupItemTitle: "Match Winner"` market, not the dead 0.5/0.5 `Game N` children. Five irregularities recorded
+(V25.1–V25.5); V25.4 (the 53 standings rows) is explicitly left **unverified** — the Leaguepedia Cargo API
+answered `ratelimited` and the value is not asserted.
+
+**T29 — mobile pass.** Inside `#picks-here` the seven-chip method glossary sat *between* the heading and the four
+pick links; `style.css:429` renders it single-column below its breakpoint, so ~14 lines of glossary preceded the
+first tappable link at 390 px. Moved below the links into a collapsed `<details>`. Two new `check_dom_render.js`
+assertions (55/55) pin the order and the collapsed default, both verified non-vacuous.
+
+**Bugs found by CI while building the probe — all three disclosed, none hidden.**
+1. A greedy `[^>]*` after `href` swallowed the `title` attribute → 0 events parsed (caught by the offline
+   self-test while it was being written).
+2. An unbounded row slice ran into the page footer, whose "Handicap" navigation tripped the Map guard and lost
+   the last row (caught by CI run `40201818801`, 14:23:17Z: 13 prices, 8 matched, 0 new coverage).
+3. The replacement 1500-char budget was far too tight for the real markup → **0 records** (caught by the next CI
+   run, 14:28:26Z). Fixed by a structural bound: the row ends at its own trailing "All Odds" anchor, which
+   carries the same event href. Regression test covers ~7000 chars of intervening markup.
+
+**Scope note.** This session also touched `scripts/verify_site.py` (three hand-opened hosts added to
+`REVIEW_HOSTS`), `.github/workflows/verify.yml` and `.github/workflows/pipeline-test.yml` (run the new parser
+self-test), and `docs/flagged.html`. No other session held a live claim on any of them.
+
+**Open item handed to the next session (not fixed here).** V25.1: `scripts/fetch_markets.py` records a Polymarket
+row's `start_utc` as the market's `endDate` (close time), not the kickoff, so `start_delta_hours` is meaningless
+for Polymarket rows. Fix = prefer `gameStartTime`/`eventStartTime`, plus a unit test — left alone because
+`_dedup_key()` keys on `start_utc[:10]` and the change needs a live end-to-end run to prove it does not merge two
+fixtures.
+
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
