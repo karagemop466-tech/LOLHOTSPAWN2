@@ -42,6 +42,7 @@ import hashlib
 import json
 import os
 import re
+import struct
 import sys
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
@@ -79,7 +80,15 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
 # Research/manual-review links published on the Methodology page. They are never a
 # probability input (no row cites them); they are listed so a reader can repeat the
 # search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+# 2026-10-25: cloudbet.com and bmbets.com were added after both were read by hand
+# for the Prime League 2nd Division question (Cloudbet: "No ... events available";
+# bmbets: no low-tier LoL board). They are cited only on Methodology as sources
+# that were checked and found empty — never a probability input.
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
+                "cloudbet.com", "bmbets.com", "esportsinsider.com",
+                # official tournament organizers cited for manual review (2026-10-25 audit)
+                "primeleague.gg", "rivalsleague.gg", "komplettligaen.no",
+                "tunesf.com", "cloudbet.github.io")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
@@ -956,6 +965,25 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             f"harness {'present' if os.path.exists(harness) else 'MISSING'}; "
             f"wired into {', '.join(wired) if wired else 'no workflow'}")
 
+    # S16: coin-flip picks (favourite <= TOSSUP_MAX) must be labelled as such,
+    # counted in the executive summary's unresolved/limitations section and
+    # reachable through the All-picks tossup filter. A pick for every match is
+    # only honest if the near-50/50 ones say so on the row itself.
+    def _read_or_empty(path):
+        return open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+    app_js = _read_or_empty(os.path.join(DOCS, "assets", "app.js"))
+    picks_html = _read_or_empty(os.path.join(DOCS, "picks.html"))
+    s16_missing = []
+    for needle in ("TOSSUP_MAX", "isTossUp", "tossup-chip", "picks.html?filter=tossup"):
+        if needle not in app_js:
+            s16_missing.append(f"app.js: {needle}")
+    if 'data-filter="tossup"' not in picks_html:
+        s16_missing.append('picks.html: data-filter="tossup"')
+    rep.add("S16", "coin-flip picks are labelled, counted in the summary and filterable",
+            PASS if not s16_missing else FAIL,
+            "toss-up threshold, chip, summary link and picks filter present"
+            if not s16_missing else f"missing: {', '.join(s16_missing)}")
+
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
             "all pages declare a responsive viewport" if not viewport_bad
@@ -1091,6 +1119,8 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                 f"{len(unverified_hosts)} host(s) need manual review", unverified_hosts[:12])
 
     verify_structure(rep, DOCS)
+    verify_phone_install(rep, DOCS)
+    verify_review_rows(rep, DOCS)
 
 
 # --------------------------------------------------------------------------- structure
@@ -1159,6 +1189,152 @@ def verify_structure(rep: Report, docs_dir: str) -> None:
             PASS if not nav_problems else FAIL,
             f"{len(tops)} pages, identical nav with {len(next(iter(tops.values()), ()))} "
             f"primary targets" if not nav_problems else "; ".join(nav_problems))
+
+
+def _png_size(path: str) -> tuple[int, int] | None:
+    """Read width/height from a PNG IHDR chunk without any image library."""
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(33)
+    except OSError:
+        return None
+    if len(head) < 33 or head[:8] != b"\x89PNG\r\n\x1a\n" or head[12:16] != b"IHDR":
+        return None
+    return struct.unpack(">II", head[16:24])
+
+
+REVIEW_TABLE_RE = re.compile(
+    r'<section[^>]*id="(?P<sec>[a-z0-9-]+)"[^>]*>(?P<body>.*?)</section>', re.S | re.I)
+REVIEW_TABLES = {"audit-2026-10-25": 8, "source-coverage-flags": 3}
+
+
+def _row_has_link(row_html: str) -> bool:
+    return bool(re.search(r'href="https?://[^"]+"', row_html, re.I))
+
+
+def verify_review_rows(rep: Report, docs_dir: str) -> None:
+    """S17: every row of the manual-review tables must carry an external source link.
+
+    The brief is explicit: a table row may only stay on the site if the reader can
+    click through to the official page that was checked. Counting rows and links per
+    section (rather than trusting the page by eye) keeps a future edit from quietly
+    dropping a link and leaving an unsourced claim behind.
+    """
+    path = os.path.join(docs_dir, "flagged.html")
+    try:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            html = fh.read()
+    except OSError:
+        rep.add("S17", "manual-review tables link a source on every row", FAIL,
+                "docs/flagged.html is missing")
+        return
+    sections = {m.group("sec"): m.group("body") for m in REVIEW_TABLE_RE.finditer(html)}
+    problems: list[str] = []
+    total_rows = 0
+    for sec, minimum in REVIEW_TABLES.items():
+        body = sections.get(sec)
+        if body is None:
+            problems.append(f"section #{sec} is missing")
+            continue
+        tbody = re.search(r"<tbody>(.*?)</tbody>", body, re.S | re.I)
+        rows = re.findall(r"<tr>(.*?)</tr>", tbody.group(1) if tbody else "", re.S | re.I)
+        rows = [r for r in rows if "<td" in r]
+        total_rows += len(rows)
+        if len(rows) < minimum:
+            problems.append(f"#{sec} has {len(rows)} row(s), expected at least {minimum}")
+        bare = [i + 1 for i, r in enumerate(rows) if not _row_has_link(r)]
+        if bare:
+            problems.append(f"#{sec}: row(s) {bare[:6]} carry no external source link")
+    rep.add("S17", "manual-review tables link a source on every row",
+            PASS if not problems else FAIL,
+            (f"{total_rows} reviewed row(s) across {len(REVIEW_TABLES)} section(s), "
+             f"every one links an external page") if not problems else "; ".join(problems[:6]),
+            problems[:6])
+
+
+def verify_phone_install(rep: Report, docs_dir: str) -> None:
+    """S16: the dashboard must be installable on a phone home screen.
+
+    The brief asks that a visitor can open the site on a phone and find the picks
+    without hunting. A manifest + apple-touch-icon is what makes the picks list a
+    one-tap icon instead of a bookmark; if either is missing or points at a broken
+    file, Chrome/Safari silently fall back to a screenshot and a long URL. This
+    check keeps the three moving parts (manifest file, icons, per-page <link>)
+    from drifting apart, and it fails loudly rather than degrading quietly.
+    """
+    problems: list[str] = []
+    manifest_path = os.path.join(docs_dir, "manifest.webmanifest")
+    icons: dict[str, tuple[int, int] | None] = {}
+    manifest: dict = {}
+    if not os.path.exists(manifest_path):
+        problems.append("docs/manifest.webmanifest is missing")
+    else:
+        try:
+            with open(manifest_path, encoding="utf-8") as fh:
+                manifest = json.load(fh)
+        except (OSError, json.JSONDecodeError) as e:
+            problems.append(f"manifest is not valid JSON ({e})")
+        if manifest:
+            for key in ("name", "short_name", "start_url", "display"):
+                if not manifest.get(key):
+                    problems.append(f"manifest has no {key}")
+            if manifest.get("display") not in ("standalone", "fullscreen", "minimal-ui"):
+                problems.append(f"manifest display={manifest.get('display')!r} is not app-like")
+            entries = manifest.get("icons") or []
+            if not entries:
+                problems.append("manifest lists no icons")
+            maskable = False
+            for icon in entries:
+                src = str(icon.get("src") or "")
+                if not src:
+                    problems.append("an icon entry has no src")
+                    continue
+                icon_path = os.path.join(docs_dir, src)
+                if not os.path.exists(icon_path):
+                    problems.append(f"{src} referenced by the manifest does not exist")
+                    continue
+                actual = _png_size(icon_path)
+                icons[src] = actual
+                declared = str(icon.get("sizes") or "")
+                if actual is None:
+                    problems.append(f"{src} is not a readable PNG")
+                elif declared and f"{actual[0]}x{actual[1]}" != declared:
+                    problems.append(f"{src} is {actual[0]}x{actual[1]} but the manifest says {declared}")
+                if "maskable" in str(icon.get("purpose") or ""):
+                    maskable = True
+            if not maskable:
+                problems.append("no maskable icon (Android adaptive icons will be letterboxed)")
+            if any(actual and actual[0] < 192 for actual in icons.values() if actual):
+                problems.append("icons must be at least 192 px for installability")
+
+    linked: list[str] = []
+    for pg in pages_in(docs_dir):
+        try:
+            with open(pg, encoding="utf-8", errors="replace") as fh:
+                html = fh.read()
+        except OSError:
+            continue
+        name = os.path.basename(pg)
+        if 'rel="manifest"' not in html:
+            problems.append(f"{name} does not link the manifest")
+        if 'rel="apple-touch-icon"' not in html:
+            problems.append(f"{name} has no apple-touch-icon")
+        if 'name="viewport"' not in html:
+            problems.append(f"{name} has no viewport meta")
+        linked.append(name)
+
+    apple = os.path.join(docs_dir, "assets", "apple-touch-icon.png")
+    if not os.path.exists(apple):
+        problems.append("docs/assets/apple-touch-icon.png is missing")
+    elif _png_size(apple) is None:
+        problems.append("apple-touch-icon.png is not a readable PNG")
+
+    rep.add("S16", "site is installable on a phone home screen (manifest, icons, per-page links)",
+            PASS if not problems else FAIL,
+            (f"{len(linked)} pages link the manifest + apple-touch-icon; "
+             f"{len(icons)} declared icon(s) present with matching sizes")
+            if not problems else "; ".join(problems[:8]),
+            problems[:8])
 
 
 # --------------------------------------------------------------------------- workflow
