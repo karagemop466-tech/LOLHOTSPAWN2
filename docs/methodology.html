@@ -44,6 +44,33 @@
   <p class="lede">Fixtures come from Hotspawn. Probabilities never do. Every fixture passes through a verified 5-tier cascade:
   external bookmaker consensus → tier-anchored Elo → split standings → competition prior → explicit 50/50 placeholder.</p>
 
+  <section class="card" id="what-this-site-promises">
+    <h3>What this site promises — and where to check each promise</h3>
+    <p class="small">One row per requirement, with the page that proves it and the automated check that enforces it.
+      Every link here is on this site; nothing needs an external account to verify.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Requirement</th><th scope="col">Where to check it</th><th scope="col">Enforced by</th></tr>
+        </thead>
+        <tbody>
+          <tr><td data-label="Requirement">A pick for <b>every</b> match</td><td data-label="Where"><a href="picks.html">All picks</a> — one row per fixture, pick is always one of the two teams</td><td data-label="Check" class="small">REQ1, DOM render</td></tr>
+          <tr><td data-label="Requirement">Win probability for <b>both</b> teams, adding to 100%</td><td data-label="Where"><a href="picks.html">All picks</a> — the Win probability column names both sides</td><td data-label="Check" class="small">REQ2</td></tr>
+          <tr><td data-label="Requirement">Coverage of the whole Hotspawn LoL list</td><td data-label="Where"><a href="index.html#main">Executive summary</a> — coverage &amp; lobby reconciliation</td><td data-label="Check" class="small">D21, coverage audit</td></tr>
+          <tr><td data-label="Requirement">External betting lines used where they exist</td><td data-label="Where"><a href="index.html#featured-heading">Featured picks</a> · <a href="picks.html?filter=market">market-only list</a></td><td data-label="Check" class="small">REQ4, D20</td></tr>
+          <tr><td data-label="Requirement">Our own probability where no line exists</td><td data-label="Where"><a href="picks.html?filter=model">matches without a betting line</a> · <a href="unresolved.html">limitations</a></td><td data-label="Check" class="small">REQ5</td></tr>
+          <tr><td data-label="Requirement">Separate section for unresolved picks &amp; limits, in the summary</td><td data-label="Where"><a href="index.html#unresolved-section">Executive summary → unresolved &amp; no-line section</a></td><td data-label="Check" class="small">S4, S5, DOM render</td></tr>
+          <tr><td data-label="Requirement">In-site links to the updated picks list</td><td data-label="Where"><a href="index.html#picks-here">Executive summary → where the picks are</a></td><td data-label="Check" class="small">S4c, REQ7</td></tr>
+          <tr><td data-label="Requirement">Readable on a phone</td><td data-label="Where">Every page — <a href="picks.html">All picks</a> is the densest: tables become cards, the bottom bar stays in reach, tap targets ≥44 px</td><td data-label="Check" class="small">REQ9, S2, S7</td></tr>
+          <tr><td data-label="Requirement">Refresh every 4–8 hours, no manual input</td><td data-label="Where"><a href="index.html">Executive summary</a> header shows the last and next update</td><td data-label="Check" class="small">W1, W2, REQ10</td></tr>
+          <tr><td data-label="Requirement">A source link on every row</td><td data-label="Where"><a href="picks.html">All picks</a> → Sources column; <a href="leagues.html">By league</a> → source per competition</td><td data-label="Check" class="small">REQ8, DOM render</td></tr>
+          <tr><td data-label="Requirement">Hotspawn is never a probability input</td><td data-label="Where"><a href="unresolved.html#resolution-mix">How each snapshot was priced</a></td><td data-label="Check" class="small">W3</td></tr>
+          <tr><td data-label="Requirement">Irregularities flagged for review</td><td data-label="Where"><a href="flagged.html">Flagged for review</a> — flags, bridges, cancelled fixtures, checked sources</td><td data-label="Check" class="small">REQ8, S5c</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="card">
     <h3>1. Fixture discovery &amp; lobby reconciliation (every 6 hours)</h3>
     <p class="small">We reconcile <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's LoL Pick'em lobby</a>

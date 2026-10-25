@@ -79,7 +79,13 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
 # Research/manual-review links published on the Methodology page. They are never a
 # probability input (no row cites them); they are listed so a reader can repeat the
 # search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
+                # Added 2026-10-25: cited on Flagged / Methodology as sources that were
+                # opened and rejected (empty board, archive only, geo-blocked, 404).
+                # Being on this list means "a human opened it and recorded what it said",
+                # never "this is a data source": no payload row cites them.
+                "cloudbet.com", "oddsportal.com", "bmbets.com", "rainbet.com",
+                "everygame.eu")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
