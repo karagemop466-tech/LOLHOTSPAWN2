@@ -1,5 +1,67 @@
 # Coordination Board
 
+## Session `arena/91450d23-lolhotspawn2` — 2026-10-25 (reliability + diagnosability)
+
+> Branch note: Arena fixes this session to `arena/91450d23-lolhotspawn2`; the tooling does not permit creating other
+> branches, so that branch stands in for `session-<id>/<task>`.
+
+**Overlap resolved.** This session first claimed the same four workstreams as session `arena/6e003eec` (T25–T28,
+claimed 14:06:54Z — three minutes before this session's first claim). Under the board rule *never start a task another
+session has claimed*, this session dropped verification/research/site/integration and kept only the reliability work
+below. `main` meanwhile advanced through PRs #67/#68/#70/#73 and more sessions; this branch was then **reset onto
+`main` (`bc38b0b`)** so it carries exactly one change on top of current `main`.
+
+| Task | Status | Owner | Files |
+|---|---|---|---|
+| W1 Forensics: why did the scheduled refresh `40156916426` (2026-10-25T03:05Z) fail? | done | arena/91450d23 | `COORDINATION.md` |
+| W2 Diagnosability: a failed refresh must explain itself in the one log the workflow keeps | done | arena/91450d23 | `scripts/update_picks.py` |
+| W3 Independent verification of `main` at `bc38b0b` (all suites + verifier + jsdom render) | done | arena/91450d23 | `COORDINATION.md` |
+| W4 Takeover of another session's tasks | not needed — no claim went stale while this session ran | — | — |
+
+### W1 — what is established, and what is not
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Which step failed? | Step 6 **“Verify the published payload”** of run [40156916426](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40156916426); steps 1–5 succeeded, step 7 (failure log) succeeded, step 8 (commit) was skipped. | job `121060138275`, step list via the Actions API |
+| Did the generator work? | Yes. The committed log reads `hotspawn: 145 future LoL fixtures`, `markets: Pinnacle ok (8) · Unibet ok (8) · Bovada ok (6) · Polymarket ok (9)`, `leaguepedia: 31739 results … 2880 standings`, `model: 145 fixtures, 145 resolved, 0 unresolved`, `wrote docs/data/picks.json`. | `git show 195d230:data/diag/pipeline.log` |
+| Which verifier check failed? | **Not established and not guessed.** The step's console log is only served through a 302 to `productionresultssa5.blob.core.windows.net`, which this sandbox cannot reach (curl exit 000); the step uploaded no artifact, and the only file the failure step commits is `pipeline.log` — the generator's own output. | attempts on `/actions/jobs/121060138275/logs` → 302 → host unreachable |
+| User-visible effect | The site kept the 2026-10-24T20:10Z payload until the next successful run (2026-10-25T10:39Z) — 6 h 18 m — and because `stale_after_utc` is 8 h the freshness banner never fired, so nothing on the site said a refresh had failed. | run list; payload `generated_at` before/after |
+
+### W2 — the fix (this branch's only code change)
+
+`scripts/update_picks.py` now re-runs `scripts/verify_site.py` on the payload it just wrote and copies the failing check
+ids plus their annotation lines into stderr — the stream the workflow tees into `data/diag/pipeline.log`, the one file a
+failed run commits. It never edits the payload, never raises, and its exit status is ignored: the workflow's own verify
+step stays the gate.
+
+* Live proof on the earlier branch run [40202018891](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202018891):
+  the committed log contains `preflight: verify_site.py PASS (exit 0) — == PASS · pass 44 · fail 0 · warn 0 · skip 1 ==`.
+* Non-vacuity proof: corrupting three fields (a probability that no longer sums to 1, a pick that is not a team, a
+  duplicated fixture) drops the verifier to **37 pass / 7 fail** and the pre-flight reproduces the failing check ids and
+  rows in the log; restoring the payload returns **49 pass / 0 fail**.
+
+### W3 — verification of `main` at `bc38b0b` (independent of the other sessions)
+
+| Gate | Result |
+|---|---|
+| `python3 scripts/verify_site.py` | **49 PASS · 0 FAIL · 0 WARN · 1 SKIP** (D18 skipped without a schedule snapshot) |
+| `verification/check_dom_contract.py` / `test_dom_contract.py` | PASS / 7/7 |
+| `verification/test_verifier.py` | 64/64 (includes the new `S19` phone-layout self-tests) |
+| `verification/test_entity_and_books.py` | 17/17 |
+| `verification/test_standings_model.py` / `test_evidence_scope.py` | ALL PASS / OK |
+| `audit/test_model.py` | 23 passed · 0 failed |
+| `node verification/render_check.cjs` / `check_dom_render.js` | RENDER CHECK PASS / 67/67 |
+
+### Irregularities found during this session
+
+| ID | Item | State |
+|---|---|---|
+| R1 | **Dead external citation blocked `main`'s own verification.** `docs/flagged.html` row A12 linked `https://polymarket.com/esports/league-of-legends/prime-league-1st-division`, which returns **404**; `main`'s scheduled *Verify picks and site* run [40202537346](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202537346) failed at step 6 for that reason, and this branch's live run [40202799707](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202799707) reproduced it (`X1 … 1 dead (404/410)`). | **Fixed upstream** while this session ran: another session rewrote A12 as “Historical Polymarket PRM category link is unverified” (no price inferred). Verified present in `main@bc38b0b`; this branch deliberately carries no duplicate edit. |
+| R2 | A failed production refresh keeps **no verifier output**, so its cause cannot be recovered afterwards (W1). | Mitigated in the generator by W2. The remaining gap is a workflow line this session does not own: add `verification/report.json` and `verification/last_report.md` to the failure step's `git add` in `.github/workflows/update-picks.yml`. |
+| R3 | This session's first branch state silently reverted newer `main` files (`-X theirs` applied to the branch's own pipeline-test merge). Caught by `verification/test_verifier.py` — 9 self-tests failed because `S19` was missing from `scripts/verify_site.py`. | **Fixed** by resetting the branch onto `main@bc38b0b` and re-applying only the pre-flight; no other session's work was involved or lost (`backup-91450d23` kept locally for audit). |
+
+Any other session that needs a file in this scope must log a request here instead of editing it.
+
 ## Session `arena/0e9a9550-lolhotspawn2` — 2026-10-25 (claim, pushed before work)
 
 No other session has an active claim on the files below as of 2026-10-25 14:15 UTC: the newest board entry
