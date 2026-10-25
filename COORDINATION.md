@@ -1482,3 +1482,16 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+## Session `arena/c1e74f5e-lolhotspawn2` — 2026-10-25 (claim)
+
+All earlier claims are over 60 minutes old; baseline `2173cc9` is the current main. This session uses the Arena-fixed branch above (no alternate branch). No other active claim was found in the board; existing open PRs are left untouched.
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| C1 Audit current coverage, provenance and unresolved semantics; fix defects with regression tests | in progress | arena/c1e74f5e | `scripts/**`, `verification/**`, `audit/**` |
+| C2 Research external line availability using fresh CI probes; document official vs community evidence and limitations | in progress | arena/c1e74f5e | `research/**`, `data/diag/**`, `README.md` |
+| C3 Mobile summary/picks/limitations integration and honest evidence labels | in progress | arena/c1e74f5e | `docs/**` |
+| C4 Integration, live refresh, tests, PR merge and Pages confirmation | in progress | arena/c1e74f5e | `.github/workflows/**`, `COORDINATION.md` |
+
+Network note: this sandbox allows GitHub/npm/PyPI only. Source verification requiring other hosts must run in GitHub Actions, with timestamped artifacts; blocked local requests will not be described as source verification.
