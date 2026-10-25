@@ -117,9 +117,12 @@
       : "";
   }
   function pickPill(m) {
+    // Keep exact ties and unresolved placeholders neutral, while preserving
+    // the shared <=53% coin-flip label for weak (but non-equal) favourites.
     if (m.method === "UNRESOLVED") return `<span class="pick-pill red">⚠️ NO PICK · insufficient evidence</span>`;
-    const tone = m.method === "UNRESOLVED" ? "red" : ((m.confidence === "Low" || isTossUp(m)) ? "amber" : "");
-    const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
+    if (Number(m.prob_team1) === 0.5) return '<span class="pick-pill amber">No edge · 50/50 · no preferred team · coin-flip</span>';
+    const tone = m.confidence === "Low" || isTossUp(m) ? "amber" : "";
+    const prefix = new Date(m.start_utc).getTime() < Date.now() ? "LOCK TIME PASSED:" : "✅ PICK:";
     const flip = isTossUp(m) ? " · coin-flip" : "";
     return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}${flip}</span>`;
   }
@@ -239,6 +242,20 @@
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Recent snapshot · not live odds" : "Stale or unverified timestamp"}`;
       fresh.title = `Next scheduled update: ${whenUTC(d.next_update_utc)}`;
     }
+    const inputs = d.input_freshness || [];
+    const degraded = inputs.filter((s) => s.status === "degraded");
+    const health = $("#input-health");
+    if (health) {
+      health.className = degraded.length ? "warnbox" : "hidden";
+      health.innerHTML = degraded.map((s) => `<p><b>${esc(s.name)}: degraded input.</b> Snapshot ${esc(whenUTC(s.as_of))}. ${esc(s.note || "")} A fresh dashboard timestamp does not make cached evidence fresh. <a href="methodology.html#input-freshness">Source timestamps →</a></p>`).join("");
+    }
+    $$("[data-input-freshness]").forEach((box) => {
+      box.innerHTML = inputs.length ? `<div class="table-wrap"><table><thead><tr><th>Input / source</th><th>Snapshot collected (UTC)</th><th>Status / limitation</th></tr></thead><tbody>${inputs.map((s) => `<tr>
+        <td data-label="Input / source"><a href="${esc(s.url)}">${esc(s.name)}</a></td>
+        <td data-label="Snapshot collected">${esc(whenUTC(s.as_of))}${!s.as_of ? '<span class="sub">Unverified — not supplied</span>' : ""}</td>
+        <td data-label="Status / limitation"><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span> ${esc(s.note || "")}</td>
+      </tr>`).join("")}</tbody></table></div>` : '<p class="small">Input timestamps were not recorded in this older payload — unverified. The dashboard generation time is not a source collection time.</p>';
+    });
     const warn = $("#freshness-warning");
     if (warn) {
       warn.className = isFresh(d) ? "hidden" : "warnbox";
@@ -358,7 +375,7 @@
 
     const cov0 = d.coverage || {};
     const all0 = d.matches || [];
-    const n24 = all0.filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= Date.now() - 300000 && t <= Date.now() + 86400000; }).length;
+    const n24 = all0.filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= Date.now() && t <= Date.now() + 86400000; }).length;
     set("#here-all-count", all0.length);
     set("#here-24-count", n24);
     set("#here-leagues-count", computeLeagueBreakdown(d).length);
@@ -502,10 +519,10 @@
     // Only when the 24 h window is empty do we fall back to the next few
     // upcoming matches, and the heading/count say so.
     const in24 = (d.matches || [])
-      .filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; })
+      .filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs && t <= nowMs + 86400000; })
       .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const next = in24.length ? in24 : (d.matches || [])
-      .filter((m) => new Date(m.start_utc).getTime() >= nowMs - 300000)
+      .filter((m) => new Date(m.start_utc).getTime() >= nowMs)
       .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
       .slice(0, 6);
     const nextBox = $("#next24");
@@ -627,7 +644,7 @@
     const now = Date.now();
     if (state.filter === "next24") {
       const t = new Date(m.start_utc).getTime();
-      if (!(t >= now - 300000 && t <= now + 86400000)) return false;
+      if (!(t >= now && t <= now + 86400000)) return false;
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
@@ -897,7 +914,7 @@
             </ul>
           </div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
-          <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)} <span class="sub">Source type: ${esc(s.source_kind || "reference (not independently classified)")}</span></li>`).join("")}</ul>
+          <div class="card"><h3>Sources &amp; evidence scope</h3><p class="small">Hotspawn confirms the listed fixture only. Bookmaker links support observed quotes. Leaguepedia links are community records, not official organizer confirmation. Probabilities and ratings are computed estimates; a link or HTTP 200 does not verify every value.</p><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)} <span class="sub">Source type: ${esc(s.source_kind || "reference (not independently classified)")}</span></li>`).join("")}</ul>
           <p class="tiny">Crowd context (never used in probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
         </div>
       </div>

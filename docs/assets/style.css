@@ -444,6 +444,22 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   .legend-t { margin: 0 0 8px; }
 }
 
+/* Actual 320/390px Chromium audit: long team and league names must wrap,
+   not push the entire dashboard wider than the phone. Keep filter strips
+   horizontally scrollable, but never let individual result badges overflow. */
+@media (max-width: 760px) {
+  .pickcell, .pick-pill, td .chip, .cat-nav .chipbtn {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+  .pick-pill { display: inline-block; }
+  .cat-nav .chipbtn { min-width: 0; }
+  .probrow { flex-wrap: wrap; }
+  .kv { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .kv dd { overflow-wrap: anywhere; }
+}
+
 /* phone readability pass (2026-10-25): the pick is the reason the page exists, so on
    a narrow screen it gets the largest type on the card and the probabilities stay
    on one line each, with the tap targets kept at >= 44px. */

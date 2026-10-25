@@ -1,6 +1,8 @@
 {
- "checked_at": "2026-10-25T14:28:56.023487Z",
+ "checked_at": "2026-10-25T14:32:21.212733Z",
  "fixture_count": 156,
+ "fixture_snapshot_at": "2026-10-25T14:29:06.319763Z",
+ "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [],
  "candidates": [
@@ -1280,7 +1282,7 @@
    "kind": "esports-aggregator",
    "url": "https://api.bo3.gg/api/v1/matches",
    "http_status": 200,
-   "bytes": 201433,
+   "bytes": 201434,
    "is_json": true,
    "schedule_records": 0,
    "detail": {
@@ -1630,7 +1632,7 @@
    "kind": "aggregator-page",
    "url": "https://oddspedia.com/esports/league-of-legends",
    "http_status": 410,
-   "bytes": 341185,
+   "bytes": 341184,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 410",
