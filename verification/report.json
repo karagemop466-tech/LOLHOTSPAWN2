@@ -265,7 +265,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "40 external link(s) collected for manual review; 0 plain-http"
+   "detail": "43 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "S11",

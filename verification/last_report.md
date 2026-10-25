@@ -44,7 +44,7 @@ _2026-10-25T14:43:42.255465+00:00_
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 40 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 43 external link(s) collected for manual review; 0 plain-http |
 | S11 every CSS class used by a page is defined in style.css | PASS | 7 page(s), no unstyled class |
 | S18 every page has the same quick-jump bar; the summary explains non-featured picks in-site | PASS | 7 pages, 6 jump targets, #nonfeatured present with a source table |
 | S19 phone layout contract: viewport meta, a <=430px breakpoint, no fixed width above 430px | PASS | 390px-safe: device-width viewport on every page, phone breakpoint present, no fixed width above 430px |

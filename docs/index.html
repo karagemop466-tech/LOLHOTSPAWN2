@@ -255,6 +255,31 @@
             <td data-label="Link"><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">open ↗</a></td>
           </tr>
           <tr>
+            <td data-label="Source"><b>Polymarket</b> — League of Legends board</td>
+            <td data-label="Type">Prediction market</td>
+            <td data-label="Observed">Board header reads “LoL (9)” and lists two tournaments: <i>Worlds (8)</i> and
+              <i>LGC Rising (1)</i>. There is no Prime League board, and the PRM URL previously cited here returns
+              404 — see <a href="flagged.html#audit-2026-10-25">A12 / F20.6 on Flagged</a>.</td>
+            <td data-label="Link"><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>Unibet / Kambi (GB)</b> — LoL board</td>
+            <td data-label="Type">Established bookmaker feed (already consumed by the pipeline)</td>
+            <td data-label="Observed">The live feed returns World Championship events only (TOP–G2, HLE–IG, GEN–LYON,
+              DK–KOI …), every row tagged <code>group: “World Championship”</code>. Nothing below Worlds is priced.</td>
+            <td data-label="Link"><a href="https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&amp;market=GB&amp;useCombined=true" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>Betano · Tipico · gg.bet</b></td>
+            <td data-label="Type">Established books (DACH / international)</td>
+            <td data-label="Observed">None serves a readable LoL board to an unauthenticated visitor: Betano shows only a
+              country chooser, Tipico answers “browsing our offer from a country where gambling is restricted”, gg.bet
+              “not accepting visitors from your region”. No price can be taken, so none is used.</td>
+            <td data-label="Link"><a href="https://www.betano.com/esports/league-of-legends/" target="_blank" rel="noopener">Betano ↗</a> ·
+              <a href="https://www.tipico.de/en/esports/league-of-legends/" target="_blank" rel="noopener">Tipico ↗</a> ·
+              <a href="https://gg.bet/en/league-of-legends" target="_blank" rel="noopener">gg.bet ↗</a></td>
+          </tr>
+          <tr>
             <td data-label="Source"><b>Pinnacle, Unibet (Kambi), Bovada, Polymarket</b></td>
             <td data-label="Type">Sharp book, established book, US book, prediction market</td>
             <td data-label="Observed">Re-requested on every refresh. On this snapshot they price
