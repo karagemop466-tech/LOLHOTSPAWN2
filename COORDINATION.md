@@ -1586,3 +1586,26 @@ stale schedule snapshot or blocked source checks as freshly verified.
 - The site implementation and scheduled publisher were already present on `main`; PR #60 only adds this verification/coordination record. The GitHub Actions run list endpoint returned HTTP 403 rate-limit response, so no current action-run conclusion is asserted.
 
 Reconciliation f931cee9: main advanced via audit-only PR #60; both coordination entries preserved in the append-only conflict. No feature or generated payload conflict. Branch live pipeline 40201194918 SUCCESS (all fetch, render, external verification and probe steps); refreshed 14:15:07 UTC: 156 fixtures, 9 market, 147 model, 54 standings, 11 low-confidence, zero unresolved.
+
+---
+
+## Session `arena/85bba52b-lolhotspawn2` — 2026-10-25 (claim)
+
+> Branch note: Arena fixes this session to `arena/85bba52b-lolhotspawn2`; the system branch stands in for the
+> `session-<id>/<task>` convention (no other branch may be created or pushed).
+>
+> Claim check at 14:10 UTC: `origin/main` = `2173cc9` (scheduled refresh, payload generated 2026-10-25T10:41:50Z).
+> The newest board claim (`arena/26d1e778`, 2026-10-24 18:23Z) is a **PR #59 record**, not an active work claim, and
+> every open PR (#59, #55, #50, #48, #26, #20) is from 2026-10-24 or earlier. No claim younger than 60 minutes touches
+> the files below, so this session claims them now and pushes this claim before editing anything.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Fresh external-source research for the fixtures the featured (book-priced) picks cannot resolve — established LoL betting sites → esportsbooks → odds aggregators/comparison pages → community results; every claim dated and linked, nothing inferred | in progress | arena/85bba52b | `research/betting-sources.md` (§20), `scripts/source_probe.py` (candidate list only) |
+| T28 Phone-first site pass: per-row "why this pick" evidence on the picks table (mobile cards), installable home-screen manifest + icons, and an exec-summary pointer that survives a 390 px viewport | in progress | arena/85bba52b | `docs/*.html`, `docs/assets/*`, `docs/manifest.webmanifest` |
+| T29 Verification: full offline suites, line-by-line spot-checks of priced rows against their cited official pages, exact-count reconciliation (Hotspawn lobby vs priced), mobile/DOM render checks | in progress | arena/85bba52b | `verification/**` (read-only unless a check is provably wrong) |
+| T30 Integration: live pipeline on this branch, re-verify the combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR/run/deploy links here | in progress | arena/85bba52b | `COORDINATION.md`, generated `docs/data/picks.json` |
+
+**No-file-conflict statement:** T27 touches only the research note and the probe candidate tuple; T28 touches only
+`docs/`; T29 is read-only verification; T30 touches only this board plus CI-generated artifacts. Any request from
+another session to change a file outside this scope will be logged here instead of edited.
