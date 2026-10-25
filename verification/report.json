@@ -1,37 +1,37 @@
 {
- "verified_at": "2026-10-24T18:18:49.231641+00:00",
+ "verified_at": "2026-10-25T14:18:24.963905+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 44,
+  "PASS": 45,
   "FAIL": 0,
-  "WARN": 2,
+  "WARN": 1,
   "SKIP": 0
  },
- "data_matches": 155,
+ "data_matches": 156,
  "methods": {
-  "MARKET_BOOKS": 0,
-  "MODEL_ELO_STANDINGS": 53,
-  "MODEL_ELO_THIN": 2,
+  "MARKET_CONSENSUS": 8,
+  "MODEL_ELO": 91,
   "MODEL_LEAGUE_PRIOR": 0,
-  "UNRESOLVED": 0,
-  "MODEL_ELO": 93,
+  "MODEL_ELO_STANDINGS": 54,
+  "MARKET_BOOKS": 0,
   "MARKET_POLYMARKET": 0,
+  "UNRESOLVED": 0,
+  "MODEL_ELO_THIN": 2,
   "MODEL_STANDINGS": 0,
-  "MARKET_SINGLE": 1,
-  "MARKET_CONSENSUS": 6
+  "MARKET_SINGLE": 1
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "155 matches, generated_at=2026-10-24T18:18:14.606787Z (0.0h old)"
+   "detail": "156 matches, generated_at=2026-10-25T14:18:04.274290Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 155 rows have team1, team2 and a start time"
+   "detail": "all 156 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -73,7 +73,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 155 rows carry at least one source URL"
+   "detail": "all 156 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -127,7 +127,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=155, rows=155"
+   "detail": "declared=156, rows=156"
   },
   {
    "id": "D20",
@@ -139,7 +139,7 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=155, priced=155, missing=0, extra=0, excluded=9, leaked=0"
+   "detail": "lobby upcoming=156, priced=156, missing=0, extra=0, excluded=9, leaked=0"
   },
   {
    "id": "D22",
@@ -151,17 +151,13 @@
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 39 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "WARN",
-   "detail": "132/134 matched fixture times agree with Leaguepedia; 21 fixture(s) not in the snapshot; 2 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-24T18:15:10.066703+00:00 (0.1h old).",
-   "items": [
-    "Docta Esports Club vs Clã NKZ Revengers: ours=2026-10-25 15:00 lp=2026-10-24 15:00",
-    "Maze GG vs Viktus: ours=2026-10-25 15:00 lp=2026-10-24 23:00"
-   ]
+   "status": "PASS",
+   "detail": "133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:16:28.889362+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -299,9 +295,8 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "15/18 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
+   "detail": "15/18 returned 2xx/3xx; 2 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
    "items": [
-    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
     "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
    ]
