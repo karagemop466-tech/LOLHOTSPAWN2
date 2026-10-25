@@ -1,6 +1,6 @@
 # Verification report — PASS
-_2026-10-25T14:15:02.619666+00:00_
-156 matches · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · MARKET_POLYMARKET: 0 · MODEL_ELO_STANDINGS: 53 · MARKET_CONSENSUS: 8 · MODEL_ELO: 92 · MODEL_STANDINGS: 0 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO_THIN: 2 · UNRESOLVED: 0
+_2026-10-25T14:19:54.062449+00:00_
+156 matches · MARKET_CONSENSUS: 8 · MARKET_POLYMARKET: 0 · MODEL_ELO_STANDINGS: 53 · MODEL_ELO_THIN: 2 · UNRESOLVED: 0 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0 · MODEL_ELO: 92 · MARKET_SINGLE: 1
 
 | check | status | detail |
 |---|---|---|
@@ -26,7 +26,7 @@ _2026-10-25T14:15:02.619666+00:00_
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=156, priced=156, missing=0, extra=0, excluded=9, leaked=0 |
 | D22 external-source probe rows are sourced and never carry a probability | PASS | 37 probed source(s), each with an https link, HTTP status and verdict |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 39 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 124/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 9 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:16:57.321575+00:00 (0.0h old). |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | D23 no committed artifact contains git conflict markers | PASS | no conflict markers in docs/, data/, verification/, research/, scripts/, .github/ |
 | S1 all required site files exist | PASS | 10 files present |
@@ -49,6 +49,7 @@ _2026-10-25T14:15:02.619666+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
+| X1 external links reachable (official-source links resolve) | WARN | 15/18 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -67,6 +68,22 @@ _2026-10-25T14:15:02.619666+00:00_
 | REQ10 | Automatic refresh every 4-8 hours, no manual input | PASS | W1, W2, D1 |
 | REQ11 | Site integrity: no broken internal links, root entry point works | PASS | S1, S6, S8 |
 | REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
+
+**D18 items:**
+- Duplex Silva Pigeons Edition vs Sissi State Punks: ours=2026-10-25 16:00 lp=2026-10-25 17:00
+- Neko Elite Kittens vs spongecord prime: ours=2026-10-25 16:00 lp=2026-10-25 13:00
+- Top Esports vs G2 Esports: ours=2026-10-25 17:00 lp=2026-10-25 18:00
+- Invictus Gaming vs Hanwha Life Esports: ours=2026-10-25 18:00 lp=2026-10-25 17:00
+- Dplus KIA vs Movistar KOI: ours=2026-10-25 22:00 lp=2026-10-25 19:00
+- Karmine Corp vs Bilibili Gaming: ours=2026-10-26 17:00 lp=2026-10-26 18:00
+- T1 vs CTBC Flying Oyster: ours=2026-10-26 18:00 lp=2026-10-26 17:00
+- Packmiko E-Sports DACH vs Atruvia Münster Esports: ours=2026-10-27 16:30 lp=2026-11-05 17:00
+- Cloud eSport vs Defiance eSports: ours=2026-11-01 16:00 lp=2026-11-12 19:00
+
+**X1 items:**
+- https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429
+- https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
+- https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
