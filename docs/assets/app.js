@@ -96,10 +96,51 @@
     if (!list.length) return "";
     return `<div class="src-links">${list.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("")}</div>`;
   }
+  // A favourite at or under this probability is a coin-flip for practical
+  // purposes: the pick exists (every match gets one) but it is not an edge.
+  // Model rows are shrunk toward 50%, so a large share of tier-3 picks land
+  // here; labelling them is the difference between "a pick for every match"
+  // and pretending every pick is equally informative. Single source of truth
+  // for the threshold — verifier check S16 and the DOM render test read it.
+  const TOSSUP_MAX = 0.53;
+  function isTossUp(m) {
+    return m.method !== "UNRESOLVED" && (m.pick_prob ?? 1) <= TOSSUP_MAX;
+  }
+  function tossUpChip(m) {
+    return isTossUp(m)
+      ? `<span class="chip amber tossup-chip" title="Favourite is at or under ${Math.round(TOSSUP_MAX * 100)}% — treat this pick as a coin-flip, not an edge">🪙 coin-flip ≤${Math.round(TOSSUP_MAX * 100)}%</span>`
+      : "";
+  }
   function pickPill(m) {
-    const tone = m.method === "UNRESOLVED" ? "red" : (m.confidence === "Low" ? "amber" : "");
+    const tone = m.method === "UNRESOLVED" ? "red" : ((m.confidence === "Low" || isTossUp(m)) ? "amber" : "");
     const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
-    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
+    const flip = isTossUp(m) ? " · coin-flip" : "";
+    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}${flip}</span>`;
+  }
+
+  /* Short, plain-language reason for the pick, shown under the pick on every
+     row. Before this the table only named the method ("Own Elo model"), which
+     told a phone visitor nothing about *why* one team is favoured; the full
+     sentence stays one tap away on the match page and in the title tooltip. */
+  function whyLine(m) {
+    const mo = m.model || {};
+    const games = (mo.games_team1_365d != null && mo.games_team2_365d != null)
+      ? `${mo.games_team1_365d}/${mo.games_team2_365d} games in 365d` : "";
+    if (m.method === "MARKET_CONSENSUS" || m.method === "MARKET_SINGLE") {
+      const n = ((m.market || {}).sources || []).length;
+      if (!n) return "External betting line";
+      return `${n} book${n === 1 ? "" : "s"} de-vigged${n === 1 ? " · single source, not a consensus" : " · independent sources"}`;
+    }
+    if (m.method === "UNRESOLVED") return "No book line and no recorded results — explicit 50/50 placeholder";
+    if (m.method === "MODEL_LEAGUE_PRIOR") return "No team history — league-average prior only";
+    if (m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS") {
+      return `Split standings blended with Elo${games ? ` · ${games}` : ""}`;
+    }
+    if (m.method === "MODEL_ELO_THIN") return `Elo on thin history${games ? ` · ${games}` : ""}`;
+    if (mo.elo_team1 != null && mo.elo_team2 != null) {
+      return `Elo ${mo.elo_team1} vs ${mo.elo_team2}${games ? ` · ${games}` : ""}`;
+    }
+    return "";
   }
 
   function matchCard(m, opts = {}) {
@@ -108,11 +149,11 @@
     const mi = methodInfo(m);
     const pair = pctPair(m.prob_team1);
     return `<article class="match ${cls}">
-      <div class="match-top"><span class="when" title="${esc(t.title)}">${esc(t.text)}</span><span>·</span><span>${esc(m.tournament || "Tournament TBC")}</span>${m.best_of ? `<span>· Bo${esc(m.best_of)}</span>` : ""}<span class="chip ${cls === "unres" ? "red" : cls === "partial" ? "amber" : cls === "market" ? "green" : "blue"}">${mi.ico} ${esc(mi.label)}</span></div>
+      <div class="match-top"><span class="when" title="${esc(t.title)}">${esc(t.text)}</span>${(m.flags || []).includes("START_TIME_MISMATCH") ? `<span class="chip amber" title="${esc(flagLabel("START_TIME_MISMATCH"))}">⏱ time source differs</span>` : ""}<span>·</span><span>${esc(m.tournament || "Tournament TBC")}</span>${m.best_of ? `<span>· Bo${esc(m.best_of)}</span>` : ""}<span class="chip ${cls === "unres" ? "red" : cls === "partial" ? "amber" : cls === "market" ? "green" : "blue"}">${mi.ico} ${esc(mi.label)}</span></div>
       <div class="teams"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a></div>
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
       <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
-      <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
+      <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span>${tossUpChip(m)}</div>
       <div class="evidence">${esc(m.evidence || "")}</div>
       ${sourcesInline(m, opts.sources || 3)}
     </article>`;
@@ -126,11 +167,15 @@
     const srcCount = (m.sources || []).filter((s) => s.url).length;
     const srcLinks = (m.sources || []).filter((s) => s.url).slice(0, 3)
       .map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join(" ");
+    const tFlags = m.flags || [];
+    const timeWarn = tFlags.includes("START_TIME_MISMATCH") || tFlags.includes("START_TIME_DISAGREES_WITH_BOOKS")
+      ? `<span class="sub" style="color:var(--amber)" title="${esc(flagLabel("START_TIME_MISMATCH"))}">⏱ sources disagree on the exact start time</span>`
+      : "";
     return `<tr class="${cls}">
-      <td data-label="Start" title="${esc(t.title)}"><b>${esc(t.text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span><span class="sub">${esc(relative(m.start_utc))}</span></td>
+      <td data-label="Start" title="${esc(t.title)}"><b>${esc(t.text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span><span class="sub">${esc(relative(m.start_utc))}</span>${timeWarn}</td>
       <td class="teams-cell" data-label="Match"><a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)}</a> <span class="vs">vs</span> <a class="rowlink" href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team2)}</a><span class="sub">${esc(m.tournament || "")}${m.best_of ? ` · Bo${esc(m.best_of)}` : ""}${m.tier && !/^WAITING/i.test(m.tier) ? ` · Tier ${esc(m.tier)}` : ""}</span></td>
       <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pair[0]}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pair[1]}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
-      <td class="pickcell" data-label="Pick">${pickPill(m)}</td>
+      <td class="pickcell" data-label="Pick">${pickPill(m)}${whyLine(m) ? `<span class="sub" title="${esc(m.evidence || "")}">${esc(whyLine(m))}</span>` : ""}</td>
       <td data-label="Method"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="sub"><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")}</span></span></td>
       <td data-label="Sources"><span class="sub">${srcCount} verified link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
     </tr>`;
@@ -313,6 +358,8 @@
     set("#here-leagues-count", computeLeagueBreakdown(d).length);
     set("#here-unresolved-count", cov0.unresolved ?? 0);
     set("#here-low-count", cov0.low_confidence ?? c.low_confidence ?? 0);
+    // distinct flag types across this snapshot — the "Flagged for review" card count
+    set("#here-flagged-count", new Set(all0.flatMap((m) => m.flags || [])).size);
     // hero "find the picks" buttons carry the same counts, so a phone visitor sees
     // the size of each list before tapping it
     set("#hero-count-picks", all0.length ? `(${all0.length})` : "");
@@ -442,10 +489,13 @@
            loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
       // The per-league limitation table and the full written limitations are
       // rendered once, in the static blocks directly below this box
-      // (#exec-league-limits-body / #exec-limitations). Rendering a second
-      // copy of both inside this summary box made the section read twice.
-      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
-      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
+      // (#exec-league-limits-body / #exec-limitations) — they are part of the
+      // executive summary, and rendering a second copy inside this box made
+      // the section read twice. (Merge of arena/b95df72a de-duplication with
+      // main's coin-flip count; the per-league table itself is unchanged.)
+      const tCount = all0.filter((m) => isTossUp(m)).length;
+      ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount}) &amp; 🪙 Coin-flip picks (${tCount})</h3>
+      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       <p class="small">Which signal prices each league: <a href="#exec-per-league">per-league limits table below ↓</a> ·
       written limits: <a href="#exec-written-limits">limitations for generating picks below ↓</a></p>
@@ -474,7 +524,7 @@
         .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
       uList.innerHTML = un.length
         ? un.map((m) => matchCard(m, { sources: 3 })).join("")
-        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>.</div>`;
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>, and ${all0.filter((m) => isTossUp(m)).length} coin-flip picks (favourite ≤${Math.round(TOSSUP_MAX * 100)}%) on <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>.</div>`;
     }
 
     const ss = $("#sources-strip");
@@ -534,6 +584,7 @@
     if (state.filter === "standings" && m.method !== "MODEL_STANDINGS" && m.method !== "MODEL_ELO_STANDINGS") return false;
     if (state.filter === "low" && !(m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low")) return false;
     if (state.filter === "unresolved" && m.method !== "UNRESOLVED") return false;
+    if (state.filter === "tossup" && !isTossUp(m)) return false;
     if (state.tournament && m.tournament !== state.tournament) return false;
     if (state.q) {
       const hay = `${m.team1} ${m.team2} ${m.tournament} ${m.pick}`.toLowerCase();
@@ -565,7 +616,7 @@
     const rows = sortMatches(all.filter(applyFilter));
     tbody.innerHTML = rows.length ? rows.map(row).join("") : `<tr><td colspan="6"><div class="card">No matches match these filters. <button class="chipbtn" onclick="document.getElementById('reset').click()">Reset filters</button></div></td></tr>`;
     const count = $("#countline");
-    if (count) count.textContent = `Showing ${rows.length} of ${all.length} fixtures · ${all.filter((m) => m.market).length} with external lines · ${all.filter((m) => m.method === "UNRESOLVED").length} unresolved`;
+    if (count) count.textContent = `Showing ${rows.length} of ${all.length} fixtures · ${all.filter((m) => m.market).length} with external lines · ${all.filter((m) => m.method === "UNRESOLVED").length} unresolved · ${all.filter((m) => isTossUp(m)).length} coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%)`;
     const counts = {
       all: all.length,
       next24: all.filter((m) => applyFilterWith(m, "next24")).length,
@@ -574,6 +625,7 @@
       standings: all.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length,
       low: all.filter((m) => m.method === "MODEL_ELO_THIN" || m.method === "MODEL_LEAGUE_PRIOR" || m.confidence === "Low").length,
       unresolved: all.filter((m) => m.method === "UNRESOLVED").length,
+      tossup: all.filter((m) => isTossUp(m)).length,
     };
     $$("[data-filter]").forEach((b) => {
       b.setAttribute("aria-pressed", b.dataset.filter === state.filter ? "true" : "false");
@@ -628,7 +680,8 @@
         + `<b>${counts.elo}</b> by our Elo model · `
         + `<b>${counts.standings}</b> by split standings · `
         + `<b>${counts.prior}</b> by a competition prior · `
-        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}). `
+        + `<b>${counts.unresolved}</b> explicit 50/50 placeholders (total ${counts.total}) · `
+        + `<b>${all.filter((m) => isTossUp(m)).length}</b> of the resolved picks are coin-flips (favourite ≤${Math.round(TOSSUP_MAX * 100)}%). `
         + `Every row still carries its own source link on <a href="picks.html">All picks</a>.`;
     }
     const psum = $("#probe-summary");
@@ -636,7 +689,7 @@
     const pbody = $("#probe-body");
     if (pbody) pbody.innerHTML = probeRows(d);
     const stat = $("#unresolved-counts");
-    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
+    if (stat) stat.innerHTML = `<b>${un.length}</b> unresolved placeholders · <b>${low.length}</b> low-confidence model rows · <b>${all.filter((m) => isTossUp(m)).length}</b> coin-flip picks (favourite ≤${Math.round(TOSSUP_MAX * 100)}%) · <b>${(d.counts?.market ?? 0)}</b> external market rows`;
   }
 
   function flagLabel(f) {
@@ -750,7 +803,7 @@
         <p class="small">${esc(m.tournament || "")} · ${esc(t.text)} <span title="${esc(t.title)}">· ${esc(whenUTC(m.start_utc))}</span> · ${esc(relative(m.start_utc))}</p>
         <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
         <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
-        <div class="pickline">${pickPill(m)}</div>
+        <div class="pickline">${pickPill(m)}${tossUpChip(m)}</div>
         <p class="small">${esc(m.evidence || "")}</p>
       </div>
       <div class="two-col">
@@ -773,6 +826,16 @@
           </div>
         </div>
         <div>
+          <div class="card"><h3>⏱ Start time by source</h3>
+            <p class="small">Hotspawn's own feed sets the pick'em lock, so that is the time this site lists.
+              When another source reports a different time it is shown here rather than silently replaced —
+              ${(m.flags || []).includes("START_TIME_MISMATCH") ? "<b>at least one source disagrees on this fixture.</b>" : "no disagreement flagged for this fixture."}</p>
+            <ul class="clean small">
+              <li><b>Hotspawn pick'em feed (used here):</b> ${esc(whenUTC(m.start_utc))}${(m.flags || []).includes("START_TIME_MISMATCH") ? ' <span class="chip amber">Leaguepedia differs</span>' : ""}
+                ${m.hotspawn_url ? `· <a href="${esc(m.hotspawn_url)}" target="_blank" rel="noopener">Hotspawn fixture ↗</a>` : ""}</li>
+              ${(m.market?.sources || []).filter((s) => s.start_utc).map((s) => `<li><b>${esc(s.source)}:</b> ${esc(whenUTC(s.start_utc))}${s.start_delta_hours ? ` <span class="small">(${Number(s.start_delta_hours).toFixed(1)} h vs ours)</span>` : ""} · <a href="${esc(s.url)}" target="_blank" rel="noopener">market ↗</a></li>`).join("")}
+            </ul>
+          </div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
           <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
           <p class="tiny">Crowd context (never used in probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
