@@ -1274,3 +1274,63 @@ counter-examples to the “just use the book line” assumption, and both are li
   page, a breakpoint at or below 430 px, no hard-coded width above 430 px). Both have negative self-tests in
   `verification/test_verifier.py`, and the rendering of the new section is asserted in
   `verification/check_dom_render.js`.
+
+## 24. Correction pass 2026-10-25 — a cited page that 404s, and a second-round book check (session `arena/0e9a9550`)
+
+This pass was triggered by a **red CI run**, not by a hunch. `Verify picks and site` on `main` has failed on the step
+*“Verify external source links and the live Pages deployment”* since `331e753` (14:26Z). The rule that failed is `X1`
+(external link reachability, `scripts/verify_site.py`), and its detail named exactly one dead link:
+
+```
+X1  FAIL  32/40 returned 2xx/3xx; 6 blocked by the host; 0 transient/5xx; 1 dead (404/410)
+  - https://polymarket.com/esports/league-of-legends/prime-league-1st-division -> 404
+  - (403 = lol.fandom.com x5, primeleague.gg; these are client blocks, not dead pages)
+```
+
+### 24.1 The dead citation (`A12` / old §20, §22 tables)
+
+* `https://polymarket.com/esports/league-of-legends/prime-league-1st-division` returns **HTTP 404** and renders
+  *“Page not found”*. Re-opened directly on 2026-10-25: same result.
+* Polymarket only builds a tournament board for a competition it is actually pricing — the LoL landing page links
+  `/esports/league-of-legends/worlds` and `/esports/league-of-legends/lgc-rising` and nothing else.
+* The earlier claim on the site (*“Polymarket prices Prime League 1st Division; its 1st-division board carries per-map
+  BO3 markets”*) described **closed August 2026 playoff markets** — `LoL: BIG vs G2 NORD (BO5) - Prime League 1st
+  Division Playoffs`, end date 2026-08-27, resolved — not a board that exists today. Presenting it as a live source was
+  wrong, so the claim has been **withdrawn** rather than reworded.
+* Correction: row **A12** on *Flagged for review* now states “Polymarket has no Prime League market today”, lists the
+  9 live LoL markets (Worlds 8, LGC Rising 1) and links the live board
+  <https://polymarket.com/esports/league-of-legends>. New audit row **F20.6** records the dead link, the run that
+  caught it, and the correction. Nothing in any probability depended on this link — it was a citation only.
+
+### 24.2 Second-round probe of established books (unauthenticated, 2026-10-25, all opened by hand)
+
+| Source | URL opened | What it actually returned | Usable two-way price for a non-featured competition? |
+|---|---|---|---|
+| **Polymarket** — LoL board | <https://polymarket.com/esports/league-of-legends> | Board header “LoL (9)”: Top Esports vs G2, HLE vs IG, DK vs KOI … tournaments listed are **Worlds (8)** and **LGC Rising (1)** only | No — no national division on the board |
+| **Unibet / Kambi (GB)** — LoL board | `https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true` | JSON lists World Championship events only (TOP–G2, HLE–IG, GEN–LYON, DK–KOI …), `group: "World Championship"` | No — the same feed the pipeline already consumes; nothing below Worlds |
+| **Betano** | <https://www.betano.com/esports/league-of-legends/> | Country/locale chooser only; no LoL board without picking a jurisdiction | No — nothing to read |
+| **Tipico** (DE) | <https://www.tipico.de/en/esports/league-of-legends/> | “We believe that you are browsing our offer from a country where gambling is restricted … you cannot access the Tipico offer.” | No — geo-blocked |
+| **gg.bet** | <https://gg.bet/en/league-of-legends> | “This internet site is not accepting visitors from your region.” | No — geo-blocked |
+
+**Conclusion (unchanged, but now measured twice on two different days):** for Prime League 2nd/3rd Division, RIVALS
+LEAGUE Season 2, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LigaGG and LGC Rising,
+**no source we can reach publishes a full-match two-way line**. The pick for those fixtures stays our own
+Elo/standings line, labelled `NO_EXTERNAL_MARKET`, and the limit is stated on *Unresolved & limitations*. A price is
+never fabricated to fill the gap: a fixture with no evidence at all is published as an explicit 50/50 and flagged.
+
+### 24.3 What changed on the site because of this pass
+
+* `docs/flagged.html`: **A12** rewritten + **F20.6** added (dead link, caught by which run, corrected link).
+* `docs/index.html` (`#nonfeatured`): three rows added to the “books we checked” table (Polymarket, Unibet/Kambi,
+  and the three geo-blocked books naming each block page), so the table cites only pages that resolve.
+* CI: the external-link step now runs **after** the coverage, DOM and render checks (a dead upstream link could
+  previously skip them — it did, on `main`, for six consecutive runs), and `verify_site.py --annotate` publishes one
+  annotation per non-PASS rule plus a job summary, so a red run says *which* rule broke.
+* `verification/test_verifier.py`: 6 new self-tests for the annotation/summary writers (70/70 passing).
+
+### 24.4 Housekeeping note
+
+This file now carries two §20s, two §22s and two §23s — the result of parallel sessions appending “the next number”
+to their own copy of the file and merging. Nothing is lost, and this pass does not renumber other sessions' sections
+(that would rewrite their text); the numbers are treated as labels only. Logged on `COORDINATION.md` so a future
+integration pass can renumber in one go if desired.

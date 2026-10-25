@@ -84,7 +84,9 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
 REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
                 "oddsportal.com", "bmbets.com", "cloudbet.com", "esportsinsider.com",
                 "cloudbet.github.io", "primeleague.gg", "rivalsleague.gg",
-                "komplettligaen.no", "tunesf.com")
+                "komplettligaen.no", "tunesf.com",
+                # books cited only to document that they are geo-blocked / have no LoL board
+                "tipico.de", "betano.com", "gg.bet")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
