@@ -1,5 +1,24 @@
 # Coordination Board
 
+## Session `arena/0e9a9550-lolhotspawn2` — 2026-10-25 (claim, pushed before work)
+
+No other session has an active claim on the files below as of 2026-10-25 14:15 UTC: the newest board entry
+(`arena/26d1e778`, reliability fixes) is **merged to `main`** (PR #58) and its follow-up PR #59 only appends to
+this board. `main` is at `2173cc9` ("picks: scheduled refresh [skip ci]", payload generated 2026-10-25T10:41:50Z,
+156 fixtures / 0 unresolved). This session works only inside the claimed scope.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T25 Live coverage re-verification against the *current* Hotspawn lobby: read the lobby as a visitor, reconcile its listed/upcoming LoL count with the published payload, and confirm no upcoming fixture is missing | claimed | arena/0e9a9550 | `audit/**`, `verification/**` |
+| T26 Fresh, link-verified research for the fixtures that **cannot** be priced like the featured picks (established LoL betting sites → esportsbooks → esports betting lines → community), and wire the probed per-competition URLs into the diagnostic probes so CI re-checks them every run | claimed | arena/0e9a9550 | `research/betting-sources.md`, `scripts/probe_lines.py`, `scripts/source_probe.py` |
+| T27 Phone/mobile usability pass: a first-screen "next picks" block and a jump bar on the executive summary, a separate **non-featured picks** section (how each is resolved + which sources were checked), per-competition source coverage on `unresolved.html`, 390 px readability | claimed | arena/0e9a9550 | `docs/*.html`, `docs/assets/*` |
+| T28 Verifier extensions for the new required sections (exec-summary non-featured section with a source link on every row, jump bar on every page, mobile CSS has no fixed width > 390 px) + self-tests | claimed | arena/0e9a9550 | `scripts/verify_site.py`, `verification/**` |
+| T29 Integration: live pipeline run on this branch, full re-verification, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge result here | claimed | arena/0e9a9550 | `COORDINATION.md`, `README.md`, generated `docs/data/picks.json` |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
+# Coordination Board
+
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
