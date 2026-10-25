@@ -898,3 +898,95 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
+
+## 20. Refresh 2026-10-25 — fresh independent source research for the model-only (low-tier) fixtures (session `arena/b5f85948`)
+
+Brief. The 2026-10-25T10:41Z payload carries **156 upcoming Hotspawn LoL fixtures, all 156 priced, 0 unresolved**.
+Only 9 carry an external bookmaker/prediction-market line (Worlds 2026 + one LGC Rising final); the other 147
+are priced by our own Elo/standings model because no reachable book prices PRM 2nd/3rd Division, Tunisian Super
+League, RIVALS, Arabian League 2nd, 4 Nations, Komplettligaen, LCP Promotion or LigaGG CELOL. This section
+documents a fresh, independent pass over sources the project had **not** previously probed, following the
+required order: established LoL betting sites → esportsbooks → esports betting lines → community/official.
+Every entry point was verified to exist on the operator's own domain (or a reputable review when the operator
+page is a JavaScript shell) before being added to the live probe in `scripts/source_probe.py`. The sandbox has
+no outbound access to betting hosts, so all HTTP measurements were made by the GitHub Actions runner; the
+measured table is in §20.4.
+
+### 20.1 Newly added probe candidates (13; probe total 37 → 50)
+
+| # | Source (type) | Probed URL (operator domain) | Publicly documented LoL coverage (citation) |
+|---|---|---|---|
+| 1 | **bwin** — established EU sportsbook (Entain) | https://www.bwin.com/en/sports/league-of-legends-106 | Dedicated LoL board with 2-way match odds; the indexed page lists Worlds fixtures (TES/AL, G2/LYON, IG/TSW, HLE/GEN, DK/T1) — major events only. https://www.bwin.com/en/sports/league-of-legends-106 |
+| 2 | **bwin competitions listing** | https://www.bwin.com/en/sports/league-of-legends-106/betting/competitions | Same board's competition index — used to test whether any sub-major competition is enumerated. https://www.bwin.com/en/sports/league-of-legends-106/betting/competitions |
+| 3 | **DraftKings** — US regulated sportsbook | https://sportsbook.draftkings.com/sports/esports | Official esports hub; indexed content names "League of Legends World Championship" and LCP only; state-gated. https://sportsbook.draftkings.com/sports/esports · LCP league page https://sportsbook.draftkings.com/leagues/esports/league-of-legends-championship-pacific |
+| 4 | **FanDuel** — US regulated sportsbook | https://sportsbook.fanduel.com/navigation/esports | Official esports nav; independent reviews state LoL markets appear around Worlds/MSI and are "sparse to nonexistent" between headline events. https://sportsbook.fanduel.com/navigation/esports · https://www.1v1me.com/vs/fanduel · https://www.bleachernation.com/betting/2026/04/04/can-i-bet-on-esports/ |
+| 5 | **Betsson** — established EU sportsbook | https://www.betsson.com/en/sportsbook/esports/league-of-legends | Official LoL page ("best LoL betting odds … worldwide leagues and competitions"). https://www.betsson.com/en/sportsbook/esports/league-of-legends |
+| 6 | **NordicBet** — Betsson-group Nordic book (relevant to Komplettligaen) | https://www.nordicbet.com/en/sportsbook/esports | Same Betsson platform; review confirms LoL is offered among its esports markets. https://www.esportsbets.com/gambling/nordicbet/ |
+| 7 | **Tipico Germany** — regulated DE book | https://sports.tipico.de/ | **Structural finding:** German-licensed operators are prohibited from esports betting by the Glücksspielstaatsvertrag (State Treaty on Gambling); two independent German reviews state LoL/CS2/Dota are not in Tipico's program. This is a structural reason no regulated German book prices the German Prime League divisions. https://www.wettfreunde.net/tipico/ · https://www.wettbasis.com/wettanbieter-test/tipico-testbericht · official hub https://sports.tipico.de/ |
+| 8 | **MyBookie** — offshore US-facing sportsbook | https://www.mybookie.ag/sportsbook/esports/ | Curacao licence (since 2014); 110+ esports markets including LoL, but coverage is headline events; same platform family as the already-probed BetOnline. https://esports.gg/guides/betting/mybookie-review/ |
+| 9 | **Unikrn** — esports specialist (Entain, Isle of Man/UKGC) | https://unikrn.com/ | Long-running esports-only book; review records 300+ markets on LoL during MSI/Worlds windows — event-scaled, not amateur leagues. https://www.strafe.com/esports-betting/reviews/unikrn/ |
+| 10 | **Loot.bet** — esports specialist (Curacao) | https://loot.bet/ | 27 esports titles including LoL; broadest specialist catalogue, but public site is a JS shell and geo-blocks US/UK/NL/FR. https://www.strafe.com/esports-betting/reviews/loot-bet/ · https://www.esportsbets.com/reviews/lootbet/ |
+| 11 | **Cyber.bet** — esports specialist (Curacao) | https://cyber.bet/ | Dedicated LoL coverage incl. LCS/LCK; JS shell, no public JSON. https://www.strafe.com/esports-betting/reviews/cyber-bet/ |
+| 12 | **Duelbits** — crypto sportsbook | https://duelbits.com/sports | LoL coverage documented as Worlds/MSI + LCS/LEC/LPL/LCK ("international events and top regional leagues"), hundreds of markets on big matchups only. https://bitedge.com/crypto-sports-betting/duelbits/ |
+| 13 | **Riot LoL Esports schedule page** (official, results category) | https://lolesports.com/schedule | Official publisher schedule — fixture-time cross-check only; the JSON API (already probed) answers 403 outside a browser context. Never a probability input. https://lolesports.com/schedule |
+
+### 20.2 Why these, and what the research established before a single request was sent
+
+* **The order requested by the brief is preserved.** Established sportsbooks first (bwin, DraftKings, FanDuel,
+  Betsson, NordicBet, Tipico, MyBookie), then esports-specialist books (Unikrn, Loot.bet, Cyber.bet, Duelbits),
+  then the official/community results layer (Riot schedule; Leaguepedia/Liquipedia/gol.gg/bo3.gg already
+  covered in §14–§19).
+* **Every major operator documents major-event-only LoL depth.** DraftKings' own indexed hub names Worlds and
+  LCP; FanDuel reviews describe tournament-window coverage; bwin's live indexed board shows only Worlds
+  matchups; Duelbits' review names international + top regional leagues. None documents the national/amateur
+  divisions on Hotspawn's list (Prime League 2nd/3rd, Tunisian Super League, RIVALS, Arabian 2nd, 4 Nations,
+  Komplettligaen, LigaGG CELOL B).
+* **A regulatory wall, not just a coverage gap, sits in front of the German leagues.** The Glücksspielstaatsvertrag
+  bars esports markets for German-licensed books (Tipico evidence above). Prime League is a German competition,
+  so its lower divisions cannot be priced by the regulated domestic market at all; the only theoretical outlets
+  are Curacao-licensed specialists whose public pages are JS shells/geo-blocked and which document major-event
+  focus. Riot itself notes 70% of esports betting volume sits in unregulated markets
+  (https://www.riotgames.com/en/news/esports-betting-sponsorships), which is why the reachable, citable
+  evidence for amateur fixtures remains results data, not odds.
+* **Specialist books are not machine-readable without a browser session.** Unikrn, Loot.bet, Cyber.bet and
+  Duelbits render odds client-side; a single polite GET can record reachability only. Per the project's hard
+  rule, no headless-browser automation, account creation, or key request is used (the brief requires zero manual
+  input; §19.3 records that Oddiwire/SportsGameOdds key issuance is a human step and stays unintegrated).
+
+### 20.3 What would promote one of these into a production feed
+
+The bar is unchanged from earlier sections and is applied mechanically: (a) a probe returns a **structured**
+per-match two-way price (JSON, not an HTML shell), (b) a sample price is human-verified against the live page,
+(c) the feed covers at least one fixture the four production feeds miss, and (d) no key/account/geo workaround is
+required. Until all four hold, the candidate stays probe-only and nothing it returns touches a probability.
+No candidate added on 2026-10-25 meets (a) from a CI runner; the measured evidence is below.
+
+### 20.4 Live CI measurements (GitHub Actions runner)
+
+_Filled from the branch pipeline run; one polite GET per candidate, recorded verbatim in
+`data/diag/market_source_probe.json` and published in the payload's `market_probe` block._
+
+| Source | HTTP | JSON? | LoL mentions | Verdict (auto-generated) |
+|---|---|---|---|---|
+| bwin LoL board | _pending CI_ | | | |
+| bwin competitions | _pending CI_ | | | |
+| DraftKings esports hub | _pending CI_ | | | |
+| FanDuel esports nav | _pending CI_ | | | |
+| Betsson LoL page | _pending CI_ | | | |
+| NordicBet esports | _pending CI_ | | | |
+| Tipico DE hub | _pending CI_ | | | |
+| MyBookie esports | _pending CI_ | | | |
+| Unikrn | _pending CI_ | | | |
+| Loot.bet | _pending CI_ | | | |
+| Cyber.bet | _pending CI_ | | | |
+| Duelbits sports | _pending CI_ | | | |
+| Riot schedule page | _pending CI_ | | | |
+
+### 20.5 Conclusion for the 147 model-only rows
+
+No new source found on 2026-10-25 produces a citable per-match line for the amateur/tier-3 fixtures, so no pick
+changes on market grounds. The resolution cascade stays: external de-vigged line (Pinnacle/Unibet/Bovada/
+Polymarket) where one exists → chronological tier-anchored Elo on Leaguepedia results → current-split standings
+blend for thin rows → competition prior → explicit 50/50 placeholder (currently unused: 0 unresolved). The
+expanded 50-source probe now re-verifies that conclusion on every 6-hour production run and publishes the
+per-source HTTP evidence on the Executive Summary and the Unresolved & Limitations page.

@@ -104,12 +104,58 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("Manifold Markets LoL search",
      "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
      "prediction-market-api", "market"),
+    # --- added 2026-10-25 (session arena/b5f85948): established books -> esportsbooks
+    # Every entry point below was verified to exist on the operator's own domain
+    # via web research before it was added (citations in
+    # research/betting-sources.md §18). One polite GET each; nothing is used in a
+    # probability. The point of the measurement is to show, from live evidence,
+    # whether any of them carries the tier-2/tier-3 leagues the four production
+    # feeds do not price.
+    # Established sportsbooks (US + EU majors; all publicly state major-event
+    # coverage only — Worlds/MSI/top regionals — never national amateur divisions):
+    ("bwin — League of Legends board (Entain)",
+     "https://www.bwin.com/en/sports/league-of-legends-106", "sportsbook-page", "market"),
+    ("bwin — LoL competitions listing",
+     "https://www.bwin.com/en/sports/league-of-legends-106/betting/competitions",
+     "sportsbook-page", "market"),
+    ("DraftKings — esports hub",
+     "https://sportsbook.draftkings.com/sports/esports", "sportsbook-page", "market"),
+    ("FanDuel — esports navigation",
+     "https://sportsbook.fanduel.com/navigation/esports", "sportsbook-page", "market"),
+    ("Betsson — League of Legends sportsbook",
+     "https://www.betsson.com/en/sportsbook/esports/league-of-legends", "sportsbook-page", "market"),
+    ("NordicBet — esports (Betsson group, Nordic markets)",
+     "https://www.nordicbet.com/en/sportsbook/esports", "sportsbook-page", "market"),
+    # Tipico holds a German sportsbook licence; the Gluecksspielstaatsvertrag
+    # (State Treaty on Gambling) bars German-licensed operators from esports
+    # markets, which is a structural reason no regulated German book prices
+    # Prime League. Cited in research/betting-sources.md §18; measured live.
+    ("Tipico Germany — sports hub (esports prohibited under DE licence)",
+     "https://sports.tipico.de/", "sportsbook-page", "market"),
+    ("MyBookie — esports book (offshore US-facing)",
+     "https://www.mybookie.ag/sportsbook/esports/", "sportsbook-page", "market"),
+    # Esports-specialist books (Curacao/Isle of Man licences; broad LoL title
+    # coverage but their public pages are JavaScript shells, so a single GET can
+    # only record reachability, not parse prices):
+    ("Unikrn — esports specialist (Entain, Isle of Man licence)",
+     "https://unikrn.com/", "esportsbook-page", "market"),
+    ("Loot.bet — esports specialist (Curacao licence)",
+     "https://loot.bet/", "esportsbook-page", "market"),
+    ("Cyber.bet — esports specialist (Curacao licence)",
+     "https://cyber.bet/", "esportsbook-page", "market"),
+    ("Duelbits — crypto sportsbook, esports lobby",
+     "https://duelbits.com/sports", "esportsbook-page", "market"),
     # --- community / official results ----------------------------------------
     ("gol.gg tournament index", "https://gol.gg/tournament/list/", "results-page", "results"),
     ("bo3.gg LoL matches", "https://bo3.gg/lol/matches", "results-page", "results"),
     ("Oracle's Elixir downloads (community CSVs)", "https://oracleselixir.com/tools/downloads", "results-page", "results"),
     ("Riot LoLESports official schedule",
      "https://esports-api.lolesports.com/persisted/gw/getSchedule?hl=en-US", "official-api", "results"),
+    # Added 2026-10-25: the public schedule page is the human-facing official
+    # cross-check for fixture times; the JSON API above answers 403 without a
+    # browser context. Results source only — never a probability input.
+    ("Riot LoL Esports — official schedule page",
+     "https://lolesports.com/schedule", "results-page", "results"),
     ("Liquipedia LoL API", "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json",
      "wiki-api", "results"),
 )
