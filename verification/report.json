@@ -1,8 +1,8 @@
 {
- "verified_at": "2026-10-25T14:20:28.869762+00:00",
+ "verified_at": "2026-10-25T14:25:12.686066+00:00",
  "status": "PASS",
  "counts": {
-  "PASS": 45,
+  "PASS": 47,
   "FAIL": 0,
   "WARN": 0,
   "SKIP": 1
@@ -10,22 +10,22 @@
  "data_matches": 156,
  "methods": {
   "MODEL_ELO": 91,
-  "MODEL_ELO_STANDINGS": 54,
-  "UNRESOLVED": 0,
-  "MODEL_STANDINGS": 0,
-  "MODEL_ELO_THIN": 2,
-  "MARKET_CONSENSUS": 8,
   "MARKET_POLYMARKET": 0,
+  "MODEL_ELO_THIN": 2,
   "MARKET_BOOKS": 0,
+  "UNRESOLVED": 0,
   "MARKET_SINGLE": 1,
-  "MODEL_LEAGUE_PRIOR": 0
+  "MODEL_STANDINGS": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO_STANDINGS": 54,
+  "MARKET_CONSENSUS": 8
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "156 matches, generated_at=2026-10-25T14:19:22.529030Z (0.0h old)"
+   "detail": "156 matches, generated_at=2026-10-25T14:23:54.180336Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -145,7 +145,7 @@
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "39 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "41 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
@@ -265,7 +265,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "18 external link(s) collected for manual review; 0 plain-http"
+   "detail": "35 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "S11",
@@ -278,6 +278,18 @@
    "title": "all pages share one navigation, freshness slot and unique ids",
    "status": "PASS",
    "detail": "7 pages, identical nav with 6 primary targets"
+  },
+  {
+   "id": "S16",
+   "title": "site is installable on a phone home screen (manifest, icons, per-page links)",
+   "status": "PASS",
+   "detail": "7 pages link the manifest + apple-touch-icon; 3 declared icon(s) present with matching sizes"
+  },
+  {
+   "id": "S17",
+   "title": "manual-review tables link a source on every row",
+   "status": "PASS",
+   "detail": "16 reviewed row(s) across 2 section(s), every one links an external page"
   },
   {
    "id": "W1",
