@@ -61,6 +61,32 @@ def _from_api():
             "http": r["status"], "bytes": len(r.get("body") or b""), "via": "fixtures-api"}, None
 
 
+def merge_fixture_sources(api_fixtures: list, lobby_fixtures: list) -> tuple[list, list]:
+    """Union of the fixtures API and the lobby transfer state, keyed by fixture id.
+
+    The API is the richer feed (it carries rows the lobby has already rotated out),
+    but it can *lag* the lobby: on 2026-10-25 the lobby listed `Team Lucidity
+    Esports vs Fritt Fall` (RIVALS LEAGUE Season 2, 2026-10-31T17:30Z, id 1090065)
+    while the API payload did not contain that id at all, so the fixture was
+    silently dropped and never priced. Keys present in both keep the API row; ids
+    only the lobby carries are added and returned separately so the payload can
+    state how many fixtures came from that path.
+    """
+    merged: dict[str, dict] = {}
+    for raw in api_fixtures or []:
+        if isinstance(raw, dict) and raw.get("id") is not None:
+            merged[str(raw["id"])] = raw
+    lobby_only: list[dict] = []
+    for raw in lobby_fixtures or []:
+        if not isinstance(raw, dict) or raw.get("id") is None:
+            continue
+        fid = str(raw["id"])
+        if fid not in merged:
+            merged[fid] = raw
+            lobby_only.append(raw)
+    return list(merged.values()), lobby_only
+
+
 def _start_dt(raw: dict):
     try:
         return datetime.fromtimestamp(int(raw["scheduled_start_time"]) / 1000.0, timezone.utc)
@@ -113,12 +139,20 @@ def main() -> int:
     lobby, lobby_err = _from_lobby()
     api_fixtures = [x for x in (api or {}).get("fixtures", []) if str(x.get("sport_alias")).lower() == "lol"]
     lobby_fixtures = [x for x in (lobby or {}).get("fixtures", []) if str(x.get("sport_alias")).lower() == "lol"]
+    merged_fixtures, lobby_only_fixtures = merge_fixture_sources(api_fixtures, lobby_fixtures)
+    lobby_only_ids = {str(x.get("id")) for x in lobby_only_fixtures}
     if api_fixtures:
-        collected = {"fixtures": api_fixtures, "permalinks": (lobby or {}).get("permalinks") or {},
+        collected = {"fixtures": merged_fixtures, "permalinks": (lobby or {}).get("permalinks") or {},
                      "week": (lobby or {}).get("week") or {},
-                     "http": api.get("http"), "bytes": api.get("bytes"), "via": "fixtures-api+lobby-permalinks"}
+                     "http": api.get("http"), "bytes": api.get("bytes"),
+                     "via": ("fixtures-api+lobby-permalinks" if not lobby_only_fixtures
+                             else "fixtures-api+lobby-permalinks+lobby-only-fixtures")}
         if lobby_err:
             log(f"lobby parse issue ({lobby_err}); continuing with API fixtures only")
+        elif lobby_only_fixtures:
+            log(f"hotspawn: {len(lobby_only_fixtures)} fixture(s) listed in the lobby are absent "
+                f"from the fixtures API; pricing them from the lobby payload "
+                f"(ids {', '.join(sorted(lobby_only_ids))})")
     elif lobby_fixtures:
         collected = lobby
         collected["via"] = "lobby-ng-state"
@@ -164,6 +198,7 @@ def main() -> int:
         raise SystemExit(f"Only {len(rows)} future LoL fixtures parsed - refusing to overwrite good data")
 
     row_ids = {r["id"] for r in rows}
+    lobby_only_priced = sorted(x for x in lobby_only_ids if x in row_ids)
     reconciliation = {
         "lobby_lol_listed": len(lobby_fixtures) if lobby_fixtures else None,
         "lobby_upcoming": len(lobby_ids) if lobby_ids is not None else None,
@@ -171,9 +206,13 @@ def main() -> int:
         "api_upcoming_lol": api_upcoming,
         "api_excluded": len(excluded),
         "priced": len(rows),
+        "lobby_only_in_union": sorted(lobby_only_ids),
+        "lobby_only_priced": lobby_only_priced,
         "lobby_upcoming_missing_from_priced": (sorted(lobby_ids - row_ids) if lobby_ids is not None else None),
         "priced_not_in_lobby": (sorted(row_ids - lobby_ids) if lobby_ids is not None else None),
-        "rule": ("Priced = Hotspawn lobby upcoming LoL fixtures (status scheduled) that the fixtures API also lists."
+        "rule": ("Priced = every upcoming LoL fixture listed in the Hotspawn lobby with status "
+                 "'scheduled', taking the union of the lobby transfer state and the fixtures API "
+                 "(a fixture the lobby lists but the API lags on is priced from the lobby row)."
                  if lobby_ids is not None else
                  "Lobby state unavailable: priced = API upcoming LoL fixtures with status scheduled."),
     }

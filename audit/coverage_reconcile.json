@@ -1,124 +1,101 @@
 {
- "generated_at": "2026-10-23T16:29:40.738984Z",
+ "generated_at": "2026-10-25T14:38:39.997995Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1695170,
+  "bytes": 1548220,
   "ng_state": true,
-  "raw_fixtures": 241,
-  "lol_fixtures": 241,
-  "future_lol_fixtures": 172,
-  "already_started": 69,
+  "raw_fixtures": 234,
+  "lol_fixtures": 234,
+  "future_lol_fixtures": 156,
+  "already_started": 78,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 0,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 62,
-   "PRM 2nd Division 26-27 Fall": 38,
-   "Tunisian Super League 2026": 25,
-   "RIVALS LEAGUE Season 2": 21,
+   "PRM 3rd Division 26-27 Fall": 59,
+   "PRM 2nd Division 26-27 Fall": 36,
+   "Tunisian Super League 2026": 20,
+   "RIVALS LEAGUE Season 2": 15,
    "Worlds 2026 Main Event": 8,
-   "Arabian League 2nd Division 2026 Summer": 8,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 4,
+   "4 Nations 2026 Halloween Heist": 4,
+   "Arabian League 2nd Division 2026 Summer": 4,
+   "Komplettligaen 2026 Autumn Playoffs": 3,
    "LCP 2027 Promotion": 3,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
-   "LGC Rising 2026 Playoffs": 1
+   "LGC Rising 2026 Playoffs": 1,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12095
+  "raw_fixtures": 12186
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12095,
-  "lol_fixtures": 1510,
-  "future_lol_fixtures": 184,
-  "already_started": 1326,
+  "raw_fixtures": 12186,
+  "lol_fixtures": 1572,
+  "future_lol_fixtures": 165,
+  "already_started": 1407,
   "future_ids_missing_from_payload": [
-   "1074653",
-   "1074656",
    "1074661",
-   "1079026",
+   "1074662",
+   "1074665",
    "1079035",
    "1079044",
    "1079052",
    "1079061",
-   "1079140",
    "1079143",
-   "1079148",
-   "1082258"
+   "1079148"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 12,
+  "future_without_match_page": 9,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 62,
-   "PRM 2nd Division 26-27 Fall": 43,
-   "Tunisian Super League 2026": 25,
-   "RIVALS LEAGUE Season 2": 25,
-   "Arabian League 2nd Division 2026 Summer": 11,
+   "PRM 3rd Division 26-27 Fall": 59,
+   "PRM 2nd Division 26-27 Fall": 40,
+   "Tunisian Super League 2026": 20,
+   "RIVALS LEAGUE Season 2": 18,
    "Worlds 2026 Main Event": 8,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 4,
+   "Arabian League 2nd Division 2026 Summer": 6,
+   "4 Nations 2026 Halloween Heist": 4,
+   "Komplettligaen 2026 Autumn Playoffs": 3,
    "LCP 2027 Promotion": 3,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
-   "LGC Rising 2026 Playoffs": 1
+   "LGC Rising 2026 Playoffs": 1,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 1
   }
  },
  "payload": {
-  "generated_at": "2026-10-23T16:29:40.425034Z",
-  "published_matches": 172
+  "generated_at": "2026-10-25T14:38:39.689730Z",
+  "published_matches": 156
  },
- "required_future_fixtures": 184,
+ "required_future_fixtures": 165,
  "missing_from_payload": [
-  "1074653",
-  "1074656",
   "1074661",
-  "1079026",
+  "1074662",
+  "1074665",
   "1079035",
   "1079044",
   "1079052",
   "1079061",
-  "1079140",
   "1079143",
-  "1079148",
-  "1082258"
+  "1079148"
  ],
  "excluded_by_pipeline": {
-  "1074653": "Hotspawn status is 'cancelled'; not priced",
-  "1074656": "Hotspawn status is 'cancelled'; not priced",
   "1074661": "Hotspawn status is 'cancelled'; not priced",
-  "1079026": "Hotspawn status is 'cancelled'; not priced",
+  "1074662": "Hotspawn status is 'cancelled'; not priced",
+  "1074665": "Hotspawn status is 'cancelled'; not priced",
   "1079035": "Hotspawn status is 'cancelled'; not priced",
   "1079044": "Hotspawn status is 'cancelled'; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
   "1079061": "Hotspawn status is 'cancelled'; not priced",
-  "1079140": "Hotspawn status is 'cancelled'; not priced",
   "1079143": "Hotspawn status is 'cancelled'; not priced",
-  "1079148": "Hotspawn status is 'cancelled'; not priced",
-  "1082258": "Hotspawn status is 'cancelled'; not priced"
+  "1079148": "Hotspawn status is 'cancelled'; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
-  {
-   "id": "1074653",
-   "team1": "DMG Esports Sweden",
-   "team2": "Northern Wolves Esports",
-   "tournament": "RIVALS LEAGUE Season 2",
-   "start_utc": "2026-10-24T16:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
-   "id": "1074656",
-   "team1": "Lundqvist Darkside",
-   "team2": "Mazepa",
-   "tournament": "RIVALS LEAGUE Season 2",
-   "start_utc": "2026-10-24T16:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
   {
    "id": "1074661",
    "team1": "DMG Esports Sweden",
@@ -129,11 +106,20 @@
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
   {
-   "id": "1079026",
-   "team1": "Reveal Multigaming",
-   "team2": "ex-A41G",
-   "tournament": "PRM 2nd Division 26-27 Fall",
-   "start_utc": "2026-10-23T18:30:00Z",
+   "id": "1074662",
+   "team1": "Karolinerna",
+   "team2": "Lund Esports Organization OGs",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "start_utc": "2026-10-25T18:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1074665",
+   "team1": "Northern Wolves Esports",
+   "team2": "Rich Gang Sweden",
+   "tournament": "RIVALS LEAGUE Season 2",
+   "start_utc": "2026-10-25T17:30:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
@@ -174,15 +160,6 @@
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
   {
-   "id": "1079140",
-   "team1": "Victorious Demons",
-   "team2": "Team Reds",
-   "tournament": "Arabian League 2nd Division 2026 Summer",
-   "start_utc": "2026-10-23T18:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
    "id": "1079143",
    "team1": "Pegasus Esports",
    "team2": "Team Reds",
@@ -199,27 +176,20 @@
    "start_utc": "2026-10-31T19:00:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
-   "id": "1082258",
-   "team1": "Mazepa",
-   "team2": "B2U",
-   "tournament": "RIVALS LEAGUE Season 2",
-   "start_utc": "2026-10-24T17:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 241,
-  "lobby_upcoming": 172,
-  "lobby_past_not_priced": 69,
-  "api_upcoming_lol": 184,
-  "api_excluded": 12,
-  "priced": 172,
+  "lobby_lol_listed": 234,
+  "lobby_upcoming": 156,
+  "lobby_past_not_priced": 78,
+  "api_upcoming_lol": 165,
+  "api_excluded": 9,
+  "priced": 156,
+  "lobby_only_in_union": [],
+  "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
   "priced_not_in_lobby": [],
-  "rule": "Priced = Hotspawn lobby upcoming LoL fixtures (status scheduled) that the fixtures API also lists."
+  "rule": "Priced = every upcoming LoL fixture listed in the Hotspawn lobby with status 'scheduled', taking the union of the lobby transfer state and the fixtures API (a fixture the lobby lists but the API lags on is priced from the lobby row)."
  },
  "coverage_ok": true
 }
