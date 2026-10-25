@@ -36,6 +36,31 @@ from difflib import SequenceMatcher
 
 from lib_common import fetch, get_json, log, norm, now_utc, parse_iso, utc_iso, write_json
 
+try:
+    # Reuse the production parser so this probe and fetch_markets.py can never
+    # disagree about when a Kalshi match starts (see F20.1: occurrence_datetime
+    # is +4h ahead of the real start during EDT).
+    from fetch_markets import _kalshi_start
+except Exception:                                    # probe must never break a run
+    _kalshi_start = None                             # type: ignore[assignment]
+
+
+def _probe_kalshi_start(market: dict) -> str:
+    """True UTC start of a Kalshi market, from its own rules text.
+
+    Kalshi's `occurrence_datetime` prints the local wall-clock time as if it
+    were UTC, so it runs +4 h ahead during EDT and +5 h during EST. Only the
+    rules text carries the real start, so the probe reports that (falling back
+    to the skewed field, clearly, only when the rules text cannot be parsed).
+    """
+    if _kalshi_start is None:
+        return ""
+    try:
+        dt = _kalshi_start(market)
+    except Exception:
+        return ""
+    return utc_iso(dt) if dt else ""
+
 OUT = "data/diag/line_probe.json"
 PICKS = "docs/data/picks.json"
 
@@ -248,7 +273,9 @@ def probe_kalshi(series: str = "KXLOLGAME"):
     One LoL match is a single *event* holding two mutually exclusive binary
     markets, one per team ("<team> wins"). A team's own yes_bid/yes_ask is its
     price; the pair of mids is the two-way line. Measured 2026-10-25: the API
-    answers without a key and the LoL board carries the Worlds 2026 series only.
+    answers without a key and the LoL board carries the Worlds 2026 series plus one
+    LGC Rising 2026 (Game Changers) event - 9 open events in total, every one of
+    them a fixture another source already prices (measured 2026-10-25).
 
     Why this is a probe and not a source: the earlier probe asked
     /series?category=Esports, which Kalshi answers with {"series":null} - the
@@ -288,7 +315,10 @@ def probe_kalshi(series: str = "KXLOLGAME"):
         comp = m.group(1).strip() if m else str(ev.get("series_ticker") or "")
         if comp and comp not in comps:
             comps.append(comp)
-        start = ev.get("markets")[0].get("occurrence_datetime") or ev.get("last_updated_ts")
+        m0 = ev.get("markets")[0]
+        # F20.1: parse the rules text, do not trust occurrence_datetime.
+        start = (_probe_kalshi_start(m0)
+                 or str(m0.get("occurrence_datetime") or ev.get("last_updated_ts") or ""))
         # decimal = 1 / probability keeps the record shape every other probe uses
         rec = _two_way(recs, name, url, comp, start, ta, tb,
                        1.0 / pa, 1.0 / pb,
