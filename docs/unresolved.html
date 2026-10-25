@@ -152,6 +152,134 @@
       <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md §23</a>.</p>
   </section>
 
+  <section class="card" id="recheck-2026-10-25">
+    <h3>Independent re-check of the published numbers — 2026-10-25</h3>
+    <p class="small">
+      Each line below was re-read <b>from the source's own page or API</b>, from a different network path than the
+      refresh job uses, and compared with the payload published at 14:29:06Z (156 fixtures · 156 resolved ·
+      9 with a bookmaker line · 147 priced by our own model). The same payload was then re-derived row by row by an
+      offline auditor: <b>20 PASS · 0 FAIL · 0 WARN · 1 INFO</b>, with 32 negative self-tests proving each rule
+      fails on a payload that breaks it. Nothing was inferred; what could not be read is marked unverified.
+    </p>
+    <div class="table-wrap" style="margin-top:8px">
+      <table>
+        <thead>
+          <tr><th scope="col">What was re-read</th><th scope="col">Result</th><th scope="col">Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Unibet (Kambi) decimals for all 8 priced rows</td>
+            <td><b>8 of 8 exact.</b> The live board holds 8 League of Legends events, every one World Championship —
+              no low-tier league exists on it. Map-handicap and total-maps boards were present and correctly ignored.</td>
+            <td><a href="https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&amp;market=GB&amp;useCombined=true" target="_blank" rel="noopener">Kambi event feed</a></td>
+          </tr>
+          <tr>
+            <td>Polymarket's own League of Legends hub</td>
+            <td><b>Exactly 9 open events</b> (8 Worlds + 1 LGC Rising) — the same 9 rows we price, so no open LoL market
+              is being missed. De-vigged hub prices agree with the payload to 0.2–0.3 pt (8 minutes of drift).</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">polymarket.com/esports/league-of-legends</a></td>
+          </tr>
+          <tr>
+            <td>Hotspawn lobby total vs the fixtures we publish</td>
+            <td><b>234 = 156 + 78.</b> The lobby's own tier filter says 234 League of Legends matches; we price the 156
+              upcoming ones and the other 78 are already played. Crowd percentages stay display-only: the mean distance
+              between our probability and the crowd number over the 147 model rows is 0.3672, and 0 rows land within
+              0.5 point of it.</td>
+            <td><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">play.hotspawn.com/lol-pickems</a></td>
+          </tr>
+          <tr>
+            <td>Every row's arithmetic, from the numbers that row cites</td>
+            <td><b>20 PASS · 0 FAIL · 1 INFO.</b> 24/24 cited decimal prices re-convert to the probability published for
+              that source; 9/9 market rows' consensus recomputes; counts, coverage and all 12 league rows re-foot;
+              no cancelled fixture is priced; every row cites at least one https source that is not Hotspawn.</td>
+            <td><a href="../verification/row_audit.md">row_audit.md</a></td>
+          </tr>
+          <tr>
+            <td>Pinnacle's 8 rows and Bovada's 8 rows</td>
+            <td><b>Unverified from this network path</b> — Pinnacle's guest API answers 401 without its API key (the
+              refresh job holds the key) and Bovada's coupon endpoint returned an empty body here while CI read 8
+              events at 14:29Z. Left blank rather than guessed; both rows' decimals are still re-derived from the
+              prices the rows cite (rule R4).</td>
+            <td><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest API</a></td>
+          </tr>
+          <tr>
+            <td>A bookmaker line for the 147 fixtures no book covers</td>
+            <td><b>None found.</b> 20 endpoints measured by hand today plus a 19-candidate automated sweep; Kambi,
+              Oddsdigger, BMBets, Betmonitor, Oddschecker, EsportBet, rft.gg, Polymarket search, SofaScore, 1xBet and
+              Fon.bet all came back empty, blocked, geo-stubbed or client-rendered. This is why those rows say
+              <span class="flag">NO_EXTERNAL_MARKET</span> and are labelled "Own estimate · community records".</td>
+            <td><a href="../research/low-tier-sweep-2026-10-25.md">low-tier-sweep-2026-10-25.md</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:18px">Irregularities found in this pass</h3>
+    <p class="small">Published for review. None of them blocks the site: every one is a data-quality note about a
+      source, not a missing pick.</p>
+    <div class="table-wrap" style="margin-top:8px">
+      <table>
+        <thead>
+          <tr><th scope="col">ID</th><th scope="col">Irregularity</th><th scope="col">Evidence</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="flag">X1</span></td>
+            <td><b>Two rows carry a start-time warning the source no longer supports.</b> Dplus KIA vs Movistar KOI and
+              Gen.G vs LYON are flagged <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>, and four 25 Oct rows
+              publish a 1.0–3.0 h time spread — all from Unibet start times recorded at 14:29Z. Re-reading the same
+              Kambi event ids at 15:45Z on two operator feeds returns starts that match Hotspawn exactly, so the
+              upstream feed moved between generation and re-read. Our arithmetic is internally consistent
+              (rules R15/R16 pass), and the value is re-read live every 6 h, so the next refresh should clear it.</td>
+            <td>Kambi events <code>1029621119</code> and <code>1029621112</code> —
+                <a href="https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&amp;market=GB&amp;useCombined=true" target="_blank" rel="noopener">re-read the feed</a></td>
+          </tr>
+          <tr>
+            <td><span class="flag">X2</span></td>
+            <td><b>The published book time delta has no sign.</b> Matching is done on the absolute difference, so a book
+              that starts <i>earlier</i> than Hotspawn also shows a positive number (Unibet 17:00Z against an 18:00Z
+              fixture publishes 1.0, not −1.0). Both timestamps are printed beside it, so a reader can see the
+              direction — but the number alone cannot be read as "later". Filed as a change request against the file
+              that owns it rather than edited here.</td>
+            <td><a href="../scripts/model.py">scripts/model.py</a></td>
+          </tr>
+          <tr>
+            <td><span class="flag">X3</span></td>
+            <td><b>108 of 156 rows carry Hotspawn's own placeholder tier string</b> "waiting for information", which the
+              site renders as "Tier not published" and flags <span class="flag">TIER_UNVERIFIED</span>. No tier is
+              invented for those rows; recorded so the string is not mistaken for data.</td>
+            <td><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">lobby tier filter</a></td>
+          </tr>
+          <tr>
+            <td><span class="flag">X4</span></td>
+            <td><b>Behind 10 rows the Elo rating was built in a different competition than the fixture.</b> A team's
+              rating follows its most recent recorded series wherever it was played, so The Bandits Prime vs VfB eSports
+              (PRM 2nd Division, 50.2 / 49.8, Low) rests partly on a Kanji Cup 2026 record for one side, and JSK Esports
+              vs Olympique Mnihla (Tunisian Super League, 57.4 / 42.6, Low) on an Arabian League record. Those rows are
+              flagged <span class="flag">CROSS_LEAGUE_MODEL</span>; across all 156 rows, 236 team-sides have their most
+              recent series in another competition. The <i>citations</i> are not affected — 0 of 156 rows link a foreign
+              league page; every row's results source is its own tournament page.</td>
+            <td><a href="https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split" target="_blank" rel="noopener">PRM 2nd Division page (row 1079054)</a> ·
+                <a href="https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season" target="_blank" rel="noopener">Tunisian Super League page (row 1080934)</a></td>
+          </tr>
+          <tr>
+            <td><span class="flag">X5</span></td>
+            <td><b>The 78 already-played lobby fixtures were not itemised card by card</b> in this pass. Their total is
+              reconciled (234 = 156 + 78) and CI's union gate asserts no <i>upcoming</i> lobby fixture is missing, but
+              the 78 themselves were not listed individually — left open for the next verification pass rather than
+              asserted.</td>
+            <td><a href="../verification/live-cross-check-2026-10-25.md">live-cross-check-2026-10-25.md</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Working papers for this pass:
+      <a href="../verification/live-cross-check-2026-10-25.md">live cross-check</a> ·
+      <a href="../research/low-tier-sweep-2026-10-25.md">low-tier line sweep</a> ·
+      <a href="../verification/row_audit.md">row-by-row audit</a> ·
+      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions" target="_blank" rel="noopener">CI runs</a></p>
+  </section>
+
   <div class="two-col" style="margin-top:20px">
     <section class="card">
       <h3>⚠️ Unresolved — explicit 50/50 placeholders</h3>

@@ -1,0 +1,142 @@
+name: Row audit & low-tier line sweep
+
+# Two independent gates on the published picks:
+#   1. scripts/audit_rows.py  - re-derives every row's arithmetic from the numbers
+#      that row cites (de-vig, consensus, counts, per-league re-foot, crowd-leakage
+#      guard) and fails the build if a row does not add up.
+#   2. scripts/probe_lowtier.py - one polite GET per *new* candidate source, asking
+#      whether it prices the fixtures that have no bookmaker line. Reachability and
+#      coverage evidence only: nothing it reads is used in a probability.
+# The negative self-tests run first so a green audit can never mean "the auditor
+# stopped working".
+
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - "scripts/audit_rows.py"
+      - "scripts/probe_lowtier.py"
+      - "scripts/probe_lines.py"
+      - "verification/test_row_audit.py"
+      - "verification/test_lowtier_sweep.py"
+      - ".github/workflows/row-audit.yml"
+      - "docs/data/picks.json"
+  pull_request:
+    paths:
+      - "scripts/audit_rows.py"
+      - "scripts/probe_lowtier.py"
+      - "verification/test_row_audit.py"
+      - "verification/test_lowtier_sweep.py"
+      - ".github/workflows/row-audit.yml"
+      - "docs/data/picks.json"
+  schedule:
+    - cron: "45 */6 * * *"   # 15 min after the 6-hour publisher commits a fresh payload
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: row-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Negative self-tests (every rule must fail on a payload that breaks it)
+        run: |
+          set -o pipefail
+          python3 verification/test_row_audit.py
+          python3 verification/test_lowtier_sweep.py
+
+      - name: Row-by-row audit of the committed payload
+        run: python3 scripts/audit_rows.py
+
+      - name: Live low-tier line sweep (one GET per candidate source)
+        timeout-minutes: 10
+        run: python3 scripts/probe_lowtier.py
+
+      - name: Job summary
+        if: always()
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, pathlib
+          print("## Row audit & low-tier line sweep\n")
+          ra = pathlib.Path("verification/row_audit.json")
+          if ra.exists():
+              d = json.loads(ra.read_text())
+              print(f"**Payload** `{d.get('payload_generated_at')}` · {d.get('rows')} rows audited · "
+                    + " · ".join(f"{v} {k}" for k, v in d["summary"].items() if v) + "\n")
+              bad = [c for c in d["checks"] if c["status"] in ("FAIL", "WARN", "UNVERIFIED")]
+              if bad:
+                  print("| Check | Status | Detail |\n|---|---|---|")
+                  for c in bad:
+                      print(f"| {c['id']} {c['title']} | {c['status']} | {c['detail']} |")
+              else:
+                  print("Every check passed; no FAIL/WARN/UNVERIFIED rows.\n")
+          sw = pathlib.Path("data/diag/lowtier_sweep.json")
+          if sw.exists():
+              s = json.loads(sw.read_text())
+              print(f"\n### Low-tier line sweep ({s['checked_at']})\n")
+              print(json.dumps(s["summary"], indent=2) + "\n")
+              print("| Source | HTTP | Prices | Matched unpriced fixtures | Verdict |\n|---|---|---|---|---|")
+              for r in s["sources"]:
+                  print(f"| [{r['name']}]({r['url']}) | {r['http_status']} | {r['prices_found']} "
+                        f"| {len(r['matched_fixtures'])} | {r['verdict']} |")
+          else:
+              print("\n*The sweep produced no artifact this run.*")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: row-audit-and-lowtier-sweep
+          path: |
+            verification/row_audit.json
+            verification/row_audit.md
+            data/diag/lowtier_sweep.json
+            research/low-tier-sweep-latest.md
+          if-no-files-found: error
+
+      # Only a branch push refreshes the committed copies. Scheduled runs on main
+      # publish artifacts instead of pushing, so they can never race the 6-hour
+      # publisher that owns docs/data/picks.json on main.
+      - name: Commit the refreshed evidence to this branch
+        if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          git config user.name "row-audit-bot"
+          git config user.email "actions@github.com"
+          git add verification/row_audit.json verification/row_audit.md \
+                  data/diag/lowtier_sweep.json research/low-tier-sweep-latest.md
+          if git diff --cached --quiet; then
+            echo "no changes to publish"
+            exit 0
+          fi
+          git commit -m "audit: row-by-row audit + low-tier line sweep [skip ci]"
+          for attempt in 1 2 3; do
+            git fetch origin "+refs/heads/${GITHUB_REF_NAME}:refs/remotes/origin/${GITHUB_REF_NAME}" || true
+            # keep this run's artifacts; a no-op when the branch has not moved
+            if ! git merge --no-edit -X ours "origin/${GITHUB_REF_NAME}"; then
+              git merge --abort >/dev/null 2>&1 || true
+              sleep 5
+              continue
+            fi
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "published audit artifacts on attempt ${attempt}"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error title=Audit artifact publish::git push failed after 3 attempts"
+          exit 1

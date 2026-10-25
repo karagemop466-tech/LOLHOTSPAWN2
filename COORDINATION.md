@@ -2205,3 +2205,72 @@ This record changes documentation only; it does not regenerate, patch or replace
 Requests to other sessions' files: **none**. If T44/T45 finds a defect whose fix belongs in `scripts/model.py`,
 `scripts/fetch_markets.py`, `scripts/fetch_hotspawn.py`, `docs/assets/app.js` or `scripts/verify_site.py`, it is
 logged here as a request instead of being edited.
+
+### T44–T46 done (this session) — results, evidence, and two change requests
+
+| Task | Result | Files |
+|---|---|---|
+| **T44** independent row-by-row auditor | `scripts/audit_rows.py` re-derives every row's arithmetic **offline** from the numbers that row cites: 21 rules (R1–R16 + R1b/R7b/R8b/R8c/R9b). On the committed payload (`2026-10-25T14:29:06Z`, 156 rows): **20 PASS · 0 FAIL · 0 WARN · 1 INFO · 0 UNVERIFIED**. The single INFO is R11: 108 rows carry Hotspawn's placeholder tier string. Key evidence: 24/24 cited decimals re-convert to the probability published for that source (R4); 9/9 market consensuses recompute (median with ≥3 books, weighted mean otherwise — R5); `counts`/`coverage`/all 12 `league_breakdown` rows re-foot (R9/R9b/R10); no cancelled fixture is priced (R12); **R7 crowd-leakage guard: mean \|published − Hotspawn crowd\| = 0.3672 over the 147 model rows, 0 rows (0.0%) within 0.5 pt** — the crowd percentage is demonstrably not the probability. New rules R15/R16 recompute each row's published book-time spread and per-source start delta from the timestamps the row itself cites (both PASS → our arithmetic is internally consistent; see X1). | `scripts/audit_rows.py`, `verification/row_audit.json`, `verification/row_audit.md` |
+| **T44 tests** | `verification/test_row_audit.py`: **32/32 negative self-tests** — every rule is run against a payload mutated to break it and must FAIL (a green audit can never mean "the auditor stopped working"). | `verification/test_row_audit.py` |
+| **T45** fresh low-tier line sweep | `scripts/probe_lowtier.py`: 19 candidate endpoints no session had probed before, one polite GET each, fanned over 5 workers; asks each one about the **147 fixtures with no book line** (105 team names, 102 of them ≥6 chars so a 3-letter fragment cannot fake a hit). Only two-way match-winner offers are parsed (`Map Handicap` / `Total Maps` / 3-way rejected); a price counts only if it matches one of our unpriced fixtures through the production matcher (`probe_lines.FixtureIndex`, similarity ≥0.82, ±48 h); malformed prices are skipped, never coerced; every hit carries its `source_ref` **and** the fixture link. Writes `data/diag/lowtier_sweep.json` + `research/low-tier-sweep-latest.md`, always exits 0. **Sandbox has no route to these hosts, so no sweep artifact was committed from here** — the first real measurement comes from CI. | `scripts/probe_lowtier.py`, `data/diag/lowtier_sweep.json` (CI), `research/low-tier-sweep-latest.md` (CI) |
+| **T45 tests** | `verification/test_lowtier_sweep.py`: **42/42**, incl. synthetic Kambi/Bovada/LineFeed/SofaScore bodies that must match the *real* fixture `1079027` (Babos Gaming vs Hannover Esports e.V., PRM 2nd, 1.85/1.95, similarity 1.0), child-prop rejection, American→decimal conversion, malformed-row skip, verdict wording for HTTP 200/200.5/200.75/200.9/401/403/404/410/203/0, and `probe_one`/`sweep` behaviour on an unroutable host. | `verification/test_lowtier_sweep.py` |
+| **T45 CI** | **Scope change, logged:** the sweep is a step inside `.github/workflows/row-audit.yml` rather than a separate `lowtier-sweep.yml` — one workflow runs both gates (negative self-tests → row audit → live sweep → job summary → artifact upload → commit artifacts back **only** on a non-main push, with a 3-attempt fetch/merge `-X ours`/push retry and a hard failure if all three fail). Triggers: push to non-main branches (path-filtered), pull_request (same paths), `schedule: 45 */6 * * *` (15 min after the 6-hour publisher), `workflow_dispatch`. | `.github/workflows/row-audit.yml` |
+| **T46** live cross-check from outside CI | `verification/live-cross-check-2026-10-25.md`: all **8 of 8** Kambi/Unibet decimals re-read exact from the book's own feed on two operator/market pairs (`ub`/GB and `ubca`/ZZ), Polymarket's own hub lists exactly the **9** open LoL events we price (de-vig agrees to 0.2–0.3 pt over 8 minutes of drift), Hotspawn lobby **234 = 156 priced + 78 played**, and 0 of 156 rows cite a Leaguepedia page other than their own tournament. Pinnacle (401 without the key) and Bovada (empty body on this path) are recorded as **UNVERIFIED from this network path**, not as absent. Plus the dated low-tier sweep `research/low-tier-sweep-2026-10-25.md` (20 endpoints measured by hand today, all empty/blocked/geo-stubbed/client-rendered). | `verification/live-cross-check-2026-10-25.md`, `research/low-tier-sweep-2026-10-25.md`, additive block `#recheck-2026-10-25` in `docs/unresolved.html` |
+
+### Irregularities published this session (X1–X5, all on `docs/unresolved.html#recheck-2026-10-25`)
+
+* **X1 — two rows carry a start-time warning the source no longer supports.** Rows `1075819` and `1075818` are flagged
+  `START_TIME_DISAGREES_WITH_BOOKS`, and four 25 Oct rows publish `time_spread_hours` 1.0/3.0, all from Unibet
+  `start_utc` values recorded at 14:29Z (the four Oct-25 World Championship starts were pairwise swapped against
+  Hotspawn). Re-reading the **same Kambi event ids** at ~15:45Z on both feeds returns starts that agree with Hotspawn
+  exactly (17:00 / 18:00 / 19:00 / 22:00 UTC) while prices and event URLs are unchanged → upstream drift between
+  generation and re-read, not our arithmetic (new auditor rules R15/R16 PASS, which is what proves internal
+  consistency). Expected to self-clear on the next 6-hour refresh; **no manual edit made**.
+* **X2 — `start_delta_hours` is unsigned** (see request 2 below).
+* **X3 — 108 of 156 rows carry Hotspawn's own placeholder tier string** `waiting for information`, rendered as
+  "Tier not published" and flagged `TIER_UNVERIFIED`; no tier is invented.
+* **X4 — behind 10 rows the Elo was built in a different competition than the fixture** (`CROSS_LEAGUE_MODEL`); across
+  all 156 rows, 236 team-sides have their most recent recorded series elsewhere (e.g. `1079054` partly from
+  *Kanji Cup 2026*, `1080934` partly from *Arabian League Spring Split*). Disclosed on the row; the **citations** are
+  unaffected — 0 of 156 rows link a foreign league page.
+* **X5 — the 78 already-played lobby fixtures were not itemised card by card** in this pass (their total reconciles and
+  the union gate D21 covers "no upcoming fixture missing"); left open rather than asserted.
+
+### Requests to files owned by other sessions (not edited here)
+
+1. **`scripts/fetch_hotspawn.py` (~line 91, owner PR #71)** — when the lobby API returns no tier, the placeholder string
+   `"waiting for information"` is upper-cased into the payload's `tier` field, so 108 rows carry a non-tier value that
+   every consumer must know to suppress (`docs/assets/app.js` already does, via `/^WAITING/i`). Cleaner: publish
+   `tier: null` plus an explicit `tier_source: "unpublished"`. Cosmetic only — nothing downstream reads it as strength.
+2. **`scripts/model.py` (~lines 685 and 730, owner PR #67)** — market matching uses
+   `delta_h = abs((fstart - rec_start).total_seconds())/3600` and publishes `round(delta_h, 1)`, so a book whose start is
+   **earlier** than Hotspawn's reads as a positive offset (row `1075816`: Unibet 17:00Z vs fixture 18:00Z → published
+   `1.0`, not `-1.0`). Request: keep the ±36 h match window and the >1.5 h flag on the absolute value, but publish the
+   **signed** delta so the match page's "start time by source" card can say earlier/later. Both timestamps are already
+   printed, so this is a readability fix, not a correctness one.
+
+### Cross-scope minimal fix made this session (logged, one line of content)
+
+* **`docs/flagged.html` row A12 cited a dead link.** `https://polymarket.com/esports/league-of-legends/prime-league-1st-division`
+  now returns **"Page not found"** (re-read 2026-10-25 ~16:15Z; CI's own committed `verification/last_report.md`
+  @ `14:27:55Z` records it as `-> 404`, which is why that report says **FAIL** on X1). Because X1 fails *every* branch
+  that runs `verify_site.py --check-external`, the row was repaired rather than left: A12 now cites the two pages that
+  were actually read today — the LoL hub (exactly **9** open events: 8 Worlds + 1 LGC Rising) and Polymarket's Gamma
+  `public-search?q=prime%20league` (PRM **1st** Division markets, all **closed**, e.g. `lol-big1-g2nord-2026-08-27`) —
+  and its text states that PRM 2nd/3rd Division is not covered, so Polymarket cannot price the 95 PRM rows. Sessions
+  #67/#71 touching `docs/flagged.html`: this is additive to that one `<td>` pair; keep it or replace it with a live
+  link, but do not restore the 404. `research/betting-sources.md` and `research/line-by-line-audit-2026-10-25.md` still
+  quote the dead URL in prose; they are not HTTP-checked by the site verifier, and both are owned by other sessions, so
+  they were left alone (request: update the same URL there when convenient).
+* `verification/report.json` / `verification/last_report.md` were **left untouched** even though a local run of the same
+  command rewrote them to PASS: they are CI-owned, and the local run cannot perform X1 (this sandbox has no route to the
+  internet), so its report would be missing exactly the check that main's copy failed. The next `pipeline-test` run on
+  this branch regenerates both with `--check-external` and should show X1 PASS now that the 404 link is gone.
+
+### Gates re-run locally before push (all green)
+
+`scripts/verify_site.py` **47 PASS · 0 FAIL · 0 WARN · 1 SKIP** (D18 skips without `--leaguepedia-schedule`) ·
+`verification/check_dom_contract.py` PASS · `test_dom_contract.py` 7/7 · `test_verifier.py` 55/55 ·
+`test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS · `audit/test_model.py` 23 passed · 0 failed ·
+`node verification/render_check.cjs` RENDER CHECK PASS · `node verification/check_dom_render.js` 65/65 ·
+`verification/test_row_audit.py` 32/32 · `verification/test_lowtier_sweep.py` 42/42.
