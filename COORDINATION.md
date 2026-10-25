@@ -15,6 +15,50 @@ this board. `main` is at `2173cc9` ("picks: scheduled refresh [skip ci]", payloa
 | T28 Verifier extensions for the new required sections (exec-summary non-featured section with a source link on every row, jump bar on every page, mobile CSS has no fixed width > 390 px) + self-tests | claimed | arena/0e9a9550 | `scripts/verify_site.py`, `verification/**` |
 | T29 Integration: live pipeline run on this branch, full re-verification, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge result here | claimed | arena/0e9a9550 | `COORDINATION.md`, `README.md`, generated `docs/data/picks.json` |
 
+### Results (session `arena/0e9a9550`, 2026-10-25)
+
+**Parallel-session note.** While this session worked, four other branches opened PRs on the same day
+(#61 `arena/52743a08`, #64 `arena/970403ae`, #65 `arena/964cb944`, #66 `arena/6d169c43`), two of them on
+the executive summary and the source-research log. This session kept its edits additive on `docs/**` and
+`research/betting-sources.md` (new section §20, never a rewrite), wrote only new verifier rules (S16/S17) and
+new files, and logged the overlap here instead of touching anything another claim names. Any merge conflict
+is resolved by keeping both sides.
+
+| Task | Status | Result |
+|---|---|---|
+| T25 live coverage re-verification | **done** | The 2026-10-25T10:41Z payload (156 fixtures) did **not** price `Team Lucidity Esports vs Fritt Fall` (RIVALS LEAGUE Season 2, 2026-10-31T17:30Z, fixture 1090065, <https://www.hotspawn.com/matches/team-lucidity-esports-vs-fritt-fall-rivals-league-season-2-1090065>) and carried no exclusion entry for it. Root cause: the priced set was built from the fixtures-API rows only, so a lobby-listed fixture the API lagged on was dropped silently. Independent audit on the branch run afterwards: **165 required future fixtures, 156 priced, 9 excluded for a stated reason (cancelled), 0 unexplained**, and the fixture is now priced (`MODEL_ELO_STANDINGS` 60.0%, Medium). `lobby_lol_listed: 234` equals the lobby header's own “All tiers (234)”. |
+| T26 fresh source research for the non-featured matches | **done** | Five sources opened on 2026-10-25 with the exact wording recorded (OddsPortal LoL index + Prime League page, bmbets Prime League 2nd Division, Cloudbet Prime League 2nd Division, Betmonitor Prime League 2nd Division). **None** publishes a two-way price for PRM 2nd/3rd, RIVALS, Tunisian, Arabian 2nd, 4 Nations, Komplettligaen, LigaGG or LGC Rising. Written up as `research/betting-sources.md` §20.2 and published on the site with a link per row. |
+| T27 phone/mobile usability pass | **done** | Six-target quick-jump bar on all 7 pages; summary reordered (picks before prose); new separate summary section “🧮 Matches without a featured betting line — how each pick is made” with the dated book check and a per-competition table; long research tables collapsed into `<details>`; 390 px typography pass for match cards. |
+| T28 verifier extensions | **done** | **S16** (same jump bar on every page + the summary itself carries the non-featured section with its source table + `#nonfeatured` linked from the summary) and **S17** (phone layout contract: `width=device-width` everywhere, a breakpoint ≤430 px, no hard-coded width >430 px), both with negative self-tests (`test_verifier.py` 54/54). New `verification/test_lobby_union.py` (11 assertions) and jsdom assertions for the new section (`check_dom_render.js` 58/58). |
+| T29 integration | **in progress** | see the PR/merge record below |
+
+**Files changed:** `scripts/fetch_hotspawn.py` (union), `audit/coverage_gate.py` (new), `audit/coverage_reconcile.{json,md}` (regenerated),
+`verification/test_lobby_union.py` (new), `verification/test_verifier.py`, `verification/check_dom_render.js`,
+`scripts/verify_site.py` (S16/S17 + review hosts), `.github/workflows/{update-picks,pipeline-test,verify}.yml`,
+`docs/index.html`, `docs/unresolved.html`, `docs/{picks,leagues,flagged,methodology,match}.html` (jump bar),
+`docs/assets/{app.js,style.css}`, `research/betting-sources.md` §20, `README.md`, `docs/data/picks.json`,
+`verification/report.json`, `verification/last_report.md`.
+
+**Verification performed (branch run 40201598428, success, payload 2026-10-25T14:20:19Z):**
+`verify_site.py` **47 PASS / 0 FAIL / 1 WARN** (X1: two external hosts blocked from the runner — reachability only),
+S16/S17 PASS, D21 PASS (lobby upcoming 156 = priced 156, missing 0, excluded 9, leaked 0);
+`audit/coverage_reconcile.py` `coverage_ok: true`, 0 unexplained; `audit/coverage_gate.py` PASS.
+Local: `check_dom_contract` PASS, `test_dom_contract` 7/7, `test_verifier` 54/54, `test_entity_and_books` 17/17,
+`test_standings_model` ALL PASS, `test_lobby_union` 5/5 (11 assertions), `audit/test_model` 23/23,
+`render_check.cjs` PASS, `check_dom_render.js` 58/58.
+
+**Irregularities carried forward (non-blocking, published on *Flagged for review*):**
+1. **Coverage drop fixed, cause explained** — the silent-drop failure mode above; the fixtures API can lag the
+   lobby. Now unioned and gated (a fixture starting >30 min out with no pick and no exclusion fails the run).
+2. **No book covers the non-featured competitions** — measured again today on five sources (§20.2). The pick for
+   those matches is our own line; that limitation is stated on the summary and on `unresolved.html`.
+3. **Komplettligaen Playoffs lobby cards link to placeholder URLs** (`https://www.hotspawn.com/?fixtures=waiting-for-information-2208`)
+   instead of a match page, so no per-match permalink exists upstream. The row keeps the fixture id and the
+   Leaguepedia competition page; flagged for review rather than presented as a match page.
+4. **`D18` remains a WARN** — the Leaguepedia schedule snapshot used for the cross-check is 89.5 h old
+   (`data/diag`); the payload's own times are Hotspawn-authoritative and audited by D21. Not a defect in the site.
+
+
 Any session that needs a file in this scope must log a request here instead of editing it.
 
 # Coordination Board
