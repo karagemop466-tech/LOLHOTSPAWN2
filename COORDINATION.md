@@ -1586,3 +1586,14 @@ stale schedule snapshot or blocked source checks as freshly verified.
 - The site implementation and scheduled publisher were already present on `main`; PR #60 only adds this verification/coordination record. The GitHub Actions run list endpoint returned HTTP 403 rate-limit response, so no current action-run conclusion is asserted.
 
 Reconciliation f931cee9: main advanced via audit-only PR #60; both coordination entries preserved in the append-only conflict. No feature or generated payload conflict. Branch live pipeline 40201194918 SUCCESS (all fetch, render, external verification and probe steps); refreshed 14:15:07 UTC: 156 fixtures, 9 market, 147 model, 54 standings, 11 low-confidence, zero unresolved.
+
+### T27–T30 results (session `arena/964cb944`, 2026-10-25) — PR #65 MERGED
+
+| Task | Status | Evidence |
+|---|---|---|
+| T27 Coin-flip transparency (`TOSSUP_MAX=0.53`, chip + pill + `?filter=tossup` + counts in exec-summary unresolved section & Unresolved page; verifier S16; DOM 58/58) | **done** | live summary: "61 coin-flip picks (favourite ≤53%) on All picks → 🪙 Coin-flip" |
+| T28 VfB eSports cross-league cluster | **done — not a defect** (relegated PRM-1 anchor 1560 vs PRM-2 1460–1490; no model change) | research §21.4 |
+| T29 Fresh source research §21: Cloudbet PRM-2 claim = "No events available" vs 36 fixtures → added to CI probe (39 sources/run, HTTP 200 HTML-only); Kalshi LoL article contradicted by Kalshi's own series API; community Elo doesn't rate amateur leagues; no price copied | **done** | research §21.1–21.3, live payload `market_probe` |
+| T30 Integration | **done** | PR [#65](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/65) MERGED 2026-10-25T14:22:05Z (`0aa76ad`); Pages `built` for `0aa76ad`; post-merge refresh `85ab307` (payload 14:24:11Z: 156/156, 0 unresolved, 61 coin-flips, Cloudbet rows in probe); live site fetched & verified |
+
+Merge reconciliations (main advanced via PRs #62/#63 + `arena/6d169c43` §20 during this session): nothing discarded — generated files took main's whole side, COORDINATION kept both blocks, main's legend restructure adopted (coin-flip legend line dropped with it; explained instead in the unresolved section + chip tooltip), this session's research renumbered **§21**. Verification on merged tree: `verify_site.py` 45 PASS/0 FAIL, jsdom 58/58, all unit suites green incl. `test_freshness.cjs`. Spot-check: Polymarket Mental Rush vs Vitality Rising Bees series ML 65¢/38¢ vs payload 64.5% pick ✓. Flagged (non-blocking): 61 coin-flip picks now labelled; Cloudbet/Kalshi probe-only; Liquipedia metadata probe degraded one run (published).
