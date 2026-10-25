@@ -1,5 +1,28 @@
 # Coordination Board
 
+## Session `arena/b5f85948-lolhotspawn2` — 2026-10-25 (claim)
+
+Takeover note: every prior session on this board is merged to `main` and its last commit is >60 minutes old
+(latest board entry 2026-10-24; production refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z). No open
+claim is active, so per the 60-minute takeover rule this session claims the work below. Baseline at claim
+(branch == `origin/main` == `2173cc9`): **156 upcoming Hotspawn LoL fixtures · 156 resolved (100.0%) · 0
+unresolved** · 9 market (8 `MARKET_CONSENSUS` + 1 `MARKET_SINGLE`; Pinnacle/Unibet/Bovada/Polymarket) · 147 model
+(92 `MODEL_ELO`, 53 `MODEL_ELO_STANDINGS`, 2 `MODEL_ELO_THIN`) · 10 Low confidence · 9 cancelled fixtures
+excluded. Local gates before any edit: `verify_site.py --leaguepedia-schedule data/diag` **44 PASS / 0 FAIL /
+1 WARN (D18 stale 2026-10-21 diagnostic snapshot, by design)** / 0 SKIP; `test_verifier.py` 45/45;
+`audit/test_model.py` 23/23; `test_entity_and_books.py` 17/17; `test_standings_model.py` ALL PASS;
+`test_dom_contract.py` 7/7; `check_dom_contract.py` PASS; `node --check docs/assets/app.js` OK.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Baseline line-by-line re-verification of the current payload (prob sums, pick=max-prob, per-row source links, coverage reconciliation, excluded fixtures, low-confidence flags) | claimed | arena/b5f85948 | `verification/**`, `audit/**` (new audit note only) |
+| T28 Fresh independent source research for matches without a featured line: extend the production probe with new established sportsbooks → esportsbooks → esports betting lines (DraftKings, bwin, Tipico, Loot.bet, Cyber.bet, Duelbits, Unikrn, Betsson/NordicBet, Parimatch, MyBookie), measure live from CI, log link-verified verdicts; no probed value feeds any probability | claimed | arena/b5f85948 | `scripts/source_probe.py`, `research/betting-sources.md`, `data/diag/source_probe.json` (generated) |
+| T29 Mobile / executive-summary findability audit at 390 px: in-site links to the updated picks list, separate unresolved/limitations section reachable from the summary, bottom nav, no dead controls; fix only real defects found | claimed | arena/b5f85948 | `docs/**` (defect fixes only), `verification/mobile_audit.md` |
+| T30 Live CI verification of the branch payload incl. `--check-external` and jsdom render harness; spot-check market rows against cited feeds via CI (sandbox egress is GitHub/PyPI only) | claimed | arena/b5f85948 | no source edits; evidence in `verification/**` |
+| T31 Integration: live pipeline run on this branch, re-verify, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR/run/Pages links here | claimed | arena/b5f85948 | `COORDINATION.md` (board entries), `docs/data/picks.json` (generated only) |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
