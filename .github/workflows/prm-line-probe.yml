@@ -44,12 +44,13 @@ jobs:
           d = json.loads(p.read_text())
           print(f"## Low-tier line probe — {d['generated_at']}\n")
           print(f"Fixtures without an external market: **{d['fixtures_without_external_market']}** "
-                f"of {d['fixtures_total']}; {d['team_tokens_tested']} team tokens tested.\n")
-          print("| Source | HTTP | JSON | Team tokens found | Odds near a team | Verdict |")
+                f"of {d['fixtures_total']}; {d['fixtures_tested']} team pairings tested.\n")
+          print("| Source | HTTP | JSON | Fixtures with a candidate price | Competitions named | Verdict |")
           print("|---|---|---|---|---|---|")
           for s in d["sources"]:
               print(f"| {s['name']} | {s['http_status']} | {'yes' if s['is_json'] else 'no'} | "
-                    f"{s['team_tokens_found']} | {s['odds_near_team']} | {s['verdict'][:160]} |")
+                    f"{s['fixtures_matched']} | {', '.join(s.get('leagues_named') or []) or '—'} | "
+                    f"{s['verdict'][:180]} |")
           print("\n**Summary:** " + json.dumps(d["summary"]))
           PY
 

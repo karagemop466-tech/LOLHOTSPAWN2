@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
-"""Focused probe: do any external books publish a price for the fixtures our
+"""Focused probe: does any external book publish a price for the fixtures our
 model currently has to price?
 
 Context (2026-10-25)
 --------------------
 The published payload prices every Hotspawn LoL fixture, but only ~9 of ~156 come
-from an external betting line. The rest are model rows. The brief asks for
-external lines wherever they exist, tried in this order:
+from an external betting line. The brief asks for external lines wherever they
+exist, tried in this order: established LoL betting sites -> esportsbooks ->
+esports betting lines / aggregators.
 
-  1. established League of Legends betting sites
-  2. esportsbooks
-  3. esports betting lines / odds aggregators
-
-This probe is the *evidence* for the statement "no readable line exists for
-these fixtures". It is deliberately narrow: it takes the team names of the
-fixtures that currently have **no** external market, asks each candidate source
-for its public page/endpoint, and records:
+This probe is the evidence for the statement "no readable line exists for these
+fixtures". It takes the team names of the fixtures that have **no** external
+market, asks each candidate source for its public page/endpoint, and records:
 
   * HTTP status, byte count, whether the body is JSON
-  * how many of our model-only team tokens appear anywhere in the body
-  * how many decimal-odds-looking numbers appear *within 240 characters* of
-    such a team token (a crude "is there a price next to this team" test)
-  * up to three short raw snippets around a team-token hit, for human review
+  * which of our competitions the page even names (context, not a price)
+  * how many fixtures have BOTH team names inside one 700-character window
+    together with two or more odds-like decimals. This is deliberately strict:
+    a loose "team word appears near a number" test produced false positives on
+    a basketball page ("Alba Berlin"), a CSS gradient ("atomic") and a meta tag,
+    so full team names in the same window are required
+  * up to five candidate windows for human review
 
 It never writes a probability, never feeds the model, and always exits 0.
 
@@ -37,25 +36,17 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from lib_common import fetch, norm, now_utc, utc_iso, write_json  # noqa: E402
+from lib_common import fetch, now_utc, utc_iso, write_json  # noqa: E402
 
 OUT = "data/diag/prm_line_probe.json"
 PICKS = "docs/data/picks.json"
 
-# Generic words that appear in many team names; they would produce false hits.
-STOP = {
-    "esports", "esport", "gaming", "team", "academy", "club", "organization", "org",
-    "league", "division", "prime", "series", "season", "split", "rising", "black",
-    "white", "red", "blue", "green", "young", "main", "prime", "second", "first",
-    "lions", "wolves", "kings", "tigers", "dragons", "phoenix", "starks", "sports",
-}
-
-# (name, url, kind, note)  — one polite GET each, no authentication anywhere.
+# (name, url, kind, note) — one polite GET each, no authentication anywhere.
 SOURCES: tuple[tuple[str, str, str, str], ...] = (
     # --- esportsbooks with a documented public API ---------------------------
     ("Cloudbet public sports API (sport index)",
      "https://sports-api.cloudbet.com/pub/v2/odds/sports", "json-api",
-     "Cloudbet advertises Prime League 2nd Division pricing on its own LoL category page"),
+     "Cloudbet's own LoL page advertises Prime League 2nd Division pricing"),
     ("Cloudbet public sports API (LoL competitions)",
      "https://sports-api.cloudbet.com/pub/v2/odds/sports/league-of-legends/competitions", "json-api",
      "Competition list would name every LoL league Cloudbet prices"),
@@ -71,7 +62,7 @@ SOURCES: tuple[tuple[str, str, str, str], ...] = (
      "Sister page; shows whether the comparison site prices German LoL at all"),
     ("Betmonitor — Prime League 2nd Division comparison",
      "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
-     "aggregator-page", "German odds comparison; search index shows bet365/ggbet prices on this page"),
+     "aggregator-page", "German odds comparison; its search index shows bet365/ggbet prices here"),
     ("Betmonitor — esports hub",
      "https://www.betmonitor.com/odds-comparison/esports/", "aggregator-page",
      "League index: shows which esports competitions Betmonitor tracks"),
@@ -79,19 +70,16 @@ SOURCES: tuple[tuple[str, str, str, str], ...] = (
     ("Tipico (DE) esports",
      "https://www.tipico.de/en/esports/league-of-legends/", "sportsbook-page",
      "German-licensed book; Prime League is the German national league"),
-    ("NEO.bet (DE) esports",
-     "https://www.neobet.de/sportwetten/esports", "sportsbook-page",
+    ("NEO.bet (DE) esports", "https://www.neobet.de/sportwetten/esports", "sportsbook-page",
      "German-licensed book"),
-    ("bwin (DE) esports",
-     "https://sports.bwin.de/en/sports/esports", "sportsbook-page",
+    ("bwin (DE) esports", "https://sports.bwin.de/en/sports/esports", "sportsbook-page",
      "German-licensed book"),
-    ("bet365 (DE) esports",
-     "https://www.bet365.de/#/AS/B1/", "sportsbook-page",
+    ("bet365 (DE) esports", "https://www.bet365.de/#/AS/B1/", "sportsbook-page",
      "Largest global book; often prices Prime League"),
     ("Everygame esports LoL",
      "https://www.everygame.eu/en/Esports/League-of-Legends", "sportsbook-page",
      "Review sites list Prime League in its LoL coverage"),
-    # --- esportsbooks / aggregators already known to be blocked or empty ----
+    # --- esportsbooks / aggregators known to be blocked or empty ------------
     ("eGamersWorld LoL odds board", "https://egamersworld.com/lol/bets", "aggregator-page",
      "Aggregator with per-match bookmaker prices"),
     ("EsportBet LoL board", "https://esportbet.com/league-of-legends/", "aggregator-page",
@@ -103,34 +91,63 @@ SOURCES: tuple[tuple[str, str, str, str], ...] = (
      "esportsbook-api", "Deep tier-3 coverage; geo-restricted in past runs"),
 )
 
-TEAM_TOKEN_MIN = 5
-ODDS_RE = re.compile(r"(?<![\d.])(\d{1,2}\.\d{2})(?![\d.])")
-SNIPPET_RADIUS = 240
+# An odds-like decimal: 1.01 .. 30.00, not part of a longer number, date or id.
+ODDS_RE = re.compile(r"(?<![\d.,:-])((?:[1-9]|1\d|2\d|30)\.\d{2})(?![\d.,%:-])")
+# A candidate price needs BOTH team names inside this window, plus two odds.
+MATCH_WINDOW = 700
+
+COMPETITIONS = ("Prime League", "RIVALS LEAGUE", "Tunisian Super League",
+                "Arabian League", "4 Nations", "Komplettligaen", "LigaGG", "LGC Rising")
 
 
-def team_tokens(matches: list[dict]) -> list[tuple[str, str]]:
-    """Distinctive tokens from fixtures that have no external market."""
-    out: dict[str, str] = {}
+def _name_pattern(name: str) -> re.Pattern | None:
+    """Regex for a whole team name: its tokens in order, separators allowed."""
+    toks = re.findall(r"[A-Za-z0-9\u00c0-\u024f']+", name or "")
+    if not toks:
+        return None
+    body = r"[^A-Za-z0-9\u00c0-\u024f]{0,6}".join(re.escape(t) for t in toks)
+    return re.compile(body, re.I)
+
+
+def fixture_names(matches: list[dict]) -> list[tuple[str, str]]:
+    """(team1, team2) pairs for fixtures with no external market, deduplicated."""
+    out: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
     for m in matches:
         if m.get("market"):
             continue
-        for key in ("team1", "team2"):
-            name = str(m.get(key) or "")
-            for tok in re.findall(r"[A-Za-zÀ-ÿ0-9']+", name):
-                low = tok.lower()
-                if len(low) < TEAM_TOKEN_MIN or low in STOP or low.isdigit():
-                    continue
-                if low in {"esports", "gaming", "academy"}:
-                    continue
-                out.setdefault(low, name)
-    return sorted(out.items())
+        a, b = str(m.get("team1") or ""), str(m.get("team2") or "")
+        if not a or not b or (a, b) in seen:
+            continue
+        seen.add((a, b))
+        out.append((a, b))
+    return out
 
 
-def probe(name: str, url: str, kind: str, note: str, tokens: list[tuple[str, str]]) -> dict:
+def find_prices(text: str, pairs: list[tuple[str, str]]) -> tuple[int, list[dict]]:
+    """Fixtures whose BOTH team names sit in one window with two or more odds."""
+    hits: list[dict] = []
+    for a, b in pairs:
+        pa, pb = _name_pattern(a), _name_pattern(b)
+        if not pa or not pb:
+            continue
+        for mt in pa.finditer(text):
+            window = text[mt.start(): mt.start() + MATCH_WINDOW]
+            if not pb.search(window):
+                continue
+            odds = ODDS_RE.findall(window)
+            if len(odds) < 2:
+                continue
+            hits.append({"team1": a, "team2": b, "odds_seen": odds[:6],
+                         "snippet": re.sub(r"\s+", " ", window)[:300]})
+            break  # one hit per fixture is enough
+    return len(hits), hits
+
+
+def probe(name: str, url: str, kind: str, note: str, pairs: list[tuple[str, str]]) -> dict:
     row = {"name": name, "url": url, "kind": kind, "note": note,
            "http_status": None, "bytes": 0, "is_json": False,
-           "team_tokens_found": 0, "token_samples": [], "odds_near_team": 0,
-           "snippets": [], "verdict": ""}
+           "fixtures_matched": 0, "candidate_prices": [], "leagues_named": [], "verdict": ""}
     try:
         r = fetch(url, timeout=20, retries=2) or {}
         text = r.get("text") or ""
@@ -146,35 +163,19 @@ def probe(name: str, url: str, kind: str, note: str, tokens: list[tuple[str, str
             row["verdict"] = (f"HTTP {status}: no page body readable — no line can be extracted "
                               "from this source in an automated run")
             return row
-        low = text.lower()
-        hits: list[str] = []
-        for tok, owner in tokens:
-            if tok in low:
-                hits.append(tok)
-        row["team_tokens_found"] = len(hits)
-        row["token_samples"] = hits[:12]
-        snippets = 0
-        odds_near = 0
-        for tok in hits:
-            for mt in re.finditer(re.escape(tok), low):
-                window = text[max(0, mt.start() - SNIPPET_RADIUS): mt.start() + SNIPPET_RADIUS]
-                if ODDS_RE.search(window):
-                    odds_near += 1
-                if snippets < 3:
-                    row["snippets"].append(re.sub(r"\s+", " ", window)[:400])
-                    snippets += 1
-                if snippets >= 3 and odds_near:
-                    break
-        row["odds_near_team"] = odds_near
-        if hits and odds_near:
-            row["verdict"] = (f"{len(hits)} of our model-only team tokens appear with odds-like numbers "
-                              "nearby — inspect the snippets; a human must confirm the price belongs to "
-                              "the fixture before any adapter is written")
-        elif hits:
-            row["verdict"] = (f"{len(hits)} team tokens appear, but no odds-like number within "
-                              f"{SNIPPET_RADIUS} characters — the page names the teams without a price")
+        n, hits = find_prices(text, pairs)
+        row["fixtures_matched"] = n
+        row["candidate_prices"] = hits[:5]
+        row["leagues_named"] = [lg for lg in COMPETITIONS if re.search(lg, text, re.I)]
+        if n:
+            row["verdict"] = (f"{n} fixture(s) have BOTH team names in one window with two or more "
+                              "odds-like numbers — a human must confirm this is a real two-way line "
+                              "for that fixture before any adapter is written")
+        elif row["leagues_named"]:
+            row["verdict"] = (f"names {', '.join(row['leagues_named'])} but publishes no two-way "
+                              "price for any current fixture (no window holds both teams and two prices)")
         else:
-            row["verdict"] = ("reachable, but none of the currently unpriced fixtures is named on it — "
+            row["verdict"] = ("reachable, but does not name these competitions or fixtures — "
                               "the source does not cover these matches right now")
     except Exception as e:  # noqa: BLE001 - a probe must never break a run
         row["http_status"] = 0
@@ -190,35 +191,34 @@ def main() -> int:
     except (OSError, json.JSONDecodeError):
         matches = []
     model_only = [m for m in matches if not m.get("market")]
-    tokens = team_tokens(matches)
-    now = now_utc()
+    pairs = fixture_names(matches)
     out = {
-        "generated_at": utc_iso(now),
+        "generated_at": utc_iso(now_utc()),
         "query": ("Which external sources publish a price for the Hotspawn LoL fixtures that "
                   "currently have no external market?"),
         "fixtures_total": len(matches),
         "fixtures_without_external_market": len(model_only),
-        "team_tokens_tested": len(tokens),
+        "fixtures_tested": len(pairs),
         "sources": [],
         "summary": {},
     }
     for name, url, kind, note in SOURCES:
-        row = probe(name, url, kind, note, tokens)
+        row = probe(name, url, kind, note, pairs)
         out["sources"].append(row)
         print(f"[{datetime.now(timezone.utc).isoformat(timespec='seconds')}] "
-              f"{name} -> HTTP {row['http_status']} tokens={row['team_tokens_found']} "
-              f"odds_near_team={row['odds_near_team']}", file=sys.stderr, flush=True)
+              f"{name} -> HTTP {row['http_status']} fixtures_matched={row['fixtures_matched']} "
+              f"named={len(row['leagues_named'])}", file=sys.stderr, flush=True)
     readable = [r for r in out["sources"] if r["http_status"] == 200]
-    with_price = [r for r in readable if r["odds_near_team"]]
+    with_price = [r for r in readable if r["fixtures_matched"]]
     out["summary"] = {
         "sources_probed": len(out["sources"]),
         "reachable_200": len(readable),
-        "naming_our_fixtures": len([r for r in readable if r["team_tokens_found"]]),
-        "with_odds_near_a_team_token": len(with_price),
+        "naming_one_of_our_competitions": len([r for r in readable if r["leagues_named"]]),
+        "publishing_a_two_way_price_for_a_fixture": len(with_price),
         "conclusion": ("No source returned a readable two-way price for any fixture that currently "
                        "lacks an external line." if not with_price else
-                       "Some sources returned odds-like numbers next to our team names; each sample "
-                       "must be verified by hand before use."),
+                       "Some sources showed both team names next to two odds-like numbers; each "
+                       "sample must be verified by hand before use."),
     }
     write_json(OUT, out)
     print(json.dumps(out["summary"], indent=1), file=sys.stderr)

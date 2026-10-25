@@ -298,8 +298,31 @@ async function main() {
         /50\/50/.test((sdoc.querySelector("#unresolved-list") || {}).textContent || ""));
   check("self-test: unresolved stat reflects the payload",
         sdoc.querySelector("#stat-unresolved").textContent.trim() === "2");
-  check("self-test: hero unresolved counter reflects the payload",
-        sdoc.querySelector("#hero-count-unresolved").textContent.includes("2"));
+  // The hero button labelled "No book line" counts matches WITHOUT an external
+  // market (2 forced-unresolved + any other model row), so it must never show
+  // the explicit-50/50 count under that label.
+  check("self-test: hero 'no book line' counter counts model rows, not 50/50s",
+        sdoc.querySelector("#hero-count-unresolved").textContent.includes(String(
+          synthetic.matches.filter((m) => !m.market).length)));
+
+  // ---------- executive summary: phone-first pick panel ----------------------
+  const cards = idoc.querySelectorAll("#picks-now-list .pickcard");
+  check("summary: pick panel renders cards", cards.length > 0, `${cards.length} cards`);
+  check("summary: every pick card shows a pick and a whole-number probability",
+        Array.from(cards).every((c) => /Pick:|No pick/.test(c.textContent) && /\d+(\.\d)?%/.test(c.textContent)));
+  const strip = (id) => parseInt((idoc.querySelector(id) || {}).textContent || "0", 10);
+  const nAll = strip("#now-all-count"), nPriced = strip("#now-priced-count"),
+        nBook = strip("#now-book-count"), nModel = strip("#now-model-count"), nNone = strip("#now-none-count");
+  check("summary: coverage strip totals match the payload",
+        nAll === matches.length && nPriced + nNone === nAll && nBook + nModel + nNone === nAll,
+        `${nAll}/${nPriced}/${nBook}/${nModel}/${nNone} of ${matches.length}`);
+  check("summary: book-line count equals the market rows",
+        nBook === matches.filter((m) => m.market).length, `${nBook}`);
+  // Order matters on a phone: the picks must come before the explanatory blocks.
+  const sectionOrder = Array.from(idoc.querySelectorAll("main > section")).map((s) => s.id);
+  check("summary: the pick panel is the first section after the hero",
+        sectionOrder.indexOf("picks-now") > -1 && sectionOrder.indexOf("picks-now") <= 1,
+        `section order: ${sectionOrder.slice(0, 4).join(", ")}`);
 
   const failed = results.filter((r) => !r.ok);
   console.log(`\nDOM render check: ${results.length - failed.length}/${results.length} passed` +

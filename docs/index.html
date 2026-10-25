@@ -30,7 +30,7 @@
       <li><a href="index.html" data-nav="summary">Summary</a></li>
       <li><a href="picks.html" data-nav="picks">All picks</a></li>
       <li><a href="leagues.html" data-nav="leagues">By league</a></li>
-      <li><a href="unresolved.html" data-nav="unresolved">Unresolved &amp; limits</a></li>
+      <li><a href="unresolved.html" data-nav="unresolved">Limits &amp; no-book picks</a></li>
       <li><a href="flagged.html" data-nav="flagged">Flagged</a></li>
       <li><a href="methodology.html" data-nav="methodology">Methodology</a></li>
     </ul>
@@ -42,46 +42,64 @@
   <div id="freshness-warning" class="hidden"></div>
 
   <section class="hero">
-    <p class="eyebrow">Executive summary · refreshed every 6 hours</p>
-    <h1>Every League of Legends match on Hotspawn — one clear pick, both win probabilities.</h1>
+    <p class="eyebrow">Executive summary · auto-refreshed every 6 hours</p>
+    <h1>League of Legends picks for every match on Hotspawn.</h1>
     <p class="lede">
-      We mirror every upcoming scheduled LoL fixture on
-      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
-      and originate an independent probability for each one: 💰 de-vigged sportsbook &amp; prediction-market lines first,
-      otherwise 🧮 our own Elo model on recorded results and split standings.
-      <b>Hotspawn crowd percentages are context only — never an input to any probability.</b>
+      One clear pick and both win probabilities for every upcoming LoL fixture on
+      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>.
+      Bookmaker lines are used where they exist; every other match is priced by our own model.
+      <b>Hotspawn's crowd percentages are never used as a probability.</b>
     </p>
     <p class="statusline" id="hero-status">Loading the latest refresh…</p>
+    <div class="countstrip" aria-label="Coverage at a glance">
+      <a class="countstrip-item" href="picks.html"><b id="now-all-count">—</b><span>matches listed</span></a>
+      <a class="countstrip-item good" href="picks.html"><b id="now-priced-count">—</b><span>have a pick</span></a>
+      <a class="countstrip-item" href="picks.html?filter=market"><b id="now-book-count">—</b><span>from a bookmaker line</span></a>
+      <a class="countstrip-item" href="#unresolved-section"><b id="now-model-count">—</b><span>model-priced (no book line)</span></a>
+      <a class="countstrip-item bad" href="#unresolved-section"><b id="now-none-count">—</b><span>without any pick</span></a>
+    </div>
     <div class="hero-actions">
-      <a class="btn primary big" href="picks.html">📋 Find every pick <span class="btn-n" id="hero-count-picks">—</span></a>
+      <a class="btn primary big" href="picks.html">📋 All picks <span class="btn-n" id="hero-count-picks">—</span></a>
       <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24 hours <span class="btn-n" id="hero-count-next24">—</span></a>
-      <a class="btn" href="leagues.html">🏆 By league / tier</a>
-      <a class="btn warn" href="#unresolved-section">⚠️ Unresolved <span class="btn-n" id="hero-count-unresolved">—</span></a>
+      <a class="btn" href="leagues.html">🏆 By league</a>
+      <a class="btn warn" href="#unresolved-section">⚠️ No book line <span class="btn-n" id="hero-count-unresolved">—</span></a>
     </div>
     <details class="hero-details">
       <summary class="small">How each probability is produced (tap to expand)</summary>
       <p class="small">
-        💰 <b>Market consensus</b> — de-vigged full-match two-way lines from Pinnacle, Unibet (Kambi), Bovada and Polymarket,
-        one main board per book. 🧮 <b>Own Elo model</b> — chronological, competition-tier-anchored Elo over Leaguepedia
-        results (with current-split standings blended in for thin rows). ⚠️ <b>Unresolved</b> — explicit 50/50 placeholder,
-        never an edge. Full detail: <a href="methodology.html">methodology &amp; sources</a>.
+        💰 <b>Bookmaker line</b> — the average of two-way match prices from Pinnacle, Unibet (Kambi), Bovada and
+        Polymarket, with each book's margin removed. 🧮 <b>Our model</b> — chronological, competition-tier-anchored Elo
+        over Leaguepedia results, blended with the current split table where it exists. ⚠️ <b>No pick</b> — an explicit
+        50/50 placeholder, never an edge. Full detail: <a href="methodology.html">methodology &amp; sources</a>.
       </p>
       <p class="small" id="model-track-record">Loading the model's out-of-sample record…</p>
     </details>
   </section>
 
+  <section id="picks-now" aria-labelledby="picks-now-heading">
+    <h2 id="picks-now-heading">Picks for the next matches</h2>
+    <p class="small">Soonest first, in your local time. Tap a match for the full breakdown and its sources.</p>
+    <div class="pickgrid" id="picks-now-list">
+      <div class="loading"><span class="spinner"></span>Loading picks…</div>
+    </div>
+    <p class="small" style="margin-top:10px"><a href="picks.html"><b>See all picks with search and filters →</b></a></p>
+  </section>
+
   <section id="picks-here" aria-labelledby="picks-here-heading">
     <h2 id="picks-here-heading">📌 Where the updated picks are</h2>
-    <p class="small">Four taps — every list on this site is one of these. All lists refresh automatically every 6 hours.</p>
-    <div class="legend" aria-label="What the method chips mean">
-      <span class="chip green">💰 Market consensus</span><span class="legend-t">two or more independent books or prediction markets price this match (de-vigged average)</span>
-      <span class="chip green">💰 Single book line</span><span class="legend-t">only one reachable book prices it — a line, not a consensus</span>
-      <span class="chip blue">🧮 Own Elo model</span><span class="legend-t">our model on Leaguepedia's recorded results</span>
-      <span class="chip blue">📊 Elo + standings</span><span class="legend-t">the model blended with the current split table</span>
-      <span class="chip amber">🧮 Elo (thin history)</span><span class="legend-t">few recorded games — wide error bars, marked Low confidence</span>
-      <span class="chip">📐 League prior</span><span class="legend-t">no usable team history; league-average only</span>
-      <span class="chip red">⚠️ Unresolved</span><span class="legend-t">explicit 50/50 placeholder — never an edge, listed separately</span>
-    </div>
+    <p class="small">Every list on this site is one of these four. All of them refresh automatically every 6 hours.</p>
+    <details class="legend-details">
+      <summary class="small">What the labels mean (tap to expand)</summary>
+      <div class="legend" aria-label="What the method chips mean">
+        <span class="chip green">💰 Market consensus</span><span class="legend-t">two or more independent books or prediction markets price this match (margin removed)</span>
+        <span class="chip green">💰 Single book line</span><span class="legend-t">only one reachable book prices it — a line, not a consensus</span>
+        <span class="chip blue">🧮 Own Elo model</span><span class="legend-t">our model on Leaguepedia's recorded results</span>
+        <span class="chip blue">📊 Elo + standings</span><span class="legend-t">the model blended with the current split table</span>
+        <span class="chip amber">🧮 Elo (thin history)</span><span class="legend-t">few recorded games — wide error bars, marked Low confidence</span>
+        <span class="chip">📐 League prior</span><span class="legend-t">no usable team history; league-average only</span>
+        <span class="chip red">⚠️ No pick</span><span class="legend-t">explicit 50/50 placeholder — never an edge, listed separately</span>
+      </div>
+    </details>
     <div class="linkgrid">
       <a class="linkcard" href="picks.html" id="here-all">
         <span class="ico" aria-hidden="true">📋</span>
@@ -108,10 +126,10 @@
 
   <section aria-label="Coverage metrics">
     <div class="stats">
-      <div class="stat"><span class="n" id="stat-fixtures">—</span><span class="l">Scheduled matches</span></div>
-      <div class="stat green"><span class="n" id="stat-market">—</span><span class="l">With bookmaker lines</span></div>
-      <div class="stat blue"><span class="n" id="stat-model">—</span><span class="l">Own Elo + standings</span></div>
-      <div class="stat red"><span class="n" id="stat-unresolved">—</span><span class="l">Unresolved (50/50)</span></div>
+      <div class="stat"><span class="n" id="stat-fixtures">—</span><span class="l">Matches listed</span></div>
+      <div class="stat green"><span class="n" id="stat-market">—</span><span class="l">With a bookmaker line</span></div>
+      <div class="stat blue"><span class="n" id="stat-model">—</span><span class="l">Priced by our model</span></div>
+      <div class="stat red"><span class="n" id="stat-unresolved">—</span><span class="l">No pick (50/50)</span></div>
     </div>
     <div class="card" style="margin-top:12px">
       <h3>Coverage of Hotspawn's match list</h3>
@@ -190,15 +208,15 @@
   </section>
 
   <section id="unresolved-section" aria-labelledby="unresolved-heading">
-    <h2 id="unresolved-heading">⚠️ Unresolved picks &amp; limitations for generating picks</h2>
-    <p class="small">This is the separate section for anything the featured (bookmaker-priced) picks cannot resolve:
-      explicit 50/50 placeholders, low-confidence model picks, the per-league signal limit, and the external sources we
-      re-checked for those matches. The full detail is on <a href="unresolved.html">Unresolved &amp; limitations →</a></p>
+    <h2 id="unresolved-heading">⚠️ Matches with no bookmaker line — and the limits</h2>
+    <p class="small">This is the separate section for everything the bookmaker-priced picks cannot resolve:
+      matches no reachable book prices (still picked, by our model), matches with thin history, and any match with no pick at all.
+      Each entry carries its own source links and the specific limitation for its league.</p>
     <div id="unresolved-summary"></div>
 
-    <h3 style="margin-top:18px">Every unresolved fixture in this snapshot</h3>
-    <p class="small">Listed with its own source links and the explicit 50/50 placeholder, so nothing the featured picks cannot
-      resolve is hidden behind a count. When the count is zero this says so.</p>
+    <h3 style="margin-top:18px">Matches with no pick at all (explicit 50/50)</h3>
+    <p class="small">Normally empty. When a match truly has no evidence — no book line, no recorded results, no split
+      standings — it appears here one by one with its sources, never hidden behind a count.</p>
     <div id="unresolved-list"><div class="loading"><span class="spinner"></span>Loading unresolved fixtures…</div></div>
 
     <h3 style="margin-top:18px">Per-league limits — which signal prices each league</h3>
@@ -259,7 +277,7 @@
   <a href="index.html" data-nav="summary"><span class="ico" aria-hidden="true">🏠</span>Summary</a>
   <a href="picks.html" data-nav="picks"><span class="ico" aria-hidden="true">📋</span>Picks</a>
   <a href="leagues.html" data-nav="leagues"><span class="ico" aria-hidden="true">🏆</span>Leagues</a>
-  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Unresolved</a>
+  <a href="unresolved.html" data-nav="unresolved"><span class="ico" aria-hidden="true">⚠️</span>Limits</a>
   <a href="flagged.html" data-nav="flagged"><span class="ico" aria-hidden="true">🚩</span>Flagged</a>
   <a href="methodology.html" data-nav="methodology"><span class="ico" aria-hidden="true">📐</span>Method</a>
 </nav>

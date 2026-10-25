@@ -110,7 +110,7 @@ img { max-width: 100%; }
   background: linear-gradient(135deg, #1d4ed8, #7c3aed); color: #fff; font-weight: 900; font-size: 15px; flex: 0 0 auto;
 }
 .logo-text { font-weight: 800; font-size: 15px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.logo-text small { display: block; font-weight: 600; color: var(--muted); font-size: 11px; }
+.logo-text small { display: block; font-weight: 600; color: var(--muted); font-size: 11.5px; }
 .header-meta { margin-left: auto; text-align: right; font-size: 12px; color: var(--muted); line-height: 1.25; }
 .header-meta b { color: var(--text); }
 .freshness { display: inline-flex; align-items: center; gap: 5px; }
@@ -403,7 +403,7 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
 @media (max-width: 420px) {
   .header-meta { font-size: 11px; }
   .logo-text { font-size: 14px; }
-  .logo-text small { font-size: 10px; }
+  .logo-text small { font-size: 11px; }
 }
 /* ---- hero "find the picks" buttons (session arena/e6f33fe9) ---- */
 .btn.big { font-size: 16px; min-height: 54px; }
@@ -429,3 +429,54 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   .legend { grid-template-columns: 1fr; gap: 2px; }
   .legend-t { margin: 0 0 8px; }
 }
+
+/* ── Executive summary: phone-first pick panel (2026-10-25) ─────────────────
+   The summary used to open with explanation blocks; the picks themselves were
+   several screens down on a 390 px phone. This panel puts the six soonest picks
+   immediately under the headline: team names at 19 px, the pick and its
+   probability on their own high-contrast line, and the whole card as one tap
+   target (min 44 px) into the match detail. */
+.countstrip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; }
+@media (min-width: 700px) { .countstrip { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.countstrip-item {
+  display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 10px 12px; text-decoration: none; color: var(--text); min-height: 64px;
+}
+.countstrip-item b { display: block; font-size: 26px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.countstrip-item span { font-size: 12.5px; color: var(--muted); }
+.countstrip-item.good b { color: var(--green); }
+.countstrip-item.bad b { color: var(--red); }
+.countstrip-item:hover { border-color: var(--brand); }
+
+.pickgrid { display: grid; gap: 10px; }
+@media (min-width: 760px) { .pickgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pickcard {
+  display: flex; flex-direction: column; gap: 6px; min-height: 44px;
+  background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--brand);
+  border-radius: 14px; padding: 13px 14px; text-decoration: none; color: var(--text);
+  box-shadow: var(--shadow);
+}
+.pickcard.market { border-left-color: var(--green); }
+.pickcard.model { border-left-color: var(--brand); }
+.pickcard.partial { border-left-color: var(--amber); }
+.pickcard.unres { border-left-color: var(--red); }
+.pickcard:hover, .pickcard:focus-visible { border-color: var(--brand); }
+.pc-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.pc-when { font-weight: 800; color: var(--text); }
+.pc-rel { color: var(--muted); }
+.pc-teams { font-size: 19px; font-weight: 800; line-height: 1.25; }
+.pc-vs { color: var(--muted); font-weight: 600; font-size: 12px; margin: 0 7px; }
+.pc-bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--surface-2); }
+.pc-bar i { display: block; background: var(--brand); }
+.pc-bar b { display: block; background: var(--muted); opacity: .45; }
+.pc-probs { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--muted); }
+.pc-probs b { color: var(--text); font-size: 14px; font-variant-numeric: tabular-nums; }
+.pc-pick {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--surface-2); border-radius: 10px; padding: 9px 11px;
+  font-size: 15px; font-weight: 700;
+}
+.pc-pct { font-weight: 900; font-variant-numeric: tabular-nums; }
+.pc-meta { font-size: 12px; color: var(--muted); }
+.legend-details { margin: 6px 0 12px; }
+.legend-details > summary { cursor: pointer; color: var(--brand); font-weight: 700; padding: 6px 0; }
