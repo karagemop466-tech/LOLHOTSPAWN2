@@ -454,3 +454,15 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   #picks-body .probcell { order: 2; }
   #picks-body td[data-label="Start"] { order: 3; }
 }
+@media (max-width: 760px) {
+  /* Keep the integrated why-line, but place it after the two probabilities so
+     phone users do not have to scroll past analysis to see the actual chance. */
+  #picks-body td { order: 5; }
+  #picks-body .teams-cell { order: 0; }
+  #picks-body .pickcell { display: contents; }
+  #picks-body .pickcell::before { display: none; }
+  #picks-body .pickcell > .pick-pill { order: 1; align-self: flex-start; margin: 6px 0; }
+  #picks-body .probcell { order: 2; }
+  #picks-body .pickcell > .sub { order: 3; }
+  #picks-body td[data-label="Start"] { order: 4; }
+}
