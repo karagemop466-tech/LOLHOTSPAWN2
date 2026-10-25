@@ -1,0 +1,362 @@
+{
+ "generated_at": "2026-10-25T14:09:50.213865Z",
+ "query": "Which external sources publish a price for the Hotspawn LoL fixtures that currently have no external market?",
+ "fixtures_total": 156,
+ "fixtures_without_external_market": 147,
+ "team_tokens_tested": 101,
+ "sources": [
+  {
+   "name": "Cloudbet public sports API (sport index)",
+   "url": "https://sports-api.cloudbet.com/pub/v2/odds/sports",
+   "kind": "json-api",
+   "note": "Cloudbet advertises Prime League 2nd Division pricing on its own LoL category page",
+   "http_status": 401,
+   "bytes": 0,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 401: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "Cloudbet public sports API (LoL competitions)",
+   "url": "https://sports-api.cloudbet.com/pub/v2/odds/sports/league-of-legends/competitions",
+   "kind": "json-api",
+   "note": "Competition list would name every LoL league Cloudbet prices",
+   "http_status": 401,
+   "bytes": 0,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 401: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "Cloudbet — Prime League 2nd Division category page",
+   "url": "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events",
+   "kind": "esportsbook-page",
+   "note": "Says it prices PRM 2nd Division through the split",
+   "http_status": 200,
+   "bytes": 206185,
+   "is_json": false,
+   "team_tokens_found": 14,
+   "token_samples": [
+    "cloud",
+    "elite",
+    "engines",
+    "friends",
+    "ground",
+    "japan",
+    "leaders",
+    "locked",
+    "purple",
+    "reveal",
+    "sport",
+    "state"
+   ],
+   "odds_near_team": 1,
+   "snippets": [
+    "Bitcoin &amp; Crypto on League of Legends</title><meta name=\"description\" content=\"High limits and live betting odds. Enjoy online sports crypto betting on Prime League 2nd Division games and more major League of Legends esports leagues at Cloudbet.\" data-next-head=\"\"/><meta name=\"robots\" content=\"index, follow\" data-next-head=\"\"/><link rel=\"canonical\" href=\"https://www.cloudbet.com/en/esports/lea",
+    "orts crypto betting on Prime League 2nd Division games and more major League of Legends esports leagues at Cloudbet.\" data-next-head=\"\"/><meta name=\"robots\" content=\"index, follow\" data-next-head=\"\"/><link rel=\"canonical\" href=\"https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division\" data-next-head=\"\"/><script type=\"application/ld+json\" data-next-head=\"\">{\"@co",
+    "y-t8205-prime-league-2nd-division\" data-next-head=\"\"/><script type=\"application/ld+json\" data-next-head=\"\">{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"name\":\"Sports\",\"item\":\"https://www.cloudbet.com/en/sports\",\"position\":1},{\"@type\":\"ListItem\",\"name\":\"League of Legends\",\"item\":\"https://www.cloudbet.com/en/esports/league-of-legends\",\"position\":2"
+   ],
+   "verdict": "14 of our model-only team tokens appear with odds-like numbers nearby — inspect the snippets; a human must confirm the price belongs to the fixture before any adapter is written"
+  },
+  {
+   "name": "BMBets — LoL Prime League 2nd Division",
+   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
+   "kind": "aggregator-page",
+   "note": "Dedicated comparison page for the exact competition Hotspawn lists",
+   "http_status": 200,
+   "bytes": 857146,
+   "is_json": false,
+   "team_tokens_found": 8,
+   "token_samples": [
+    "berlin",
+    "elite",
+    "japan",
+    "locked",
+    "northern",
+    "sport",
+    "sweden",
+    "vision"
+   ],
+   "odds_near_team": 0,
+   "snippets": [
+    "antic - Old\"]},{\"n\":\"-01:00\",\"v\":-1,\"d\":[\" Azores\",\" Cabo Verde Is.\"]},{\"n\":\"+00:00\",\"v\":0,\"d\":[\" Casablanca\",\" Coordinated Universal Time\",\" Dublin, Edinburgh, Lisbon, London\",\" Monrovia, Reykjavik\"]},{\"n\":\"+01:00\",\"v\":1,\"d\":[\" Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna\",\" Belgrade, Bratislava, Budapest, Ljubljana, Prague\",\" Brussels, Copenhagen, Madrid, Paris\",\" Sarajevo, Skopje, Warsaw, Z",
+    " <b class=\"arrow\"></b> <ul style=\"display: none;\" class=\"submenu nav-hide\"> <li class=\"\"> <a title=\"AFC Champions League Elite\" class=\"l-item\" href=\"/football/asia/afc-champions-league-elite/\" data-call=\"bk\"> AFC Champions League Elite ",
+    " <ul style=\"display: none;\" class=\"submenu nav-hide\"> <li class=\"\"> <a title=\"AFC Champions League Elite\" class=\"l-item\" href=\"/football/asia/afc-champions-league-elite/\" data-call=\"bk\"> AFC Champions League Elite <span class=\"badge badge-primary\">2</span> "
+   ],
+   "verdict": "8 team tokens appear, but no odds-like number within 240 characters — the page names the teams without a price"
+  },
+  {
+   "name": "BMBets — LoL Prime League (1st Division)",
+   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league/",
+   "kind": "aggregator-page",
+   "note": "Sister page; shows whether the comparison site prices German LoL at all",
+   "http_status": 200,
+   "bytes": 857081,
+   "is_json": false,
+   "team_tokens_found": 8,
+   "token_samples": [
+    "berlin",
+    "elite",
+    "japan",
+    "locked",
+    "northern",
+    "sport",
+    "sweden",
+    "vision"
+   ],
+   "odds_near_team": 0,
+   "snippets": [
+    "antic - Old\"]},{\"n\":\"-01:00\",\"v\":-1,\"d\":[\" Azores\",\" Cabo Verde Is.\"]},{\"n\":\"+00:00\",\"v\":0,\"d\":[\" Casablanca\",\" Coordinated Universal Time\",\" Dublin, Edinburgh, Lisbon, London\",\" Monrovia, Reykjavik\"]},{\"n\":\"+01:00\",\"v\":1,\"d\":[\" Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna\",\" Belgrade, Bratislava, Budapest, Ljubljana, Prague\",\" Brussels, Copenhagen, Madrid, Paris\",\" Sarajevo, Skopje, Warsaw, Z",
+    " <b class=\"arrow\"></b> <ul style=\"display: none;\" class=\"submenu nav-hide\"> <li class=\"\"> <a title=\"AFC Champions League Elite\" class=\"l-item\" href=\"/football/asia/afc-champions-league-elite/\" data-call=\"bk\"> AFC Champions League Elite ",
+    " <ul style=\"display: none;\" class=\"submenu nav-hide\"> <li class=\"\"> <a title=\"AFC Champions League Elite\" class=\"l-item\" href=\"/football/asia/afc-champions-league-elite/\" data-call=\"bk\"> AFC Champions League Elite <span class=\"badge badge-primary\">2</span> "
+   ],
+   "verdict": "8 team tokens appear, but no odds-like number within 240 characters — the page names the teams without a price"
+  },
+  {
+   "name": "Betmonitor — Prime League 2nd Division comparison",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464",
+   "kind": "aggregator-page",
+   "note": "German odds comparison; search index shows bet365/ggbet prices on this page",
+   "http_status": 200,
+   "bytes": 316547,
+   "is_json": false,
+   "team_tokens_found": 13,
+   "token_samples": [
+    "berlin",
+    "bulldog",
+    "elite",
+    "ground",
+    "japan",
+    "locked",
+    "northern",
+    "olympique",
+    "sport",
+    "state",
+    "sweden",
+    "vision"
+   ],
+   "odds_near_team": 1,
+   "snippets": [
+    "iv class=\"event\"><span class=\"date\"><span class=\"blue evtime-switch\" data-type=\"comparison\" data-timestamp=\"1792947600\">Today 18:00</span></span> <span class=\"teams\"><a class=\"dark\" href=\"/odds-comparison/basketball/germany-bundesliga/alba-berlin-ratiopharm-ulm/109922770\">Alba Berlin &mdash; Ratiopharm Ulm</a></span></div></div><div class=\"top-league\"><div class=\"title\"><a class=\"dark\" href=\"/odds",
+    "pan class=\"blue evtime-switch\" data-type=\"comparison\" data-timestamp=\"1792947600\">Today 18:00</span></span> <span class=\"teams\"><a class=\"dark\" href=\"/odds-comparison/basketball/germany-bundesliga/alba-berlin-ratiopharm-ulm/109922770\">Alba Berlin &mdash; Ratiopharm Ulm</a></span></div></div><div class=\"top-league\"><div class=\"title\"><a class=\"dark\" href=\"/odds-comparison/basketball/euroleague-men/",
+    "iv class=\"event\"><span class=\"date\"><span class=\"blue evtime-switch\" data-type=\"comparison\" data-timestamp=\"1792942200\">Today 16:30</span></span> <span class=\"teams\"><a class=\"dark\" href=\"/odds-comparison/handball/germany-bundesliga/fuchse-berlin-hsg-wetzlar/109922158\">Fuchse Berlin &mdash; HSG Wetzlar</a></span></div><div class=\"event\"><span class=\"date\"><span class=\"blue evtime-switch\" data-type"
+   ],
+   "verdict": "13 of our model-only team tokens appear with odds-like numbers nearby — inspect the snippets; a human must confirm the price belongs to the fixture before any adapter is written"
+  },
+  {
+   "name": "Betmonitor — esports hub",
+   "url": "https://www.betmonitor.com/odds-comparison/esports/",
+   "kind": "aggregator-page",
+   "note": "League index: shows which esports competitions Betmonitor tracks",
+   "http_status": 200,
+   "bytes": 316447,
+   "is_json": false,
+   "team_tokens_found": 13,
+   "token_samples": [
+    "berlin",
+    "bulldog",
+    "elite",
+    "ground",
+    "japan",
+    "locked",
+    "northern",
+    "olympique",
+    "sport",
+    "state",
+    "sweden",
+    "vision"
+   ],
+   "odds_near_team": 1,
+   "snippets": [
+    "iv class=\"event\"><span class=\"date\"><span class=\"blue evtime-switch\" data-type=\"comparison\" data-timestamp=\"1792947600\">Today 18:00</span></span> <span class=\"teams\"><a class=\"dark\" href=\"/odds-comparison/basketball/germany-bundesliga/alba-berlin-ratiopharm-ulm/109922770\">Alba Berlin &mdash; Ratiopharm Ulm</a></span></div></div><div class=\"top-league\"><div class=\"title\"><a class=\"dark\" href=\"/odds",
+    "pan class=\"blue evtime-switch\" data-type=\"comparison\" data-timestamp=\"1792947600\">Today 18:00</span></span> <span class=\"teams\"><a class=\"dark\" href=\"/odds-comparison/basketball/germany-bundesliga/alba-berlin-ratiopharm-ulm/109922770\">Alba Berlin &mdash; Ratiopharm Ulm</a></span></div></div><div class=\"top-league\"><div class=\"title\"><a class=\"dark\" href=\"/odds-comparison/basketball/euroleague-men/",
+    "iv class=\"event\"><span class=\"date\"><span class=\"blue evtime-switch\" data-type=\"comparison\" data-timestamp=\"1792942200\">Today 16:30</span></span> <span class=\"teams\"><a class=\"dark\" href=\"/odds-comparison/handball/germany-bundesliga/fuchse-berlin-hsg-wetzlar/109922158\">Fuchse Berlin &mdash; HSG Wetzlar</a></span></div><div class=\"event\"><span class=\"date\"><span class=\"blue evtime-switch\" data-type"
+   ],
+   "verdict": "13 of our model-only team tokens appear with odds-like numbers nearby — inspect the snippets; a human must confirm the price belongs to the fixture before any adapter is written"
+  },
+  {
+   "name": "Tipico (DE) esports",
+   "url": "https://www.tipico.de/en/esports/league-of-legends/",
+   "kind": "sportsbook-page",
+   "note": "German-licensed book; Prime League is the German national league",
+   "http_status": 200,
+   "bytes": 364407,
+   "is_json": false,
+   "team_tokens_found": 11,
+   "token_samples": [
+    "cloud",
+    "elite",
+    "friends",
+    "ground",
+    "japan",
+    "locked",
+    "purple",
+    "smoke",
+    "sport",
+    "state",
+    "turbo"
+   ],
+   "odds_near_team": 0,
+   "snippets": [
+    "dBox, #footerAdDiv, #footerAdLink, #footerAdSpecial, #footerAdd, #footerAds, #footerAdsPlacement, #footerAdvert, #footerAdvertisement, #footerAdverts, #footerGoogleAd, #footer_AdArea, #footer_ad, #footer_ad_01, #footer_ad_block, #footer_ad_cloud, #footer_ad_container, #footer_ad_frame, #footer_ad_holder, #footer_ad_inventory, #footer_ad_modules, #footer_adcode, #footer_add, #footer_addvertise, #fo",
+    "isment, #zone_a_ad, #zone_b_ad, #zone_c_ads, #zztextad, .AD-POST, .AD-RC-300x250, .AD-Rotate, .AD-label300x250, .AD300, .AD300Block, .AD300x250, .AD300x250A, .AD300x600-wrapper, .AD355125, .AD728, .AD728x90L, .ADBAR, .ADBnrArea, .ADBox, .ADCLOUD, .ADFooter, .ADITION, .ADInfo, .ADLeader, .ADMiddle1, .ADPod, .ADS-Content-Sidebar, .ADS-MainContent, .ADServer, .ADStyle, .ADTextSingle, .ADTop, .ADV-Spa",
+    ", a[href^=\"//voyeurhit.com/cs/\"], a[href^=\"//www.mgid.com/\"], a[href^=\"//www.pd-news.com/\"], a[href^=\"//z6naousb.com/\"], a[href^=\"//zenhppyad.com/\"], a[href^=\"http://1phads.com/\"], a[href^=\"http://2pxg8bcf.top/\"], a[href^=\"http://360ads.go2cloud.org/\"], a[href^=\"http://3wr110.net/\"], a[href^=\"http://45eijvhgj2.com/\"], a[href^=\"http://4c7og3qcob.com/\"], a[href^=\"http://6kup12tgxx.com/\"], a[href^=\"h"
+   ],
+   "verdict": "11 team tokens appear, but no odds-like number within 240 characters — the page names the teams without a price"
+  },
+  {
+   "name": "NEO.bet (DE) esports",
+   "url": "https://www.neobet.de/sportwetten/esports",
+   "kind": "sportsbook-page",
+   "note": "German-licensed book",
+   "http_status": 403,
+   "bytes": 15438,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "bwin (DE) esports",
+   "url": "https://sports.bwin.de/en/sports/esports",
+   "kind": "sportsbook-page",
+   "note": "German-licensed book",
+   "http_status": 403,
+   "bytes": 54343,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "bet365 (DE) esports",
+   "url": "https://www.bet365.de/#/AS/B1/",
+   "kind": "sportsbook-page",
+   "note": "Largest global book; often prices Prime League",
+   "http_status": 403,
+   "bytes": 5649,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "Everygame esports LoL",
+   "url": "https://www.everygame.eu/en/Esports/League-of-Legends",
+   "kind": "sportsbook-page",
+   "note": "Review sites list Prime League in its LoL coverage",
+   "http_status": 404,
+   "bytes": 2857,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 404: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "eGamersWorld LoL odds board",
+   "url": "https://egamersworld.com/lol/bets",
+   "kind": "aggregator-page",
+   "note": "Aggregator with per-match bookmaker prices",
+   "http_status": 403,
+   "bytes": 5718,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 403: no page body readable — no line can be extracted from this source in an automated run"
+  },
+  {
+   "name": "EsportBet LoL board",
+   "url": "https://esportbet.com/league-of-legends/",
+   "kind": "aggregator-page",
+   "note": "Lists Prime League 2. Liga as a live tournament",
+   "http_status": 200,
+   "bytes": 399305,
+   "is_json": false,
+   "team_tokens_found": 18,
+   "token_samples": [
+    "alive",
+    "atomic",
+    "berlin",
+    "cloud",
+    "fennel",
+    "frank",
+    "gromp",
+    "ground",
+    "massive",
+    "northern",
+    "purple",
+    "reveal"
+   ],
+   "odds_near_team": 1,
+   "snippets": [
+    "ion/json\" }); navigator.sendBeacon(BEACON_URL, blob); } } try { if (window.fetch) { fetch(BEACON_URL, { method: \"POST\", headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify(payload), keepalive: true, signal: ctrl ? ctrl.signal : undefined, credentials: \"include\" }).then(function(r){ return r.json(); }).then(function(d){ clearTimeout(timer); onOk(d); }) .catch(function(){ clearTime",
+    "ient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,",
+    "class=\"esb-name-row\"><span class=\"esb-name-text\"><a href=\"https://esportbet.com/league-of-legends/northern-league-of-legends-championship/\">Prime League 2. Liga 2026 Fall</a></span><span class=\"esb-name-right\"><span class=\"esb-name-region\">Berlin</span><span class=\"esb-name-status esb-name-status-live\"><span class=\"esb-pulse\"></span> LIVE</span></span></div><span class=\"esb-card-meta\"><svg width=\""
+   ],
+   "verdict": "18 of our model-only team tokens appear with odds-like numbers nearby — inspect the snippets; a human must confirm the price belongs to the fixture before any adapter is written"
+  },
+  {
+   "name": "Strafe LoL odds",
+   "url": "https://www.strafe.com/esports-betting/odds/league-of-legends/",
+   "kind": "aggregator-page",
+   "note": "Aggregator; previously returned 200 HTML",
+   "http_status": 200,
+   "bytes": 194608,
+   "is_json": false,
+   "team_tokens_found": 7,
+   "token_samples": [
+    "cloud",
+    "engines",
+    "ground",
+    "northern",
+    "sissi",
+    "sport",
+    "state"
+   ],
+   "odds_near_team": 1,
+   "snippets": [
+    "if(t.nodeName){if(t.nodeName===\"LINK\"){return}if(t.nodeName===\"SCRIPT\"&&!(t.src||e.lineno)||t.src===self.location.href.replace(/#.*/,\"\")){return}if(t.nodeName===\"IMG\"&&!(t.src||e.lineno)){return}i.push(t.nodeName)}if(t.src){let hostParts=[\"cloudflareinsights\",\"adblock_detect\",\"omappapi\",\"bestodds\",\"outbrain\",\"plausible\",\"getclicky\",\"hotjar\",\"facebook\",\"googletagmanager\",\"google-analytics\",\"twitter",
+    ".com\",\"connatix.com\",\"adsrvr.org\",\"tapad.com\",\"bidr.io\",\"criteo.com\",\"1rx.io\",\"consentframework.com\",\"colossusssp.com\",\"onetag-sys.com\",\"amazon-adsystem.com\",\"33across.com\",\"sonobi.com\",\"turn.com\",\"demdex.net\",\"2mdn.net\",\"googlevideo.com\",\"cloudfront.net\",\"script.ac\",\"gvt1.com\",\"stickyadstv.com\",\"euid.eu\",\"openxcdn.net\",\"flashtalking.com\",\"akamaized.net\",\"adsappier.com\",\"innovid.com\",\"hadronid.net",
+    "s in punters from across the globe. The odds on offer for this event will heavily favour Team Liquid. They are the most successful team in recent LCS history, having won all 4 of the last LCS titles. Across the 9 year history of the event, Cloud9 finished Runner-up on 6 separate occasions.</p> <h2 id=different-types-of-betting-odds-in-league-of-legends>Different types of betting odds in League of "
+   ],
+   "verdict": "7 of our model-only team tokens appear with odds-like numbers nearby — inspect the snippets; a human must confirm the price belongs to the fixture before any adapter is written"
+  },
+  {
+   "name": "1xBet LineFeed (esports, sport=3)",
+   "url": "https://1xbet.com/LineFeed/Get1x2_VZip?sports=3&count=1000&lng=en&mode=4&country=1&partner=51",
+   "kind": "esportsbook-api",
+   "note": "Deep tier-3 coverage; geo-restricted in past runs",
+   "http_status": 203,
+   "bytes": 2645,
+   "is_json": false,
+   "team_tokens_found": 0,
+   "token_samples": [],
+   "odds_near_team": 0,
+   "snippets": [],
+   "verdict": "HTTP 203: no page body readable — no line can be extracted from this source in an automated run"
+  }
+ ],
+ "summary": {
+  "sources_probed": 16,
+  "reachable_200": 8,
+  "naming_our_fixtures": 8,
+  "with_odds_near_a_team_token": 5,
+  "conclusion": "Some sources returned odds-like numbers next to our team names; each sample must be verified by hand before use."
+ }
+}
