@@ -1531,9 +1531,9 @@ this session takes over the stale integration/re-verification scope. Baseline is
 
 | Task | Status | Owner | File scope |
 |---|---|---|---|
-| V1 Audit current coverage, provenance, stale data and unresolved/tied recommendations; add targeted regression gates | in progress | arena/81e6a4e3 | `scripts/**`, `verification/**`, `audit/**` |
-| V2 Research missing-line alternatives using established books, esportsbooks and community sources; distinguish unreachable from verified | in progress | arena/81e6a4e3 | `research/**`, `data/diag/**` |
-| V3 Mobile picks/executive-summary clarity and honest evidence labels; integrate tested fixes | in progress | arena/81e6a4e3 | `docs/**`, `README.md` |
+| V1 Audit current coverage, provenance, stale data and unresolved/tied recommendations; add targeted regression gates | done | arena/81e6a4e3 | `scripts/**`, `verification/**`, `audit/**` |
+| V2 Research missing-line alternatives using established books, esportsbooks and community sources; distinguish unreachable from verified | done | arena/81e6a4e3 | `research/**`, `data/diag/**` |
+| V3 Mobile picks/executive-summary clarity and honest evidence labels; integrate tested fixes | done | arena/81e6a4e3 | `docs/**`, `README.md` |
 | V4 Live workflow, PR/merge, Pages confirmation and coordination evidence | in progress | arena/81e6a4e3 | `.github/workflows/**`, `COORDINATION.md` |
 
 Initial blocker: GitHub Actions REST request returned HTTP 403 API rate limit exceeded
@@ -1656,3 +1656,21 @@ results-receiver host. Browser diagnostics are now committed on success/failure,
 Node is upgraded to supported 24, and bundled Lambda libraries are used only if
 system NSS is absent (needed in the sandbox, not on standard Ubuntu runners).
 No failed browser gate is waived; the next run must pass before PR #67 merges.
+
+**V1–V3 complete; V4 ready to merge:** PR [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67).
+Final live run [40202147232](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202147232)
+**SUCCESS** (2m31s): snapshot 14:27:19Z, 156/156 upcoming lobby fixtures, 9 market,
+147 model, 54 standings/blend, 0 unresolved, 11 Low; zero missing; 9 cancelled
+excluded. Verifier **46 PASS / 0 FAIL / 1 WARN** (blocked external hosts). Source
+page API audit **50/50 exist**, not a claim of official value verification.
+Real Chromium CI **28/28**, integrated DOM **64/64**, freshness **10/10**, evidence
+**8/8**. The browser runtime fix passed, not waived. Evidence in
+`data/diag/browser.{json,log}`, `source_pages.log`, `verification/report.json`, and
+`research/evidence-audit-2026-10-25.md`.
+
+After the green run, main's scheduled refresh `85ab307` conflicted only in the
+machine-generated payload/log: main timestamp 14:24:11Z vs branch 14:27:19Z. The
+newer verified branch copy was retained. No source/model/site code changed in
+that reconciliation; local combined DOM/freshness/evidence checks re-passed.
+Unverified community organizer confirmation / inaccessible betting lines remain
+**needs review** on `docs/flagged.html#evidence-limits` and do not block publication.

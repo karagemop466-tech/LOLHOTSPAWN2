@@ -34,3 +34,15 @@ The first live pipeline [40201225832](https://github.com/karagemop466-tech/LOLHO
 ## Non-blocking items for review
 
 Published on [Flagged for Review](../docs/flagged.html#evidence-limits): community records lack independent organizer verification; inaccessible books may still carry additional lines; line collection is indicative, not an executable quote; a historical team rating does not verify current rosters; 50/50 rows must never imply an evidence-backed edge. No claim of newly discovered low-tier bookmaker coverage is made.
+
+## Final integration result
+
+[Run 40202147232](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202147232) **SUCCEEDED** in 2m31s after the link and browser-runtime fixes. It includes the already-merged strict freshness, mobile navigation, and ≤53% coin-flip features from the concurrent sessions.
+
+- Payload **2026-10-25T14:27:19Z**: 156/156 upcoming lobby fixtures, 9 market, 147 model (91 Elo + 54 Elo/standings + 2 thin Elo), 0 unresolved, 11 Low confidence. 9 cancelled backend fixtures excluded; zero missing or leaked fixtures.
+- Full verifier: **46 PASS, 0 FAIL, 1 WARN**. The warning is blocked external sources, not a waived broken-link error. Some current schedule pairings remain absent from Leaguepedia and are not falsely certified as organizer-verified.
+- Source-page API audit: **50 distinct cited Leaguepedia pages exist, 0 missing**. Existence is not independent fact verification. Evidence: `data/diag/source_pages.log`.
+- Actual Chromium CI: **28/28 page–viewport combinations passed**, including 320/390px phones, 768px tablets and 1280px desktop; output in `data/diag/browser.json` / `browser.log`.
+- Integrated DOM suite: **64/64**; strict freshness **10/10**; evidence-scope **8/8**. Earlier negative/failed runs remain documented above, not relabelled as successes.
+
+The only reconciliation after this successful run was with main's scheduled data refresh (14:24:11Z). The newer verified branch payload (14:27:19Z) was retained; no tested code changed. PR: [#67](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/67).
