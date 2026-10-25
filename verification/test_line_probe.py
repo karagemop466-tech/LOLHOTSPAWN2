@@ -182,6 +182,36 @@ def main() -> int:
     check(no_title and "All Odds" not in (no_title[0]["team_a"], no_title[0]["team_b"]),
           "the navigation anchor is never mistaken for a team name")
 
+    # Regression for the bug the live CI probe exposed on 2026-10-25 (run 40201818801):
+    # the LAST row on the board has no following event to bound its slice, so the chunk
+    # ran into the page footer, whose "Handicap" navigation and stray prices made the
+    # Map/handicap guard discard a real row. Ground Zero vs Frank Esports was lost that
+    # way, which is why that run reported 0 previously-unpriced fixtures covered.
+    footer = ('<footer><a href="/handicap-bets">Handicap</a>'
+              + '<span class="odd">7/2</span>' * 40
+              + '<a href="/map-1-bets">Map 1</a></footer>')
+    last_row, last_detail = parse_oddsdigger(
+        '<h2>Wednesday 11 November 2026</h2><div><span>09:00</span>'
+        + ev_link("ground-zero-vs-frank-esports", "23662613", "Ground Zero", "Frank Esports")
+        + '<span class="odd">1/67</span><span class="odd">22/3</span>'
+        + '<a href="https://oddsdigger.com/e-sports/ground-zero-vs-frank-esports-23662613">All Odds</a></div>'
+        + footer)
+    check(len(last_row) == 1 and last_row[0]["team_a"] == "Ground Zero",
+          "the last row on the board survives a footer full of Handicap/Map-1 labels")
+    check(last_row and last_row[0]["decimal_a"] == 1.0149
+          and last_row[0]["decimal_b"] == 8.3333,
+          "the last row keeps its own prices, not the footer's")
+    check(last_row and last_row[0]["start"] == "2026-11-11T09:00:00Z",
+          "the last row still gets its kickoff")
+
+    # Prices that are far apart belong to different rows and must not be paired.
+    apart, _ = parse_oddsdigger(
+        '<h2>Tuesday 27 October 2026</h2>'
+        + ev_link("far-apart-vs-row", "23600006", "Far Apart", "Row")
+        + '<span class="odd">4/6</span>' + '<i>padding</i>' * 120
+        + '<span class="odd">6/5</span>')
+    check(apart == [], "two prices separated by another row's markup are not paired")
+
     print(f"\n{PASS} passed / {FAIL} failed")
     return 1 if FAIL else 0
 

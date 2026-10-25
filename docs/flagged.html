@@ -117,7 +117,8 @@
       are bet365, LuckyMate, Copybet, 10Bet and Spreadex. Prices shown are the best available per side, so the
       implied probabilities are normalised by their sum rather than de-vigged against a single overround.
       <b>Neither number is used in any published probability</b> — one of the two rows contradicts independent
-      evidence, so the source is not promoted. Full write-up:
+      evidence, and the board was separately caught listing the same Worlds fixture twice with opposite
+      favourites (F20.3), so the source is not promoted. Full write-up:
       <a href="../research/betting-sources.md">research/betting-sources.md §20</a>.
     </p>
     <div class="table-wrap">
@@ -148,6 +149,18 @@
               <a href="https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season" target="_blank" rel="noopener">Leaguepedia ↗</a>
               has Frank Esports as PCS 2026 Summer runner-up.</td>
             <td><span class="chip red">Needs review</span> — pick left on our model, line published but unused</td>
+          </tr>
+          <tr>
+            <td><b>F20.3</b></td>
+            <td><b>Top Esports vs G2 Esports</b><br><span class="sub">Worlds 2026 Main Event · 2026-10-25 17:00 UTC — already priced by Pinnacle + Unibet</span></td>
+            <td>The board lists this fixture <b>twice, under the same title, with opposite favourites</b>:
+              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672375" target="_blank" rel="noopener">event 23672375 ↗</a> 12/11 v 19/25 → G2 <b>47.8%</b>, but
+              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672755" target="_blank" rel="noopener">event 23672755 ↗</a> 8/11 v 1/1 → G2 <b>57.9%</b>.
+              Both anchors read <i>"G2 Esports vs Topsports betting odds"</i>.</td>
+            <td>G2 Esports <b>54.8%</b> (MARKET_CONSENSUS: Pinnacle 3.06/1.7353 + Unibet 2.08/1.67)</td>
+            <td>Our consensus sits between the board's two contradictory entries and agrees with the second. Recorded by the CI probe
+              <code>data/diag/line_probe.json</code> (checked 2026-10-25T14:23:17Z, HTTP 200, 212 KB, 13 two-way prices read).</td>
+            <td><span class="chip amber">Board is internally inconsistent</span> — the reason the source is not trusted automatically</td>
           </tr>
         </tbody>
       </table>

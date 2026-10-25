@@ -977,3 +977,42 @@ autonomously here.
 4. **`docs/flagged.html` still carried a section dated 2026-10-24 referring to "the 160 fixtures without a
    featured market"**; the current payload has 147. The new section quotes the current numbers; the older
    section is left as a dated historical record.
+
+### 20.5 What the live CI probe measured (Actions run `40201818801`, checked 2026-10-25T14:23:17Z)
+
+The first live run of `probe_oddsdigger()` against the real page — the evidence that matters, because the
+offline self-tests can only pin the rules, not the markup:
+
+| Measurement | Value |
+|---|---|
+| HTTP status / body | **200**, 212,130 bytes, HTML |
+| Event links found / unique events | 42 / **14** |
+| Two-way series prices extracted | **13** |
+| Prices matched to a published fixture | **8** records → **7** distinct fixtures |
+| Fixtures matched that had **no** external line | 0 (see below) |
+| Other candidates in the same run with new coverage | none (`candidates_with_new_coverage: []`) |
+
+Two things came out of that run.
+
+**A bug in our own parser, found by the live page and now fixed.** The last row on the board has no following
+event to bound its slice, so the chunk ran to the end of the document — into a footer that contains
+"Handicap" navigation and unrelated prices. The Map/handicap guard then discarded a real row. The prices are
+now required to sit within 1,500 characters of the event's own team links and within 300 characters of each
+other, and the guard only inspects the text *between* the team links and the first price. Regression test
+added (`verification/test_line_probe.py`, 33 assertions).
+
+**Decisive evidence that the board's orientation cannot be trusted — F20.3.** The board lists
+*G2 Esports vs Topsports* **twice, under the identical title, with opposite favourites**:
+
+* event [`23672375`](https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672375) — 12/11 (2.0909) v 19/25 (1.7600) → G2 **47.8%**
+* event [`23672755`](https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672755) — 8/11 (1.7273) v 1/1 (2.0000) → G2 **57.9%**
+
+Both anchors read *"G2 Esports vs Topsports betting odds"*. Our published consensus for that fixture
+(Pinnacle 3.06/1.7353 + Unibet 2.08/1.67 → G2 **54.8%**) agrees with the second entry and contradicts the
+first. A board that carries two opposite favourites for one match cannot be promoted on the strength of one
+agreeing row, which is exactly the situation §20.2 described for Ground Zero vs Frank Esports. **Decision
+stands: OddsDigger is probed and published every refresh, and never feeds a probability.**
+
+The run also shows why `fixtures_matched_and_previously_unpriced` was 0 rather than 1: `Mental Rush vs
+Vitality Rising Bees` already carries a Polymarket line in the payload, so it is not counted as "previously
+unpriced", and the Ground Zero row was the one lost to the footer bug. The next run should report 1.

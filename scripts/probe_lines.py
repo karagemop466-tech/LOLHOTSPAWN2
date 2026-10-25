@@ -590,15 +590,28 @@ def parse_oddsdigger(text: str):
         nxt = [h["pos"] for h in hits if h["eid"] != ev["eid"] and h["pos"] > lo]
         hi = min(nxt) if nxt else len(text)
         chunk = text[lo:hi]
-        # A map/handicap market is not a series winner price — never use one.
-        if re.search(r"\bMap\s*\d|\bGame\s*\d|handicap|total\s*maps", chunk, re.I):
-            continue
-        fr = FRAC_RE.findall(chunk)
+        fr = list(FRAC_RE.finditer(chunk))
         detail["odds_tokens"] += len(fr)
         if len(fr) < 2:
             continue
-        da = _frac_to_decimal(int(fr[0][0]), int(fr[0][1]))
-        db = _frac_to_decimal(int(fr[1][0]), int(fr[1][1]))
+        first, second = fr[0], fr[1]
+        # The prices must belong to THIS row: the last row on the board has no next
+        # event to bound its chunk, so an unbounded slice runs into the page footer
+        # (which contains "Handicap" navigation and unrelated prices) and both
+        # discards a real row and can pair prices from two different rows.
+        if first.start() > 1500:
+            continue
+        if second.start() - first.end() > 300:
+            continue
+        # A map/handicap market is not a series winner price — never use one. Checked
+        # only on the text between the team links and the first price, not the footer.
+        if re.search(r"\bMap\s*\d|\bGame\s*\d|handicap|total\s*maps",
+                     chunk[:first.start()], re.I):
+            continue
+        fa = (int(first.group(1)), int(first.group(2)))
+        fb = (int(second.group(1)), int(second.group(2)))
+        da = _frac_to_decimal(*fa)
+        db = _frac_to_decimal(*fb)
         if not da or not db or da <= 1.0 or db <= 1.0:
             continue
         # Best-price-per-side sanity check: the pair must carry a book overround.
@@ -623,8 +636,8 @@ def parse_oddsdigger(text: str):
                     start = None
         rec = _two_way(records, "OddsDigger upcoming LoL board", ev["url"],
                        "OddsDigger upcoming LoL", start, ev["team_a"], ev["team_b"], da, db,
-                       note=(f"best price per side {fr[0][0]}/{fr[0][1]} vs "
-                             f"{fr[1][0]}/{fr[1][1]} (implied sum {implied:.3f})"))
+                       note=(f"best price per side {fa[0]}/{fa[1]} vs "
+                             f"{fb[0]}/{fb[1]} (implied sum {implied:.3f})"))
         if rec:
             records.append(rec)
     detail["excerpt"] = re.sub(r"\s+", " ", text[:1500])
@@ -680,6 +693,7 @@ HAND_VERIFIED_VERDICTS = {
 def summarise(res, index: FixtureIndex) -> dict:
     recs = res.get("records") or []
     matched, unpriced_hits, samples = 0, 0, []
+    unmatched: list[str] = []
     seen_fixtures = set()
     for rec in recs:
         hit = index.match(rec.get("team_a"), rec.get("team_b"), rec.get("start"))
@@ -693,7 +707,10 @@ def summarise(res, index: FixtureIndex) -> dict:
             if m["id"] in index.unpriced:
                 unpriced_hits += 1
             seen_fixtures.add(m["id"])
-        if len(samples) < 6:
+        else:
+            unmatched.append(f'{rec.get("team_a")} vs {rec.get("team_b")}'
+                             + (f' @ {rec.get("start")}' if rec.get("start") else ""))
+        if len(samples) < 20:
             samples.append({k: rec.get(k) for k in
                             ("team_a", "team_b", "competition", "start", "decimal_a", "decimal_b",
                              "matched_fixture", "note", "url")})
@@ -702,6 +719,9 @@ def summarise(res, index: FixtureIndex) -> dict:
     res["fixtures_matched"] = len(seen_fixtures)
     res["fixtures_matched_and_previously_unpriced"] = unpriced_hits
     res["samples"] = samples
+    # Published so a human can see what a source offered that we could NOT tie to a
+    # fixture, instead of only the rows that matched. Kept bounded.
+    res["records_not_matched"] = unmatched[:20]
     res.pop("records", None)
     sched = res.get("schedule_records") or 0
     if res.get("http_status") == 200 and not unpriced_hits and not recs and sched:
