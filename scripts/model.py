@@ -71,7 +71,17 @@ DEFAULT_ALIASES = {
                 "note": ("Hotspawn expands the 'PVB' tag to defunct Vietnamese team Phong Vũ Buffalo; "
                          "verified Prime League 2nd Division 26-27 Fall participant is PvB (Swiss Team)."),
             }
-        }
+        },
+        "4 Nations 2026 Halloween Heist": {
+            "4 Nations 2026 Halloween Heist": {
+                "canonical": "Inari Esports",
+                "flag": "HOTSPAWN_NAME_COLLISION",
+                "source_url": "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist",
+                "note": ("Hotspawn backend feed carries competition string '4 Nations 2026 Halloween Heist' "
+                         "as team1 for the 2026-10-26 19:00 UTC fixture vs Bulldog Esports; Leaguepedia "
+                         "MatchSchedule confirms the opponent is Inari Esports."),
+            }
+        },
     },
     "market_aliases": {
         "pinnacle": {
@@ -123,6 +133,9 @@ DEFAULT_ALIASES = {
         "Tunisian Super League 2026": "Tunisian Super League/2026 Season",
         "LigaGG CELOL A 2026 Split 2 Playoffs": "LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs",
         "LigaGG CELOL B 2026 Split 2 Playoffs": "LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs",
+        "NLC 2026 Summer": "NLC/2026 Season/Summer Season",
+        "NLC 2026 Summer Playoffs": "NLC/2026 Season/Summer Playoffs",
+        "LFL 2026 Summer": "LFL/2026 Season/Summer Season",
     },
 }
 

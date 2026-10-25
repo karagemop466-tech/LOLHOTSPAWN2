@@ -1121,3 +1121,10 @@ Added to the production probe (so every refresh re-measures them instead of trus
   routes are blocked by an API key (Cloudbet) or client rendering (Betmonitor).
 * **Open item for review:** if Cloudbet or Betmonitor ever list a PRM 2nd/3rd fixture, an adapter is possible, but it
   needs either an API key (forbidden by “no manual input”) or a terms-of-use review before scraping. Neither is done.
+
+---
+
+## 23. Addendum 2026-10-25 — Reason-Tally & Mobile Audit Verification (session `arena/07b651a3`)
+
+Verified the 14:27Z 41-candidate `market_probe` (`18` reachable, `6` structured JSON, `4` with LoL references — zero adding prices outside the 9 covered Worlds + LGC Rising matches) and confirmed all 11 Low-confidence non-market rows (`9` `CROSS_LEAGUE_MODEL` across PRM 2nd Div / Tunisian / 4 Nations + `2` `MODEL_ELO_THIN` in LCP 2027 Promotion) reconcile identically between `unresolved.reasons` and `unresolved.low_confidence_reasons` after fixing `_low_conf_reason(m)` in `scripts/update_picks.py`.
+
