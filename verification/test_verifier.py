@@ -414,6 +414,43 @@ def main() -> int:
         print(f"  [{'ok' if ok else 'FAILED'}] cron {expr!r} -> {got} (want {want})")
         results.append(ok)
 
+    # ---- X1: external-link severity contract -------------------------------
+    # Rule X1 is the only check that can see a dead citation, and it can only see
+    # one from a runner with network. On 2026-10-25 it failed the merged branch on
+    # a single 404 (a Polymarket board URL that returns "Page not found"). Nothing
+    # pinned that 404=FAIL / 403=WARN split, so this does: a sandbox run can never
+    # catch it, and a future edit that softens 404 to WARN would silently ship a
+    # site full of dead links.
+    def external_status(codes):
+        saved_links, saved_fetch = list(vs.EXTERNAL_LINKS), vs.http_status_retry
+        vs.EXTERNAL_LINKS.clear()
+        urls = [f"https://example.test/p{i}" for i in range(len(codes))]
+        vs.EXTERNAL_LINKS.extend(urls)
+        vs.http_status_retry = lambda u, attempts=2: (codes[urls.index(u)], u)
+        try:
+            rep = vs.Report()
+            vs.verify_external(rep)
+            return next(c["status"] for c in rep.checks if c["id"] == "X1")
+        finally:
+            vs.http_status_retry = saved_fetch
+            vs.EXTERNAL_LINKS.clear()
+            vs.EXTERNAL_LINKS.extend(saved_links)
+
+    for label, codes, want in [
+        ("all healthy",            [200, 301, 200],                       "PASS"),
+        ("one 404",                [200, 404, 200],                       "FAIL"),
+        ("one 410 gone",           [200, 410],                            "FAIL"),
+        ("blocked 403 only",       [200, 403],                            "WARN"),
+        ("rate-limited 429 only",  [200, 429],                            "WARN"),
+        ("unreachable (0) only",   [200, 0],                              "WARN"),
+        ("upstream 500 only",      [200, 503],                            "WARN"),
+        ("404 outranks a 403",     [200, 403, 404],                       "FAIL"),
+    ]:
+        got = external_status(codes)
+        ok = got == want
+        print(f"  [{'ok' if ok else 'FAILED'}] X1 {label}: {got} (want {want})")
+        results.append(ok)
+
     print(f"\n{sum(results)}/{len(results)} verifier self-tests passed")
     return 0 if all(results) else 1
 

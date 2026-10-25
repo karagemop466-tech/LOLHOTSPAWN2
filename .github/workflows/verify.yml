@@ -62,6 +62,9 @@ jobs:
       - name: DOM contract negative self-tests (each rule must fail on a broken page)
         run: python3 verification/test_dom_contract.py
 
+      - name: Line-source parser self-tests (OddsDigger prices, guards, fixture matching)
+        run: python3 verification/test_line_probe.py
+
       - name: Cited Leaguepedia source pages must exist (HTTP 200 is not enough)
         run: |
           set +e

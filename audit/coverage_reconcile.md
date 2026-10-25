@@ -1,6 +1,6 @@
 # Hotspawn coverage reconciliation
 
-Generated 2026-10-25T15:01:51.501834Z · payload generated 2026-10-25T15:01:00.334336Z
+Generated 2026-10-25T15:19:08.608506Z · payload generated 2026-10-25T15:18:30.025261Z
 
 | Source | HTTP | Raw rows | LoL fixtures | Future LoL | Already started | Future missing from payload |
 |---|---|---|---|---|---|---|

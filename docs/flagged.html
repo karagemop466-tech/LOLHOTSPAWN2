@@ -392,6 +392,94 @@
   <div class="loading"><span class="spinner"></span>Loading flagged data…</div>
 </main>
 
+  <section id="external-line-found">
+    <h2>External line found on fixtures we price with our model (researched 2026-10-25)</h2>
+    <p class="small">
+      A fresh pass over established LoL betting sites, esportsbooks and esports betting lines found one odds
+      comparison board — <a href="https://oddsdigger.com/e-sports/league-of-legends/upcoming" target="_blank" rel="noopener">OddsDigger's upcoming-LoL board ↗</a>
+      — that publishes a two-way <b>series winner</b> price for two fixtures none of our four production feeds
+      (Pinnacle, Unibet/Kambi, Bovada, Polymarket) price. Every earlier probe reported zero such sources, so this
+      is a change worth reading. Both rows were opened and read by hand on 2026-10-25; the named books on the page
+      are bet365, LuckyMate, Copybet, 10Bet and Spreadex. Prices shown are the best available per side, so the
+      implied probabilities are normalised by their sum rather than de-vigged against a single overround.
+      <b>Neither number is used in any published probability</b> — one of the two rows contradicts independent
+      evidence, and the board was separately caught listing the same Worlds fixture twice with opposite
+      favourites (F24.3), so the source is not promoted. Full write-up:
+      <a href="methodology.html">Methodology</a> (full write-up: <code>research/betting-sources.md</code> §26 in the repository).
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Ref</th><th scope="col">Fixture (as published)</th><th scope="col">OddsDigger line</th><th scope="col">Our published pick</th><th scope="col">Independent cross-check</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td data-label="Ref"><b>F24.1</b></td>
+            <td data-label="Fixture (as published)"><b>Mental Rush vs Vitality Rising Bees</b><br><span class="sub">LGC Rising 2026 Playoffs · 2026-10-27 17:00 UTC · BO5</span></td>
+            <td data-label="OddsDigger line">Vitality Rising Bees 7/17 · Mental Rush 8/5 → <b>64.8% / 35.2%</b><br>
+              <a href="https://oddsdigger.com/e-sports/vitality-rising-bees-vs-mental-rush-23670799" target="_blank" rel="noopener">event page ↗</a></td>
+            <td data-label="Our published pick">Vitality Rising Bees <b>64.5%</b> (MARKET_SINGLE from Polymarket)</td>
+            <td data-label="Independent cross-check">Agrees within 0.3 pts. This row <i>confirms</i> the published pick.</td>
+            <td data-label="Status"><span class="chip green">Corroborated</span> — no change needed</td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>F24.2</b></td>
+            <td data-label="Fixture (as published)"><b>Ground Zero Gaming vs Frank Esports</b><br><span class="sub">LCP 2027 Promotion · 2026-11-11 09:00 UTC · BO5</span></td>
+            <td data-label="OddsDigger line">Ground Zero 1/67 · Frank Esports 22/3 → <b>89.1% / 10.9%</b><br>
+              <a href="https://oddsdigger.com/e-sports/ground-zero-vs-frank-esports-23662613" target="_blank" rel="noopener">event page ↗</a></td>
+            <td data-label="Our published pick">Frank Esports <b>61.7%</b> (MODEL_ELO, Elo 1519 v 1642)</td>
+            <td data-label="Independent cross-check"><b>Direction conflict.</b>
+              <a href="https://egamersworld.com/lol/match/eDTgthgYk/ground-zero-gaming-vs-frank-esports-wvOLKhrveF" target="_blank" rel="noopener">eGamersWorld ↗</a>
+              rates Frank Esports above Ground Zero (530 v 448, 0–4 head-to-head, 7 v 2 wins in the last 10) and shows
+              no live price (1.80 / 1.80 placeholder);
+              <a href="https://rft.gg/match/71696-ground-zero-gaming-vs-frank-esports-2026-11-11" target="_blank" rel="noopener">rft.gg ↗</a>
+              records 0–9 head-to-head for Ground Zero.
+              <a href="https://lol.fandom.com/wiki/PCS/2026_Season/Summer_Season" target="_blank" rel="noopener">Leaguepedia ↗</a>
+              has Frank Esports as PCS 2026 Summer runner-up.</td>
+            <td data-label="Status"><span class="chip red">Needs review</span> — pick left on our model, line published but unused</td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>F24.3</b></td>
+            <td data-label="Fixture (as published)"><b>Top Esports vs G2 Esports</b><br><span class="sub">Worlds 2026 Main Event · 2026-10-25 17:00 UTC — already priced by Pinnacle + Unibet</span></td>
+            <td data-label="OddsDigger line">The board lists this fixture <b>twice, under the same title, with opposite favourites</b>:
+              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672375" target="_blank" rel="noopener">event 23672375 ↗</a> 12/11 v 19/25 → G2 <b>47.8%</b>, but
+              <a href="https://oddsdigger.com/e-sports/g2-esports-vs-topsports-23672755" target="_blank" rel="noopener">event 23672755 ↗</a> 8/11 v 1/1 → G2 <b>57.9%</b>.
+              Both anchors read <i>"G2 Esports vs Topsports betting odds"</i>.</td>
+            <td data-label="Our published pick">G2 Esports <b>54.8%</b> (MARKET_CONSENSUS: Pinnacle 3.06/1.7353 + Unibet 2.08/1.67)</td>
+            <td data-label="Independent cross-check">Our consensus sits between the board's two contradictory entries and agrees with the second. Recorded by the CI probe
+              <code>data/diag/line_probe.json</code> (run 40202775347, checked 2026-10-25T14:37:27Z, HTTP 200, 212 KB, 14 two-way prices read, 9 matched to published fixtures, <b>1</b> of them previously unpriced &mdash; F24.2).</td>
+            <td data-label="Status"><span class="chip amber">Board is internally inconsistent</span> — the reason the source is not trusted automatically</td>
+          </tr>
+          <tr>
+            <td data-label="Ref"><b>F24.4</b></td>
+            <td data-label="Fixture (as published)"><b>A cited source page turned out to be dead</b><br><span class="sub">Polymarket Prime League 1st Division — caught by the merged-branch pipeline, 2026-10-25</span></td>
+            <td data-label="OddsDigger line">The citation
+              <code>https://polymarket.com/esports/league-of-legends/prime-league-1st-division</code> was published on
+              this page asserting a 1st-division board exists. The verifier's link check (rule <b>X1</b>) returned
+              <b>404</b> for it on the CI runner (run 40203644697), and opening it by hand returns Polymarket's own
+              <i>“Page not found”</i> page. Row <b>A12</b> above was corrected for the same 404 independently, in the
+              same session, from the Gamma feed; this row records the second, separate line of evidence below.</td>
+            <td data-label="Our published pick">Not applicable — the citation supported a <i>negative</i> finding (no price for our fixtures), so no
+              pick ever depended on it. No probability changed.</td>
+            <td data-label="Independent cross-check"><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">Polymarket's LoL index ↗</a>
+              (200 OK, checked 2026-10-25) lists exactly two LoL tournaments: <b>LGC Rising (1)</b> and
+              <b>Worlds (8)</b>. There is no Prime League board of any division, which is consistent with our
+              production Polymarket adapter matching only Worlds and Game Changers Rising rows.</td>
+            <td data-label="Status"><span class="chip red">Dead citation removed</span> — the 1st-division claim is now recorded as <b>unverified</b>, and the row links the working index instead</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warnbox" role="note">
+      <b>Why F24.2 did not change the pick.</b> Our cascade lets an external line override the model, but a source
+      earns that only after a sample row is verified by hand. Two rows were available to check: one agrees with our
+      Polymarket-sourced number to within 0.3 points, the other points the opposite way to our Elo <i>and</i> to two
+      independent community sources. One row in two is not enough to let an affiliate-rendered board flip a
+      published pick, so the disagreement is published here for review instead. The same board is now requested on
+      every 6-hour refresh and its measured status is printed on
+      <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a>; its fixture-matched evidence is in
+      <code>data/diag/line_probe.json</code>.
+    </div>
+  </section>
+
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <p class="small">Flagged rows are published transparently, never hidden. Verify any row directly via its linked sources.</p>

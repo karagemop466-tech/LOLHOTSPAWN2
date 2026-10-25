@@ -152,6 +152,23 @@ async function main() {
         whereLinks.includes("picks.html?filter=next24"), whereLinks.join(","));
   check("summary: in-site link to unresolved page", whereLinks.includes("unresolved.html"), whereLinks.join(","));
 
+  // Mobile ordering: on a phone the four pick links must come straight after the
+  // heading. The method glossary used to sit between them and pushed the links
+  // ~14 lines down the screen (audited 2026-10-25 at 390px); it is now collapsed
+  // below them. This assertion fails if anything is re-inserted in front.
+  {
+    const kids = Array.from(idoc.querySelectorAll("#picks-here > *"));
+    const isGlossary = (k) => k.matches(".legend") || !!k.querySelector(".legend");
+    const gi = kids.findIndex((k) => k.classList.contains("linkgrid"));
+    const li = kids.findIndex(isGlossary);
+    check("summary: the pick links come before the method glossary",
+      gi >= 0 && (li < 0 || gi < li),
+      `linkgrid at ${gi}, glossary at ${li}`);
+    check("summary: glossary is collapsed by default (no glossary text above the fold)",
+      li < 0 || (kids[li].tagName === "DETAILS" && !kids[li].hasAttribute("open")),
+      li < 0 ? "no glossary" : kids[li].tagName + (kids[li].hasAttribute("open") ? " open" : " closed"));
+  }
+
   // picks first: the picks table must appear before the per-league table in the DOM
   const order = ["#starting-soon", "#quick-picks-body", "#unresolved-section", "#summary-leagues-body"]
     .map((sel) => idoc.querySelector(sel));
