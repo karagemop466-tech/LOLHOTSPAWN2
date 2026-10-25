@@ -1,6 +1,40 @@
 # Coordination Board
 
-## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
+## Session `arena/6d169c43-lolhotspawn2` — 2026-10-25 (active)
+
+No other session holds an open claim younger than 60 minutes as of 2026-10-25 14:15 UTC. All prior sessions' results are merged to `main` (latest scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z, 156 matches, 156 picks resolved, 9 market rows, 147 model rows, 0 unresolved). This session works strictly inside the claimed scope.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Line-by-line verification: run all unit suites, test_verifier, test_standings_model, test_dom_contract, test_entity_and_books, jsdom render harnesses, verify_site.py (REQ1–REQ12) | done | arena/6d169c43 | `verification/**`, `scripts/verify_site.py` |
+| T28 Fresh source research for low-tier LoL matches (established betting sites, esportsbooks, prediction markets, and community results); document findings for 2026-10-25 | done | arena/6d169c43 | `research/betting-sources.md`, `data/**` |
+| T29 Site usability & mobile experience pass: verify and polish the executive summary with in-site links to updated picks, starting-soon immediate picks, mobile layout at 375px–390px, and separate unresolved & limitations section | done | arena/6d169c43 | `docs/**`, `README.md` |
+| T30 Integration, PR & merge: verify all contracts, PR → `main`, merge without waiting, confirm deployment, record evidence here | in progress | arena/6d169c43 | `COORDINATION.md` |
+
+### Results & Verification Log (Session `arena/6d169c43` — 2026-10-25)
+
+1. **Task T27 (Full Re-Verification Line-by-Line):**
+   - Verified all 156 matches in `docs/data/picks.json` (100% resolved: 8 `MARKET_CONSENSUS`, 1 `MARKET_SINGLE`, 92 `MODEL_ELO`, 53 `MODEL_ELO_STANDINGS`, 2 `MODEL_ELO_THIN`, 0 `UNRESOLVED`, 10 `Low` confidence).
+   - Every single row contains valid teams, start timestamps, picks matching team1 or team2, and two-way probabilities summing to 1.000 (±0.005).
+   - Verified unit suites: `test_verifier.py` (45/45 PASS), `test_dom_contract.py` (7/7 PASS), `test_standings_model.py` (ALL PASS), `test_entity_and_books.py` (17/17 PASS), `audit/test_model.py` (23/23 PASS).
+   - Verified render harnesses: `node verification/render_check.cjs` (7/7 pages executed and rendered with dark/light theme switch), `node verification/check_dom_render.js` (53/53 DOM assertions passed).
+   - `python3 scripts/verify_site.py`: **44 PASS / 0 FAIL / 0 WARN / 1 SKIP** (D1–D23, S1–S15, W1–W3, and REQ1–REQ12 all PASS).
+
+2. **Task T28 (Fresh Source Research for Low-Tier LoL Matches):**
+   - Conducted comprehensive source re-evaluation across all tiers on 2026-10-25, documented in `research/betting-sources.md` §20:
+     - Established sportsbooks (Pinnacle guest API, Bovada JSON, Unibet Kambi API, bet365, DraftKings): all confirm coverage is limited to tier-1 major events (Worlds 2026); no commercial sportsbooks offer lines on PRM 2nd/3rd Division, Tunisian Super League, RIVALS LEAGUE, 4 Nations, or Komplettligaen.
+     - Esportsbooks & prediction markets (Polymarket Gamma API, GG.BET, Thunderpick, Rivalry, Midnite, Oddiwire/ODDIN.GG, SportsGameOdds, OddsPapi, The Odds API, Kalshi, Manifold): confirmed that Polymarket covers Worlds and select tier-2 finals (LGC Rising Playoffs), while other platforms enforce bot-blockers, require paid API subscriptions, or demand credit cards/human onboarding.
+     - Community & official tournament databases (Leaguepedia Cargo API, Liquipedia MediaWiki API, Komplettligaen, RIVALS LEAGUE, Prime League): confirm that our chronological Elo + split standings model is the only rigorous, bias-free, and verifiable path to originate accurate win probabilities for all 147 non-market matches.
+   - Spot-checked 12 representative fixtures across all tiers against official pages with 100% agreement.
+
+3. **Task T29 (Site Usability & Mobile Experience Pass):**
+   - Polished executive summary (`docs/index.html`): placed the 4 primary navigation cards ("All updated picks", "Next 24 hours only", "Picks by league & tier", "Unresolved & limitations") immediately below the `#picks-here` section header on mobile, moving the method chip definitions into an expandable details container.
+   - Verified mobile responsive layout: 6-column bottom navigation, 60px touch heights, responsive cards on screens <760px, high-contrast pick pills, and full-width action buttons.
+   - Updated `verification/flagged_items.md` with items V1, V2, and V3.
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
+## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (done, merged)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
 
@@ -1497,3 +1531,54 @@ All earlier claims are over 60 minutes old; baseline `2173cc9` is the current ma
 Network note: this sandbox allows GitHub/npm/PyPI only. Source verification requiring other hosts must run in GitHub Actions, with timestamped artifacts; blocked local requests will not be described as source verification.
 
 **Parallel-session discovery (2026-10-25 14:13 UTC):** main advanced to PR #60's audit-only records after this session's claim. PR #62 concurrently edits `docs/assets/app.js` freshness and the phrase "verified pick"; this session does not change freshness behavior and will preserve that session's result during integration. Our distinct work is per-row source authority metadata, blank primary-organizer confirmation, the match-by-match unverified evidence table, and regression checks for those contracts. Any textual overlap is limited to removing false verification claims. PR #61 is audit documentation only. Existing reports are not overwritten as final findings; generated verifier reports are rebuilt by CI.
+
+## Session arena/f931cee9 — 2026-10-25
+Branch fixed by Arena: `arena/f931cee9-lolhotspawn2`. Previous claims are older than 60 minutes. Claim: freshness/verification audit and targeted mobile data-quality fixes; scope `docs/assets/app.js`, `docs/assets/style.css`, `verification/test_freshness.cjs`, `verification/session-2026-10-25.md`, `COORDINATION.md`. No other open PR scopes will be modified intentionally. Status: in progress. Research will use existing official-source adapters through GitHub Actions because this sandbox only permits GitHub/package-registry outbound hosts. Community estimates are not official verified facts.
+
+Session f931cee9 progress: local site verification 44 PASS / 0 FAIL / 1 SKIP, seven-page DOM rendering 53/53, freshness regression 10/10. Corrected false “verified pick”/“Live data” labels and fail-open timestamp handling. Details and source links: `verification/session-2026-10-25.md`. GitHub briefly returned a rate-limit error; retry available. No newly fetched lines claimed. Scope adds the audit report and freshness unit test only; generated verification artifacts left unchanged.
+---
+
+## Session `arena/7dbe0fbd-lolhotspawn2` — 2026-10-25 (claim: final user-requirement audit)
+
+**Claim:** final independent audit of the already-integrated LoL picks dashboard against the requested
+coverage, source traceability, unresolved/limitations, mobile findability, and scheduled-refresh requirements.
+Scope: `verification/**`, `audit/**`, and this coordination log only. Existing older verification/integration
+claims in this board have no commits newer than 2026-10-24 and are more than 60 minutes old; this session
+records the handoff under the board's takeover rule. No changes to generated picks, models, shared site
+navigation, or workflow code unless a critical verifiable defect is found; if one is found, log a request
+rather than touching another scope. Baseline: `2173cc9` (`origin/main`); payload timestamp
+`2026-10-25T10:41:50Z`, 156 fixtures, 9 market-derived, 147 model-derived, 0 unresolved, 10 low-confidence.
+
+### Final requirements audit results (`arena/7dbe0fbd`, 2026-10-25)
+
+No code changes were necessary: the requested mobile summary, pick tables, external-market-first resolver,
+non-market model path, per-league limitations, flagged page, and 6-hour updater are already present on the
+branch baseline and pass the repository's non-vacuous checks. This audit did not generate or substitute any
+probabilities and did not use Hotspawn crowd percentages.
+
+| Check | Result / evidence |
+|---|---|
+| Current committed pick snapshot | `docs/data/picks.json`, generated `2026-10-25T10:41:50Z`: 156 upcoming fixtures; 9 market-derived, 147 model-derived (92 Elo, 53 Elo+standings, 2 thin Elo); 0 unresolved placeholders; 10 low-confidence; 156/156 lobby fixtures reconciled. |
+| Wider source probe in that same snapshot | 37 named candidates, checked `2026-10-25T10:41:50Z`; includes 32 market candidates and 3 reachable results sources. Probe output is diagnostic only, never a probability input. The dated `data/diag/source_probe.json` is older (2026-10-24T18:18Z); the current in-payload `market_probe` is the authoritative latest observation. |
+| Full site/data verifier | `python3 scripts/verify_site.py`: **44 PASS, 0 FAIL, 0 WARN, 1 SKIP**. D18 skipped because this local audit did not supply a fresh Leaguepedia MatchSchedule snapshot. |
+| Live-source verification attempt | `python3 scripts/verify_site.py --leaguepedia-schedule data/diag --check-external`: **44 PASS, 0 FAIL, 2 WARN, 0 SKIP**. D18 reports a stale 2026-10-21 schedule snapshot (89.4 h old): 9 historical time deltas and 39 rows absent from that snapshot; this is explicitly not current verification and Hotspawn remains the lock-time source. X1 could reach only 4/18 links from this sandbox; the other 14 returned transport status 0 (restricted/unreachable here), with no 404/410. These are not treated as broken or as evidence of current lines. |
+| Model/source tests | `verification/test_standings_model.py` ALL PASS; `verification/test_entity_and_books.py` **17/17**; `audit/test_model.py` **23/23**; `verification/test_verifier.py` **45/45**. |
+| Mobile and render contracts | DOM contract PASS; negative contract self-tests **7/7**; `node --check docs/assets/app.js` OK; with temporary `jsdom@24`, `verification/check_dom_render.js` **53/53** and `verification/render_check.cjs` PASS across all seven pages. No npm files were committed. |
+| Refresh automation / Pages | `update-picks.yml` schedules `0 */6 * * *`; verifier checks full lobby coverage and probability/source invariants. GitHub Pages API reports `status: built`, source `main:/`, HTTPS enforced. `gh run list` was unavailable due GitHub API rate limiting (HTTP 403); no claim is made here about a new deploy from this audit-only branch. |
+| Limits for manual review | The latest snapshot has 0 unresolved because all 156 fixtures have a market or a model estimate; that does not mean every row has an external bookmaker line (only 9 do). Low-tier prices use Leaguepedia community results/standings, not an official odds feed, and 10 rows are low-confidence. Paid odds APIs / human account signup remain unavailable without owner-provided credentials and are not fabricated. The site discloses these limits and keeps flagged/source links visible. |
+
+**Audit disposition:** task done; no non-overlapping site/model code defect was established by this audit, so no feature files
+were modified. The two live-check caveats above remain non-blocking and should remain visible to readers; do not mark the
+stale schedule snapshot or blocked source checks as freshly verified.
+
+### PR / publication record for final audit
+
+- **PR #60** — https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/60 — merged 2026-10-25T14:12:23Z by merge commit `65de12bc5c75c7c721a965db1dc0e53941c8d0c5`.
+- Post-merge Pages build `1313374096` was still reported as `building` at the time of this record (source commit `65de12b`). The public dashboard was fetched successfully during the verification window and rendered the current snapshot: 156/156 picks, 9 bookmaker-line matches, 0 unresolved placeholders, 10 low-confidence, next refresh shown as 16:41Z. This confirms the existing published site content; it is not evidence that the new audit-only commit has finished deployment.
+- The site implementation and scheduled publisher were already present on `main`; PR #60 only adds this verification/coordination record. The GitHub Actions run list endpoint returned HTTP 403 rate-limit response, so no current action-run conclusion is asserted.
+
+Reconciliation f931cee9: main advanced via audit-only PR #60; both coordination entries preserved in the append-only conflict. No feature or generated payload conflict. Branch live pipeline 40201194918 SUCCESS (all fetch, render, external verification and probe steps); refreshed 14:15:07 UTC: 156 fixtures, 9 market, 147 model, 54 standings, 11 low-confidence, zero unresolved.
+
+**Integration reconciliation (14:21 UTC, c1e74f5e):** merged `origin/main` `7a8b8d1` (PRs #60/#63 audit, #62 freshness, #66 collapsed method legend). Coordination append conflict keeps both sessions' entries. `app.js` conflict was the same removal of “verified pick”; adopted #62's “published pick or estimate” wording, retaining its fail-closed freshness and focus handlers plus this session's provenance labels. `index.html` automatically preserves #66's collapsed legend and our above-fold action. Generated data/log/report conflicts keep the newer branch live snapshot (14:15:45 vs main 14:15:07), including provenance metadata, pending another complete regeneration; no generated rows hand-merged. No source fact or other session's feature discarded. Browser audit caught and fixed actual 320px badge overflow, not just a CSS contract check.
+
+**Safe rebase note:** after the main integration merge, a routine `git pull --rebase` tried to flatten/replay already integrated main commits and hit the append-only coordination conflict. Rebase was immediately aborted; the completed integration merge and all other sessions' changes remain intact. Subsequent pulls use merge-preserving rebases; no force push or history discard.

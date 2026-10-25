@@ -84,6 +84,17 @@ def main() -> int:
     bad = copy.deepcopy(r); del bad["verification"]
     results.append(assert_status(run([bad], evidence_policy=policy), "D24", vs.FAIL, "missing row verification metadata"))
 
+    r = copy.deepcopy(BASE_ROW)
+    r["market"] = {"sources": [{"source": "Pinnacle", "source_key": "pinnacle",
+        "decimal_team1": 2., "decimal_team2": 2., "prob_team1": .5}], "consensus_team1": .5}
+    results.append(assert_status(run([r]), "D25", vs.PASS, "no-vig arithmetic"))
+    bad = copy.deepcopy(r); bad["market"]["sources"][0]["decimal_team1"] = 3.
+    results.append(assert_status(run([bad]), "D25", vs.FAIL, "decimal odds do not reproduce probability"))
+    bad = copy.deepcopy(r); bad["market"]["consensus_team1"] = .7
+    results.append(assert_status(run([bad]), "D25", vs.FAIL, "consensus does not reproduce source values"))
+    bad = copy.deepcopy(r); bad["market"]["sources"][0]["decimal_team1"] = None
+    results.append(assert_status(run([bad]), "D25", vs.PASS, "absent decimal odds never fabricated"))
+
     # pick not one of the teams
     r = copy.deepcopy(BASE_ROW); r["pick"] = "Team C"
     results.append(assert_status(run([r]), "D3", vs.FAIL, "bad pick"))

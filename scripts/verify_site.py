@@ -582,6 +582,12 @@ def verify_data(rep: Report, payload, path: str, max_age_hours: float) -> list[d
         rep.add("D24", "estimates are distinguished from official results verification", SKIP,
                 "legacy payload; next refresh adds provenance metadata")
 
+    from provenance import market_arithmetic_errors
+    arithmetic_errors = market_arithmetic_errors(rows)
+    rep.add("D25", "saved decimal prices reproduce no-vig probabilities and consensus",
+            FAIL if arithmetic_errors else PASS,
+            "Recomputed from saved values only, not a current quote or outcome guarantee", arithmetic_errors)
+
     unresolved = actual["UNRESOLVED"]
     # D13 tests *evidence sufficiency*, not whether a genuine match is close to 50/50.
     def lacks_evidence(r):
