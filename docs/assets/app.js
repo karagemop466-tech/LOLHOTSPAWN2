@@ -93,7 +93,12 @@
   function pickPill(m) {
     const tone = m.method === "UNRESOLVED" ? "red" : (m.confidence === "Low" ? "amber" : "");
     const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
-    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
+    // Use the exact displayed side of pctPair rather than independently
+    // rounding pick_prob; otherwise a half-tenth tie can show (e.g.) 56.3%
+    // beside the selected team but 56.4% in the pick pill.
+    const pair = pctPair(m.prob_team1);
+    const pickPct = m.pick === m.team1 ? pair[0] : m.pick === m.team2 ? pair[1] : pct1(m.pick_prob);
+    return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pickPct}</span>`;
   }
 
   function matchCard(m, opts = {}) {
