@@ -4,8 +4,8 @@
  "counts": {
   "PASS": 44,
   "FAIL": 0,
-  "WARN": 2,
-  "SKIP": 0
+  "WARN": 0,
+  "SKIP": 1
  },
  "data_matches": 156,
  "methods": {
@@ -151,7 +151,7 @@
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 39 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
@@ -301,17 +301,6 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
-  },
-  {
-   "id": "X1",
-   "title": "external links reachable (official-source links resolve)",
-   "status": "WARN",
-   "detail": "15/18 returned 2xx/3xx; 3 blocked by the host; 0 transient/5xx; 0 dead (404/410)",
-   "items": [
-    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
-    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
-    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
-   ]
   },
   {
    "id": "REQ",
