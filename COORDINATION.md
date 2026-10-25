@@ -1,5 +1,24 @@
 # Coordination Board
 
+## Session `arena/0e9a9550-lolhotspawn2` — 2026-10-25 14:52 UTC (continuation claim; PR #71 merged)
+
+PR #71 is merged into `main` (`9714344`, 14:36:36Z). The `Verify picks and site` workflow on `main` is **red**, and has
+been since `331e753` (14:26Z): only the step *"Verify external source links and the live Pages deployment"* fails, and
+because it sits in the middle of the job, steps 8–12 (coverage audit, DOM contract, DOM negative tests, cited-page
+existence, jsdom render checks) are **skipped** — so the checks that protect the site never run on `main` while the
+network step is red. This session continues on the same branch and takes only the scope below.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T41 CI reliability and failure diagnostics: make the network-dependent verification run **last** so an upstream hiccup can never skip the offline coverage/DOM/render checks, and make every non-PASS rule self-explaining in CI (check annotations + job summary) instead of a bare exit 1 | in progress | arena/0e9a9550-lolhotspawn2 | `.github/workflows/verify.yml`, `scripts/verify_site.py` (report/annotation writers and the X1/X2 section only), `verification/test_verifier.py` (new tests only) |
+| T42 Root-cause the red external-link check and fix it at the source (dead/incorrectly-cited link on the site) rather than loosening the rule | in progress | arena/0e9a9550-lolhotspawn2 | `docs/**` (only rows whose cited link 404s), `scripts/verify_site.py` |
+| T43 Integration: local re-verification, live pipeline run on this branch, PR → `main`, merge without waiting for approval, confirm the Pages deploy and a green verify run, record PR + merge + run ids here | in progress | arena/0e9a9550-lolhotspawn2 | `COORDINATION.md`, generated artifacts |
+
+No other session's claim names `.github/workflows/verify.yml`; `scripts/verify_site.py` is edited additively (new
+writers + new tests, existing rule ids S15/S16/S17/S18/S19/D*/X* untouched) so any parallel branch merging later keeps
+both sides. Anything outside this scope is logged here as a request instead of edited.
+
+
 ## Session `arena/0e9a9550-lolhotspawn2` — 2026-10-25 (claim, pushed before work)
 
 No other session has an active claim on the files below as of 2026-10-25 14:15 UTC: the newest board entry
