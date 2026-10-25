@@ -391,6 +391,50 @@
       </tr>`).join("");
     }
 
+    // Non-featured matches: the ones that cannot be priced the way a featured pick is.
+    // One row per competition, showing what the pick is built on and the evidence page.
+    const nfCounts = $("#nonfeatured-counts");
+    if (nfCounts) {
+      const noLine = all0.filter((m) => !m.market);
+      const nfElo = noLine.filter((m) => m.method === "MODEL_ELO" || m.method === "MODEL_ELO_THIN").length;
+      const nfSt = noLine.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length;
+      const nfPrior = noLine.filter((m) => m.method === "MODEL_LEAGUE_PRIOR").length;
+      const nfUnres = noLine.filter((m) => m.method === "UNRESOLVED").length;
+      const nfLow = noLine.filter((m) => m.confidence === "Low").length;
+      nfCounts.innerHTML = `
+        <div><b>${noLine.length}</b><span>matches without a book line</span></div>
+        <div><b>${nfElo}</b><span>priced by our Elo model</span></div>
+        <div><b>${nfSt}</b><span>Elo blended with split standings</span></div>
+        <div class="${nfUnres ? "bad" : "good"}"><b>${nfUnres}</b><span>explicit 50/50 (never an edge)</span></div>
+        <div class="${nfLow ? "" : "good"}"><b>${nfLow}</b><span>capped at Low confidence</span></div>`;
+      const mktEl = $("#nonfeatured-mkt-count");
+      if (mktEl) mktEl.textContent = String(all0.filter((m) => m.market).length);
+    }
+    const nfBody = $("#nonfeatured-body");
+    if (nfBody) {
+      const withLine = lbs.filter((lb) => lb.market < lb.fixtures);
+      nfBody.innerHTML = withLine.length ? withLine.map((lb) => {
+        const ms = all0.filter((m) => (m.tournament || "Unknown competition") === lb.tournament);
+        const low = ms.filter((m) => m.confidence === "Low").length;
+        const high = ms.filter((m) => m.confidence === "High").length;
+        const conf = lb.unresolved === lb.fixtures ? "Unresolved (50/50 placeholder)"
+          : [low ? `${low} low` : "", high ? `${high} high` : "",
+             (ms.length - low - high) ? `${ms.length - low - high} medium` : ""].filter(Boolean).join(" · ") || "—";
+        const built = [lb.elo ? `Elo on recorded series (${lb.elo})` : "",
+                       lb.standings ? `split standings blend (${lb.standings})` : "",
+                       lb.league_prior ? `competition prior (${lb.league_prior})` : "",
+                       lb.unresolved ? `explicit 50/50 (${lb.unresolved})` : ""].filter(Boolean).join(" + ") || "—";
+        return `<tr>
+          <td data-label="Competition"><a class="rowlink" href="picks.html?tournament=${encodeURIComponent(lb.tournament)}"><b>${esc(lb.tournament)}</b></a><span class="sub">${esc(lb.category)}</span></td>
+          <td data-label="Fixtures"><b>${lb.fixtures}</b><span class="sub">${lb.fixtures - lb.market} without a book line</span></td>
+          <td data-label="With a book line">${lb.market}</td>
+          <td data-label="Our line built from" class="small">${esc(built)}</td>
+          <td data-label="Confidence" class="small">${esc(conf)}</td>
+          <td data-label="Source">${leagueSourceLinks(lb)}</td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="6">Every match in this snapshot has an external bookmaker line.</td></tr>`;
+    }
+
     const nowMs = Date.now();
     const next = (d.matches || [])
       .filter((m) => new Date(m.start_utc).getTime() >= nowMs - 300000)

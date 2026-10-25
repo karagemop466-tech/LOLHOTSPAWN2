@@ -168,6 +168,19 @@ p { margin: 8px 0; }
 .btn.danger { background: var(--red-soft); color: var(--red); border-color: color-mix(in srgb, var(--red) 30%, transparent); }
 .btn:active { transform: translateY(1px); }
 
+/* quick-jump bar — sits below the sticky header (not inside it, so it cannot eat
+   a phone screen), identical on every page, one tap to the lists people open */
+.jumpbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+.jumpbar .inner { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 9px; scrollbar-width: none; }
+.jumpbar .inner::-webkit-scrollbar { display: none; }
+.jumpbar a {
+  white-space: nowrap; display: inline-flex; align-items: center; min-height: 42px; padding: 9px 14px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text);
+  text-decoration: none; font-size: 13.5px; font-weight: 800;
+}
+.jumpbar a.hot { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+.jumpbar a:active { transform: translateY(1px); }
+
 /* stat grid */
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
 @media (min-width: 700px) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -428,4 +441,22 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
 @media (max-width: 560px) {
   .legend { grid-template-columns: 1fr; gap: 2px; }
   .legend-t { margin: 0 0 8px; }
+}
+
+/* phone readability pass (2026-10-25): the pick is the reason the page exists, so on
+   a narrow screen it gets the largest type on the card and the probabilities stay
+   on one line each, with the tap targets kept at >= 44px. */
+@media (max-width: 560px) {
+  .match { padding: 13px; }
+  .match .teams { font-size: 17px; }
+  .match .pick-pill { font-size: 15px; padding: 9px 12px; display: inline-block; }
+  .match .pick-pill b, .match .pick-pill .p { font-size: 17px; }
+  .match .probrow { font-size: 13px; gap: 4px; }
+  .match .probrow b { font-size: 15px; }
+  .match .evidence { font-size: 12px; }
+  .jumpbar a { min-height: 44px; }
+  .linkcard { min-height: 76px; }
+  h2 { font-size: 20px; }
+  .stats-mini { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats-mini b { font-size: 22px; }
 }
