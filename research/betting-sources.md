@@ -956,3 +956,19 @@ is what the page actually rendered (quoted where it was a sentence).
    (Leaguepedia `MatchSchedule`) and current-split standings, published with a method chip, a confidence label and
    per-row source links, and listed together with their limits on the site's separate
    *Unresolved picks, matches without a betting line & limitations* section.
+
+### 20.5 What the same refresh measured from CI (accepted, recorded, non-blocking)
+
+The branch pipeline run that published the 2026-10-25T14:13Z payload probed all **42** candidates. Observed statuses for
+the five sources added above: **Cloudbet LoL hub 200, Cloudbet Prime League 2nd Division 200, OddsPortal Prime League 200,
+bmbets Prime League 2nd Division 200, Rainbet LoL 200** — every one "reachable HTML only, no structured per-match prices
+parsed". Two notes, both recorded rather than assumed:
+
+1. **Rainbet answered 200 from the CI runner while this workspace got the geo-interstitial.** The response was HTML with no
+   structured prices in either case, so the verdict (nothing usable) is the same; the status difference is a transport
+   artefact and is quoted as such in `checked_unavailable` instead of being smoothed over.
+2. **OddsPortal returned 200 today, where a 2026-10-23 probe had recorded 503.** The `checked_unavailable` row now states
+   both observations and keeps the conclusion unchanged: the page has no upcoming Prime League line to read.
+
+After the run: **156 fixtures, 156 priced, 9 from external lines, 147 from the model, 0 unresolved, 11 Low confidence**;
+`verify_site.py` 44 PASS / 0 FAIL / 0 WARN, DOM render 56/56, DOM contract PASS, render_check PASS.

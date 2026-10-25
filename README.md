@@ -29,8 +29,9 @@ Rows are priced in a strict 5-tier cascade:
 4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one team lacks both match history and split standings; the competition median/tier prior is substituted, shrunk toward 50/50 and capped at Low confidence.
 5. **Unresolved (`UNRESOLVED`)** — neither external lines nor recorded team/standings evidence exist: published strictly as an explicit `50.0% / 50.0%` placeholder on its own Unresolved & Limitations page (including a per-league table of which signal prices each league). Never an edge.
 
-Every refresh also re-requests a fixed list of 22 established sportsbooks, esportsbooks, exchanges,
-odds aggregators, prediction markets and community/official result pages **once each** and publishes
+Every refresh also re-requests a fixed list of 42 candidate sources — 37 sportsbooks, esportsbooks,
+exchanges, odds aggregators and prediction markets plus 5 community/official result pages — **once each**
+(`scripts/source_probe.py`) and publishes
 exactly what they returned (`market_probe`: HTTP status, JSON or HTML, and whether any League of Legends
 match market was visible). That is reachability evidence only — no probed value is ever used in a
 probability, and the sources needing API keys are recorded as such instead of guessed at.
@@ -90,7 +91,7 @@ explicitly with in-site links to those lists.
 | Polymarket Gamma API | Public prediction-market reference probabilities | https://gamma-api.polymarket.com |
 | Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) — page-prefix probe fixed 2026-10-24 | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
-| External-source probe (22 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
+| External-source probe (42 candidates: 37 market + 5 results, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
 
 ## Local verification
 
