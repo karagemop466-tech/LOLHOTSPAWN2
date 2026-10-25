@@ -54,6 +54,14 @@
     with Hotspawn's backend fixtures feed (<code>/api/v1/fixtures</code>) every 6 hours via GitHub Actions cron (<code>0 */6 * * *</code>).
     Cancelled or withdrawn upstream rows are excluded from pricing and audited on <a href="flagged.html#excluded">Flagged for review</a> (check D21).
     Exact UTC timestamps come directly from millisecond epoch fields.</p>
+    <p class="small"><b>Start times are shown exactly as Hotspawn's feed reports them</b>, because that feed is
+    what sets the Pick'em lock. Other sources sometimes give a different time for the same fixture; rather than
+    silently choosing one, every row like that is marked <b>⏱</b> and its match page lists the time reported by
+    <b>each</b> source (Hotspawn, Leaguepedia, and every book that priced it) with links. Measured 2026-10-25: of
+    156 fixtures, 10 carried <span class="flag">START_TIME_MISMATCH</span> (Hotspawn vs Leaguepedia) and 2 of
+    those also disagreed with the bookmakers. Example — <i>Top Esports vs G2 Esports</i>: Hotspawn feed 17:00 UTC,
+    Pinnacle 18:15 UTC, Bovada 18:00 UTC, Unibet 17:00 UTC, Polymarket 00:00 UTC the next day, Leaguepedia 18:00 UTC.
+    The disagreement is a data-quality limit of the upstream feeds, not an estimate of ours.</p>
   </section>
 
   <section class="card">
@@ -249,6 +257,24 @@
             <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/39988004265" target="_blank" rel="noopener">verify workflow ↗</a></td>
             <td>PASS · 36 pass · 0 fail · 0 warn · 1 skip</td>
             <td><span class="chip green">Pass</span></td>
+          </tr>
+          <tr>
+            <td><b>2026-10-25 re-check.</b> <i>Top Esports vs G2 Esports</i> — published pick G2 Esports 54.8% (<code>MARKET_CONSENSUS</code>, payload generated 2026-10-25 10:41Z)</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends/worlds/lol-tes-g2-2026-10-25" target="_blank" rel="noopener">Polymarket event ↗</a> · <a href="https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816" target="_blank" rel="noopener">Hotspawn match page ↗</a></td>
+            <td>Read 2026-10-25 14:0x UTC: Polymarket quoted <b>Top Esports 48¢ / G2 Esports 53¢</b> (47.5% / 52.5% de-vigged); the four book lines stored in the payload are Pinnacle 44.55%, Unibet 44.15%, Bovada 45.92%, Polymarket 47.50% for Top Esports, and the published consensus 45.24% sits inside that range. The Hotspawn page confirmed both teams and the tournament but showed <b>18:00</b> as the start time against the feed's 17:00 — recorded as an irregularity, not corrected by hand.</td>
+            <td><span class="chip green">Matches</span> <span class="chip amber">time differs</span></td>
+          </tr>
+          <tr>
+            <td><b>2026-10-25 re-check.</b> Seven PRM 2nd Division fixtures (Babos Gaming vs Hannover 16:00Z, Reveal vs AceGaming 16:00Z, 404 vs VfB 18:30Z, Locked IN vs DKB 18:30Z, DKB vs PvB 17:00Z on 27 Oct, No Need Orga vs AceGaming 17:00Z, Hannover vs No Need Orga 19:30Z)</td>
+            <td><a href="https://www.hotspawn.com/league-of-legends/tournament/prm-2nd-division-26-27-fall" target="_blank" rel="noopener">Hotspawn PRM 2nd Division fixtures (times printed in UTC) ↗</a></td>
+            <td>Every one of the seven payload timestamps equals the UTC time printed on Hotspawn's own tournament page, checked 2026-10-25.</td>
+            <td><span class="chip green">7/7 match</span></td>
+          </tr>
+          <tr>
+            <td><b>2026-10-25 re-check.</b> Low-tier rows priced without a book line (147 of 156 fixtures)</td>
+            <td><a href="unresolved.html#sources-checked">every source tried, with status ↗</a> · <a href="https://cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events" target="_blank" rel="noopener">Cloudbet PRM 2nd Division ↗</a> · <a href="https://www.bmbets.com/e-sports/world/lol---prime-league/" target="_blank" rel="noopener">bmbets PRM comparison ↗</a></td>
+            <td>Re-read 2026-10-25: Cloudbet's own PRM 2nd Division page said "No Prime League 2nd Division events available"; bmbets' LoL index listed only Worlds, LCP and Game Changers Rising; Betmonitor's PRM comparison returned no LoL row. No book line exists to use, so the pick stays model-derived and is labelled as such.</td>
+            <td><span class="chip amber">No line found</span></td>
           </tr>
           <tr>
             <td>Top Esports vs Anyone's Legend — consensus 0.365 for Top Esports (payload generated 2026-10-24 15:28Z)</td>
