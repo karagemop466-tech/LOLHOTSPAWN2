@@ -31,10 +31,23 @@ bands: Medium 121, High 15, Low 11. Other flags present: `TIER_UNVERIFIED` 108,
 
 **Result: 0 of 147 fixtures have a published bookmaker line on any source measured today.**
 
-The same scope was recomputed against the newer payload `2026-10-25T15:32:40Z` published while this
-sweep was being written: 147 unpriced rows, 105 team names and the same per-competition counts, so
-the table above is not a stale snapshot. `scripts/audit_rows.py` re-audited that newer payload to
-**20 PASS · 0 FAIL · 0 WARN · 1 INFO over 156 rows**.
+The table above is the `14:29:06Z` snapshot this pass was written against, and the lobby keeps
+moving as fixtures start, so the scope was recomputed against the two refreshes that landed while it
+was being written:
+
+| Payload | Upcoming rows priced | Rows with no book line | Team names | Competitions | Lobby reconciliation |
+|---|---:|---:|---:|---:|---|
+| `2026-10-25T14:29:06Z` | 156 | 147 | 105 | 10 | 234 = 156 + 78 |
+| `2026-10-25T15:32:40Z` | 156 | 147 | 105 | 10 | 234 = 156 + 78 |
+| `2026-10-25T17:03:55Z` | 139 | 131 | 105 | 10 | 234 = 139 + 95 |
+
+The 17:03Z drop is 17 fixtures that started or finished (PRM 3rd 59 → 50, PRM 2nd 36 → 34,
+Tunisian 20 → 15, and the Invictus Gaming vs Hanwha Life market row left the upcoming list), not a
+coverage regression: `coverage_reconciliation` still shows an empty difference list in both
+directions, and 234 lobby fixtures are still fully accounted for. `scripts/audit_rows.py` re-audited
+**all three** payloads clean — 20 PASS · 0 FAIL · 0 WARN · 1 INFO over 156, 156 and 139 rows
+respectively. The sweep itself asks about whatever the current payload holds, so its own artifact
+from the 17:02:20Z CI run records 147 unpriced fixtures and 102 scanned names.
 
 ---
 

@@ -2320,3 +2320,23 @@ logged here as a request instead of being edited.
   `verification/report.json` / `last_report.md` were deliberately **not** committed: this sandbox has no route to the
   internet, so a local run cannot perform X1 and its report would omit exactly the check that matters here. CI
   regenerates both with `--check-external`.
+
+### T47 — CI results on this branch, and the third payload
+
+| Run | Commit | Result |
+|---|---|---|
+| [Pipeline test 40214473175](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473175) | `00caae8` | **success** — `verify_site.py --check-external` **52 PASS · 0 FAIL · 1 WARN · 0 SKIP**; the single WARN is X1 reachability with **0 dead links** (8 hosts blocked automated requests: `lol.fandom.com` 403 ×6, `oddsportal.com` 503). The 404 that made `main`'s committed report say FAIL is gone. Live pipeline, jsdom render checks and all unit suites ran green. |
+| [Row audit & low-tier sweep 40214473210](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473210) | `00caae8` | **success** — first live measurement of the new sweep: **19 candidates · 7 HTTP 200 · 0 readable two-way prices · 0 matches against the 147 unpriced fixtures · 102 team names scanned**. Artifacts committed back to this branch as `30f6d04`. |
+| [Line-source probe 40214473223](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473223) | `00caae8` | **success** (`14e3d00`). |
+
+* The branch pipeline also regenerated the payload: **`2026-10-25T17:03:55Z`, 139 upcoming fixtures · 8 market rows ·
+  131 model rows · 0 unresolved · 18 cancelled excluded · lobby reconciliation 234 = 139 + 95 with both difference
+  lists empty**. 17 fixtures left the upcoming list because they started or finished (PRM 3rd 59 → 50, PRM 2nd 36 → 34,
+  Tunisian 20 → 15, and the Invictus Gaming vs Hanwha Life market row), not because coverage regressed.
+* `scripts/audit_rows.py` re-run on that payload: **20 PASS · 0 FAIL · 0 WARN · 1 INFO over 139 rows** (INFO = R11,
+  94 rows with Hotspawn's placeholder tier). Three consecutive payloads — 156, 156 and 139 rows, four books then three
+  then three — audit clean with no change to the auditor, which is the point of the exercise.
+* **Push races (logged, nothing discarded):** two `git push` attempts were rejected non-fast-forward because CI had
+  committed artifacts to this branch in between (`9936e5a pipeline: test run [skip ci]`, `14e3d00 diag: line-source
+  probe [skip ci]`, plus their merge commits). Each was resolved with `fetch` → `rebase` → `push`; no CI artifact and no
+  other session's work was overwritten. `verification/report.json` / `last_report.md` keep CI's versions.
