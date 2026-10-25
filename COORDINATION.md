@@ -1,5 +1,16 @@
 # Coordination Board
 
+## Session `arena/6e003eec-lolhotspawn2` — 2026-10-25 (claim)
+
+No other session holds an open claim younger than 60 minutes; `main` is at `2173cc9` (scheduled refresh 2026-10-25T10:41:50Z, 156 fixtures / 156 resolved). This session works only inside its claimed scope; any conflict is logged here instead of edited.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T25 Verification pass: run every local suite (`verify_site.py`, `test_verifier.py`, `test_entity_and_books.py`, `test_standings_model.py`, `audit/test_model.py`, DOM contract), reconcile the published payload against Hotspawn's own counts, spot-check priced rows against their cited sources | in progress | arena/6e003eec | `verification/**`, `audit/**` (fixes only when a check is wrong) |
+| T26 Fresh pick-source research for fixtures with no book line (established LoL books → esportsbooks → esports betting lines → community), with link-verified results in the research log; add any usable source to the probe list | in progress | arena/6e003eec | `research/betting-sources.md`, `scripts/probe_sources.py`, `scripts/source_probe.py` |
+| T27 Mobile usability pass: phone-first executive summary with in-site links to the picks list, separate unresolved/limitations section in the summary, 390 px readability, no horizontal scroll on tables | in progress | arena/6e003eec | `docs/**` |
+| T28 Integration: run the live pipeline on this branch, re-verify combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge + deploy here | in progress | arena/6e003eec | `COORDINATION.md`, `docs/data/picks.json` (generated), `.github/workflows/**` |
+
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
