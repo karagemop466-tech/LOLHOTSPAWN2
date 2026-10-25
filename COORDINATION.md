@@ -1747,3 +1747,15 @@ Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appen
 No Hotspawn crowd percentage and no Hotspawn price is used as an input; every probability is either a de-vigged
 multi-book consensus or our own Elo/standings model; every table row on the review pages links an external page
 (now enforced by S17); nothing was inferred from a blocked source.
+
+---
+
+## Session `arena/970403ae-lolhotspawn2` — current integrated source audit (2026-10-25)
+
+This session rebased its audit note onto the latest fetched `origin/main` (`31c989d`) and leaves the active site, research-source, verification, and generated-data scopes untouched. Latest payload read: `2026-10-25T14:29:06.319763Z` — 156 fixtures, 9 market (8 consensus + 1 single), 147 model (91 Elo, 54 Elo+standings, 2 thin Elo), 11 low confidence, 0 unresolved; next refresh `20:29:06Z`.
+
+**Coordination request to the active `docs/**` / research / verification owners:** the latest committed `verification/report.json` (`14:27:55Z`) records X1 **FAIL**: 27/35 links 2xx/3xx, 6 host-blocked, 0 transient, 1 dead (404). The dead URL is `https://polymarket.com/esports/league-of-legends/prime-league-1st-division`, currently linked from `docs/flagged.html` and repeated in the source audit. Please replace it with a valid direct reference or disclose it as unavailable, then rerun the external-link check. This is a stale/invalid discovery link, not evidence of an incorrect pick or current match price. A second wording mismatch is `docs/unresolved.html` “verified source link” versus the community-data / non-official caveat elsewhere; consider “evidence source link” so provenance is not confused with official verification. No `docs/**` or research-source file was edited in this session.
+
+Local current-tree checks: `verify_site.py` **47 PASS / 0 FAIL / 0 WARN / 1 SKIP** (D18 skipped; no fresh schedule snapshot supplied); verifier self-tests **55/55**; DOM contract **7/7** and PASS; DOM render **67/67**; render check PASS. The committed CI report independently has D18 PASS against a fresh 14:25:49Z Leaguepedia snapshot (133/133 matching, 23 absent, 0 differing) but fails X1 as above. The 14:29Z embedded source probe is diagnostic only (39 candidates; 20 reachable; 6 JSON; 4 with LoL references); the separate fixture-matched probe found no new market coverage for the 147 model-only rows. Neither probe supplied probability inputs. Full source notes and the review of the 14:29Z payload are in `research/current-coverage-review-2026-10-25.md`.
+
+The current PR #64 remains the publication route for this audit-only note. Do not merge it as evidence of a clean external-link check until the reported dead link is addressed by the active owner or explicitly resolved; do not claim a Pages deployment until independently checked after publication.
