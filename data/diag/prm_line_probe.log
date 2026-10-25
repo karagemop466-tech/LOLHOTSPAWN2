@@ -1,0 +1,23 @@
+[2026-10-25T14:09:51+00:00] Cloudbet public sports API (sport index) -> HTTP 401 tokens=0 odds_near_team=0
+[2026-10-25T14:09:51+00:00] Cloudbet public sports API (LoL competitions) -> HTTP 401 tokens=0 odds_near_team=0
+[2026-10-25T14:09:51+00:00] Cloudbet — Prime League 2nd Division category page -> HTTP 200 tokens=14 odds_near_team=1
+[2026-10-25T14:09:53+00:00] BMBets — LoL Prime League 2nd Division -> HTTP 200 tokens=8 odds_near_team=0
+[2026-10-25T14:09:54+00:00] BMBets — LoL Prime League (1st Division) -> HTTP 200 tokens=8 odds_near_team=0
+[2026-10-25T14:09:55+00:00] Betmonitor — Prime League 2nd Division comparison -> HTTP 200 tokens=13 odds_near_team=1
+[2026-10-25T14:09:56+00:00] Betmonitor — esports hub -> HTTP 200 tokens=13 odds_near_team=1
+[2026-10-25T14:09:56+00:00] Tipico (DE) esports -> HTTP 200 tokens=11 odds_near_team=0
+[2026-10-25T14:09:57+00:00] NEO.bet (DE) esports -> HTTP 403 tokens=0 odds_near_team=0
+[2026-10-25T14:09:57+00:00] bwin (DE) esports -> HTTP 403 tokens=0 odds_near_team=0
+[2026-10-25T14:09:57+00:00] bet365 (DE) esports -> HTTP 403 tokens=0 odds_near_team=0
+[2026-10-25T14:09:58+00:00] Everygame esports LoL -> HTTP 404 tokens=0 odds_near_team=0
+[2026-10-25T14:09:58+00:00] eGamersWorld LoL odds board -> HTTP 403 tokens=0 odds_near_team=0
+[2026-10-25T14:10:09+00:00] EsportBet LoL board -> HTTP 200 tokens=18 odds_near_team=1
+[2026-10-25T14:10:10+00:00] Strafe LoL odds -> HTTP 200 tokens=7 odds_near_team=1
+[2026-10-25T14:10:11+00:00] 1xBet LineFeed (esports, sport=3) -> HTTP 203 tokens=0 odds_near_team=0
+{
+ "sources_probed": 16,
+ "reachable_200": 8,
+ "naming_our_fixtures": 8,
+ "with_odds_near_a_team_token": 5,
+ "conclusion": "Some sources returned odds-like numbers next to our team names; each sample must be verified by hand before use."
+}
