@@ -1,31 +1,31 @@
 {
- "verified_at": "2026-10-25T14:31:46.148772+00:00",
- "status": "PASS",
+ "verified_at": "2026-10-25T14:36:40.304960+00:00",
+ "status": "FAIL",
  "counts": {
-  "PASS": 44,
-  "FAIL": 0,
+  "PASS": 45,
+  "FAIL": 1,
   "WARN": 0,
-  "SKIP": 1
+  "SKIP": 0
  },
  "data_matches": 156,
  "methods": {
+  "MODEL_ELO": 91,
   "MODEL_ELO_THIN": 2,
-  "MARKET_SINGLE": 1,
-  "MARKET_CONSENSUS": 8,
-  "MODEL_ELO": 92,
-  "MARKET_POLYMARKET": 0,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO_STANDINGS": 53,
-  "UNRESOLVED": 0,
   "MODEL_STANDINGS": 0,
-  "MARKET_BOOKS": 0
+  "UNRESOLVED": 0,
+  "MARKET_CONSENSUS": 9,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO_STANDINGS": 54,
+  "MARKET_BOOKS": 0,
+  "MARKET_SINGLE": 0,
+  "MARKET_POLYMARKET": 0
  },
  "checks": [
   {
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "156 matches, generated_at=2026-10-25T10:41:50.709986Z (3.8h old)"
+   "detail": "156 matches, generated_at=2026-10-25T14:36:13.336490Z (0.0h old)"
   },
   {
    "id": "D2",
@@ -145,19 +145,19 @@
    "id": "D22",
    "title": "external-source probe rows are sourced and never carry a probability",
    "status": "PASS",
-   "detail": "37 probed source(s), each with an https link, HTTP status and verdict"
+   "detail": "53 probed source(s), each with an https link, HTTP status and verdict"
   },
   {
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 39 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
-   "status": "SKIP",
-   "detail": "no --leaguepedia-schedule snapshot supplied"
+   "status": "PASS",
+   "detail": "133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:34:09.656490+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -290,6 +290,22 @@
    "title": "Hotspawn crowd % is never a probability input",
    "status": "PASS",
    "detail": "static scan found no crowd->probability usage"
+  },
+  {
+   "id": "X1",
+   "title": "external links reachable (official-source links resolve)",
+   "status": "FAIL",
+   "detail": "22/31 returned 2xx/3xx; 7 blocked by the host; 0 transient/5xx; 1 dead (404/410)",
+   "items": [
+    "https://oddsdigger.com/e-sports/league-of-legends/prime-league -> 410",
+    "https://eu-offering-api.kambicdn.com/offering/v2018/bs/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true -> 429",
+    "https://kalshi.com/markets/kxlolgame/g2-esports-vs-top-esports/kxlolgame-26oct251300g2tes -> 429",
+    "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
+    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403",
+    "https://www.oddschecker.com/esports -> 403",
+    "https://www.primeleague.gg/en/liga2 -> 403",
+    "https://www.primeleague.gg/en/liga3 -> 403"
+   ]
   },
   {
    "id": "REQ",
