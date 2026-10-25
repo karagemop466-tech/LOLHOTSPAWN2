@@ -36,6 +36,7 @@ _2026-10-25T14:28:12.620125+00:00_
 | S13 executive summary has a separate unresolved section (every unresolved fixture listed + per-league limits) with the picks listed first | PASS | unresolved section ids present; picks before unresolved section: yes; in-site pick links: yes |
 | S14 no page reuses the 12px .bar probability rule as its header | PASS | headers use .header-inner on every page |
 | S15 jsdom render harness exists and runs in CI | PASS | harness present; wired into pipeline-test.yml, verify.yml |
+| S16 coin-flip picks are labelled, counted in the summary and filterable | PASS | toss-up threshold, chip, summary link and picks filter present |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
 | S3 every page links the shared picks navigation | PASS | navigation present |
 | S4 executive summary links in-site to picks + unresolved and states limitations | PASS | exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True} |

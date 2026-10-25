@@ -198,6 +198,34 @@
    "structured": false
   },
   {
+   "name": "Cloudbet — Prime League 2nd Division (claimed coverage)",
+   "url": "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 206185,
+   "lol_mentions": 21,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
+   "name": "Cloudbet LoL hub",
+   "url": "https://www.cloudbet.com/en/esports/league-of-legends",
+   "kind": "esportsbook-page",
+   "category": "market",
+   "http_status": 200,
+   "is_json": false,
+   "bytes": 338074,
+   "lol_mentions": 590,
+   "vs_style_items": null,
+   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
+   "reachable": true,
+   "structured": false
+  },
+  {
    "name": "1xBet line feed (sports index)",
    "url": "https://1xbet.com/LineFeed/GetSportsShortZip?lng=en&country=1",
    "kind": "esportsbook-api",
@@ -521,12 +549,12 @@
   }
  ],
  "summary": {
-  "checked": 37,
-  "reachable": 18,
+  "checked": 39,
+  "reachable": 20,
   "structured_json": 6,
   "structured_with_lol": 4,
-  "market_sources_checked": 32,
-  "market_sources_reachable": 15,
+  "market_sources_checked": 34,
+  "market_sources_reachable": 17,
   "results_sources_reachable": 3,
   "note": "Probe only: no probed value is used in any probability. Only the four production feeds (Pinnacle, Unibet/Kambi, Bovada, Polymarket) produce market probabilities."
  }
