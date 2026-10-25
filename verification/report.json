@@ -1,5 +1,5 @@
 {
- "verified_at": "2026-10-25T15:14:55.440872+00:00",
+ "verified_at": "2026-10-25T17:10:35.208208+00:00",
  "status": "PASS",
  "counts": {
   "PASS": 52,
@@ -7,17 +7,17 @@
   "WARN": 1,
   "SKIP": 0
  },
- "data_matches": 156,
+ "data_matches": 139,
  "methods": {
   "UNRESOLVED": 0,
-  "MARKET_SINGLE": 1,
-  "MODEL_LEAGUE_PRIOR": 0,
-  "MODEL_ELO": 91,
-  "MARKET_BOOKS": 0,
-  "MODEL_STANDINGS": 0,
-  "MODEL_ELO_STANDINGS": 54,
   "MODEL_ELO_THIN": 2,
-  "MARKET_CONSENSUS": 8,
+  "MODEL_STANDINGS": 0,
+  "MARKET_CONSENSUS": 7,
+  "MARKET_SINGLE": 1,
+  "MODEL_ELO": 83,
+  "MARKET_BOOKS": 0,
+  "MODEL_LEAGUE_PRIOR": 0,
+  "MODEL_ELO_STANDINGS": 46,
   "MARKET_POLYMARKET": 0
  },
  "checks": [
@@ -25,13 +25,13 @@
    "id": "D1",
    "title": "payload parses, has matches and a fresh generated_at",
    "status": "PASS",
-   "detail": "156 matches, generated_at=2026-10-25T15:14:00.052655Z (0.0h old)"
+   "detail": "139 matches, generated_at=2026-10-25T17:09:41.319576Z (0.0h old)"
   },
   {
    "id": "D2",
    "title": "two distinct teams and a start time on every match",
    "status": "PASS",
-   "detail": "all 156 rows have team1, team2 and a start time"
+   "detail": "all 139 rows have team1, team2 and a start time"
   },
   {
    "id": "D3",
@@ -73,7 +73,7 @@
    "id": "D7",
    "title": "every row links at least one source URL",
    "status": "PASS",
-   "detail": "all 156 rows carry at least one source URL"
+   "detail": "all 139 rows carry at least one source URL"
   },
   {
    "id": "D8a",
@@ -127,7 +127,7 @@
    "id": "D11",
    "title": "declared count equals number of rows",
    "status": "PASS",
-   "detail": "declared=156, rows=156"
+   "detail": "declared=139, rows=139"
   },
   {
    "id": "D20",
@@ -139,7 +139,7 @@
    "id": "D21",
    "title": "every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced",
    "status": "PASS",
-   "detail": "lobby upcoming=156, priced=156, missing=0, extra=0, excluded=9, leaked=0"
+   "detail": "lobby upcoming=139, priced=139, missing=0, extra=0, excluded=18, leaked=0"
   },
   {
    "id": "D22",
@@ -151,7 +151,7 @@
    "id": "D24",
    "title": "estimates are distinguished from official results verification",
    "status": "PASS",
-   "detail": "156 rows audited; official confirmation left blank"
+   "detail": "139 rows audited; official confirmation left blank"
   },
   {
    "id": "D25",
@@ -163,13 +163,13 @@
    "id": "D13",
    "title": "rows without team evidence are 50/50 and explicitly labelled",
    "status": "PASS",
-   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
+   "detail": "0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 34 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders."
   },
   {
    "id": "D18",
    "title": "start times cross-checked against Leaguepedia MatchSchedule",
    "status": "PASS",
-   "detail": "133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T15:10:20.754639+00:00 (0.1h old)."
+   "detail": "122/122 matched fixture times agree with Leaguepedia; 17 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T17:07:50.912405+00:00 (0.0h old)."
   },
   {
    "id": "D14",
@@ -277,7 +277,7 @@
    "id": "S9",
    "title": "all external links use https",
    "status": "PASS",
-   "detail": "45 external link(s) collected for manual review; 0 plain-http"
+   "detail": "51 external link(s) collected for manual review; 0 plain-http"
   },
   {
    "id": "S11",
@@ -337,18 +337,18 @@
    "id": "X1",
    "title": "external links reachable (official-source links resolve)",
    "status": "WARN",
-   "detail": "35/45 returned 2xx/3xx; 7 blocked by the host; 3 transient/5xx; 0 dead (404/410)",
+   "detail": "41/51 returned 2xx/3xx; 8 blocked by the host; 1 transient/5xx; 0 dead (404/410)",
    "items": [
     "https://www.oddsportal.com/esports/league-of-legends/ -> 503",
     "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ -> 503",
-    "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 -> 0",
-    "https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429",
     "https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist -> 403",
     "https://lol.fandom.com/wiki/Arabian_League_2nd_Division -> 403",
     "https://lol.fandom.com/wiki/LigaGG -> 403",
+    "https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split -> 403",
     "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403",
     "https://lol.fandom.com/wiki/Special:CargoTables/Standings -> 403",
-    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403"
+    "https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403",
+    "https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 -> 403"
    ]
   },
   {

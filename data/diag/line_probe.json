@@ -1,7 +1,7 @@
 {
- "checked_at": "2026-10-25T14:56:26.161952Z",
+ "checked_at": "2026-10-25T17:02:47.530475Z",
  "fixture_count": 156,
- "fixture_snapshot_at": "2026-10-25T14:48:26.680586Z",
+ "fixture_snapshot_at": "2026-10-25T15:32:40.608816Z",
  "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [],
@@ -35,7 +35,7 @@
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4583174,
+   "bytes": 4587351,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -64,7 +64,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -118,8 +118,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -197,7 +197,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -251,8 +251,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -330,7 +330,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -384,8 +384,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -463,7 +463,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -517,8 +517,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -596,7 +596,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -650,8 +650,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -729,7 +729,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -783,8 +783,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -862,7 +862,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -916,8 +916,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -995,7 +995,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -1049,8 +1049,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -1128,7 +1128,7 @@
    "kind": "established-sportsbook",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true",
    "http_status": 200,
-   "bytes": 21415,
+   "bytes": 21508,
    "is_json": true,
    "competitions": [
     "World Championship"
@@ -1182,8 +1182,8 @@
      "team_b": "Movistar KOI",
      "competition": "World Championship",
      "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.27,
-     "decimal_b": 3.45,
+     "decimal_a": 1.21,
+     "decimal_b": 4.0,
      "matched_fixture": {
       "id": "1075819",
       "team1": "Dplus KIA",
@@ -1409,7 +1409,7 @@
      },
      {
       "sport_id": 70,
-      "status": 0
+      "status": 203
      },
      {
       "sport_id": 85,
@@ -1453,7 +1453,7 @@
    "kind": "aggregator-page",
    "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
    "http_status": 200,
-   "bytes": 880872,
+   "bytes": 888938,
    "is_json": false,
    "detail": {
     "odd_cells": 18,
@@ -1520,7 +1520,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366117,
+   "bytes": 366114,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
@@ -1696,7 +1696,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
    "http_status": 403,
-   "bytes": 5850,
+   "bytes": 5849,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
