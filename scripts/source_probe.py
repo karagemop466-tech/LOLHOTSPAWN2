@@ -98,6 +98,28 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("Unibet Kambi feed with market=DE (coverage control)",
      "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
      "sportsbook-api", "market"),
+    # --- added 2026-10-25 (session arena/6e003eec) ---------------------------
+    # Discovered by hand while researching whether any book prices the low-tier
+    # fixtures. Cloudbet's own LoL category page advertises Prime League 2nd
+    # Division ("match winner, map handicap and total maps on every series"), so
+    # its public sports API is a legitimate adapter candidate; BMBets has a
+    # dedicated comparison page for the same competition; Tipico/NEO.bet/bwin are
+    # German-licensed books in the league's home market. Probed once per run so
+    # the site can state what was tried, with the live status attached.
+    ("Cloudbet public sports API (sport index)",
+     "https://sports-api.cloudbet.com/pub/v2/odds/sports", "sportsbook-api", "market"),
+    ("Cloudbet — Prime League 2nd Division category",
+     "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
+     "esportsbook-page", "market"),
+    ("BMBets — LoL Prime League 2nd Division comparison",
+     "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/", "aggregator-page", "market"),
+    ("Tipico (DE) esports", "https://www.tipico.de/en/esports/league-of-legends/",
+     "sportsbook-page", "market"),
+    ("NEO.bet (DE) esports", "https://www.neobet.de/sportwetten/esports",
+     "sportsbook-page", "market"),
+    ("bwin (DE) esports", "https://sports.bwin.de/en/sports/esports", "sportsbook-page", "market"),
+    ("Everygame esports LoL", "https://www.everygame.eu/en/Esports/League-of-Legends",
+     "sportsbook-page", "market"),
     # --- prediction markets --------------------------------------------------
     ("Kalshi esports series", "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
      "prediction-market-api", "market"),
