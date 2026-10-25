@@ -282,6 +282,21 @@ async function main() {
         fpage.document.querySelectorAll("#excluded-body tr").length === (PAYLOAD.excluded_fixtures || []).length,
         `${fpage.document.querySelectorAll("#excluded-body tr").length} rows`);
 
+  // ---------- flagged: line-by-line source audit ----------------------------
+  const sa = PAYLOAD.source_audit || {};
+  const saDoc = fpage.document;
+  check("flagged: audit summary states how many rows were re-matched",
+        /\d+ of \d+ published matches/.test((saDoc.querySelector("#audit-summary") || {}).textContent || ""),
+        (saDoc.querySelector("#audit-summary") || {}).textContent);
+  check("flagged: every audit flag has a row with a verdict and a league link",
+        saDoc.querySelectorAll("#audit-flags-body tr").length === Math.max(1, (sa.flags || []).length)
+        && Array.from(saDoc.querySelectorAll("#audit-flags-body tr")).every((tr) => tr.querySelector("a")),
+        `${saDoc.querySelectorAll("#audit-flags-body tr").length} rows vs ${(sa.flags || []).length} flags`);
+  check("flagged: audit counts add up to the published fixtures",
+        (sa.verified || 0) + (sa.flagged || 0) + (sa.no_snapshot || 0) === (PAYLOAD.matches || []).length
+        && !sa.failed,
+        `${sa.verified}+${sa.flagged}+${sa.no_snapshot} vs ${(PAYLOAD.matches || []).length}`);
+
   // ---------- methodology page ---------------------------------------------
   const mpage = await render("methodology.html");
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));

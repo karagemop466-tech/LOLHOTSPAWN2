@@ -751,6 +751,27 @@
       return `<tr><td><span class="flag">${esc(f)}</span><span class="sub">${esc(flagLabel(f))}</span></td><td><b>${groups[f].length}</b></td><td><a href="picks.html?filter=${f === "NO_VERIFIED_SIGNAL" ? "unresolved" : "all"}">picks →</a> · <a href="${esc(sampleSrc)}" target="_blank" rel="noopener">source ↗</a></td></tr>`;
     }).join("") : `<tr><td colspan="3">No flags.</td></tr>`;
 
+    const audit = d.source_audit || {};
+    const as = $("#audit-summary");
+    if (as) {
+      as.innerHTML = audit.rows
+        ? `<b>${audit.verified}</b> of <b>${audit.rows}</b> published matches were re-matched to a Leaguepedia`
+          + ` schedule row · <b>${audit.flagged}</b> flagged for manual review ·`
+          + ` <b>${audit.no_snapshot}</b> in a competition with no snapshot ·`
+          + ` <b>${audit.failed}</b> arithmetic or source failures.`
+        : "This payload has no audit block — treat every match below as unverified.";
+    }
+    const ab = $("#audit-flags-body");
+    if (ab) {
+      const af = audit.flags || [];
+      ab.innerHTML = af.length ? af.map((f) => `<tr>
+        <td class="teams-cell" data-label="Match"><a href="${esc(f.match_url || "#")}">${esc(f.teams)}</a><span class="sub">${esc(f.competition || "")}${f.claimed ? ` · claimed ${esc(f.claimed)}` : ""}</span></td>
+        <td class="small" data-label="Start (UTC)">${esc(whenUTC(f.start_utc))}</td>
+        <td class="small" data-label="Why it is flagged">${esc(f.verdict)}${f.snapshot_time ? `<span class="sub">snapshot says ${esc(f.snapshot_time)} UTC</span>` : ""}</td>
+        <td class="small" data-label="Check it">${f.leaguepedia_url ? `<a href="${esc(f.leaguepedia_url)}" target="_blank" rel="noopener">Leaguepedia ↗</a> · ` : ""}<a href="${esc(f.match_url || "#")}">our row →</a></td>
+      </tr>`).join("") : `<tr><td colspan="4">No flags in this run.</td></tr>`;
+    }
+
     const eb = $("#excluded-body");
     if (eb) {
       const ex = d.excluded_fixtures || [];

@@ -1,6 +1,6 @@
 # Verification report — PASS
-_2026-10-25T14:27:46.165461+00:00_
-156 matches · MODEL_LEAGUE_PRIOR: 0 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 2 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0 · MODEL_ELO: 91 · UNRESOLVED: 0 · MODEL_ELO_STANDINGS: 54 · MARKET_SINGLE: 1
+_2026-10-25T14:32:29.725991+00:00_
+156 matches · MODEL_STANDINGS: 0 · UNRESOLVED: 0 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · MODEL_ELO_STANDINGS: 54 · MARKET_CONSENSUS: 8 · MARKET_POLYMARKET: 0 · MODEL_ELO_THIN: 2 · MODEL_ELO: 91 · MODEL_LEAGUE_PRIOR: 0
 
 | check | status | detail |
 |---|---|---|
@@ -35,6 +35,7 @@ _2026-10-25T14:27:46.165461+00:00_
 | S14 no page reuses the 12px .bar probability rule as its header | PASS | headers use .header-inner on every page |
 | S15 jsdom render harness exists and runs in CI | PASS | harness present; wired into pipeline-test.yml, verify.yml |
 | S16 coin-flip picks are labelled, counted in the summary and filterable | PASS | toss-up threshold, chip, summary link and picks filter present |
+| S17 line-by-line source audit covers every published match and reports no data failure | PASS | 113 re-matched · 21 flagged for review · 22 no-snapshot · 0 failures |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
 | S3 every page links the shared picks navigation | PASS | navigation present |
 | S4 executive summary links in-site to picks + unresolved and states limitations | PASS | exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True} |

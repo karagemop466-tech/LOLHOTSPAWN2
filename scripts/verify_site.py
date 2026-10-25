@@ -980,6 +980,34 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
             "toss-up threshold, chip, summary link and picks filter present"
             if not s16_missing else f"missing: {', '.join(s16_missing)}")
 
+    # Every published fixture must also carry its line-by-line evidence: the
+    # pipeline re-matches each row against the raw Leaguepedia snapshots and
+    # publishes whatever it could not re-match. A missing or contradictory audit
+    # block means the site is claiming more verification than it has.
+    sa = payload.get("source_audit") or {}
+    n_fixtures = (payload.get("counts") or {}).get("fixtures") or len(rows)
+    sa_rows = sa.get("rows")
+    sa_parts = (sa.get("verified") or 0) + (sa.get("flagged") or 0) + (sa.get("no_snapshot") or 0)
+    sa_bad = []
+    if not sa:
+        sa_bad.append("no source_audit block in the payload")
+    else:
+        if sa_rows != n_fixtures:
+            sa_bad.append(f"audit rows {sa_rows} != fixtures {n_fixtures}")
+        if sa_parts != n_fixtures:
+            sa_bad.append(f"verified+flagged+no_snapshot {sa_parts} != fixtures {n_fixtures}")
+        if sa.get("failed"):
+            sa_bad.append(f"{sa['failed']} arithmetic/source failure(s): {sa.get('failures')[:3]}")
+        for f in (sa.get("flags") or [])[:200]:
+            if not (f.get("id") and f.get("verdict") and f.get("match_url")):
+                sa_bad.append(f"flag without id/verdict/match_url: {f}")
+                break
+    rep.add("S17", "line-by-line source audit covers every published match and reports no data failure",
+            PASS if not sa_bad else FAIL,
+            (f"{sa.get('verified')} re-matched · {sa.get('flagged')} flagged for review · "
+             f"{sa.get('no_snapshot')} no-snapshot · {sa.get('failed')} failures")
+            if not sa_bad else "; ".join(sa_bad))
+
     rep.add("S2", "every page is mobile-ready (viewport width=device-width)",
             PASS if not viewport_bad else FAIL,
             "all pages declare a responsive viewport" if not viewport_bad

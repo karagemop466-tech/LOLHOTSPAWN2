@@ -55,7 +55,7 @@ No other session holds an open claim younger than 60 minutes; `main` is at `2173
 | T25 Verification pass: run every local suite (`verify_site.py`, `test_verifier.py`, `test_entity_and_books.py`, `test_standings_model.py`, `audit/test_model.py`, DOM contract), reconcile the published payload against Hotspawn's own counts, spot-check priced rows against their cited sources | done | arena/6e003eec | `verification/**`, `audit/**` (fixes only when a check is wrong) |
 | T26 Fresh pick-source research for fixtures with no book line (established LoL books → esportsbooks → esports betting lines → community), with link-verified results in the research log; add any usable source to the probe list | done | arena/6e003eec | `research/betting-sources.md`, `scripts/probe_sources.py`, `scripts/source_probe.py` |
 | T27 Mobile usability pass: phone-first executive summary with in-site links to the picks list, separate unresolved/limitations section in the summary, 390 px readability, no horizontal scroll on tables | done | arena/6e003eec | `docs/**` |
-| T28 Integration: run the live pipeline on this branch, re-verify combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge + deploy here | in progress | arena/6e003eec | `COORDINATION.md`, `docs/data/picks.json` (generated), `.github/workflows/**` |
+| T28 Integration: run the live pipeline on this branch, re-verify combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge + deploy here | in progress (PR #74 open) | arena/6e003eec | `COORDINATION.md`, `docs/data/picks.json` (generated), `.github/workflows/**` |
 
 ### Session `arena/6e003eec-lolhotspawn2` — merge, PR and re-verification (2026-10-25, later)
 
@@ -89,7 +89,17 @@ PRM-2 comparison page with no PRM prices; Betmonitor's PRM-2 URL serves its gene
 league and publishes nothing; Tipico returns 0 LoL references; NEO.bet/bwin/bet365.de 403; Everygame 404;
 Oddspedia 410. Nine of those are now in `checked_unavailable` (35 entries) and re-probed every 6 hours.
 
-**T28**: PR **#74** → `main` (https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/74), merge commit and Pages
+**Line-by-line audit added and published (T25/T26 follow-up)**: `scripts/source_audit.py` re-derives every published
+row against the raw `data/diag/ms_*.json` Leaguepedia MatchSchedule snapshots (2,199 rows). Result on the merged
+payload: **156/156 audited · 113 re-matched on the same UTC date · 21 flagged · 22 in competitions with no snapshot ·
+0 arithmetic/provenance failures**. The 21 flags are rendered row-by-row on *Flagged for review* (`#source-audit`)
+with the Leaguepedia link and the snapshot's own timestamp; two recurring shapes are called out as **unverified, not
+wrong** (`Mazepa vs B2U` and `Karolinerna vs Turbo Gaming` are dated 2026-10-26/27 by Hotspawn but 2026-10-24 by
+Leaguepedia; `DKB XPERION NXT vs Phong Vũ Buffalo` pairs a German org with a Vietnamese team name). `verify_site.py`
+rule **S17** fails if the audit block is missing or if verified+flagged+no_snapshot no longer equals the fixture count,
+and `check_dom_render.js` (66/66) fails if the table stops rendering or loses its links.
+
+**T28**: PR **#74** → `main` (https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/74). Merge commit and Pages
 deploy recorded below once CI on the PR is green.
 
 ### Session `arena/6e003eec-lolhotspawn2` — results (2026-10-25 14:15 UTC)

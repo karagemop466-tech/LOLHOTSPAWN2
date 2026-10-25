@@ -17,6 +17,7 @@ import fetch_markets
 import model
 from lib_common import load_json, log, now_utc, utc_iso, write_json
 from source_probe import probe_sources
+from source_audit import audit as audit_sources
 from standings_and_books import probe_liquipedia_pages
 
 DOCS_DATA = "docs/data/picks.json"
@@ -344,6 +345,15 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
                           "status": "ok" if fixtures["count"] >= 50 else "degraded",
                           "count": fixtures["count"], "note": "Fixture list only (crowd % never used)."})
 
+    # Line-by-line evidence: re-match every published fixture against the raw
+    # Leaguepedia schedule snapshots. Best-effort: a missing snapshot must never
+    # break a refresh, but a missing audit block is published as unverified.
+    try:
+        source_audit = audit_sources(matches)
+    except Exception as e:  # noqa: BLE001 - diagnostics must not stop the refresh
+        log(f"source audit failed: {e!r}")
+        source_audit = {"rows": len(matches), "verified": 0, "flagged": 0, "no_snapshot": 0,
+                        "failed": 0, "failures": [], "flags": [], "verdict": "UNAVAILABLE"}
     payload = {
         "schema_version": 3,
         "generated_at": utc_iso(now),
@@ -388,6 +398,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         # Live-measured reachability of the wider external source field. Diagnostic
         # only: nothing here is used in a probability (see scripts/source_probe.py).
         "market_probe": market_probe or {"checked_at": None, "books": [], "summary": {}},
+        "source_audit": source_audit,
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
         "next_24h": [m["id"] for m in next_24h[:8]],

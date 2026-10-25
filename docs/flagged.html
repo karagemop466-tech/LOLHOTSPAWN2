@@ -103,6 +103,33 @@
     </div>
   </section>
 
+  <section id="source-audit">
+    <h2>Line-by-line source audit — every published match re-checked</h2>
+    <p class="small">Each refresh re-derives the evidence instead of trusting the row labels:
+      the two probabilities must sum to 1, the pick must be the higher-probability side, every row must
+      carry an https source, and the team pair is searched for in the raw Leaguepedia MatchSchedule snapshot.
+      Anything that cannot be re-matched is listed below — it is never silently corrected or dropped.</p>
+    <p class="small" id="audit-summary">Loading the audit…</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Match</th>
+            <th scope="col">Start (UTC)</th>
+            <th scope="col">Why it is flagged</th>
+            <th scope="col">Check it yourself</th>
+          </tr>
+        </thead>
+        <tbody id="audit-flags-body">
+          <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Loading the audit…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Code: <code>scripts/source_audit.py</code> · snapshots: Leaguepedia MatchSchedule
+      (<a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Cargo table ↗</a>,
+      CC BY-SA 3.0). A flagged row means <b>unverified</b>, not that the value is wrong.</p>
+  </section>
+
   <section id="excluded">
     <h2>Excluded from picks (cancelled / withdrawn on Hotspawn lobby)</h2>
     <p class="small">These fixtures still appear in Hotspawn's backend fixtures API with a future timestamp, but have status <b>cancelled</b> and are withdrawn from the Pick'em lobby. They receive <b>no pick</b> and no probability is published for them.</p>

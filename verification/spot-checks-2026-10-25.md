@@ -133,3 +133,38 @@ All measurements recorded in `data/diag/prm_line_probe.json` / `.log` and `resea
   price is claimed from them.
 * Cloudbet's claim of PRM2 coverage could not be confirmed with any live event; the advertising copy is
   not treated as evidence.
+
+## 3. Line-by-line audit against the raw Leaguepedia snapshots (2026-10-25T14:31Z, session `arena/6e003eec`)
+
+Method: `scripts/source_audit.py` reads `docs/data/picks.json` and the raw `data/diag/ms_*.json` MatchSchedule
+snapshots the pipeline downloaded at 14:06Z (2,199 rows across PRM 2nd/3rd Division, RIVALS, Tunisian Super League,
+4 Nations and Komplettligaen). It re-derives every row instead of trusting the payload's own labels: arithmetic,
+pick, source links, and an independent team-pair search. `verification/audit_payload_sources.py` runs the same code
+as a CLI/CI gate and writes `verification/payload-audit.{json,md}` (one line per row).
+
+| Result | Value |
+|---|---|
+| Published rows audited | **156 / 156** |
+| Re-matched to a Leaguepedia schedule row on the same UTC date | **113** |
+| Flagged for manual review (pair on another date, or pair absent) | **21** |
+| Competition has no Leaguepedia snapshot in the repo (nothing to re-match) | **22** |
+| Arithmetic or provenance failures | **0** |
+| `verify_site.py` rule S17 (audit covers every row, counts add up, 0 failures) | **PASS** |
+
+The 22 no-snapshot rows are Worlds 2026 Main Event (8), Arabian League 2nd Division (4), LigaGG CELOL B playoffs (4),
+LGC Rising (1), LCP 2027 Promotion (3) and Komplettligaen (2) — the pipeline only stores per-league snapshots for the
+six competitions above; their rows still cite the official Leaguepedia tournament page.
+
+**Flags published, not hidden.** The 21 flags are listed row-by-row on the site's *Flagged for review* page, each
+with the match, the UTC start, the verdict, the snapshot's own timestamp (where one exists) and the Leaguepedia link.
+Two shapes recur and are stated as unverified, not as wrong:
+
+* `Mazepa vs B2U` (Hotspawn 2026-10-26 18:00Z) and `Karolinerna vs Turbo Gaming` (2026-10-27 18:00Z) — the same pair
+  sits in Leaguepedia's RIVALS snapshot on **2026-10-24**. Either a reschedule not yet reflected on Leaguepedia, or a
+  duplicate pairing upstream; Hotspawn governs the lock, so the published start stays as Hotspawn reports it and the
+  row is flagged.
+* `DKB XPERION NXT vs Phong Vũ Buffalo` — PRM 2nd Division pairs a German organisation with a Vietnamese team name and
+  the pair is absent from the PRM 2nd snapshot. Flagged as an entity/competition mismatch rather than priced away.
+
+Nothing was "corrected" by hand: the audit reports, the site shows, and the reader can check both sides with the
+links above.

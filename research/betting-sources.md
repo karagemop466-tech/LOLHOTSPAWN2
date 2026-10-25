@@ -1115,6 +1115,36 @@ for those matches therefore remain **our own line**, built from Leaguepedia resu
 are published on the site's separate *"no bookmaker line"* section with the per-league limitation attached — never
 presented as a bookmaker price and never given a bookmaker's name.
 
+### 22.5 The same test, run again from CI on the live site's own payload (2026-10-25T14:13:41–14:14:03Z)
+
+`prm-line-probe.yml` ran the strict matcher against the *current* 147 model-only fixtures and asked one question per
+source: do both team names of a specific unpriced fixture appear inside one 700-character window together with two
+prices in decimal odds format?
+
+| Sources probed | Reachable 200 | Named one of our competitions | Published a two-way price for a fixture |
+|---|---|---|---|
+| 16 | 8 | 5 | **0** |
+
+Per source (HTTP status in brackets): Cloudbet public API 401 · BMBets PRM 2nd Division 200 · BMBets Prime League
+200 · Betmonitor PRM 2nd Division 200 · Betmonitor hub 200 · Tipico (DE) 200 · Cloudbet PRM-2 page 200 ·
+esportbet.com 200 · Strafe 200 · NEO.bet 403 · bwin 403 · bet365.de 403 · eGamersWorld 403 · Everygame 404 ·
+1xBet LineFeed 203 · Oddspedia 410. The five that merely *name* a competition are Cloudbet's PRM-2 page, BMBets
+(PRM-2 index), Betmonitor (PRM-2 URL), esportbet ("Prime League 2. Liga 2026 Fall — LIVE") and Cloudbet's LoL hub.
+Naming a competition is not pricing it: none of them contained both team names plus two prices for any fixture.
+
+**False-positive post-mortem (why the number is 0 and not 5).** The first version of the probe reported five sources
+as "odds near a team". Every one was a false positive, found by dumping the matching snippet rather than trusting the
+count: a basketball fixture ("Alba Berlin"), a CSS class (`has-atomic-cream-gradient-background`), an ad-blocker
+script list, a meta description, and a league-name-only page whose numbers were schema/date fields. The matcher was
+replaced with whole-team-name matching plus a two-price requirement, and eight regression tests
+(`verification/test_prm_probe.py`) now pin it — including the basketball page, the gradient, the league-only page and
+a single odd. This is the failure mode to guard against when a probe suddenly "finds" prices for an obscure league.
+
+**Live re-probe in the 6-hour pipeline (payload `market_probe`, 2026-10-25T14:19:22Z)**: 39 sources checked, 20
+reachable, 6 structured JSON, 4 with League of Legends references; 34 market sources checked, 17 reachable. The four
+structured feeds (Pinnacle guest API, Unibet/Kambi, Bovada, Polymarket) are the only ones that produce a market
+probability, and none of them quote PRM 2nd/3rd Division, RIVALS, Tunisian or the amateur cups.
+
 This is re-tested automatically: `scripts/probe_prm_lines.py` (manual workflow, deep test) and
 `scripts/source_probe.py` (one GET per source on **every** 6-hour refresh, results published in the payload's
 `market_probe` and on the site).

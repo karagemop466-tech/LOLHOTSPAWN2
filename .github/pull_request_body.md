@@ -44,11 +44,11 @@ model-only fixtures: **16 sources probed, 8 reachable, 5 name one of our competi
 
 **4. Verification**
 
-* `scripts/verify_site.py` **45 PASS · 0 FAIL · 0 WARN** (1 SKIP offline: Leaguepedia snapshot not available locally)
+* `scripts/verify_site.py` **46 PASS · 0 FAIL · 0 WARN** (1 SKIP offline: Leaguepedia snapshot not available locally)
 * `verification/test_verifier.py` 45/45 · `test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS ·
   `audit/test_model.py` 23/23 · `test_dom_contract.py` 7/7 · `check_dom_contract.py` PASS · `test_freshness.cjs` PASS
-* `verification/check_dom_render.js` **63/63** (five new assertions for the pick panel, the coverage strip and section
-  order, plus the coin-flip labelling checks contributed by the session that merged first)
+* `verification/check_dom_render.js` **66/66** (pick panel, coverage strip, section order, coin-flip labelling from the
+  session that merged first, and three new assertions for the source-audit table)
 * **new** `verification/check_mobile_css.py` 10/10 — viewport, no non-media width > 390 px, tables scroll and stack,
   ≥ 44 px tap targets, ≥ 11 px text; wired into `pipeline-test.yml` **and** `verify.yml`
 * **new** `verification/test_prm_probe.py` 8/8 — a basketball page, a CSS gradient, a league-name-only page, a single
@@ -58,6 +58,12 @@ model-only fixtures: **16 sources probed, 8 reachable, 5 name one of our competi
 * `check_source_pages.py` in CI: **12 cited Leaguepedia pages, 12 exist, 0 missing**
 * Live Hotspawn lobby cross-check: the fixtures and crowd percentages recorded in the payload match what the lobby
   renders (e.g. Babos Gaming 15 / Hannover 85, AceGaming Hearts 76 / Emperors Bremen 24)
+* **New line-by-line audit on the site** (`scripts/source_audit.py`, `verification/audit_payload_sources.py`):
+  every refresh re-derives each row against the raw Leaguepedia MatchSchedule snapshots — **156/156 audited,
+  113 re-matched on the same UTC date, 21 flagged for manual review, 22 in competitions with no snapshot,
+  0 arithmetic or provenance failures**. The flags are published row by row on *Flagged for review* with the
+  Leaguepedia link and the snapshot's own timestamp, and `verify_site.py` **S17** fails if the audit and the
+  payload ever disagree
 * `verification/spot-checks-2026-10-25.md` records every check with the page that was read
 
 ## Sources used (links for manual review)

@@ -48,6 +48,9 @@ jobs:
             --out verification/leaguepedia_coverage.json \
             --md verification/leaguepedia_coverage.md
 
+      - name: Line-by-line source audit (every published row vs the Leaguepedia snapshots)
+        run: python3 verification/audit_payload_sources.py
+
       - name: DOM/mobile contract (ids, header skeleton, class coverage, no dead controls)
         run: python3 verification/check_dom_contract.py
 
