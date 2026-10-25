@@ -78,3 +78,33 @@ npm install --no-save jsdom@24
 node verification/render_check.cjs              # renders all 7 pages + theme toggle
 python3 verification/check_source_pages.py      # cited Leaguepedia pages exist (network)
 ```
+
+---
+
+## 7. Re-verification — 2026-10-25 (session `arena/6e003eec`)
+
+Re-ran the whole mobile picture after the executive summary was rebuilt, and added a check that measures the
+properties a phone reader actually depends on instead of trusting them by eye.
+
+| Property | Where it is enforced | Measured today |
+|---|---|---|
+| Viewport is `device-width`, not a fixed width | `C6` + `M1` | 7/7 pages |
+| Nothing outside a `min-width` media query is wider than 390 px | `M3` | 0 offenders |
+| Wide tables scroll inside their own box instead of pushing the page sideways | `M2` (`.table-wrap { overflow-x:auto }`) + `M4` (every table sits in a `.table-wrap`) | 6/6 tables wrapped |
+| Tables become stacked cards at ≤760 px | `C6` + `M5` | rule present once, plus the `data-label` captions |
+| Body copy is 16 px; nothing interactive is under 44 px tall | `M6` | `.btn` 48, `.chipbtn` 44, `.bottom-nav a` 60, `.icon-btn` 44, `.pickcard` ≥ 44 |
+| Summary pick cards are tappable and readable | `check_dom_render.js` (63/63) | 6 cards, pick + whole-number probability in every card |
+| The picks come before the limits text | `check_dom_render.js` (section order) | `#picks-now` → `#picks-here` → coverage → `#starting-soon` → `#unresolved-section` |
+
+New: `verification/check_mobile_css.py` (**10 pass · 0 fail**) parses `style.css` and every page and asserts the rows
+above; it runs in `pipeline-test.yml` and `verify.yml`, so a restyle that breaks the phone layout fails the build.
+`verification/test_prm_probe.py` (**8/8**) is wired next to it.
+
+Limits of this pass, stated plainly: still no real browser in CI (jsdom has no layout engine), so these are
+structural facts about the CSS and markup, not screenshots. A physical-phone pass remains the last mile; nothing in
+this audit claims a pixel-level result.
+
+**What a reader sees first on a phone (390 px), in order:** the refreshed-at line and five counts
+(156 matches · 156 with a pick · 9 from a bookmaker line · 147 model-priced · 0 with no pick) → the four buttons →
+six "picks for the next matches" cards, each with both teams at 19 px, a pick, its probability and a tap target into
+the match page → the "where the picks are" link grid → the no-book-line section with the per-league limits.

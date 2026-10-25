@@ -400,7 +400,7 @@ main a, .sub, .small { overflow-wrap: anywhere; word-break: break-word; }
 
 /* header colour-theme control (present on every page, persisted in localStorage) */
 .icon-btn {
-  flex: 0 0 auto; margin-left: 8px; width: 42px; height: 42px; min-height: 42px;
+  flex: 0 0 auto; margin-left: 8px; width: 44px; height: 44px; min-height: 44px;
   display: inline-grid; place-items: center; cursor: pointer;
   background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
   border-radius: 12px; font-size: 17px; line-height: 1;
