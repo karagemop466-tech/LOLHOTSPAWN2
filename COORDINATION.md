@@ -1495,3 +1495,5 @@ All earlier claims are over 60 minutes old; baseline `2173cc9` is the current ma
 | C4 Integration, live refresh, tests, PR merge and Pages confirmation | in progress | arena/c1e74f5e | `.github/workflows/**`, `COORDINATION.md` |
 
 Network note: this sandbox allows GitHub/npm/PyPI only. Source verification requiring other hosts must run in GitHub Actions, with timestamped artifacts; blocked local requests will not be described as source verification.
+
+**Parallel-session discovery (2026-10-25 14:13 UTC):** main advanced to PR #60's audit-only records after this session's claim. PR #62 concurrently edits `docs/assets/app.js` freshness and the phrase "verified pick"; this session does not change freshness behavior and will preserve that session's result during integration. Our distinct work is per-row source authority metadata, blank primary-organizer confirmation, the match-by-match unverified evidence table, and regression checks for those contracts. Any textual overlap is limited to removing false verification claims. PR #61 is audit documentation only. Existing reports are not overwritten as final findings; generated verifier reports are rebuilt by CI.

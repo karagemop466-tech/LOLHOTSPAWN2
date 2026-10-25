@@ -90,7 +90,13 @@
     if (!list.length) return "";
     return `<div class="src-links">${list.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("")}</div>`;
   }
+  function evidenceLabel(m) {
+    if (m.method === "UNRESOLVED") return "No supported estimate · no recommendation";
+    return m.market ? "Market-derived estimate · not a guaranteed outcome"
+      : "Own estimate · community records · official results unverified";
+  }
   function pickPill(m) {
+    if (m.method === "UNRESOLVED") return `<span class="pick-pill red">⚠️ NO PICK · insufficient evidence</span>`;
     const tone = m.method === "UNRESOLVED" ? "red" : (m.confidence === "Low" ? "amber" : "");
     const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
     return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}</span>`;
@@ -107,7 +113,7 @@
       <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
       <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
       <div class="pickline">${pickPill(m)}<span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span></div>
-      <div class="evidence">${esc(m.evidence || "")}</div>
+      <div class="evidence">${esc(m.evidence || "")}</div><p class="tiny provenance">${esc(evidenceLabel(m))}</p>
       ${sourcesInline(m, opts.sources || 3)}
     </article>`;
   }
@@ -126,7 +132,7 @@
       <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pair[0]}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pair[1]}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
       <td class="pickcell" data-label="Pick">${pickPill(m)}</td>
       <td data-label="Method"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="sub"><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")}</span></span></td>
-      <td data-label="Sources"><span class="sub">${srcCount} verified link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
+      <td data-label="Sources"><span class="sub">${srcCount} source link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div><span class="sub provenance">${esc(evidenceLabel(m))}</span></td>
     </tr>`;
   }
 
@@ -345,7 +351,7 @@
     const mix = pricingMix(d);
     const stCount = mix.standings;
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a sourced estimate (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -407,7 +413,7 @@
     const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 10);
     const featBox = $("#featured");
     if (featBox) featBox.innerHTML = featured.length ? featured.map((m) => matchCard(m, { sources: 4 })).join("")
-      : `<div class="card">No external market lines are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
+      : `<div class="card">No usable external line founds are open right now. Every match is priced by our Elo/standings model or flagged unresolved.</div>`;
 
     const u = d.unresolved || {};
     const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
@@ -470,7 +476,7 @@
         .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
       uList.innerHTML = un.length
         ? un.map((m) => matchCard(m, { sources: 3 })).join("")
-        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>.</div>`;
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or community-reported split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>.</div>`;
     }
 
     const ss = $("#sources-strip");
@@ -642,7 +648,7 @@
       NAME_BRIDGED_VIA_SCHEDULE: "Team name bridged via 2+ exact UTC schedule slots",
       LEAGUEPEDIA_TIME_TBD: "Leaguepedia match timestamp still TBD (Hotspawn governs lock)",
       GENERIC_RESULTS_SOURCE: "General Leaguepedia table link (no fixture-specific split page matched)",
-      NO_EXTERNAL_MARKET: "No external market line",
+      NO_EXTERNAL_MARKET: "No usable external line found",
       NO_TEAM_HISTORY: "No recorded team history",
       ONE_TEAM_NO_HISTORY: "One team has no history (competition prior used)",
       THIN_HISTORY: "Thin history (<5 games)",
@@ -660,6 +666,16 @@
   }
 
   function renderFlagged(d) {
+    const audit = $("#official-results-body");
+    if (audit) {
+      const modelOnly = (d.matches || []).filter((m) => !m.market);
+      audit.innerHTML = modelOnly.length ? modelOnly.map((m) => `<tr>
+        <td data-label="Match"><a href="match.html?id=${encodeURIComponent(m.id)}">${esc(m.team1)} vs ${esc(m.team2)}</a><span class="sub">${esc(m.tournament)}</span></td>
+        <td data-label="Estimate">${esc(methodInfo(m).label)}<span class="sub">${esc(evidenceLabel(m))}</span></td>
+        <td data-label="Organizer-confirmed results">— <span class="chip amber">Unverified</span></td>
+        <td data-label="Source references">${sourcesInline(m, 4)}</td>
+      </tr>`).join("") : `<tr><td colspan="4">No non-market fixtures in this snapshot.</td></tr>`;
+    }
     const groups = {};
     (d.matches || []).forEach((m) => (m.flags || []).forEach((f) => { (groups[f] = groups[f] || []).push(m); }));
     const order = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
@@ -747,7 +763,7 @@
         <div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div>
         <div class="probrow"><span>${esc(m.team1)} <b>${pair[0]}</b></span><span style="margin-left:auto">${esc(m.team2)} <b>${pair[1]}</b></span></div>
         <div class="pickline">${pickPill(m)}</div>
-        <p class="small">${esc(m.evidence || "")}</p>
+        <p class="small">${esc(m.evidence || "")}</p><p class="small provenance">${esc(evidenceLabel(m))}. <a href="flagged.html#official-results-audit">Evidence limitations →</a></p>
       </div>
       <div class="two-col">
         <div>
@@ -770,7 +786,7 @@
         </div>
         <div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
-          <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
+          <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)} <span class="sub">Source type: ${esc(s.source_kind || "reference (not independently classified)")}</span></li>`).join("")}</ul>
           <p class="tiny">Crowd context (never used in probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
         </div>
       </div>

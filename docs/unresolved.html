@@ -44,11 +44,13 @@
   <p class="eyebrow">Transparency · separate unresolved section</p>
   <h1>Unresolved picks &amp; limitations for generating picks</h1>
   <p class="lede">
-    Every match is published with a pick. This page documents the ones that <b>cannot be priced the way the featured
-    picks are</b>: no bookmaker or prediction-market line exists, so the number comes from our own model on recorded
-    results, or — when even that evidence is missing — it stays an <b>explicit 50.0% / 50.0% placeholder, never an edge</b>.
+    Every match is listed; a pick is shown only when there is a market or model signal. This page documents the ones that <b>cannot be priced the way the featured
+    picks are</b>: no usable bookmaker or prediction-market line was found by our adapters, so the number comes from our own model on recorded
+    results, or — when even that evidence is missing — it stays an <b>explicit 50.0% / 50.0% placeholder, never an edge or team recommendation</b>.
     Hotspawn crowd percentages are never used.
   </p>
+
+  <p class="warnbox small">Model estimates use community-reported records. They do not satisfy independent primary-organizer verification of each result. <a href="flagged.html#official-results-audit">See every affected fixture and its blank official-confirmation field</a>. A blocked or empty endpoint cannot establish that no bookmaker offers a line.</p>
 
   <div class="linkgrid">
     <a class="linkcard" href="picks.html"><span class="ico" aria-hidden="true">📋</span>
@@ -66,7 +68,7 @@
 
   <section class="card" id="by-league">
     <h3>By league — what prices each league, and where its limit is</h3>
-    <p class="small">One row per tournament on Hotspawn's list, with a verified source link on every row.</p>
+    <p class="small">One row per tournament on Hotspawn's list, with a source reference on every row.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -75,7 +77,7 @@
             <th scope="col">Fixtures</th>
             <th scope="col">Market / Elo / Standings / Prior / Unres</th>
             <th scope="col">Specific limitation</th>
-            <th scope="col">Verified source</th>
+            <th scope="col">Source reference</th>
           </tr>
         </thead>
         <tbody id="league-limitations-body">
@@ -109,7 +111,7 @@
   <div class="two-col" style="margin-top:20px">
     <section class="card">
       <h3>⚠️ Unresolved — explicit 50/50 placeholders</h3>
-      <p class="small">No external market line, no recorded match history, and no split standings record for either team.
+      <p class="small">No usable external line found, no recorded match history, and no split standings record for either team.
         Probability is strictly 50.0% / 50.0%, labelled as a placeholder.</p>
       <div id="unresolved-body"><div class="loading"><span class="spinner"></span>Loading…</div></div>
     </section>

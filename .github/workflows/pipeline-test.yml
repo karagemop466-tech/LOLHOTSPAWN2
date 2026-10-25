@@ -80,6 +80,7 @@ jobs:
         run: |
           python3 verification/check_dom_contract.py
           python3 verification/test_dom_contract.py
+          python3 verification/test_provenance.py
           python3 verification/test_verifier.py
           python3 verification/test_standings_model.py
           python3 verification/test_entity_and_books.py

@@ -113,7 +113,7 @@ function assertPicks(win, selector, label, expected) {
     const named = matches.filter((m) => text.includes(m.team1) && text.includes(m.team2));
     // The same pair can be listed twice (different competitions), so accept any
     // candidate whose own pick matches the pill.
-    if (!named.length || !named.some((m) => pillText.includes(m.pick))) badPick++;
+    if (!named.length || !named.some((m) => m.method === "UNRESOLVED" ? /NO PICK/.test(pillText) : pillText.includes(m.pick))) badPick++;
     else {
       const bad = named.filter((m) => Math.abs((m.prob_team1 || 0) + (m.prob_team2 || 0) - 1) > 0.001);
       if (bad.length) badProb++;
@@ -260,6 +260,13 @@ async function main() {
         fpage.document.querySelectorAll("#excluded-body tr").length === (PAYLOAD.excluded_fixtures || []).length,
         `${fpage.document.querySelectorAll("#excluded-body tr").length} rows`);
 
+  const modelRows = matches.filter((m) => !m.market).length;
+  const evidenceRows = Array.from(fpage.document.querySelectorAll("#official-results-body tr"));
+  check("flagged: every non-market fixture has an evidence audit row", evidenceRows.length === Math.max(1, modelRows));
+  check("flagged: official confirmation is explicitly blank and unverified", modelRows === 0 || evidenceRows.every((r) => /—.*Unverified/.test(r.textContent)));
+  check("flagged: every evidence row links a first-party Hotspawn listing", modelRows === 0 || evidenceRows.every((r) => r.querySelector("a[href*='hotspawn.com/']")));
+  check("picks: estimates are not labelled verified picks", !/verified pick|verified link/.test(pdoc.querySelector("#picks-body").textContent));
+
   // ---------- methodology page ---------------------------------------------
   const mpage = await render("methodology.html");
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));
@@ -301,6 +308,8 @@ async function main() {
   check("self-test: hero unresolved counter reflects the payload",
         sdoc.querySelector("#hero-count-unresolved").textContent.includes("2"));
 
+  check("self-test: unresolved fixtures never recommend an arbitrary team",
+        Array.from(sdoc.querySelectorAll("#unresolved-list .pick-pill")).every((p) => /NO PICK/.test(p.textContent) && !/50.0%/.test(p.textContent)));
   const failed = results.filter((r) => !r.ok);
   console.log(`\nDOM render check: ${results.length - failed.length}/${results.length} passed` +
               (failed.length ? ` — ${failed.length} FAILED` : ""));

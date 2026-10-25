@@ -15,6 +15,7 @@ import sys
 from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
 spec = importlib.util.spec_from_file_location("verify_site",
                                               os.path.join(ROOT, "scripts", "verify_site.py"))
 vs = importlib.util.module_from_spec(spec)
@@ -66,6 +67,22 @@ def main() -> int:
     c = run([copy.deepcopy(BASE_ROW)])
     results += [assert_status(c, i, vs.PASS, "clean row passes")
                 for i in ("D2", "D3", "D4", "D5", "D6", "D7", "D8a", "D8c", "D8d", "D9", "D12", "D20")]
+
+    # Provenance is checked row-by-row; a high model confidence is not official verification.
+    from provenance import annotate_matches
+    r = copy.deepcopy(BASE_ROW)
+    r["method"] = "MODEL_ELO"
+    r["sources"] = [{"url": "https://lol.fandom.com/wiki/Test", "name": "Leaguepedia"}]
+    annotate_matches([r])
+    policy = {"version": 1}
+    results.append(assert_status(run([r], evidence_policy=policy), "D24", vs.PASS, "honest provenance"))
+    for field, value in [("official_results_confirmed", True), ("official_results_source", "https://lolesports.com/"), ("probability_kind", "official")]:
+        bad = copy.deepcopy(r); bad["verification"][field] = value
+        results.append(assert_status(run([bad], evidence_policy=policy), "D24", vs.FAIL, "unsupported " + field))
+    bad = copy.deepcopy(r); bad["sources"][0]["source_kind"] = "market_publisher"
+    results.append(assert_status(run([bad], evidence_policy=policy), "D24", vs.FAIL, "wiki labelled market publisher"))
+    bad = copy.deepcopy(r); del bad["verification"]
+    results.append(assert_status(run([bad], evidence_policy=policy), "D24", vs.FAIL, "missing row verification metadata"))
 
     # pick not one of the teams
     r = copy.deepcopy(BASE_ROW); r["pick"] = "Team C"
