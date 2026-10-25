@@ -1,26 +1,26 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-10-25T14:48:26.680586Z",
+  "generated_at": "2026-10-25T14:53:17.447068Z",
   "next_update_utc": "2026-10-25T18:00:00Z",
-  "stale_after_utc": "2026-10-25T22:48:26.680586Z",
+  "stale_after_utc": "2026-10-25T22:53:17.447068Z",
   "input_freshness": [
     {
       "name": "Hotspawn fixtures",
-      "as_of": "2026-10-25T14:46:40.540707Z",
+      "as_of": "2026-10-25T14:51:25.423930Z",
       "status": "ok",
       "url": "https://play.hotspawn.com/lol-pickems",
       "note": "Publisher fixture list only; not probability evidence."
     },
     {
       "name": "External market feeds",
-      "as_of": "2026-10-25T14:46:44.210074Z",
-      "status": "partial",
+      "as_of": "2026-10-25T14:51:30.113369Z",
+      "status": "ok",
       "url": "methodology.html",
       "note": "Collection timestamp, not a guarantee that each quote is executable or still open."
     },
     {
       "name": "Leaguepedia community records",
-      "as_of": "2026-10-25T14:46:44.211153Z",
+      "as_of": "2026-10-25T14:51:30.123292Z",
       "status": "ok",
       "last_attempt_utc": null,
       "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
@@ -798,9 +798,9 @@
     {
       "name": "Pinnacle",
       "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues?all=false",
-      "status": "error",
-      "count": 0,
-      "note": "sports feed HTTP 403"
+      "status": "ok",
+      "count": 8,
+      "note": "Public guest JSON feed (parent Regular moneylines only); re-check pinnacle.com before betting."
     },
     {
       "name": "Unibet",
@@ -1017,7 +1017,7 @@
     }
   ],
   "market_probe": {
-    "checked_at": "2026-10-25T14:48:26.678236Z",
+    "checked_at": "2026-10-25T14:53:17.446369Z",
     "books": [
       {
         "name": "Pinnacle (guest JSON)",
@@ -1040,7 +1040,7 @@
         "category": "market",
         "http_status": 403,
         "is_json": false,
-        "bytes": 3647,
+        "bytes": 3645,
         "lol_mentions": null,
         "vs_style_items": null,
         "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
@@ -1082,7 +1082,7 @@
         "category": "market",
         "http_status": 200,
         "is_json": false,
-        "bytes": 366116,
+        "bytes": 366114,
         "lol_mentions": 0,
         "vs_style_items": null,
         "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -1250,7 +1250,7 @@
         "category": "market",
         "http_status": 203,
         "is_json": false,
-        "bytes": 2647,
+        "bytes": 2645,
         "lol_mentions": null,
         "vs_style_items": null,
         "verdict": "served an interstitial/redirect page (HTTP 203) instead of the feed — no line can be read",
@@ -1318,12 +1318,12 @@
         "url": "https://www.betexplorer.com/lol/",
         "kind": "aggregator-page",
         "category": "market",
-        "http_status": 429,
+        "http_status": 404,
         "is_json": false,
         "bytes": 0,
         "lol_mentions": null,
         "vs_style_items": null,
-        "verdict": "rate limited (HTTP 429) — coverage unverified; nothing used",
+        "verdict": "endpoint not found (HTTP 404) — path may have moved; nothing used",
         "reachable": false,
         "structured": false
       },
@@ -1334,7 +1334,7 @@
         "category": "market",
         "http_status": 403,
         "is_json": false,
-        "bytes": 5740,
+        "bytes": 5718,
         "lol_mentions": null,
         "vs_style_items": null,
         "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
@@ -1348,7 +1348,7 @@
         "category": "market",
         "http_status": 200,
         "is_json": false,
-        "bytes": 316815,
+        "bytes": 318356,
         "lol_mentions": 5,
         "vs_style_items": null,
         "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -1362,7 +1362,7 @@
         "category": "market",
         "http_status": 200,
         "is_json": false,
-        "bytes": 316715,
+        "bytes": 318256,
         "lol_mentions": 5,
         "vs_style_items": null,
         "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -1404,7 +1404,7 @@
         "category": "market",
         "http_status": 410,
         "is_json": false,
-        "bytes": 341177,
+        "bytes": 341178,
         "lol_mentions": null,
         "vs_style_items": null,
         "verdict": "endpoint not found (HTTP 410) — path may have moved; nothing used",
@@ -1488,7 +1488,7 @@
         "category": "market",
         "http_status": 200,
         "is_json": false,
-        "bytes": 189825,
+        "bytes": 179726,
         "lol_mentions": 101,
         "vs_style_items": null,
         "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -1572,7 +1572,7 @@
         "category": "results",
         "http_status": 200,
         "is_json": false,
-        "bytes": 179561,
+        "bytes": 179550,
         "lol_mentions": 157,
         "vs_style_items": null,
         "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
@@ -3280,10 +3280,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.265,
-      "prob_team2": 0.735,
+      "prob_team1": 0.273,
+      "prob_team2": 0.727,
       "pick": "Hanwha Life Esports",
-      "pick_prob": 0.735,
+      "pick_prob": 0.727,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -3306,6 +3306,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235120/markets/related/straight",
+            "prob_team1": 0.2829,
+            "prob_team2": 0.7171,
+            "decimal_team1": 3.38,
+            "decimal_team2": 1.3333,
+            "note": "Pinnacle series moneyline (matchup 1639235120)",
+            "start_utc": "2026-10-25T17:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -3346,19 +3359,19 @@
             "competition": "Polymarket: LoL: Hanwha Life Esports vs Invictus Gaming (BO1) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.265,
-        "weighted_mean_team1": 0.2633,
-        "dispersion": 0.0381,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "consensus_team1": 0.273,
+        "weighted_mean_team1": 0.2691,
+        "dispersion": 0.04,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.3658,
-        "model_edge_team1": 0.1008,
+        "model_edge_team1": 0.0928,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 3.8 pts). Elo 1722 vs 1833 (56 / 68 games in 365d; competition bases 1690 / 1690).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 4.0 pts). Elo 1722 vs 1833 (56 / 68 games in 365d; competition bases 1690 / 1690).",
       "flags": [
         "MODEL_DISAGREES_WITH_MARKET"
       ],
@@ -3368,6 +3381,12 @@
           "url": "https://www.hotspawn.com/matches/invictus-gaming-vs-hanwha-life-esports-worlds-2026-main-event-1075817",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235120/markets/related/straight",
+          "claim": "Two-way de-vigged line: 28.3% Invictus Gaming.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -3835,10 +3854,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.4459,
-      "prob_team2": 0.5541,
+      "prob_team1": 0.4476,
+      "prob_team2": 0.5524,
       "pick": "G2 Esports",
-      "pick_prob": 0.5541,
+      "pick_prob": 0.5524,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -3865,6 +3884,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235119/markets/related/straight",
+            "prob_team1": 0.4493,
+            "prob_team2": 0.5507,
+            "decimal_team1": 2.14,
+            "decimal_team2": 1.7463,
+            "note": "Pinnacle series moneyline (matchup 1639235119)",
+            "start_utc": "2026-10-25T18:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -3905,19 +3937,19 @@
             "competition": "Polymarket: LoL: Top Esports vs G2 Esports (BO1) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.4459,
-        "weighted_mean_team1": 0.4544,
+        "consensus_team1": 0.4476,
+        "weighted_mean_team1": 0.4528,
         "dispersion": 0.0297,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.4045,
-        "model_edge_team1": -0.0414,
+        "model_edge_team1": -0.0431,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 3.0 pts). Elo 1728 vs 1818 (59 / 60 games in 365d; competition bases 1690 / 1650).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 3.0 pts). Elo 1728 vs 1818 (59 / 60 games in 365d; competition bases 1690 / 1650).",
       "flags": [],
       "sources": [
         {
@@ -3925,6 +3957,12 @@
           "url": "https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235119/markets/related/straight",
+          "claim": "Two-way de-vigged line: 44.9% Top Esports.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -4252,10 +4290,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.7571,
-      "prob_team2": 0.2429,
+      "prob_team1": 0.7581,
+      "prob_team2": 0.2419,
       "pick": "Dplus KIA",
-      "pick_prob": 0.7571,
+      "pick_prob": 0.7581,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -4278,6 +4316,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639229309/markets/related/straight",
+            "prob_team1": 0.7592,
+            "prob_team2": 0.2408,
+            "decimal_team1": 1.2558,
+            "decimal_team2": 3.96,
+            "note": "Pinnacle series moneyline (matchup 1639229309)",
+            "start_utc": "2026-10-25T19:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -4318,19 +4369,19 @@
             "competition": "Polymarket: LoL: Dplus KIA vs Movistar KOI (BO3) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.7571,
-        "weighted_mean_team1": 0.7559,
+        "consensus_team1": 0.7581,
+        "weighted_mean_team1": 0.7569,
         "dispersion": 0.0541,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.5921,
-        "model_edge_team1": -0.165,
+        "model_edge_team1": -0.166,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 5.4 pts). Elo 1806 vs 1730 (70 / 50 games in 365d; competition bases 1690 / 1650).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 5.4 pts). Elo 1806 vs 1730 (70 / 50 games in 365d; competition bases 1690 / 1650).",
       "flags": [
         "MODEL_DISAGREES_WITH_MARKET"
       ],
@@ -4340,6 +4391,12 @@
           "url": "https://www.hotspawn.com/matches/dplus-kia-vs-movistar-koi-worlds-2026-main-event-1075819",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639229309/markets/related/straight",
+          "claim": "Two-way de-vigged line: 75.9% Dplus KIA.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -4410,10 +4467,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "alias-pair",
-      "prob_team1": 0.895,
-      "prob_team2": 0.105,
+      "prob_team1": 0.8956,
+      "prob_team2": 0.1044,
       "pick": "Gen.G",
-      "pick_prob": 0.895,
+      "pick_prob": 0.8956,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -4436,6 +4493,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235121/markets/related/straight",
+            "prob_team1": 0.8962,
+            "prob_team2": 0.1038,
+            "decimal_team1": 1.0642,
+            "decimal_team2": 9.19,
+            "note": "Pinnacle series moneyline (matchup 1639235121)",
+            "start_utc": "2026-10-25T22:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -4476,19 +4546,19 @@
             "competition": "Polymarket: LoL: Gen.G vs LYON (BO3) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.895,
-        "weighted_mean_team1": 0.8908,
+        "consensus_team1": 0.8956,
+        "weighted_mean_team1": 0.8924,
         "dispersion": 0.0299,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.6235,
-        "model_edge_team1": -0.2715,
+        "model_edge_team1": -0.2721,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 3.0 pts). Elo 1880 vs 1775 (67 / 44 games in 365d; competition bases 1690 / 1650).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 3.0 pts). Elo 1880 vs 1775 (67 / 44 games in 365d; competition bases 1690 / 1650).",
       "flags": [
         "MODEL_DISAGREES_WITH_MARKET"
       ],
@@ -4498,6 +4568,12 @@
           "url": "https://www.hotspawn.com/matches/gen-g-vs-lyon-worlds-2026-main-event-1075818",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235121/markets/related/straight",
+          "claim": "Two-way de-vigged line: 89.6% Gen.G.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -4568,10 +4644,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.8364,
-      "prob_team2": 0.1636,
+      "prob_team1": 0.8396,
+      "prob_team2": 0.1604,
       "pick": "T1",
-      "pick_prob": 0.8364,
+      "pick_prob": 0.8396,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -4594,6 +4670,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235122/markets/related/straight",
+            "prob_team1": 0.8428,
+            "prob_team2": 0.1572,
+            "decimal_team1": 1.1287,
+            "decimal_team2": 6.05,
+            "note": "Pinnacle series moneyline (matchup 1639235122)",
+            "start_utc": "2026-10-26T17:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -4634,19 +4723,19 @@
             "competition": "Polymarket: LoL: T1 vs CTBC Flying Oyster (BO1) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.8364,
-        "weighted_mean_team1": 0.8479,
+        "consensus_team1": 0.8396,
+        "weighted_mean_team1": 0.8464,
         "dispersion": 0.0568,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": true,
         "model_team1": 0.6433,
-        "model_edge_team1": -0.1931,
+        "model_edge_team1": -0.1963,
         "model_note": "Cross-league comparison; the model is anchored to competition tier priors, so the gap is indicative only."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 5.7 pts). Elo 1787 vs 1658 (79 / 33 games in 365d; competition bases 1690 / 1615).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 5.7 pts). Elo 1787 vs 1658 (79 / 33 games in 365d; competition bases 1690 / 1615).",
       "flags": [
         "CROSS_LEAGUE_MODEL"
       ],
@@ -4656,6 +4745,12 @@
           "url": "https://www.hotspawn.com/matches/t1-vs-ctbc-flying-oyster-worlds-2026-main-event-1075821",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639235122/markets/related/straight",
+          "claim": "Two-way de-vigged line: 84.3% T1.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -4808,10 +4903,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.3232,
-      "prob_team2": 0.6768,
+      "prob_team1": 0.318,
+      "prob_team2": 0.682,
       "pick": "Bilibili Gaming",
-      "pick_prob": 0.6768,
+      "pick_prob": 0.682,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -4834,6 +4929,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639227252/markets/related/straight",
+            "prob_team1": 0.3129,
+            "prob_team2": 0.6871,
+            "decimal_team1": 3.06,
+            "decimal_team2": 1.3937,
+            "note": "Pinnacle series moneyline (matchup 1639227252)",
+            "start_utc": "2026-10-26T18:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -4874,19 +4982,19 @@
             "competition": "Polymarket: LoL: Karmine Corp vs Bilibili Gaming (BO1) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.3232,
-        "weighted_mean_team1": 0.3159,
+        "consensus_team1": 0.318,
+        "weighted_mean_team1": 0.315,
         "dispersion": 0.0312,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.4046,
-        "model_edge_team1": 0.0814,
+        "model_edge_team1": 0.0865,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 3.1 pts). Elo 1808 vs 1884 (63 / 73 games in 365d; competition bases 1650 / 1690).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 3.1 pts). Elo 1808 vs 1884 (63 / 73 games in 365d; competition bases 1650 / 1690).",
       "flags": [
         "MODEL_DISAGREES_WITH_MARKET"
       ],
@@ -4896,6 +5004,12 @@
           "url": "https://www.hotspawn.com/matches/karmine-corp-vs-bilibili-gaming-worlds-2026-main-event-1075820",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639227252/markets/related/straight",
+          "claim": "Two-way de-vigged line: 31.3% Karmine Corp.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -5158,10 +5272,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.355,
-      "prob_team2": 0.645,
+      "prob_team1": 0.3532,
+      "prob_team2": 0.6468,
       "pick": "Team Secret Whales",
-      "pick_prob": 0.645,
+      "pick_prob": 0.6468,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -5184,6 +5298,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639229311/markets/related/straight",
+            "prob_team1": 0.3565,
+            "prob_team2": 0.6435,
+            "decimal_team1": 2.69,
+            "decimal_team2": 1.4902,
+            "note": "Pinnacle series moneyline (matchup 1639229311)",
+            "start_utc": "2026-10-26T19:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -5214,8 +5341,8 @@
             "source": "Polymarket",
             "source_key": "polymarket",
             "url": "https://polymarket.com/event/lol-los-tsw-2026-10-26",
-            "prob_team1": 0.355,
-            "prob_team2": 0.645,
+            "prob_team1": 0.35,
+            "prob_team2": 0.65,
             "decimal_team1": null,
             "decimal_team2": null,
             "note": "Polymarket: LoL: LOS vs Team Secret Whales (BO3) - Worlds Group Stage",
@@ -5224,19 +5351,19 @@
             "competition": "Polymarket: LoL: LOS vs Team Secret Whales (BO3) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.355,
-        "weighted_mean_team1": 0.3468,
-        "dispersion": 0.027,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "consensus_team1": 0.3532,
+        "weighted_mean_team1": 0.3486,
+        "dispersion": 0.0271,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.528,
-        "model_edge_team1": 0.173,
+        "model_edge_team1": 0.1748,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 2.7 pts). Elo 1769 vs 1745 (45 / 34 games in 365d; competition bases 1625 / 1615).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 2.7 pts). Elo 1769 vs 1745 (45 / 34 games in 365d; competition bases 1625 / 1615).",
       "flags": [
         "MODEL_DISAGREES_WITH_MARKET"
       ],
@@ -5246,6 +5373,12 @@
           "url": "https://www.hotspawn.com/matches/los-vs-team-secret-whales-worlds-2026-main-event-1075822",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639229311/markets/related/straight",
+          "claim": "Two-way de-vigged line: 35.6% LØS.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -5262,7 +5395,7 @@
         {
           "name": "Polymarket",
           "url": "https://polymarket.com/event/lol-los-tsw-2026-10-26",
-          "claim": "Two-way de-vigged line: 35.5% LØS.",
+          "claim": "Two-way de-vigged line: 35.0% LØS.",
           "source_kind": "market_publisher"
         },
         {
@@ -5316,10 +5449,10 @@
       "leaguepedia_page": "2026 Season World Championship/Main Event",
       "leaguepedia_url": "https://lol.fandom.com/wiki/2026_Season_World_Championship/Main_Event",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.3125,
-      "prob_team2": 0.6875,
+      "prob_team1": 0.3133,
+      "prob_team2": 0.6867,
       "pick": "Anyone's Legend",
-      "pick_prob": 0.6875,
+      "pick_prob": 0.6867,
       "method": "MARKET_CONSENSUS",
       "method_label": "Market consensus (2+ sources)",
       "confidence": "High",
@@ -5342,6 +5475,19 @@
       },
       "market": {
         "sources": [
+          {
+            "source": "Pinnacle",
+            "source_key": "pinnacle",
+            "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639227251/markets/related/straight",
+            "prob_team1": 0.3141,
+            "prob_team2": 0.6859,
+            "decimal_team1": 3.05,
+            "decimal_team2": 1.3968,
+            "note": "Pinnacle series moneyline (matchup 1639227251)",
+            "start_utc": "2026-10-26T22:15:00Z",
+            "start_delta_hours": 0.2,
+            "competition": "League of Legends - World Championship"
+          },
           {
             "source": "Unibet",
             "source_key": "unibet",
@@ -5382,19 +5528,19 @@
             "competition": "Polymarket: LoL: Team Liquid vs Anyone's Legend (BO3) - Worlds Group Stage"
           }
         ],
-        "consensus_team1": 0.3125,
-        "weighted_mean_team1": 0.3178,
+        "consensus_team1": 0.3133,
+        "weighted_mean_team1": 0.3167,
         "dispersion": 0.0283,
-        "source_count": 3,
-        "distinct_books": 3,
-        "source_rows": 3,
-        "time_spread_hours": 0.0,
+        "source_count": 4,
+        "distinct_books": 4,
+        "source_rows": 4,
+        "time_spread_hours": 0.2,
         "cross_league": false,
         "model_team1": 0.4727,
-        "model_edge_team1": 0.1602,
+        "model_edge_team1": 0.1594,
         "model_note": "Same-competition model comparison."
       },
-      "evidence": "Market consensus from Bovada, Polymarket, Unibet (3 independent book(s), dispersion 2.8 pts). Elo 1759 vs 1781 (44 / 59 games in 365d; competition bases 1650 / 1690).",
+      "evidence": "Market consensus from Bovada, Pinnacle, Polymarket, Unibet (4 independent book(s), dispersion 2.8 pts). Elo 1759 vs 1781 (44 / 59 games in 365d; competition bases 1650 / 1690).",
       "flags": [
         "MODEL_DISAGREES_WITH_MARKET"
       ],
@@ -5404,6 +5550,12 @@
           "url": "https://www.hotspawn.com/matches/team-liquid-vs-anyones-legend-worlds-2026-main-event-1075823",
           "claim": "Teams, tournament, start time (fixture list only; never a probability input).",
           "source_kind": "fixture_provider"
+        },
+        {
+          "name": "Pinnacle",
+          "url": "https://guest.api.arcadia.pinnacle.com/0.1/matchups/1639227251/markets/related/straight",
+          "claim": "Two-way de-vigged line: 31.4% Team Liquid.",
+          "source_kind": "market_publisher"
         },
         {
           "name": "Unibet",
@@ -5474,10 +5626,10 @@
       "leaguepedia_page": "LoL Game Changers/2026 Season/Playoffs",
       "leaguepedia_url": "https://lol.fandom.com/wiki/LoL_Game_Changers/2026_Season/Playoffs",
       "fixture_match": "exact-pair",
-      "prob_team1": 0.39,
-      "prob_team2": 0.61,
+      "prob_team1": 0.385,
+      "prob_team2": 0.615,
       "pick": "Vitality Rising Bees",
-      "pick_prob": 0.61,
+      "pick_prob": 0.615,
       "method": "MARKET_SINGLE",
       "method_label": "Single external market",
       "confidence": "Medium",
@@ -5508,8 +5660,8 @@
             "source": "Polymarket",
             "source_key": "polymarket",
             "url": "https://polymarket.com/event/lol-rb-mr-2026-10-27",
-            "prob_team1": 0.39,
-            "prob_team2": 0.61,
+            "prob_team1": 0.385,
+            "prob_team2": 0.615,
             "decimal_team1": null,
             "decimal_team2": null,
             "note": "Polymarket: LoL: Vitality Rising Bees vs Mental Rush (BO5) - LGC Rising Playoffs",
@@ -5518,8 +5670,8 @@
             "competition": "Polymarket: LoL: Vitality Rising Bees vs Mental Rush (BO5) - LGC Rising Playoffs"
           }
         ],
-        "consensus_team1": 0.39,
-        "weighted_mean_team1": 0.39,
+        "consensus_team1": 0.385,
+        "weighted_mean_team1": 0.385,
         "dispersion": 0.0,
         "source_count": 1,
         "distinct_books": 1,
@@ -5527,7 +5679,7 @@
         "time_spread_hours": null,
         "cross_league": false,
         "model_team1": 0.417,
-        "model_edge_team1": 0.027,
+        "model_edge_team1": 0.032,
         "model_note": "Same-competition model comparison."
       },
       "evidence": "Market consensus from Polymarket (1 independent book(s), dispersion 0.0 pts). Elo 1671 vs 1728 (65 / 75 games in 365d; competition bases 1480 / 1480).",
@@ -5542,7 +5694,7 @@
         {
           "name": "Polymarket",
           "url": "https://polymarket.com/event/lol-rb-mr-2026-10-27",
-          "claim": "Two-way de-vigged line: 39.0% Mental Rush.",
+          "claim": "Two-way de-vigged line: 38.5% Mental Rush.",
           "source_kind": "market_publisher"
         },
         {
