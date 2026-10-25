@@ -1,6 +1,8 @@
 {
- "checked_at": "2026-10-25T14:45:38.524426Z",
+ "checked_at": "2026-10-25T15:19:44.983409Z",
  "fixture_count": 156,
+ "fixture_snapshot_at": "2026-10-25T15:01:00.334336Z",
+ "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [
   "OddsDigger upcoming LoL board"
@@ -36,7 +38,7 @@
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4583579,
+   "bytes": 4586991,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -78,29 +80,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -116,20 +99,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
@@ -138,7 +121,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -149,6 +132,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=GB&useCombined=true"
@@ -250,29 +252,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -288,20 +271,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
@@ -310,7 +293,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -321,6 +304,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true"
@@ -422,29 +424,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -460,20 +443,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
@@ -482,7 +465,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -493,6 +476,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=SE&useCombined=true"
@@ -594,29 +596,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -632,20 +615,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
@@ -654,7 +637,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -665,6 +648,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=IT&useCombined=true"
@@ -766,29 +768,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -804,20 +787,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
@@ -826,7 +809,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -837,6 +820,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=NL&useCombined=true"
@@ -938,29 +940,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -976,20 +959,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
@@ -998,7 +981,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -1009,6 +992,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=FR&useCombined=true"
@@ -1110,29 +1112,10 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
-     "team_a": "TOP Esports",
-     "team_b": "G2 Esports",
-     "competition": "World Championship",
-     "start": "2026-10-25T17:00:00Z",
-     "decimal_a": 2.08,
-     "decimal_b": 1.67,
-     "matched_fixture": {
-      "id": "1075816",
-      "team1": "Top Esports",
-      "team2": "G2 Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T18:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
-    },
-    {
      "team_a": "Hanwha Life Esports",
      "team_b": "Invictus Gaming",
      "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
+     "start": "2026-10-25T17:00:00Z",
      "decimal_a": 1.29,
      "decimal_b": 3.3,
      "matched_fixture": {
@@ -1148,20 +1131,20 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
+     "team_a": "TOP Esports",
+     "team_b": "G2 Esports",
      "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
+     "start": "2026-10-25T18:00:00Z",
+     "decimal_a": 2.08,
+     "decimal_b": 1.67,
      "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
+      "id": "1075816",
+      "team1": "Top Esports",
+      "team2": "G2 Esports",
       "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
+      "start_utc": "2026-10-25T18:00:00Z",
       "had_market": true,
-      "name_score": 0.95
+      "name_score": 1.0
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
@@ -1170,7 +1153,7 @@
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -1181,6 +1164,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=PL&useCombined=true"
@@ -1282,6 +1284,25 @@
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [
     {
+     "team_a": "Hanwha Life Esports",
+     "team_b": "Invictus Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T17:00:00Z",
+     "decimal_a": 1.29,
+     "decimal_b": 3.3,
+     "matched_fixture": {
+      "id": "1075817",
+      "team1": "Invictus Gaming",
+      "team2": "Hanwha Life Esports",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T17:00:00Z",
+      "had_market": true,
+      "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
+    },
+    {
      "team_a": "TOP Esports",
      "team_b": "G2 Esports",
      "competition": "World Championship",
@@ -1301,48 +1322,10 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
     },
     {
-     "team_a": "Hanwha Life Esports",
-     "team_b": "Invictus Gaming",
-     "competition": "World Championship",
-     "start": "2026-10-25T18:00:00Z",
-     "decimal_a": 1.29,
-     "decimal_b": 3.3,
-     "matched_fixture": {
-      "id": "1075817",
-      "team1": "Invictus Gaming",
-      "team2": "Hanwha Life Esports",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T17:00:00Z",
-      "had_market": true,
-      "name_score": 1.0
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
-    },
-    {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
-     "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
-     "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
-    },
-    {
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -1353,6 +1336,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=AU&useCombined=true"
@@ -1492,29 +1494,10 @@
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
     },
     {
-     "team_a": "Gen.G Esports",
-     "team_b": "Lyon Gaming",
-     "competition": "World Championship",
-     "start": "2026-10-25T19:00:00Z",
-     "decimal_a": 1.07,
-     "decimal_b": 7.5,
-     "matched_fixture": {
-      "id": "1075818",
-      "team1": "Gen.G",
-      "team2": "LYON",
-      "tournament": "Worlds 2026 Main Event",
-      "start_utc": "2026-10-25T22:00:00Z",
-      "had_market": true,
-      "name_score": 0.95
-     },
-     "note": "",
-     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
-    },
-    {
      "team_a": "Dplus KIA",
      "team_b": "Movistar KOI",
      "competition": "World Championship",
-     "start": "2026-10-25T22:00:00Z",
+     "start": "2026-10-25T19:00:00Z",
      "decimal_a": 1.27,
      "decimal_b": 3.45,
      "matched_fixture": {
@@ -1525,6 +1508,25 @@
       "start_utc": "2026-10-25T19:00:00Z",
       "had_market": true,
       "name_score": 1.0
+     },
+     "note": "",
+     "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
+    },
+    {
+     "team_a": "Gen.G Esports",
+     "team_b": "Lyon Gaming",
+     "competition": "World Championship",
+     "start": "2026-10-25T22:00:00Z",
+     "decimal_a": 1.07,
+     "decimal_b": 7.5,
+     "matched_fixture": {
+      "id": "1075818",
+      "team1": "Gen.G",
+      "team2": "LYON",
+      "tournament": "Worlds 2026 Main Event",
+      "start_utc": "2026-10-25T22:00:00Z",
+      "had_market": true,
+      "name_score": 0.95
      },
      "note": "",
      "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=ZZ&useCombined=true"
@@ -1734,7 +1736,7 @@
      },
      {
       "sport_id": 109,
-      "status": 203
+      "status": 0
      }
     ]
    },
@@ -1774,7 +1776,7 @@
      },
      {
       "sport_id": 109,
-      "status": 203
+      "status": 0
      }
     ]
    },
@@ -1855,7 +1857,7 @@
     "events": 14,
     "odds_tokens": 28,
     "day_headings": 4,
-    "excerpt": "<!DOCTYPE html> <html lang=\"en-GB\"> <head> <meta name=\"csrf-param\" content=\"_csrf\"> <meta name=\"csrf-token\" content=\"ZnfPVzWtwUqSb8z2oOa4tsqHR3gHOtTUF9IoHFG3E_RWHYU6QcOILPYeuYT0v-rDlapqQCpRvKBZkUloK_thrg==\"> <title>Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom</title> <link rel=\"stylesheet\" href=\"/static/desktop/site_1/v2/css/main.min.css?v=1789562510\"> <meta charset=\"UTF-8\"> <meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> <meta name=\"viewport\" content=\"width=1244\"> <meta name=\"format-detection\" content=\"telephone=no\"> <meta name=\"HandheldFriendly\" content=\"true\"> <meta name=\"theme-color\" content=\"#ffffff\"> <meta name=\"description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:type\" content=\"article\"> <meta property=\"og:title\" content=\"Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom\"> <meta property=\"og:description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:url\" content=\"/e-sports/league-of-legends/upcoming\"> <meta property=\"og:image\" content"
+    "excerpt": "<!DOCTYPE html> <html lang=\"en-GB\"> <head> <meta name=\"csrf-param\" content=\"_csrf\"> <meta name=\"csrf-token\" content=\"81WUd5cK-aYhVcvr9jiKrzynZE1tquMqpFGNMmwTFjK5Y9g9z0OByhM3uYSnYMybBOUQCzfEvEfcAsRVLnF_cw==\"> <title>Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom</title> <link rel=\"stylesheet\" href=\"/static/desktop/site_1/v2/css/main.min.css?v=1789562510\"> <meta charset=\"UTF-8\"> <meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> <meta name=\"viewport\" content=\"width=1244\"> <meta name=\"format-detection\" content=\"telephone=no\"> <meta name=\"HandheldFriendly\" content=\"true\"> <meta name=\"theme-color\" content=\"#ffffff\"> <meta name=\"description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:type\" content=\"article\"> <meta property=\"og:title\" content=\"Upcoming LoL League of Legends E-Sports Betting Odds Comparison in 2026 | Bet on E-Sports with OddsDigger United Kingdom\"> <meta property=\"og:description\" content=\"Compare the latest betting odds for Upcoming LoL League of Legends matches in 2026 from the top rated bookies to find the best odds! Use OddsDigger United Kingdom to bet smartly!\"> <meta property=\"og:url\" content=\"/e-sports/league-of-legends/upcoming\"> <meta property=\"og:image\" content"
    },
    "error": null,
    "priced_records": 14,
@@ -2097,7 +2099,7 @@
     "Los Grandes vs Team Secret Whales @ 2026-10-26T19:00:00Z",
     "Team Liquid vs Anyone&#039;s Legend.Young @ 2026-10-26T22:00:00Z"
    ],
-   "verdict": "NOT promoted to a probability input (hand-verified 2026-10-25). It prices two fixtures the four production feeds miss. Row 1 agrees with production: Vitality Rising Bees vs Mental Rush, LGC Rising 2026 Playoffs, 7/17 vs 8/5 -> 64.8%/35.2%, against our published Polymarket-sourced 64.5%/35.5%. Row 2 contradicts it: Ground Zero vs Frank Esports, LCP 2027 Promotion, 1/67 vs 22/3 -> 89.1%/10.9% for Ground Zero, while our Elo says Frank Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an affiliate-rendered board override the model, so the disagreement is published on the Flagged page for review instead. research/betting-sources.md §24."
+   "verdict": "NOT promoted to a probability input (hand-verified 2026-10-25). It prices two fixtures the four production feeds miss. Row 1 agrees with production: Vitality Rising Bees vs Mental Rush, LGC Rising 2026 Playoffs, 7/17 vs 8/5 -> 64.8%/35.2%, against our published Polymarket-sourced 64.5%/35.5%. Row 2 contradicts it: Ground Zero vs Frank Esports, LCP 2027 Promotion, 1/67 vs 22/3 -> 89.1%/10.9% for Ground Zero, while our Elo says Frank Esports 61.7% and eGamersWorld (rating 448 v 530, 0-4 head-to-head) and rft.gg (0-9 head-to-head) both favour Frank Esports. One row in two agreeing is not enough to let an affiliate-rendered board override the model, so the disagreement is published on the Flagged page for review instead. research/betting-sources.md §26."
   },
   {
    "name": "Prime League official (organizer)",
@@ -2138,7 +2140,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366116,
+   "bytes": 366114,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
@@ -2155,7 +2157,7 @@
    "kind": "established-sportsbook",
    "url": "https://sportsbetting.ag/sportsbook/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5866,
+   "bytes": 5845,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -2240,7 +2242,7 @@
    "kind": "aggregator-page",
    "url": "https://egamersworld.com/lol/bets",
    "http_status": 403,
-   "bytes": 5740,
+   "bytes": 5718,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -2274,7 +2276,7 @@
    "kind": "aggregator-page",
    "url": "https://ggscore.com/en/lol/matches",
    "http_status": 403,
-   "bytes": 5714,
+   "bytes": 5693,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -2325,7 +2327,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
    "http_status": 403,
-   "bytes": 5850,
+   "bytes": 5849,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -2426,18 +2428,18 @@
    "name": "Rivalry LoL",
    "kind": "esportsbook",
    "url": "https://www.rivalry.com/lol",
-   "http_status": 503,
-   "bytes": 1591,
+   "http_status": 404,
+   "bytes": 65054,
    "is_json": false,
-   "lol_mentions": null,
-   "error": "HTTP 503",
+   "lol_mentions": 1,
+   "error": "HTTP 404",
    "priced_records": 0,
    "records_matched_to_fixtures": 0,
    "fixtures_matched": 0,
    "fixtures_matched_and_previously_unpriced": 0,
    "samples": [],
    "records_not_matched": [],
-   "verdict": "not usable from CI (HTTP 503)"
+   "verdict": "not usable from CI (HTTP 404)"
   }
  ],
  "rule": "A candidate is promoted into scripts/fetch_markets.py only when it returns structured two-way per-match prices for fixtures in the published list and the sample rows are re-checked by hand. Status-only probes never contribute a price."
