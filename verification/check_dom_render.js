@@ -105,7 +105,7 @@ function assertPicks(win, selector, label, expected) {
   const nodes = Array.from(win.document.querySelectorAll(selector));
   check(`${label}: rendered ${expected} row(s)`, nodes.length === expected,
         `found ${nodes.length}, payload has ${expected}`);
-  let badPick = 0, badProb = 0, noSource = 0;
+  let badPick = 0, badProb = 0, badPickPct = 0, noSource = 0;
   nodes.forEach((node) => {
     const text = node.textContent;
     const pill = node.querySelector(".pick-pill");
@@ -113,16 +113,25 @@ function assertPicks(win, selector, label, expected) {
     const named = matches.filter((m) => text.includes(m.team1) && text.includes(m.team2));
     // The same pair can be listed twice (different competitions), so accept any
     // candidate whose own pick matches the pill.
-    if (!named.length || !named.some((m) => pillText.includes(m.pick))) badPick++;
+    const candidates = named.filter((m) => pillText.includes(m.pick));
+    if (!candidates.length) badPick++;
     else {
-      const bad = named.filter((m) => Math.abs((m.prob_team1 || 0) + (m.prob_team2 || 0) - 1) > 0.001);
-      if (bad.length) badProb++;
+      const valid = candidates.filter((m) => Math.abs((m.prob_team1 || 0) + (m.prob_team2 || 0) - 1) <= 0.001);
+      if (!valid.length) badProb++;
+      const shownPickPct = (pillText.match(/[0-9]+(?:\.[0-9]+)?%/) || [])[0];
+      const matchesShownTeamPct = valid.some((m) => {
+        const displayed = node.querySelector(m.pick === m.team1 ? ".p1" : ".p2");
+        const displayedPct = displayed && (displayed.textContent.match(/[0-9]+(?:\.[0-9]+)?%/) || [])[0];
+        return !!displayedPct && displayedPct === shownPickPct;
+      });
+      if (!matchesShownTeamPct) badPickPct++;
     }
     const links = Array.from(node.querySelectorAll("a[href^='http']"));
     if (!links.length) noSource++;
   });
   check(`${label}: every row's pick is one of the two teams`, badPick === 0, `${badPick} bad`);
   check(`${label}: both probabilities sum to 100%`, badProb === 0, `${badProb} bad`);
+  check(`${label}: pick pill matches the picked team's displayed probability`, badPickPct === 0, `${badPickPct} mismatched`);
   check(`${label}: every row links an external source`, noSource === 0, `${noSource} without link`);
 }
 

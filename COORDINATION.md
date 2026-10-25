@@ -1,17 +1,31 @@
 # Coordination Board
 
-## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
+## Session `arena/52743a08-lolhotspawn2` — 2026-10-25 (takeover + full validation)
 
-No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
+**Takeover:** The prior T21–T24 claim by `arena/df8a86d2` is dated 2026-10-24 and has no commits on this active branch; it is older than 60 minutes. Taking over its outstanding goals. Per Arena session constraints, work remains on `arena/52743a08-lolhotspawn2` (the fixed session branch); no alternate branch will be created.
 
 | Task | Status | Owner | Files (claimed scope) |
 |---|---|---|---|
-| T21 Full re-verification of the current payload line-by-line: run all unit suites + `verify_site.py`, coverage reconciliation, spot-check priced rows against their cited official sources, mobile/exec-summary link audit | claimed | arena/df8a86d2 | `verification/**`, `audit/**`, `scripts/verify_site.py` (fixes only if a check is wrong) |
-| T22 Fresh source research for low-tier / unpriced matches (established LoL betting sites → esportsbooks → esports betting lines → community), update the research log with link-verified results | claimed | arena/df8a86d2 | `research/betting-sources.md`, `scripts/probe_sources.py` |
-| T23 Site usability pass: executive summary with in-site links to the picks list, unresolved/limitations section reachable from the summary, phone/mobile readability at 390 px | claimed | arena/df8a86d2 | `docs/**` |
-| T24 Integration: run the live pipeline on this branch, re-verify, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge result here | claimed | arena/df8a86d2 | `COORDINATION.md` (board entries), `docs/data/picks.json` (generated) |
+| T21 Full re-verification: tests, payload coverage, source integrity, mobile and links | needs review | arena/52743a08 | `verification/**`, `audit/**`, `scripts/verify_site.py` (fixes only if needed) |
+| T22 Source/research audit for unpriced fixtures and documented limitations | done | arena/52743a08 | `research/betting-sources.md`, `scripts/probe_sources.py` |
+| T23 Executive-summary navigation, unresolved section, mobile readability | done | arena/52743a08 | `docs/**` (audit only; no code changes needed) |
+| T24 Integration and publication | in progress | arena/52743a08 | `COORDINATION.md` |
 
-Any session that needs a file in this scope must log a request here instead of editing it.
+Claim push (2026-10-25): take-over claim for stale T21–T24 scope. Previous claim entry remains in historical log below; no files were edited outside this scope.
+
+### T21–T24 validation results (2026-10-25)
+
+* Current committed payload: `docs/data/picks.json`, generated `2026-10-25T10:41:50Z`; **156/156** upcoming Hotspawn LoL fixtures priced, **0 missing**, **0 unresolved**. Method mix: 9 external-line rows (8 market consensus + 1 single market), 92 Elo, 53 Elo/standings blend, 2 thin-history Elo. Ten rows are flagged low-confidence. These are different concepts: no sportsbook line does not mean no model pick.
+* The payload's own external-source probe was generated at `2026-10-25T10:41:50Z`: 37 candidates checked, 18 reachable, 6 structured JSON, 4 structured LoL feeds. The only probabilities contributed are from the four disclosed production feeds (Pinnacle, Unibet/Kambi, Bovada and Polymarket); other candidate probes remain diagnostic and do not affect picks. Full observed source table is in the payload and `docs/unresolved.html`/Methodology page; background line-by-line source research is in `research/betting-sources.md` §§17–19 and `research/line-by-line-audit-2026-10-24.md`.
+* Verification: `scripts/verify_site.py` **44 PASS / 0 FAIL / 0 WARN / 1 SKIP** (D18 skipped because no Leaguepedia MatchSchedule snapshot was supplied); D21 reconciles 156 upcoming lobby entries to 156 picks with no omissions or extras; W1 confirms a 6-hour production cadence. `verification/test_verifier.py` 45/45, `verification/check_dom_contract.py` PASS, its negative suite 7/7, standings model checks PASS, sportsbook/entity checks 17/17, `audit/test_model.py` 23/23, and the jsdom end-to-end render check **54/54 after the UI fix below**. The test suites are designed to run as scripts; `unittest discover` is not their supported runner and raises on `test_standings_model.py`'s top-level exit, so the documented direct invocations were used.
+* Mobile/summary audit: all seven pages have responsive viewport and shared navigation; the executive summary renders four in-site jumps to picks/next-24h/leagues/unresolved, shows picks before unresolved, and includes per-league limitations. Render harness confirmed 156 pick rows with source links, responsive summary/table content, and the separate unresolved section.
+
+### Live-page inconsistency found and corrected
+
+A live fetch of the published executive summary showed AceGaming Hearts vs Emperors Bremen with the team probability **56.3%** but the selected pick pill at **56.4%** (public row: https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/match.html?id=1075747). Cause: team-side percentages were rounded via `pctPair()` to preserve a 100.0% sum, while the pick pill independently rounded the raw `pick_prob`. The fix in `docs/assets/app.js` renders the chosen side from the same `pctPair()` result. `verification/check_dom_render.js` now asserts that each picks-table pill exactly matches the chosen team's displayed percentage. This is non-vacuous: reverting the renderer reproduced 7 mismatched rows and failed the gate (53/54); the fixed renderer passes 54/54. The fix is in the current PR and is not live until it is merged and Pages deploys.
+* Source verification limitation: no fresh manual reopening of all source pages was claimed in this session. The current source-probe snapshot is from the 6-hour live pipeline run, and the prior hand-opened spot checks remain dated 2026-10-24; exact probabilities can change between refreshes. `D18` remains skipped in this local run, so all 156 times were not independently rechecked against a fresh Leaguepedia schedule snapshot. These are explicitly retained as review limitations, not presented as new verification.
+* GitHub Actions/PR status lookup returned HTTP 403 rate-limit from `gh run list` on 2026-10-25T14:11Z. No claim of a new Pages deployment or Actions run is made from this local audit; integration will be recorded only if GitHub accepts the PR and the deploy can be confirmed.
+
 
 ## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (done, merged)
 | Task | Status | Owner | Files |
