@@ -1482,3 +1482,20 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+---
+
+## Session `arena/f1cddda8-lolhotspawn2` — 2026-10-25 (claim, pushed before work)
+
+**Claim (commit in this session, pushed before any work started):** no other session holds an open claim younger
+than 60 minutes as of 2026-10-25 10:5x UTC; the most recent board entries are `arena/26d1e778` (2026-10-24) and
+`arena/df8a86d2` (2026-10-24), both closed. Branch `arena/f1cddda8-lolhotspawn2` is at `2173cc9`, identical to
+`origin/main` (`git rev-list --left-right --count origin/main...HEAD` = `0 0`), so no foreign work is in flight.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Fresh source research for the non-featured (low-tier) fixtures: new bookmaker / esportsbook / aggregator / community candidates that no earlier session probed, each recorded with what was observed and a citation; new candidates added to the production reachability probe so every 6-hour run publishes their status | in progress | arena/f1cddda8 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/probe_sources.py`, `data/diag/source_probe.json` (generated) |
+| T28 Mobile & executive-summary usability pass at 390 px: confirm the summary's in-site pick links, the separate unresolved + limitations section, and phone readability of every probability; fix only what the audit shows broken | unclaimed | arena/f1cddda8 | `docs/**`, `verification/mobile_audit.md`, `verification/check_dom_render.js` |
+| T29 Integration: run the live pipeline on this branch, re-verify line by line, open PR → `main`, merge without waiting, confirm GitHub Pages, record PR + merge result here | unclaimed | arena/f1cddda8 | `COORDINATION.md` (board entries), generated artifacts under `docs/data/`, `verification/report.json` |
+
+Any session needing a file in this scope must log a request here instead of editing it.
