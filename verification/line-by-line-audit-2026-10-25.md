@@ -1,8 +1,8 @@
 # Line-by-line payload audit — 2026-10-25 (session `arena/b5f85948`)
 
-- Payload: `docs/data/picks.json`, generated `2026-10-25T10:41:50.709986Z` (3.7 h old at audit time)
+- Payload: `docs/data/picks.json`, generated `2026-10-25T14:29:14.491229Z` (0.1 h old at audit time)
 - Rows: **156** · declared fixtures: **156**
-- Next scheduled update: `2026-10-25T16:41:50.709986Z` · stale after: `2026-10-25T18:41:50.709986Z`
+- Next scheduled update: `2026-10-25T20:29:14.491229Z` · stale after: `2026-10-25T22:29:14.491229Z`
 
 ## Method and confidence mix
 
@@ -10,22 +10,22 @@
 |---|---:|
 | `MARKET_CONSENSUS` | 8 |
 | `MARKET_SINGLE` | 1 |
-| `MODEL_ELO` | 92 |
-| `MODEL_ELO_STANDINGS` | 53 |
+| `MODEL_ELO` | 91 |
+| `MODEL_ELO_STANDINGS` | 54 |
 | `MODEL_ELO_THIN` | 2 |
 
-Confidence: {'High': 23, 'Medium': 123, 'Low': 10}  
+Confidence: {'High': 23, 'Medium': 122, 'Low': 11}  
 Upcoming starts: 156 · already-started rows in payload: 0  
-Bookmaker source citations: 33 · Leaguepedia citations: 209 · Hotspawn fixture citations: 156
+Bookmaker source citations: 25 · Leaguepedia citations: 210 · Hotspawn fixture citations: 156
 
 ## Per-competition tally (re-derived from rows)
 
 | Competition | Rows | Tier labels seen |
 |---|---:|---|
-| PRM 3rd Division 26-27 Fall | 60 | WAITING FOR INFORMATION |
+| PRM 3rd Division 26-27 Fall | 59 | WAITING FOR INFORMATION |
 | PRM 2nd Division 26-27 Fall | 36 | C |
 | Tunisian Super League 2026 | 20 | WAITING FOR INFORMATION |
-| RIVALS LEAGUE Season 2 | 14 | WAITING FOR INFORMATION |
+| RIVALS LEAGUE Season 2 | 15 | WAITING FOR INFORMATION |
 | Worlds 2026 Main Event | 8 | S |
 | 4 Nations 2026 Halloween Heist | 4 | WAITING FOR INFORMATION |
 | Arabian League 2nd Division 2026 Summer | 4 | WAITING FOR INFORMATION |
@@ -47,9 +47,9 @@ Bookmaker source citations: 33 · Leaguepedia citations: 209 · Hotspawn fixture
 - `1079052` ex-A41G vs Babos Gaming — cancelled: Hotspawn status is 'cancelled'; not priced (source present)
 - `1079061` BvP vs ex-A41G — cancelled: Hotspawn status is 'cancelled'; not priced (source present)
 
-## External-source probe (37 rows in this payload)
+## External-source probe (50 rows in this payload)
 
-Reachable (HTTP 200): 18/37. Every row has an https URL, integer status and an auto-generated verdict; no row carries a probability. Full table on the Unresolved page.
+Reachable (HTTP 200): 23/50. Every row has an https URL, integer status and an auto-generated verdict; no row carries a probability. Full table on the Unresolved page.
 
 ## Verdict
 

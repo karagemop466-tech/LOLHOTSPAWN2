@@ -961,26 +961,41 @@ per-match two-way price (JSON, not an HTML shell), (b) a sample price is human-v
 required. Until all four hold, the candidate stays probe-only and nothing it returns touches a probability.
 No candidate added on 2026-10-25 meets (a) from a CI runner; the measured evidence is below.
 
-### 20.4 Live CI measurements (GitHub Actions runner)
+### 20.4 Live CI measurements (GitHub Actions runner, run [40202286713](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202286713), 2026-10-25T14:29Z)
 
-_Filled from the branch pipeline run; one polite GET per candidate, recorded verbatim in
-`data/diag/market_source_probe.json` and published in the payload's `market_probe` block._
+One polite GET per candidate (12 s timeout, open-source research bot UA), recorded verbatim in
+`data/diag/market_source_probe.json` and published in the payload's `market_probe` block (50 sources total,
+23 reachable, 6 JSON, 4 JSON with LoL references — the same four production-scale feeds as before).
 
 | Source | HTTP | JSON? | LoL mentions | Verdict (auto-generated) |
 |---|---|---|---|---|
-| bwin LoL board | _pending CI_ | | | |
-| bwin competitions | _pending CI_ | | | |
-| DraftKings esports hub | _pending CI_ | | | |
-| FanDuel esports nav | _pending CI_ | | | |
-| Betsson LoL page | _pending CI_ | | | |
-| NordicBet esports | _pending CI_ | | | |
-| Tipico DE hub | _pending CI_ | | | |
-| MyBookie esports | _pending CI_ | | | |
-| Unikrn | _pending CI_ | | | |
-| Loot.bet | _pending CI_ | | | |
-| Cyber.bet | _pending CI_ | | | |
-| Duelbits sports | _pending CI_ | | | |
-| Riot schedule page | _pending CI_ | | | |
+| bwin LoL board | 403 | no | – | blocked to automated requests — no line can be read |
+| bwin competitions | 403 | no | – | blocked to automated requests — no line can be read |
+| DraftKings esports hub | 200 | no | 0 | reachable HTML shell; no server-rendered per-match price — human cross-check only |
+| FanDuel esports nav | 200 | no | 0 | reachable HTML shell; no server-rendered per-match price — human cross-check only |
+| Betsson LoL page | 202 | no | – | interstitial/redirect (consent/geo) instead of the feed — no line can be read |
+| NordicBet esports | 202 | no | – | interstitial/redirect (consent/geo) instead of the feed — no line can be read |
+| Tipico DE hub | 200 | no | 0 | reachable HTML with **no esports content at all** — empirical match for the GlüStV prohibition in §20.1 |
+| MyBookie esports | 403 | no | – | blocked to automated requests — no line can be read |
+| Unikrn | 200 | no | 0 | reachable HTML shell; odds are client-rendered — no price parsed |
+| Loot.bet | 0 | no | – | not reachable from the CI runner (network error) — nothing used |
+| Cyber.bet | 0 | no | – | not reachable from the CI runner (network error) — nothing used |
+| Duelbits sports | 403 | no | – | blocked to automated requests — no line can be read |
+| Riot schedule page (results) | 200 | no | 26 | reachable official schedule; fixture-time cross-check only, never a probability input |
+
+**Read-out.** Zero of the twelve new market candidates returned a structured per-match LoL price. The pattern
+is uniform and explains itself from the evidence: the regulated majors answer with bot blocks (403), consent
+interstitials (202) or client-rendered HTML shells whose initial payload contains no LoL market (DraftKings,
+FanDuel, Unikrn, Tipico = 0 LoL mentions); the two Curacao specialists did not resolve at all from the runner;
+bwin — whose own indexed board demonstrably carries Worlds prices — sits behind a 403 for automated clients.
+Tipico's 200-with-zero-esports reading is the live confirmation of the documented German legal bar. No candidate
+meets the promotion bar in §20.3, so none is used in any probability and the 147 model-only rows are unchanged.
+
+**Transient source health observed in the same run.** Bovada's coupon feed answered HTTP 200 with no event
+groups (`sources_status: error, count=0`); it was healthy (8 records) at the 10:40Z run. The pipeline degraded
+gracefully: every `MARKET_CONSENSUS` row still carries three independent books (Pinnacle, Unibet, Polymarket),
+the `MARKET_SINGLE` row is unchanged, and the condition is published per run in `sources_status` rather than
+hidden. The 6-hour refresh re-measures all four production feeds automatically.
 
 ### 20.5 Conclusion for the 147 model-only rows
 
