@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-25T14:27:46.165461+00:00_
-156 matches · MODEL_LEAGUE_PRIOR: 0 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO_THIN: 2 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0 · MODEL_ELO: 91 · UNRESOLVED: 0 · MODEL_ELO_STANDINGS: 54 · MARKET_SINGLE: 1
+_2026-10-25T14:32:31.831273+00:00_
+156 matches · UNRESOLVED: 0 · MODEL_ELO_THIN: 2 · MODEL_ELO: 91 · MARKET_SINGLE: 1 · MARKET_BOOKS: 0 · MODEL_ELO_STANDINGS: 54 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · MODEL_LEAGUE_PRIOR: 0 · MODEL_STANDINGS: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:24:11.108786Z (0.1h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:32:09.815165Z (0.0h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 156 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -24,9 +24,9 @@ _2026-10-25T14:27:46.165461+00:00_
 | D11 declared count equals number of rows | PASS | declared=156, rows=156 |
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=156, priced=156, missing=0, extra=0, excluded=9, leaked=0 |
-| D22 external-source probe rows are sourced and never carry a probability | PASS | 39 probed source(s), each with an https link, HTTP status and verdict |
+| D22 external-source probe rows are sourced and never carry a probability | PASS | 46 probed source(s), each with an https link, HTTP status and verdict |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | SKIP | no --leaguepedia-schedule snapshot supplied |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T14:30:13.873443+00:00 (0.0h old). |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | D23 no committed artifact contains git conflict markers | PASS | no conflict markers in docs/, data/, verification/, research/, scripts/, .github/ |
 | S1 all required site files exist | PASS | 10 files present |
@@ -50,6 +50,7 @@ _2026-10-25T14:27:46.165461+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
+| X1 external links reachable (official-source links resolve) | WARN | 19/25 returned 2xx/3xx; 5 blocked by the host; 0 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -68,6 +69,13 @@ _2026-10-25T14:27:46.165461+00:00_
 | REQ10 | Automatic refresh every 4-8 hours, no manual input | PASS | W1, W2, D1 |
 | REQ11 | Site integrity: no broken internal links, root entry point works | PASS | S1, S6, S8 |
 | REQ12 | Third-party sources attributed where their data is used | PASS | S5c |
+
+**X1 items:**
+- https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
+- https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403
+- https://sports-api.cloudbet.com/pub/v2/odds/sports -> 401
+- https://sports.bwin.de/en/sports/esports -> 403
+- https://www.neobet.de/sportwetten/esports -> 403
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
