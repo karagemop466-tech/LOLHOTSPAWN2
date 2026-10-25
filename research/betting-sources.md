@@ -1181,3 +1181,96 @@ Flagged for manual review (non-blocking): **F23.1** Cloudbet's empty PRM 2nd Div
 board vs its pricing claim — worth a human re-check on a PRM matchday before anyone
 concludes they never price it; **F23.2** ESI's model percentages must not be mistaken for
 book prices by a future session — their match pages distinguish the two explicitly.
+
+---
+
+## 23. Refresh 2026-10-25 — a real coverage hole (found + fixed) and a fresh per-competition book check (session `arena/0e9a9550`)
+
+Brief: every match listed on Hotspawn must have a pick; where the featured (bookmaker-priced) picks cannot
+resolve a match, find another source; and keep the unresolved/limitations section in the executive summary.
+
+### 23.1 Coverage hole found in the live payload (2026-10-25)
+
+Payload under test: `docs/data/picks.json` generated **2026-10-25T10:41:50Z** — 156 fixtures, 156 priced,
+0 unresolved, 9 market rows, `coverage_reconciliation.lobby_upcoming_missing_from_priced: []`.
+
+Reading the lobby as a visitor on 2026-10-25 showed one upcoming fixture that the payload did **not** price and
+did **not** list as an exclusion:
+
+| Fixture | Competition | Start (UTC) | Hotspawn match page | In payload? |
+|---|---|---|---|---|
+| Team Lucidity Esports vs **Fritt Fall** | RIVALS LEAGUE Season 2 | 2026-10-31T17:30Z | https://www.hotspawn.com/matches/team-lucidity-esports-vs-fritt-fall-rivals-league-season-2-1090065 | **No pick, no exclusion entry** |
+
+Root cause (read from `scripts/fetch_hotspawn.py`): the priced set was built by iterating the **fixtures API**
+rows only. The lobby transfer state was used just as a membership filter and for match permalinks. A fixture
+that the lobby lists but the API payload does not contain was therefore never iterated, never priced and never
+written to `excluded_fixtures` — it disappeared silently. (The reconciliation block could not catch it either,
+because `lobby_upcoming_missing_from_priced` only knows about ids the priced loop has seen.)
+
+Fix (`scripts/fetch_hotspawn.py`, `merge_fixture_sources()`): the sourced set is now the **union** of the
+fixtures API and the lobby transfer state, keyed by fixture id, with the API row winning when both carry one.
+New reconciliation fields `lobby_only_in_union` / `lobby_only_priced` record exactly which ids came from that
+path, and the payload's `rule` string states the union rule. Guard rails added in the same change:
+
+* `verification/test_lobby_union.py` — 11 assertions on the merge (lobby-only ids are added and reported,
+  duplicates collapse, the API row wins, empty/None inputs are safe).
+* `audit/coverage_reconcile.py` now runs **after every refresh** (both `update-picks.yml` and
+  `pipeline-test.yml`) and re-reads the lobby and the API with its own parser.
+* `audit/coverage_gate.py` fails the refresh only when a fixture listed on Hotspawn that starts more than 30
+  minutes after the audit has neither a pick nor a documented exclusion (fixtures that appear inside that
+  window, and transient network failures, are warnings so a good refresh is never discarded).
+
+**Live result (branch pipeline run, payload generated 2026-10-25T14:16:34Z).** The fixture is now priced:
+`Fritt Fall vs Team Lucidity Esports`, 2026-10-31T17:30Z, `MODEL_ELO_STANDINGS`, 60.0% / 40.0%, Medium
+confidence. The independent audit written by the same run (`audit/coverage_reconcile.json`) reports
+`required_future_fixtures: 165`, `published_matches: 156`, `missing_from_payload: 9`,
+`excluded_by_pipeline: 9` (all nine "Hotspawn status is 'cancelled'; not priced"), `unexplained_missing: []`,
+`coverage_ok: true`. The run also recorded `lobby_lol_listed: 234`, which equals the lobby header's own
+"All tiers (234)" on 2026-10-25 — an independent check of the fixture count.
+
+Two honest caveats: (a) at generation time the union added **no** rows (`lobby_only_in_union: []`), i.e. by
+14:16 the fixtures API had caught up with the lobby, so this run cannot prove the union path was the thing that
+priced the fixture — what it proves is that the priced set now matches the union of both sources with zero
+unexplained gaps, and that the silent-drop failure mode is closed and gated; (b) the earlier 10:41Z payload did
+not contain the id at all, which is the observation that motivated the fix.
+
+### 23.2 Books and esportsbooks re-checked for the competitions the featured picks cannot price (2026-10-25)
+
+Every row below is what the page returned to an unauthenticated visitor on 2026-10-25; the quoted text is
+verbatim. These are the competitions in the current fixture list with no bookmaker line: **PRM 2nd Division
+(36 fixtures), PRM 3rd Division (60), Tunisian Super League (20), RIVALS LEAGUE Season 2 (14), Arabian League
+2nd Division (4), 4 Nations Halloween Heist (4), Komplettligaen Playoffs (3), LCP 2027 Promotion (3), LigaGG
+CELOL A/B Playoffs (3), LGC Rising (1)**.
+
+| Source (type) | Link | What it showed on 2026-10-25 | Prices any of the above? |
+|---|---|---|---|
+| **OddsPortal** — League of Legends index (established odds aggregator) | https://www.oddsportal.com/esports/league-of-legends/ | The LoL index lists exactly one competition: “League of Legends World Championship (10)”. | **No** |
+| **OddsPortal** — Prime League (established odds aggregator) | https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ | “eSports League of Legends Prime League Next Matches will appear here as soon as bookmaker betting odds become available.” No priced fixture, and the page is the top Prime League, not 2nd/3rd Division. | **No** |
+| **bmbets** — LoL – Prime League 2nd Division (esports odds comparison) | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ | The competition URL exists but its live board lists only `League of Legends - Game Changers Rising (1)`, `LoL World Championship (9)` and `LoL - LCP (1)` — no Prime League 2nd Division match. | **No** |
+| **Cloudbet** — Prime League 2nd Division (esportsbook) | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division | “No Prime League 2nd Division events available — Check back later for the latest updates on upcoming matches.” Marketing copy claims the league is priced; the board is empty. | **No** |
+| **Betmonitor** — Prime League 2nd Division (odds comparison) | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 | The URL resolves to the generic odds hub (Spain La Liga, ATP, NBA highlights). No Prime League 2nd Division fixture or price was served. | **No** |
+| **Pinnacle / Unibet (Kambi) / Bovada / Polymarket** (production sources, re-requested every refresh) | see `market_probe` in the payload | Price only the Worlds fixtures (and the occasional LCP/LGC Rising line) — 9 of 156 rows in this snapshot. | Worlds/LCP/LGC only |
+
+Conclusion for this snapshot, stated the same way on the site: **no reachable established book, esportsbook,
+odds comparison or prediction market publishes a full-match two-way price for PRM 2nd/3rd Division, RIVALS
+LEAGUE Season 2, the Tunisian Super League, the Arabian League 2nd Division, 4 Nations, Komplettligaen, the
+LigaGG CELOL playoffs or LGC Rising.** The pick for those matches is therefore our own line, computed from
+Leaguepedia recorded series (`MatchSchedule`), the current split standings (`Standings`) and a competition
+prior, with the evidence page linked on every row — and with the limit of that evidence printed on
+`unresolved.html`. Cloudbet's empty board and bmbets' missing competition are the two cleanest
+counter-examples to the “just use the book line” assumption, and both are linked so they can be re-checked.
+
+### 23.3 Site changes that carry this into the product
+
+* The executive summary now opens with the picks and a six-target **quick-jump bar** (identical on all seven
+  pages), then the match list, then a new section
+  **“🧮 Matches without a featured betting line — how each pick is made”** containing the table above and a
+  per-competition table of what each model-only pick is built on, with the competition's results page linked.
+* Unresolved/limitations stays a **separate** section of the executive summary and its own page; the
+  per-league limits table and the per-refresh source table are collapsed into `<details>` so a phone reader
+  reaches the picks without scrolling past a wall of tables.
+* New verifier rules: **S18** (every page carries the same quick-jump bar, and the summary itself contains the
+  non-featured section with its source table) and **S19** (phone layout contract: `width=device-width` on every
+  page, a breakpoint at or below 430 px, no hard-coded width above 430 px). Both have negative self-tests in
+  `verification/test_verifier.py`, and the rendering of the new section is asserted in
+  `verification/check_dom_render.js`.

@@ -77,18 +77,14 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
                  "rivalsleague.gg", "komplettligaen.no")
-# Research/manual-review links published on the Methodology page. They are never a
-# probability input (no row cites them); they are listed so a reader can repeat the
-# search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-# 2026-10-25: cloudbet.com and bmbets.com were added after both were read by hand
-# for the Prime League 2nd Division question (Cloudbet: "No ... events available";
-# bmbets: no low-tier LoL board). They are cited only on Methodology as sources
-# that were checked and found empty — never a probability input.
+# Research/manual-review links (never a probability input). Two sessions extended this
+# list on 2026-10-25: pages checked for a Prime League / RIVALS / national-division line
+# (oddsportal, bmbets, cloudbet, betmonitor), esportsinsider, and the official organizers
+# cited for manual review. None of them may become a probability input.
 REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
-                "cloudbet.com", "bmbets.com", "esportsinsider.com",
-                # official tournament organizers cited for manual review (2026-10-25 audit)
-                "primeleague.gg", "rivalsleague.gg", "komplettligaen.no",
-                "tunesf.com", "cloudbet.github.io")
+                "oddsportal.com", "bmbets.com", "cloudbet.com", "esportsinsider.com",
+                "cloudbet.github.io", "primeleague.gg", "rivalsleague.gg",
+                "komplettligaen.no", "tunesf.com")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
@@ -1185,6 +1181,70 @@ def verify_structure(rep: Report, docs_dir: str) -> None:
         nav_problems.append(f"duplicate id(s): {', '.join(sorted(dup_bad)[:6])}")
     if header_bad:
         nav_problems.append(f"missing freshness slot (#updated/#freshness): {', '.join(sorted(header_bad)[:6])}")
+    # S16: the phone-first findability contract. Every page carries the same quick-jump
+    # bar, and the executive summary links (in-site) to the section that explains how the
+    # matches without a featured betting line are priced. Without this, the only route to
+    # the picks on a phone is the bottom nav, which is what readers said was confusing.
+    jump_sigs = {}
+    jump_bad = []
+    for pg in pages_in(docs_dir):
+        try:
+            with open(pg, encoding="utf-8", errors="replace") as fh:
+                html = fh.read()
+        except OSError:
+            continue
+        name = os.path.basename(pg)
+        jump_sigs[name] = nav_signature(html, "jumpbar")
+        if not jump_sigs[name]:
+            jump_bad.append(f"{name}: no .jumpbar")
+        elif len(jump_sigs[name]) < 4:
+            jump_bad.append(f"{name}: only {len(jump_sigs[name])} jump target(s)")
+    if len(set(jump_sigs.values())) > 1:
+        jump_bad.append("the quick-jump bar differs between pages")
+    index_path = os.path.join(docs_dir, "index.html")
+    index_html = open(index_path, encoding="utf-8", errors="replace").read() if os.path.exists(index_path) else ""
+    if 'id="nonfeatured"' not in index_html:
+        jump_bad.append("executive summary has no #nonfeatured section")
+    if 'href="index.html#nonfeatured"' not in index_html:
+        jump_bad.append("executive summary does not link to #nonfeatured")
+    nf_rows = index_html.count("<tr>", index_html.find('id="nonfeatured"') if 'id="nonfeatured"' in index_html else 0)
+    if 'id="nonfeatured"' in index_html and nf_rows < 4:
+        jump_bad.append(f"non-featured section has only {nf_rows} static source row(s)")
+    rep.add("S18", "every page has the same quick-jump bar; the summary explains non-featured picks in-site",
+            PASS if not jump_bad else FAIL,
+            f"{len(jump_sigs)} pages, {len(next(iter(jump_sigs.values()), ()))} jump targets, "
+            f"#nonfeatured present with a source table" if not jump_bad else "; ".join(jump_bad))
+
+    # S17: a phone cannot scroll past a fixed pixel width. Every page must declare
+    # width=device-width and the stylesheet must not hard-code a width above 430 px,
+    # which is wider than the smallest common phone viewport (390 px) plus margin.
+    wide = []
+    for m in re.finditer(r"(?<![\w-])((?:min-)?width)\s*:\s*(\d{3,})px", css_text):
+        prop, px = m.group(1), int(m.group(2))
+        before = css_text[max(0, m.start() - 60):m.start()]
+        after = css_text[m.end():m.end() + 2]
+        # `@media (min-width: 860px)` is a query condition, not a fixed layout width.
+        if "@media" in before.split("{")[-1] or after.lstrip().startswith(")"):
+            continue
+        if px > 430:
+            line = css_text[:m.start()].count("\n") + 1
+            wide.append(f"{prop}: {px}px (style.css:{line})")
+    vp_bad = [os.path.basename(pg) for pg in pages_in(docs_dir)
+              if "width=device-width" not in open(pg, encoding="utf-8", errors="replace").read()]
+    has_mobile_bp = bool(re.search(r"@media\s*\(max-width:\s*(\d{3})px", css_text)) and \
+        min(int(x) for x in re.findall(r"@media\s*\(max-width:\s*(\d{3})px", css_text)) <= 430
+    problems = []
+    if wide:
+        problems.append(f"fixed width above 430px: {', '.join(wide[:6])}")
+    if vp_bad:
+        problems.append(f"pages without width=device-width: {', '.join(vp_bad[:6])}")
+    if not has_mobile_bp:
+        problems.append("no phone breakpoint at or below 430px in style.css")
+    rep.add("S19", "phone layout contract: viewport meta, a <=430px breakpoint, no fixed width above 430px",
+            PASS if not problems else FAIL,
+            "390px-safe: device-width viewport on every page, phone breakpoint present, "
+            "no fixed width above 430px" if not problems else "; ".join(problems))
+
     rep.add("S12", "all pages share one navigation, freshness slot and unique ids",
             PASS if not nav_problems else FAIL,
             f"{len(tops)} pages, identical nav with {len(next(iter(tops.values()), ()))} "

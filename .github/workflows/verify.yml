@@ -32,6 +32,9 @@ jobs:
       - name: Verifier self-tests (each rule must fail on bad data)
         run: python3 verification/test_verifier.py
 
+      - name: Fixture-coverage union unit tests (lobby + fixtures API)
+        run: python3 verification/test_lobby_union.py
+
       - name: Verify data + site (offline)
         run: python3 scripts/verify_site.py --leaguepedia-schedule data/diag
 

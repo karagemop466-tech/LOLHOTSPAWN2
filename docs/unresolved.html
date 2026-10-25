@@ -40,6 +40,16 @@
     </ul>
   </nav>
 </header>
+<nav class="jumpbar" aria-label="Quick jumps">
+  <div class="wrap inner">
+    <a class="hot" href="picks.html">📋 All picks</a>
+    <a href="picks.html?filter=next24">⏰ Next 24 h</a>
+    <a href="index.html#nonfeatured">🧮 No book line</a>
+    <a href="leagues.html">🏆 By league</a>
+    <a href="unresolved.html">⚠️ Unresolved</a>
+    <a href="flagged.html">🚩 Flagged</a>
+  </div>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
@@ -108,6 +118,35 @@
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section class="card" id="lowtier-books" style="margin-top:20px">
+    <h3>Established books and esportsbooks checked for a low-tier line (2026-10-25)</h3>
+    <p class="small">These are the sources a reader would expect to price a Prime League, RIVALS, Tunisian or
+      Arabian fixture. Each was opened on 2026-10-25 and returned what is quoted below to an unauthenticated
+      visitor — the same finding the automated probe reaches every 6 hours in the table above.
+      <b>None of them publishes a full-match two-way price for a competition in this snapshot</b>, which is why
+      the pick for those matches is our own line. The full table (with the exact wording and a link per row) is
+      on the executive summary:
+      <a href="index.html#nonfeatured">Matches without a featured betting line →</a>.</p>
+    <ul class="clean small">
+      <li><b>OddsPortal</b> — the LoL index lists one competition only, “League of Legends World Championship (10)”:
+        <a href="https://www.oddsportal.com/esports/league-of-legends/" target="_blank" rel="noopener">oddsportal.com/esports/league-of-legends ↗</a>.
+        Its Prime League page says next matches “will appear here as soon as bookmaker betting odds become available”:
+        <a href="https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/" target="_blank" rel="noopener">Prime League page ↗</a>.</li>
+      <li><b>bmbets</b> — the Prime League 2nd Division URL exists but the live board lists only LoL World Championship,
+        LoL – LCP and LoL Game Changers Rising:
+        <a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets Prime League 2nd Division ↗</a>.</li>
+      <li><b>Cloudbet</b> — “No Prime League 2nd Division events available”:
+        <a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">cloudbet.com Prime League 2nd Division ↗</a>.</li>
+      <li><b>Betmonitor</b> — the competition URL resolves to the generic odds hub, with no League of Legends fixture served:
+        <a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">betmonitor.com Prime League 2nd Division ↗</a>.</li>
+      <li><b>Pinnacle, Unibet (Kambi), Bovada, Polymarket</b> — re-requested on every refresh; they price the Worlds
+        fixtures (and the occasional LCP/LGC Rising line) and nothing from the national divisions. Per-refresh status:
+        <a href="unresolved.html#sources-checked">source table above ↗</a>.</li>
+    </ul>
+    <p class="small">The measurement method, the exact strings and the per-competition numbers are recorded in
+      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md §23</a>.</p>
   </section>
 
   <div class="two-col" style="margin-top:20px">
