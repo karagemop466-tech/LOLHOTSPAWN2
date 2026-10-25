@@ -80,7 +80,12 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
 # Research/manual-review links published on the Methodology page. They are never a
 # probability input (no row cites them); they are listed so a reader can repeat the
 # search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+# 2026-10-25: cloudbet.com and bmbets.com were added after both were read by hand
+# for the Prime League 2nd Division question (Cloudbet: "No ... events available";
+# bmbets: no low-tier LoL board). They are cited only on Methodology as sources
+# that were checked and found empty — never a probability input.
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
+                "cloudbet.com", "bmbets.com", "esportsinsider.com")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
