@@ -121,11 +121,12 @@
         <tbody>
           <tr>
             <td><b>A1</b></td>
-            <td><b>Worlds 2026, 25 Oct round — start times disagreed across sources.</b> The 10:41Z snapshot carried feed times
-            that were one to three hours off Hotspawn's own match pages, Leaguepedia and Polymarket for four fixtures
-            (TES–G2, IG–HLE, DK–KOI, Gen.G–LYON), and the payload's order of the last two was swapped. <b>Resolved upstream,
-            not by hand:</b> the 14:16Z refresh re-read the same feed field and all four corrected themselves to 17:00 / 18:00 /
-            19:00 / 22:00 UTC. <span class="flag">START_TIME_MISMATCH</span> now appears on <b>0</b> rows.</td>
+            <td><b>Worlds 2026, 25 Oct round — start times were permuted upstream.</b> The 10:41Z snapshot carried feed
+            times one to three hours off Hotspawn's own match pages, Leaguepedia and Polymarket on four fixtures
+            (TES–G2, IG–HLE, DK–KOI, Gen.G–LYON), with the DK–KOI and Gen.G–LYON slots swapped. <b>Resolved upstream, not
+            by hand:</b> the 14:24Z refresh re-read the same feed field and all four corrected themselves to 17:00 / 18:00 /
+            19:00 / 22:00 UTC. <span class="flag">START_TIME_MISMATCH</span> is now on <b>0</b> rows; <b>2</b> rows still
+            show <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span> because Unibet's own kickoff field is 1–3 h away.</td>
             <td><a href="https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816" target="_blank" rel="noopener">Hotspawn match page (TES–G2) ↗</a> ·
             <a href="https://polymarket.com/esports/league-of-legends/worlds" target="_blank" rel="noopener">Polymarket Worlds board ↗</a></td>
             <td><span class="chip green">Resolved by upstream refresh</span> — no manual edit</td>

@@ -1627,10 +1627,12 @@ Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appen
 
 ### Resolved irregularities (evidence, not assertions)
 
-* **I-Worlds-times** — the 10:41Z payload carried 25 Oct Worlds times 1–3 h off Hotspawn's own match pages, Leaguepedia and
-  Polymarket, with GEN–LYON / DK–KOI swapped. **No manual edit was made.** The 14:16Z refresh re-read the same feed field and
-  all four corrected themselves; `START_TIME_MISMATCH` = **0** rows now (2 rows keep `START_TIME_DISAGREES_WITH_BOOKS`,
-  where a book's own kickoff field lags ≤3 h). Documented as A1 on `flagged.html` and re-stated in methodology §1.
+* **I-Worlds-times** — the 10:41:50Z payload carried 25 Oct Worlds times 1–3 h off Hotspawn's own match pages, Leaguepedia
+  and Polymarket, with the DK–KOI / Gen.G–LYON slots swapped (the permutation was visible in the stored per-book start times).
+  **No manual edit was made.** The 14:24:11Z scheduled refresh re-read the same feed field and all four corrected themselves
+  to 17:00 / 18:00 / 19:00 / 22:00 UTC; `START_TIME_MISMATCH` = **0** rows now. Two rows keep
+  `START_TIME_DISAGREES_WITH_BOOKS` (Unibet's own kickoff field 1.0 h and 3.0 h away; Pinnacle is a constant +0.2 h, Bovada
+  exact, Polymarket a day-level close). Documented as A1 on `flagged.html`, methodology §1, and audit §2.2.
 * **Betmonitor PRM 2D prices** — an earlier search-engine excerpt showed a full PRM 2D table (bet365 1.90, ggbet 2.12 …).
   Two direct reads on 2026-10-25 returned the generic highlights index with the correct page title and no LoL row. The
   prices are therefore recorded as **not reproducible → not used** (A9), and the earlier note is superseded by this record.
@@ -1641,7 +1643,7 @@ Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appen
 * **Unverified organizers** — Tunisian (TUNESF template shell), 4 Nations (UKEL), Arabian 2nd Division, LigaGG CELOL,
   Komplettligaen playoffs (fixtures absent), RIVALS bracket ("TBD") → A3–A8, each with the page that was read.
 
-### Counts on the branch payload (2026-10-25T14:16:18Z, schema 3)
+### Counts on the branch payload (2026-10-25T14:24:11Z, schema 3; published verbatim from CI)
 
 156 fixtures · 156 priced · **0 unresolved** · 9 market (8 consensus + 1 single) · 147 model · 11 Low confidence ·
 9 cancelled fixtures excluded · 12 competitions · 27 fixtures locking in the next 24 h · lobby reconciliation

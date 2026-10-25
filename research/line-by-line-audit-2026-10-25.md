@@ -14,7 +14,7 @@ the reason. Hotspawn is used as the fixture source only. No Hotspawn crowd perce
 
 | Gate | Result |
 |---|---|
-| `python3 scripts/verify_site.py` | **PASS · 46 pass · 0 fail · 0 warn · 1 skip** (D18 skipped: no Leaguepedia API snapshot offline; CI supplies it). New this session: **S17**, which fails if any row of the manual-review tables on `flagged.html` loses its external source link |
+| `python3 scripts/verify_site.py` | **PASS · 47 pass · 0 fail · 0 warn · 1 skip** (D18 skipped: no Leaguepedia API snapshot offline; CI supplies it). New this session: **S17**, which fails if any row of the manual-review tables on `flagged.html` loses its external source link |
 | `python3 verification/test_verifier.py` | **55/55** (incl. 5 negative tests for S16 and 5 for the new S17: all-linked, one bare row, missing section, shrunken table, missing page) |
 | `python3 verification/check_dom_contract.py` | **PASS** (7 pages) |
 | `python3 verification/test_dom_contract.py` | **7/7** |
@@ -22,7 +22,7 @@ the reason. Hotspawn is used as the fixture source only. No Hotspawn crowd perce
 | `python3 verification/test_standings_model.py` | **ALL PASS** |
 | `python3 audit/test_model.py` | **23 passed · 0 failed** |
 | `node verification/render_check.cjs` | **PASS** (every page executes, theme toggle works) |
-| `node verification/check_dom_render.js` | **60/60** (the start-time assertions now build a synthetic flagged payload, so they can never go vacuous when the live snapshot has no flagged fixture, and a negative control asserts an unflagged fixture is *not* reported as disagreeing) |
+| `node verification/check_dom_render.js` | **65/65** (the start-time assertions now build a synthetic flagged payload, so they can never go vacuous when the live snapshot has no flagged fixture, and a negative control asserts an unflagged fixture is *not* reported as disagreeing) |
 | `node --check docs/assets/app.js` | **OK** |
 
 ---
@@ -57,31 +57,36 @@ found in the sampled range. The individual match page
 ([DKB XPERION NXT vs Phong Vũ Buffalo](https://www.hotspawn.com/matches/dkb-xperion-nxt-vs-phong-vu-buffalo-prm-2nd-division-26-27-fall-1079031))
 confirms both teams, the tournament and `17:00 · 27 OCT`.
 
-### 2.2 Worlds 2026 — **IRREGULARITY: four fixtures disagree with Hotspawn's own pages**
+### 2.2 Worlds 2026 — an upstream time permutation, measured twice, now clean
 
-| Payload row (id) | Payload | Hotspawn match page | Leaguepedia (per payload evidence) | Polymarket page (US view-only) | Verdict |
-|---|---|---|---|---|---|
-| Top Esports vs G2 Esports (1075816) | 17:00Z | [**18:00**, 25 OCT](https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816) | 18:00Z | “Today, 2:00 PM” | **disagree** |
-| Invictus Gaming vs Hanwha Life Esports (1075817) | 18:00Z | (not fetched) | 17:00Z | “Today, 1:00 PM” | **disagree** |
-| Gen.G vs LYON (1075818) | 19:00Z | [**22:00**, 25 OCT](https://www.hotspawn.com/matches/gen-g-vs-lyon-worlds-2026-main-event-1075818) | 22:00Z | “Today, 6:00 PM” | **disagree** |
-| Dplus KIA vs Movistar KOI (1075819) | 22:00Z | [**19:00**, 25 OCT](https://www.hotspawn.com/matches/dplus-kia-vs-movistar-koi-worlds-2026-main-event-1075819) | 19:00Z | “Today, 3:00 PM” | **disagree** |
+Two snapshots of the same feed were read today. The table below is the finding on the **10:41:50Z** payload:
+
+| Payload row (id) | Payload 10:41Z | Hotspawn match page | Leaguepedia / Polymarket | Verdict |
+|---|---|---|---|---|
+| Top Esports vs G2 Esports (1075816) | 17:00Z | [**18:00**, 25 OCT](https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816) | 18:00Z / “Today, 2:00 PM” | disagree |
+| Invictus Gaming vs Hanwha Life Esports (1075817) | 18:00Z | (not fetched) | 17:00Z / “Today, 1:00 PM” | disagree |
+| Gen.G vs LYON (1075818) | 19:00Z | [**22:00**, 25 OCT](https://www.hotspawn.com/matches/gen-g-vs-lyon-worlds-2026-main-event-1075818) | 22:00Z / “Today, 6:00 PM” | disagree |
+| Dplus KIA vs Movistar KOI (1075819) | 22:00Z | [**19:00**, 25 OCT](https://www.hotspawn.com/matches/dplus-kia-vs-movistar-koi-worlds-2026-main-event-1075819) | 19:00Z / “Today, 3:00 PM” | disagree |
 
 What this means, stated precisely:
 
 * The payload's `start_utc` is copied verbatim from Hotspawn's fixtures feed (`scheduled_start_time`, epoch ms —
-  `scripts/fetch_hotspawn.py`), which is the field the Pick'em locks on. Nothing in our pipeline invents or rounds a
+  `scripts/fetch_hotspawn.py`), which is the field the Pick'em locks on. Nothing in the pipeline invents or rounds a
   time; no other component overwrites `start_utc` (checked: `scripts/update_picks.py` only reads it).
-* Hotspawn's **own** match pages, Leaguepedia and Polymarket agree with each other and disagree with the feed for
-  these four rows. The most likely cause is an upstream re-slot of the 25 Oct round that reached the pages but not
-  the epoch field at the time of our 10:41Z snapshot.
-* **Not fixed by hand** — a manual edit would be an unverifiable value. Both the summary and the match page surface
-  the disagreement (row flag ⏱, plus a “start time by source” card listing Hotspawn, Leaguepedia and every book that
-  priced the fixture).
-* **Resolution measured the same day.** The branch's pipeline run published a fresh payload at **14:16Z**, and the
-  four times corrected themselves to **17:00 (IG–HLE), 18:00 (TES–G2), 19:00 (DK–KOI), 22:00 (Gen.G–LYON) UTC**,
-  which is exactly what the three independent sources said. `START_TIME_MISMATCH` now appears **0 times** in the
-  payload (only 2 rows keep `START_TIME_DISAGREES_WITH_BOOKS`, where a book's own kickoff field lags by ≤3 h).
-  Nothing in the code changed for this: the pipeline reads the epoch field, the upstream feed caught up.
+* On that snapshot the four 25 Oct slots were **permuted** relative to Hotspawn's own match pages, Leaguepedia and
+  Polymarket — the two tell-tale swaps are DK–KOI ↔ Gen.G–LYON. Every other competition in the payload agreed with
+  Hotspawn (7/7 PRM 2nd Division rows, below), so this was a Worlds-slot artefact upstream.
+* **Nothing was edited by hand** (a manual edit would be an unverifiable value).
+
+**Resolution measured the same day.** The scheduled refresh published a new payload at **14:24:11Z**, and the four
+rows now read **IG–HLE 17:00Z, TES–G2 18:00Z, DK–KOI 19:00Z, Gen.G–LYON 22:00Z** — exactly what the three independent
+sources said. `START_TIME_MISMATCH` now appears on **0 rows**. Two rows keep
+`START_TIME_DISAGREES_WITH_BOOKS`: the book's own kickoff field differs by 1.0 h (Unibet on IG–HLE) and 3.0 h (Unibet on
+DK–KOI), while Pinnacle is a constant +0.2 h and Bovada matches to the minute — i.e. book-side conventions, not our
+edits. Both are disclosed per row and the match page lists every source's time side by side.
+
+**Lesson recorded, not tidied away:** an upstream epoch can be wrong at the moment a snapshot is taken. That is why the
+site publishes a *time-by-source* card and a ⏱ row warning instead of asserting a single "official" time.
 
 ### 2.3 Team identity — one confirmed upstream collision
 

@@ -57,13 +57,17 @@
     <p class="small"><b>Start times are shown exactly as Hotspawn's feed reports them</b>, because that feed is
     what sets the Pick'em lock. Other sources sometimes give a different time for the same fixture; rather than
     silently choosing one, every row like that is marked <b>⏱</b> and its match page lists the time reported by
-    <b>each</b> source (Hotspawn, Leaguepedia, and every book that priced it) with links. Measured 2026-10-25: the 10:41Z snapshot carried
-    <span class="flag">START_TIME_MISMATCH</span> on 10 fixtures (Hotspawn feed vs Leaguepedia), including four
-    Worlds fixtures — e.g. <i>Top Esports vs G2 Esports</i> was 17:00 UTC in the feed while Hotspawn's own match page,
-    Leaguepedia and Polymarket all said 18:00 UTC. <b>Nothing was edited by hand</b>: the next 6-hourly run (14:16Z)
-    re-read the feed and those four times corrected themselves to 17:00 / 18:00 / 19:00 / 22:00 UTC, leaving 0
-    <span class="flag">START_TIME_MISMATCH</span> in the current payload. The disagreement is an upstream data-quality
-    limit, and the site's job is to show it rather than hide it.</p>
+    <b>each</b> source (Hotspawn, Leaguepedia, and every book that priced it) with links. Snapshot measured 2026-10-25, both readings recorded:
+    the <b>10:41Z</b> payload carried <span class="flag">START_TIME_MISMATCH</span> on <b>10 fixtures</b> (feed vs
+    Leaguepedia), including four Worlds fixtures whose order and times were permuted — e.g. <i>Top Esports vs G2</i> was
+    17:00 UTC in the feed while Hotspawn&rsquo;s own match page, Leaguepedia and Polymarket said 18:00 UTC, while
+    <i>Dplus KIA vs KOI</i> and <i>Gen.G vs LYON</i> had each other&rsquo;s slots. <b>Nothing was edited by hand.</b> The
+    <b>14:24Z</b> refresh re-read the same field and all four corrected themselves (IG–HLE 17:00, TES–G2 18:00,
+    DK–KOI 19:00, Gen.G–LYON 22:00 UTC), leaving <b>0</b> <span class="flag">START_TIME_MISMATCH</span> rows. What
+    remains are <b>2</b> rows with <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>, where Unibet&rsquo;s own
+    kickoff field is 1–3 h away from the feed (Pinnacle&rsquo;s is a constant +15 min and Polymarket&rsquo;s is a
+    day-level close) — book-side conventions, not our edits. The lesson is recorded rather than tidied away: an upstream
+    timestamp can be wrong, so the site shows every source instead of asserting one.</p>
   </section>
 
   <section class="card">
