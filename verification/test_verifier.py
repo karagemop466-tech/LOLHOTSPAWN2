@@ -216,7 +216,111 @@ def main() -> int:
     c = structure_checks(css_good, {"index.html": f'<html><body><div class="card">ok</div>{nofresh}</body></html>'})
     results.append(assert_status(c, "S12", vs.FAIL, "missing freshness slot fails S12"))
 
-    # ---------------------------------------------------------------- S16 quick jumps
+    # ---- S16: phone home-screen installability --------------------------------
+    def install_checks(files, page_html):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "assets"), exist_ok=True)
+            for name, data in files.items():
+                target = os.path.join(td, name)
+                os.makedirs(os.path.dirname(target), exist_ok=True)
+                with open(target, "wb") as fh:
+                    fh.write(data if isinstance(data, bytes) else data.encode())
+            with open(os.path.join(td, "index.html"), "w") as fh:
+                fh.write(page_html)
+            rep = vs.Report()
+            vs.verify_phone_install(rep, td)
+            return {c["id"]: c for c in rep.checks}
+
+    def tiny_png(w, h):
+        import struct, zlib
+        raw = b"".join(b"\x00" + b"\xff\xff\xff\xff" * w for _ in range(h))
+        def chunk(tag, data):
+            return (struct.pack(">I", len(data)) + tag + data
+                    + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF))
+        return (b"\x89PNG\r\n\x1a\n"
+                + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0))
+                + chunk(b"IDAT", zlib.compress(raw, 1)) + chunk(b"IEND", b""))
+
+    good_page_s16 = ('<html><head><meta name="viewport" content="width=device-width">'
+                     '<link rel="manifest" href="manifest.webmanifest">'
+                     '<link rel="apple-touch-icon" href="assets/apple-touch-icon.png"></head></html>')
+    good_manifest = ('{"name":"n","short_name":"s","start_url":"./index.html","display":"standalone",'
+                     '"icons":[{"src":"assets/a-192.png","sizes":"192x192","purpose":"any"},'
+                     '{"src":"assets/a-512.png","sizes":"512x512","purpose":"any maskable"}]}')
+    files_ok = {"manifest.webmanifest": good_manifest,
+                "assets/a-192.png": tiny_png(192, 192),
+                "assets/a-512.png": tiny_png(512, 512),
+                "assets/apple-touch-icon.png": tiny_png(180, 180)}
+    c = install_checks(files_ok, good_page_s16)
+    results.append(assert_status(c, "S16", vs.PASS, "complete manifest+icons pass S16"))
+
+    c = install_checks({k: v for k, v in files_ok.items() if k != "manifest.webmanifest"}, good_page_s16)
+    results.append(assert_status(c, "S16", vs.FAIL, "missing manifest fails S16"))
+
+    # declared size disagrees with the real PNG
+    bad_size = good_manifest.replace("192x192", "512x512", 1)
+    c = install_checks({**files_ok, "manifest.webmanifest": bad_size}, good_page_s16)
+    results.append(assert_status(c, "S16", vs.FAIL, "wrong declared icon size fails S16"))
+
+    # a page that forgets the manifest link
+    c = install_checks(files_ok, '<html><head><meta name="viewport" content="width=device-width">'
+                                 '<link rel="apple-touch-icon" href="assets/apple-touch-icon.png"></head></html>')
+    results.append(assert_status(c, "S16", vs.FAIL, "page without manifest link fails S16"))
+
+    # no maskable icon
+    no_mask = good_manifest.replace('"any maskable"', '"any"')
+    c = install_checks({**files_ok, "manifest.webmanifest": no_mask}, good_page_s16)
+    results.append(assert_status(c, "S16", vs.FAIL, "no maskable icon fails S16"))
+
+    # ---- S17: every manual-review row carries a source link --------------------
+    def review_checks(sections_html):
+        with tempfile.TemporaryDirectory() as td:
+            with open(os.path.join(td, "flagged.html"), "w") as fh:
+                fh.write(sections_html)
+            rep = vs.Report()
+            vs.verify_review_rows(rep, td)
+            return {c["id"]: c for c in rep.checks}
+
+    def review_sections(audit_rows, coverage_rows):
+        def body(rows):
+            return "".join(f"<tr>{r}</tr>" for r in rows)
+        return (
+            '<section id="source-coverage-flags"><table><tbody>'
+            + body(coverage_rows) + "</tbody></table></section>"
+            '<section id="audit-2026-10-25"><table><tbody>'
+            + body(audit_rows) + "</tbody></table></section>"
+        )
+
+    row_linked = '<td>A</td><td>x</td><td><a href="https://example.org/a">src ↗</a></td><td>ok</td>'
+    row_bare = '<td>B</td><td>x</td><td>no link at all</td><td>ok</td>'
+    cov = [row_linked] * 3
+    audit = [row_linked] * 8
+
+    c = review_checks(review_sections(audit, cov))
+    results.append(assert_status(c, "S17", vs.PASS, "all rows linked pass S17"))
+
+    # one audit row silently loses its link
+    c = review_checks(review_sections(audit[:7] + [row_bare], cov))
+    results.append(assert_status(c, "S17", vs.FAIL, "a row without a source link fails S17"))
+
+    # a whole section disappears
+    only_cov = ('<section id="source-coverage-flags"><table><tbody>'
+                + "".join(f"<tr>{r}</tr>" for r in cov) + "</tbody></table></section>")
+    c = review_checks(only_cov)
+    results.append(assert_status(c, "S17", vs.FAIL, "missing audit section fails S17"))
+
+    # too few rows to be a real review (guards against an empty table passing)
+    c = review_checks(review_sections(audit[:2], cov))
+    results.append(assert_status(c, "S17", vs.FAIL, "a shrunken audit table fails S17"))
+
+    # file missing entirely
+    with tempfile.TemporaryDirectory() as td:
+        rep = vs.Report()
+        vs.verify_review_rows(rep, td)
+        results.append(assert_status({c2["id"]: c2 for c2 in rep.checks}, "S17", vs.FAIL,
+                                     "missing flagged.html fails S17"))
+
+    # ---------------------------------------------------------------- S18 quick jumps
     JUMP = ('<nav class="jumpbar"><a href="picks.html">All picks</a>'
             '<a href="picks.html?filter=next24">Next 24 h</a>'
             '<a href="leagues.html">By league</a>'
@@ -232,37 +336,37 @@ def main() -> int:
                 '<tr><td>c</td></tr><tr><td>d</td></tr></table></section>'
                 '<a href="index.html#nonfeatured">what we checked</a>')
     c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
-    results.append(assert_status(c, "S16", vs.PASS, "jump bar + non-featured section pass S16"))
-    results.append(assert_status(c, "S17", vs.PASS, "device-width + phone breakpoint pass S17"))
+    results.append(assert_status(c, "S18", vs.PASS, "jump bar + non-featured section pass S18"))
+    results.append(assert_status(c, "S19", vs.PASS, "device-width + phone breakpoint pass S19"))
 
     # a page that loses the jump bar is not findable on a phone
     c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + nf_table),
                                       "picks.html": page(GOOD_NAV + JUMP)})
-    results.append(assert_status(c, "S16", vs.FAIL, "missing jump bar fails S16"))
+    results.append(assert_status(c, "S18", vs.FAIL, "missing jump bar fails S18"))
 
     # different jump targets between pages
     c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP + nf_table),
                                       "picks.html": page(GOOD_NAV + JUMP.replace("All picks", "Picks"))})
-    results.append(assert_status(c, "S16", vs.FAIL, "mismatched jump bar fails S16"))
+    results.append(assert_status(c, "S18", vs.FAIL, "mismatched jump bar fails S18"))
 
     # the summary must carry the non-featured explanation, not just a link to another page
     c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP)})
-    results.append(assert_status(c, "S16", vs.FAIL, "summary without #nonfeatured fails S16"))
+    results.append(assert_status(c, "S18", vs.FAIL, "summary without #nonfeatured fails S18"))
 
-    # ------------------------------------------------------------- S17 phone widths
+    # ------------------------------------------------------------- S19 phone widths
     css_wide = css_mobile + " .hero-inner { width: 900px }"
     c = structure_checks(css_wide, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
-    results.append(assert_status(c, "S17", vs.FAIL, "fixed 900px width fails S17"))
+    results.append(assert_status(c, "S19", vs.FAIL, "fixed 900px width fails S19"))
     c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP + nf_table, head="")})
-    results.append(assert_status(c, "S17", vs.FAIL, "missing viewport meta fails S17"))
+    results.append(assert_status(c, "S19", vs.FAIL, "missing viewport meta fails S19"))
     css_no_phone_bp = (".card { padding: 1px } .top-nav { border: 0 } .bottom-nav { display: grid } "
                        "@media (min-width: 700px) { .card { padding: 2px } }")
     c = structure_checks(css_no_phone_bp, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
-    results.append(assert_status(c, "S17", vs.FAIL, "no phone breakpoint fails S17"))
+    results.append(assert_status(c, "S19", vs.FAIL, "no phone breakpoint fails S19"))
     # a media-query condition is not a fixed layout width
     css_query_only = css_mobile + " @media (min-width: 860px) { .card { padding: 3px } }"
     c = structure_checks(css_query_only, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
-    results.append(assert_status(c, "S17", vs.PASS, "min-width media query is not a fixed width"))
+    results.append(assert_status(c, "S19", vs.PASS, "min-width media query is not a fixed width"))
 
     # helper parsing
     helper_ok = (vs.html_class_names('<div class="a b">') == {"a", "b"}

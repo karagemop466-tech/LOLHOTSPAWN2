@@ -135,9 +135,9 @@ Leaguepedia answers **HTTP 200 with an empty body** for a title that does not ex
 MediaWiki API in one batched read-only request. `verification/mobile_audit.md` records the 2026-10-24 audit
 of the pages against their stylesheet.
 
-`scripts/verify_site.py` includes **S16** (every page ships the same quick-jump bar and the
+`scripts/verify_site.py` includes **S18** (every page ships the same quick-jump bar and the
 executive summary itself contains the non-featured section with its source table) and
-**S17** (phone layout contract: `width=device-width` everywhere, a breakpoint at or below
+**S19** (phone layout contract: `width=device-width` everywhere, a breakpoint at or below
 430 px, and no hard-coded width above 430 px), on top of **S11** (every CSS class a page uses must have a rule in `style.css` — the
 check that catches an unstyled or clipped header) and **S12** (all pages share one navigation, a visible
 freshness slot and unique ids). `verification/render_check.cjs` loads each page in jsdom with the committed
