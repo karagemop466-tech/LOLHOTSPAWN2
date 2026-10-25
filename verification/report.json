@@ -168,8 +168,11 @@
   {
    "id": "D23",
    "title": "no committed artifact contains git conflict markers",
-   "status": "PASS",
-   "detail": "no conflict markers in docs/, data/, verification/, research/, scripts/, .github/"
+   "status": "FAIL",
+   "detail": "1 file(s) still contain conflict markers",
+   "items": [
+    "data/diag/source_probe.json:2"
+   ]
   },
   {
    "id": "S1",

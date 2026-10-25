@@ -596,7 +596,7 @@
    "category": "results",
    "http_status": 200,
    "is_json": false,
-   "bytes": 179550,
+   "bytes": 179561,
    "lol_mentions": 157,
    "vs_style_items": null,
    "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
