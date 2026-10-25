@@ -161,8 +161,9 @@
       offline auditor: <b>20 PASS · 0 FAIL · 0 WARN · 1 INFO</b>, with 32 negative self-tests proving each rule
       fails on a payload that breaks it. The auditor was then re-run on the newer payload the 15:32:40Z refresh
       published while this pass was being written: <b>the same 20 PASS · 0 FAIL · 1 INFO over 156 rows</b>, even
-      though that snapshot has three books per market row instead of four. Nothing was inferred; what could not be
-      read is marked unverified.
+      though that snapshot has three books per market row instead of four — and again on the 17:03:55Z refresh,
+      which had shrunk to 139 upcoming fixtures as the evening's matches started: <b>20 PASS · 0 FAIL · 1 INFO over
+      139 rows</b>. Nothing was inferred; what could not be read is marked unverified.
     </p>
     <div class="table-wrap" style="margin-top:8px">
       <table>
@@ -185,7 +186,8 @@
           <tr>
             <td data-label="What was re-read">Hotspawn lobby total vs the fixtures we publish</td>
             <td data-label="Result"><b>234 = 156 + 78.</b> The lobby's own tier filter says 234 League of Legends matches; we price the 156
-              upcoming ones and the other 78 are already played. Crowd percentages stay display-only: the mean distance
+              upcoming ones and the other 78 are already played (on the 17:03:55Z refresh the same arithmetic reads
+              234 = 139 + 95, with both difference lists still empty). Crowd percentages stay display-only: the mean distance
               between our probability and the crowd number over the 147 model rows is 0.3672, and 0 rows land within
               0.5 point of it (0.367 on the 14:29:06Z payload and 0.367 on the 15:32:40Z one).</td>
             <td data-label="Source"><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">play.hotspawn.com/lol-pickems</a></td>
