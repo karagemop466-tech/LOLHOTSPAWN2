@@ -85,7 +85,7 @@
     if (m.method === "MODEL_LEAGUE_PRIOR" || m.method === "MODEL_ELO_THIN" || m.confidence === "Low") return "partial";
     return "model";
   }
-  function sourcesInline(m, max = 4) {
+  function sourcesInline(m, max = 5) {
     const list = (m.sources || []).filter((s) => s.url).slice(0, max);
     if (!list.length) return "";
     return `<div class="src-links">${list.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("")}</div>`;
@@ -118,7 +118,10 @@
     const mi = methodInfo(m);
     const cls = matchClass(m);
     const srcCount = (m.sources || []).filter((s) => s.url).length;
-    const srcLinks = (m.sources || []).filter((s) => s.url).slice(0, 3)
+    // Every independent book gets its own link: a featured row can carry five
+    // sources (Pinnacle, Unibet, Bovada, Polymarket, Kalshi) and the count above
+    // the links must match what is rendered, so the cap matches the count.
+    const srcLinks = (m.sources || []).filter((s) => s.url).slice(0, 5)
       .map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join(" ");
     return `<tr class="${cls}">
       <td data-label="Start" title="${esc(t.title)}"><b>${esc(t.text)}</b><span class="sub">${esc(whenUTC(m.start_utc))}</span><span class="sub">${esc(relative(m.start_utc))}</span></td>
@@ -243,7 +246,7 @@
       + `<b>${s.reachable ?? 0}</b> answered, <b>${s.structured_json ?? 0}</b> returned structured JSON, `
       + `<b>${s.structured_with_lol ?? 0}</b> contained any League of Legends match market. `
       + `Market sources checked: <b>${s.market_sources_checked ?? 0}</b>, reachable: <b>${s.market_sources_reachable ?? 0}</b>. `
-      + `Only Pinnacle, Unibet (Kambi), Bovada and Polymarket can produce a market probability, and only when they publish a full-match line.`;
+      + `Only Pinnacle, Unibet (Kambi), Bovada, Polymarket and Kalshi can produce a market probability, and only when they publish a full-match line.`;
   }
 
   function probeRows(d, opts = {}) {

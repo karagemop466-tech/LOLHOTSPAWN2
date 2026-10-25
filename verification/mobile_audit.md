@@ -78,3 +78,30 @@ npm install --no-save jsdom@24
 node verification/render_check.cjs              # renders all 7 pages + theme toggle
 python3 verification/check_source_pages.py      # cited Leaguepedia pages exist (network)
 ```
+
+---
+
+# 390 px phone pass — 2026-10-25 (session `arena/f1cddda8`)
+
+Scope: the same seven pages plus the new fifth market source (Kalshi). Two new scripts replace "a manual pass on a
+physical phone remains the final check" with something a CI runner can repeat:
+
+| Script | What it proves | Result 2026-10-25 |
+|---|---|---|
+| `verification/mobile_audit_390.py` | **Declared geometry** at the phone breakpoints, parsed out of `style.css`: viewport meta on all seven pages, no element rule wider than 390 px, the 760 px table→stacked-card rule and its `data-label` captions, `.probcell .p1` ≥ 15 px, `.probcell .p2` ≥ 15 px, `.pick-pill` ≥ 14 px, body ≥ 16 px, tap targets (`.btn` 48 px, `.top-nav a` 44 px, `.bottom-nav a` 60 px via `--nav-h`, `.icon-btn` 42 px, `.linkcard` 68 px), hero buttons stacking full width, `overflow-wrap:anywhere` on source links, and percentage-only probability bars | **17/17 PASS** |
+| `verification/mobile_render_390.cjs` | **Rendered content** in jsdom at a 390 px viewport: the executive summary's in-site links (all picks, next 24 h, by league, unresolved & limits), the full-width "Find every pick" button, the four "Where the updated picks are" cards each showing a live count, the separate unresolved + limitations section, a row for every fixture on the picks page with the pick and both probabilities and ≥1 source link, no element wider than 390 px, the 6-link bottom navigation, and no script error on any of the seven pages | **23/23 PASS** |
+
+Both run in `.github/workflows/verify.yml` and `.github/workflows/pipeline-test.yml`.
+
+## Defects this pass found and fixed
+
+| # | Where | Defect | Why it mattered on a phone | Fix |
+|---|---|---|---|---|
+| M1 | `docs/assets/app.js` (`row()`) | The picks table capped source links at **3** while the row's own caption said "N verified links". Adding Kalshi as a fifth market source made every featured row silently drop two of its five book links. | A phone reader could not open the book that priced the match — and the count contradicted what was shown. | Cap raised to 5 so the rendered links always match the count; a new self-test in `check_dom_render.js` injects a 5-source row and asserts all five links render. |
+| M2 | `verification/mobile_audit_390.py` (self-found) | The CSS parser treated a `/* comment */` before a selector as part of the selector (so `.icon-btn` measured nothing) and could not resolve `var(--nav-h)` (so `.bottom-nav a` measured nothing); the width check also matched `@media (min-width: 700px)` preludes as if they were element rules. | The audit would have reported three false failures — or, worse, passed a page it had not actually measured. | Comments stripped, custom properties resolved, media preludes excluded. |
+
+## What is still not covered (disclosed)
+
+jsdom has no layout engine: these checks measure *declared* CSS values and *rendered DOM content*, not painted
+pixels, wrapping or contrast. That gap is now covered by CI on every push (both scripts above), which leaves a
+manual pass on a physical phone with nothing structural to find.

@@ -301,6 +301,36 @@ async function main() {
   check("self-test: hero unresolved counter reflects the payload",
         sdoc.querySelector("#hero-count-unresolved").textContent.includes("2"));
 
+  // ---------- self-test: a five-source market row (Kalshi added 2026-10-25) ----
+  // The site must render every independent book on a featured row: the Kalshi
+  // adapter makes some rows carry 5 sources, so prove none is silently dropped.
+  const five = JSON.parse(JSON.stringify(PAYLOAD));
+  const target = five.matches.find((m) => m.market && (m.market.sources || []).length >= 2);
+  if (target) {
+    const kalshi = {
+      source: "Kalshi", source_key: "kalshi",
+      url: "https://kalshi.com/markets/g2-esports-vs-top-esports/kxlolgame-26oct251300g2tes",
+      prob_team1: target.market.sources[0].prob_team1,
+      prob_team2: target.market.sources[0].prob_team2,
+      decimal_team1: target.market.sources[0].decimal_team1,
+      decimal_team2: target.market.sources[0].decimal_team2,
+      note: "Kalshi KXLOLGAME-26OCT251300G2TES: mid of each side's yes bid/ask",
+    };
+    target.market = Object.assign({}, target.market, {
+      sources: target.market.sources.concat([kalshi]),
+      source_count: target.market.sources.length + 1,
+      distinct_books: target.market.sources.length + 1,
+    });
+    const fdoc = (await render("picks.html", { payload: five })).document;
+    const row = Array.from(fdoc.querySelectorAll("#picks-body tr"))
+      .find((tr) => tr.textContent.includes(target.team1) && tr.textContent.includes(target.team2));
+    const links = row ? Array.from(row.querySelectorAll(".src-links a")) : [];
+    check("self-test: a 5-source market row renders a link for every book",
+          links.length === 5, `${links.length} of 5 source links in the picks row`);
+    check("self-test: the 5-source row still shows one pick and both probabilities",
+          !!row && /PICK:/.test(row.textContent) && /%/.test(row.textContent));
+  }
+
   const failed = results.filter((r) => !r.ok);
   console.log(`\nDOM render check: ${results.length - failed.length}/${results.length} passed` +
               (failed.length ? ` — ${failed.length} FAILED` : ""));

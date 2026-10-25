@@ -54,13 +54,13 @@
 
   <section class="card">
     <h3>2. External market consensus (deduplicated 1 main-match line per bookmaker)</h3>
-    <p class="small">For every fixture we query independent bookmaker and prediction-market feeds — Pinnacle, Bovada, Unibet (Kambi) and Polymarket.
+    <p class="small">For every fixture we query independent bookmaker, exchange and prediction-market feeds — Pinnacle, Bovada, Unibet (Kambi), Polymarket and Kalshi.
     Child prop/special boards (kills, towers, barons, dragons, correct score, map-N child markets on series) are strictly rejected, and each bookmaker
     contributes at most <b>one</b> full-match moneyline per fixture so no single feed can echo-dominate the median (check D20).</p>
     <p class="small"><b>Access note:</b> Polymarket's homepage (checked 2026-10-23, <a href="https://polymarket.com/" target="_blank" rel="noopener">polymarket.com</a>) states that trading is blocked in the United States and offers a view-only mode. Its prices are used here solely as public reference data; this site does not place or recommend bets.</p>
     <ul class="clean small">
       <li>Decimal/American prices are two-way de-vigged so probabilities sum to 100.0%.</li>
-      <li>Consensus = exact median across ≥3 independent books, or fixed-quality weighted mean (Pinnacle 1.0, Unibet 0.85, Bovada 0.8, Polymarket 0.7) for 2 books.</li>
+      <li>Consensus = exact median across ≥3 independent sources, or fixed-quality weighted mean (Pinnacle 1.0, Unibet 0.85, Bovada 0.8, Kalshi 0.75, Polymarket 0.7) for 2 sources.</li>
       <li>The displayed <b>dispersion</b> is the gap between the highest and lowest source probability (≤6 pts = High confidence, ≤10 = Medium, &gt;10 = Low).</li>
       <li><b>One book counts once (check D20):</b> repeated boards per book + team pair + start hour are de-duplicated before consensus is computed, prop boards (kills, maps, towers, barons, handicaps) are rejected, and single-game markets are blocked on Bo3/Bo5 series (check D16).</li>
     </ul>
@@ -178,6 +178,11 @@
             <td><a href="https://oddspapi.io/sports/esports/lol" target="_blank" rel="noopener">OddsPapi — LoL odds API ↗</a></td>
             <td>133 bookmakers quoted on the last measured tier-1 fixture, 184 market families, <b>0 fixtures scheduled</b> at 04:15 UTC on 2026-10-24; every request needs an <code>apiKey</code>.</td>
             <td><span class="chip amber">Key-gated</span> — no key is configured, so no price from it is used anywhere.</td>
+          </tr>
+          <tr>
+            <td><a href="https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME&amp;status=open&amp;with_nested_markets=true&amp;limit=200" target="_blank" rel="noopener">Kalshi trade API — LoL match-winner events ↗</a></td>
+            <td>Read 2026-10-25: answers with <b>no API key</b> and returns two mutually exclusive match-winner markets per event with yes bid/ask prices (e.g. G2 Esports 53¢/54¢ vs Top Esports 46¢/47¢). Every event on the board is <b>Worlds 2026</b> — the same tier-1 fixtures the other four sources already price. An earlier probe asked <code>/series?category=Esports</code>, which Kalshi answers with <code>{"series":null}</code>; the LoL series are filed under <code>category=Sports</code> and are found by <code>series_ticker</code>.</td>
+            <td><span class="chip green">Added as a market source</span> — an independent regulated exchange for the featured rows; it does <b>not</b> reach PRM, RIVALS, Tunisian, Arabian, 4 Nations, Komplettligaen, LCP Promotion or LigaGG, so those rows keep our own line.</td>
           </tr>
           <tr>
             <td><a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia MatchSchedule / Standings ↗</a></td>

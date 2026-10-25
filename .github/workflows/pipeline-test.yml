@@ -74,6 +74,8 @@ jobs:
           npm install --no-save --no-package-lock --no-audit --no-fund jsdom
           node verification/render_check.cjs
           node verification/check_dom_render.js
+          node verification/mobile_render_390.cjs
+          python3 verification/mobile_audit_390.py
 
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()

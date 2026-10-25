@@ -106,6 +106,65 @@
     </div>
   </section>
 
+  <section class="card" id="research-2026-10-25">
+    <h2>Source-research findings flagged for review — 2026-10-25 pass</h2>
+    <p class="small">
+      Fresh established-books → esportsbooks → esports betting lines → community search for the fixtures no book
+      prices. Every row was fetched and read on 2026-10-25 at the link shown; nothing is inferred, and no value from
+      any of these sources is used in a probability. Full notes:
+      <a href="../research/betting-sources.md">research/betting-sources.md §20</a>.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">ID</th><th scope="col">Finding</th><th scope="col">Source link (manual review)</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>F20.1</b></td>
+            <td><b>Kalshi's <code>occurrence_datetime</code> runs ~4 h ahead of the real match start</b> on all 7 open LoL events read (G2 vs Top Esports: real start 17:00 UTC, field says 21:00 UTC). The true start is only printed inside the market's rules text, so our adapter parses that text and falls back to the field. Anyone else consuming this API would mis-time every LoL row.</td>
+            <td><a href="https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME&amp;status=open&amp;with_nested_markets=true&amp;limit=200" target="_blank" rel="noopener">Kalshi trade API (LoL events) ↗</a> · <a href="https://kalshi.com/markets/kxlolgame/g2-esports-vs-top-esports/kxlolgame-26oct251300g2tes" target="_blank" rel="noopener">market page ↗</a></td>
+            <td><span class="chip green">Handled</span> — parsed from rules text, unit-tested</td>
+          </tr>
+          <tr>
+            <td><b>F20.2</b></td>
+            <td>An odds-comparison board shows <b>"62% / 38%" for an LCP Promotion 2027 match</b> (FENNEL vs Nothin'Here) while its own match page states <b>"No bookmaker prices yet"</b>. The figure is that site's <i>own model</i>, not a bookmaker line — excluded on the same rule that excludes Hotspawn crowd percentages.</td>
+            <td><a href="https://esportsinsider.com/betting-odds/lol" target="_blank" rel="noopener">Esports Insider LoL board ↗</a> · <a href="https://esportsinsider.com/betting-odds/lol/match/fennel-league-of-legends-vs-nothin-here-1766739" target="_blank" rel="noopener">match page ("no bookmaker prices yet") ↗</a></td>
+            <td><span class="chip amber">Needs review</span> — never used in a probability</td>
+          </tr>
+          <tr>
+            <td><b>F20.3</b></td>
+            <td><b>Cloudbet's Prime League 1st Division page exists but is empty</b> ("No Prime League 1st Division events available"), and its feed API needs an <code>X-API-Key</code>. So even the top PRM division is not priced there, let alone the 2nd/3rd Divisions Hotspawn lists.</td>
+            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t7954-prime-league-1st-division" target="_blank" rel="noopener">Cloudbet Prime League 1st Division ↗</a></td>
+            <td><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
+          </tr>
+          <tr>
+            <td><b>F20.4</b></td>
+            <td>Odds comparison pages that <i>name</i> Prime League 2nd Division expose no machine-readable price: OddsDigger's Prime League path is <b>HTTP 410</b>, OddsPortal's says next matches "will appear here as soon as bookmaker betting odds become available", and bmbets' comparison table is empty (client-rendered).</td>
+            <td><a href="https://oddsdigger.com/e-sports/league-of-legends/prime-league" target="_blank" rel="noopener">OddsDigger (410) ↗</a> · <a href="https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/" target="_blank" rel="noopener">OddsPortal Prime League ↗</a> · <a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets PRM 2nd Division ↗</a></td>
+            <td><span class="chip amber">Manual review</span> — no feed, nothing used</td>
+          </tr>
+          <tr>
+            <td><b>F20.5</b></td>
+            <td><b>Polymarket reaches the top PRM division but not the ones Hotspawn lists.</b> A Prime League 1st Division market exists (Unicorns of Love Sexy Edition vs ROSSMANN Centaurs); no PRM 2nd/3rd Division, RIVALS, Tunisian, Arabian, 4 Nations, Komplettligaen or LigaGG market was found in the LoL tag.</td>
+            <td><a href="https://polymarket.com/teams/league-of-legends/winners" target="_blank" rel="noopener">Polymarket LoL teams page ↗</a></td>
+            <td><span class="chip amber">Coverage gap</span> — those rows keep our own line</td>
+          </tr>
+          <tr>
+            <td><b>F20.6</b></td>
+            <td><b>primeleague.gg reachability flips between runs</b>: HTTP 403 (Bunny Shield) from GitHub Actions on 2026-10-21, HTTP 200 with current L3 Fall 26/27 group tables when read on 2026-10-25. The probe now records the status of each run instead of a remembered one.</td>
+            <td><a href="https://www.primeleague.gg/en/liga3" target="_blank" rel="noopener">Prime League 3. Liga (official) ↗</a> · <a href="https://www.primeleague.gg/en/liga2" target="_blank" rel="noopener">2. Liga ↗</a></td>
+            <td><span class="chip blue">Cross-check only</span> — results source, never a price</td>
+          </tr>
+          <tr>
+            <td><b>F20.7</b></td>
+            <td>OddsChecker has no esports section (<b>HTTP 404</b>) and the Kambi CDN answers <b>"No access"</b> for the Betsson operator slug, so neither is a route to lower-tier LoL lines.</td>
+            <td><a href="https://www.oddschecker.com/esports" target="_blank" rel="noopener">OddsChecker /esports ↗</a> · <a href="https://eu-offering-api.kambicdn.com/offering/v2018/bs/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&amp;market=SE&amp;useCombined=true" target="_blank" rel="noopener">Kambi /bs feed ↗</a></td>
+            <td><span class="chip amber">Not usable</span> — recorded, nothing used</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="source-limitations" class="warnbox">
     <h2>Source limitations: official vs. community data</h2>
     <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>

@@ -90,7 +90,7 @@
     <p class="small">
       Established sportsbooks → esportsbooks → odds aggregators → prediction markets → community/official result sites.
       Each row is one HTTP request made during the current refresh; the status is what the source returned, not an assumption.
-      <b>Nothing below is used in a probability</b> — only Pinnacle, Unibet (Kambi), Bovada and Polymarket can produce a market
+      <b>Nothing below is used in a probability</b> — only Pinnacle, Unibet (Kambi), Bovada, Polymarket and Kalshi can produce a market
       probability, and only when they actually publish a full-match line.
     </p>
     <p class="small" id="probe-summary">Loading…</p>
@@ -132,7 +132,7 @@
   <section class="card">
     <h3>What we do instead of guessing</h3>
     <ul class="clean small">
-      <li><b>External betting lines first:</b> When Pinnacle, Unibet (Kambi), Bovada, or Polymarket list a full-match two-way market, we use the de-vigged consensus.</li>
+      <li><b>External betting lines first:</b> When Pinnacle, Unibet (Kambi), Bovada, Polymarket or Kalshi list a full-match two-way market, we use the de-vigged consensus.</li>
       <li><b>Chronological Tier-Anchored Elo:</b> When no sportsbook prices a competition, our Elo model rates both teams from recorded Leaguepedia series anchored to competition tier.</li>
       <li><b>Split standings (<span class="flag">MODEL_STANDINGS</span> 📊):</b> when Elo cannot rate a side yet both teams have
         a current-split record in Leaguepedia's <code>Standings</code> table, smoothed Bradley–Terry series/game rates produce a bounded estimate capped at Low confidence.</li>

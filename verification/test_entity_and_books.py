@@ -164,6 +164,92 @@ def main() -> int:
     else:
         check("bovada coupon snapshot replays to records (9 events)", False)
 
+    # ---- Kalshi (regulated exchange) match-winner parsing ----------------- #
+    from fetch_markets import _kalshi_start, _slug, fetch_kalshi
+
+    # Live shape, read from api.elections.kalshi.com on 2026-10-25 (G2 vs Top
+    # Esports, Worlds 2026). yes bid/ask are dollars per contract.
+    def _kalshi_event(ticker, title, ta, ta_bid, ta_ask, tb, tb_bid, tb_ask,
+                      rules, occurrence):
+        return {"event_ticker": ticker, "title": title, "series_ticker": "KXLOLGAME",
+                "markets": [
+                    {"yes_sub_title": ta, "yes_bid_dollars": ta_bid,
+                     "yes_ask_dollars": ta_ask, "occurrence_datetime": occurrence,
+                     "volume_fp": "1000", "rules_primary": rules},
+                    {"yes_sub_title": tb, "yes_bid_dollars": tb_bid,
+                     "yes_ask_dollars": tb_ask, "occurrence_datetime": occurrence,
+                     "volume_fp": "900", "rules_primary": rules},
+                ]}
+
+    live = {"events": [
+        _kalshi_event(
+            "KXLOLGAME-26OCT251300G2TES", "G2 Esports vs Top Esports",
+            "G2 Esports", "0.5300", "0.5400", "Top Esports", "0.4600", "0.4700",
+            "If G2 Esports wins the Worlds 2026: G2 Esports vs. Top Esports League of "
+            "Legends match originally scheduled for Oct 25, 2026 at 1:00 PM EDT, then "
+            "the market resolves to Yes.",
+            "2026-10-25T21:00:00Z"),
+        _kalshi_event(
+            "KXLOLGAME-26OCT261800ALTL", "Anyone's Legend vs. Team Liquid",
+            "Team Liquid", "0.3000", "0.3200", "Anyone's Legend", "0.6800", "0.6900",
+            "If Team Liquid wins the Worlds 2026: Anyone's Legend vs. Team Liquid "
+            "League of Legends match originally scheduled for Oct 26, 2026 at 6:00 PM "
+            "EDT, then the market resolves to Yes.",
+            "2026-10-27T02:00:00Z"),
+        # an event with no two-sided market must be skipped, not half-parsed
+        {"event_ticker": "KXLOLGAME-26OCT251400IGHLE", "title": "IG vs HLE",
+         "series_ticker": "KXLOLGAME", "markets": []},
+    ]}
+
+    import fetch_markets as _fm
+    _orig_get_json, _orig_write = _fm.get_json, _fm.write_json
+    _fm.get_json = lambda url, **kw: (live, {"status": 200, "text": "{}"})
+    _fm.write_json = lambda *a, **kw: None
+    try:
+        out = _fm.fetch_kalshi()
+        recs = out["records"]
+    finally:
+        _fm.get_json, _fm.write_json = _orig_get_json, _orig_write
+
+    check("kalshi status ok with 2 records (empty event skipped)",
+          out["status"]["status"] == "ok" and out["status"]["count"] == 2 and len(recs) == 2)
+    check("kalshi probabilities are de-vigged to 1.0",
+          all(abs(r["prob_a"] + r["prob_b"] - 1) < 0.001 for r in recs))
+    check("kalshi mid prices match the live read (G2 53.5% / TES 46.5%)",
+          abs(recs[0]["prob_a"] - 0.535) < 0.001 and abs(recs[0]["prob_b"] - 0.465) < 0.001)
+    check("kalshi decimal odds are the reciprocal of the probability",
+          abs(recs[0]["decimal_a"] - round(1 / 0.535, 4)) < 0.001)
+    # The rules text is the real start; occurrence_datetime runs 4 h ahead.
+    check("kalshi start parsed from the rules text, not occurrence_datetime",
+          recs[0]["start_utc"] == "2026-10-25T17:00:00Z"
+          and recs[1]["start_utc"] == "2026-10-26T22:00:00Z")
+    check("kalshi competition taken from the rules text (Worlds 2026)",
+          recs[0]["competition"] == "Kalshi: Worlds 2026")
+    check("kalshi market_type is a series board, never a child game/map prop",
+          all((r.get("raw") or {}).get("market_type") == "series" for r in recs))
+    check("kalshi record url is the public market page",
+          recs[0]["url"] == "https://kalshi.com/markets/g2-esports-vs-top-esports/"
+                            "kxlolgame-26oct251300g2tes")
+    check("kalshi _slug collapses punctuation", _slug("Anyone's Legend vs. Team Liquid")
+          == "anyone-s-legend-vs-team-liquid")
+    check("kalshi EDT start offset", _kalshi_start(
+        {"rules_primary": "x originally scheduled for Nov 1, 2026 at 9:30 PM EST, then y",
+         "occurrence_datetime": "2026-11-02T05:00:00Z"}).isoformat()
+        == "2026-11-02T02:30:00+00:00")
+    check("kalshi falls back to occurrence_datetime when rules carry no stamp",
+          _kalshi_start({"rules_primary": "", "occurrence_datetime": "2026-10-25T21:00:00Z"})
+          .isoformat() == "2026-10-25T21:00:00+00:00")
+    # Replay the committed live snapshot when one exists (same pattern as Bovada).
+    snap = os.path.join(ROOT, "data", "diag", "kalshi_lol.json")
+    if os.path.exists(snap):
+        import json as _json
+        with open(snap, encoding="utf-8") as fh:
+            saved = _json.load(fh)
+        saved_recs = saved.get("records") or []
+        check("kalshi live snapshot replays with two-way prices summing to 1",
+              bool(saved_recs) and all(abs(r["prob_a"] + r["prob_b"] - 1) < 0.005
+                                       for r in saved_recs))
+
     passed = sum(1 for _, ok in checks if ok)
     print(f"\n{passed}/{len(checks)} entity & sportsbook unit tests passed")
     return 0 if passed == len(checks) else 1

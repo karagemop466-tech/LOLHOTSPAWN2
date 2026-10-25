@@ -239,6 +239,74 @@ def probe_sofascore(days: int = 3):
 # --------------------------------------------------------------------------- #
 # 3. bo3.gg (esports match database with bookmaker odds)
 # --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+# 5. Kalshi (CFTC-regulated exchange) — LoL match winner, public API, no key   #
+# --------------------------------------------------------------------------- #
+def probe_kalshi(series: str = "KXLOLGAME"):
+    """Ask Kalshi's public trade API for open LoL match-winner markets.
+
+    One LoL match is a single *event* holding two mutually exclusive binary
+    markets, one per team ("<team> wins"). A team's own yes_bid/yes_ask is its
+    price; the pair of mids is the two-way line. Measured 2026-10-25: the API
+    answers without a key and the LoL board carries the Worlds 2026 series only.
+
+    Why this is a probe and not a source: the earlier probe asked
+    /series?category=Esports, which Kalshi answers with {"series":null} - the
+    esports series are filed under category=Sports and are found by
+    series_ticker. That wrong-shaped query is why Kalshi was recorded as "no LoL
+    series" before; it is corrected here and re-measured on every run.
+    """
+    name = f"Kalshi / {series} (regulated exchange)"
+    url = ("https://api.elections.kalshi.com/trade-api/v2/events"
+           f"?series_ticker={series}&status=open&with_nested_markets=true&limit=200")
+    data, r = get_json(url, retries=1)
+    recs, comps, events = [], [], []
+    for ev in (data or {}).get("events") or []:
+        if not isinstance(ev, dict):
+            continue
+        sides = []
+        for m in ev.get("markets") or []:
+            if not isinstance(m, dict):
+                continue
+            team = str(m.get("yes_sub_title") or "").strip()
+            try:
+                bid = float(m.get("yes_bid_dollars") or 0)
+                ask = float(m.get("yes_ask_dollars") or 0)
+            except (TypeError, ValueError):
+                continue
+            if not team or bid <= 0 or ask <= 0 or ask < bid:
+                continue
+            sides.append((team, (bid + ask) / 2.0))
+        if len(sides) != 2:          # a two-way market has exactly two sides
+            continue
+        (ta, pa), (tb, pb) = sides
+        if pa <= 0 or pb <= 0:
+            continue
+        # The league name only appears inside the market's rules text.
+        rules = str((ev.get("markets") or [{}])[0].get("rules_primary") or "")
+        m = re.search(r"wins the (.+?):", rules)
+        comp = m.group(1).strip() if m else str(ev.get("series_ticker") or "")
+        if comp and comp not in comps:
+            comps.append(comp)
+        start = ev.get("markets")[0].get("occurrence_datetime") or ev.get("last_updated_ts")
+        # decimal = 1 / probability keeps the record shape every other probe uses
+        rec = _two_way(recs, name, url, comp, start, ta, tb,
+                       1.0 / pa, 1.0 / pb,
+                       note=f"Kalshi {ev.get('event_ticker')}: mid of yes bid/ask")
+        if rec:
+            recs.append(rec)
+        events.append({"event": ev.get("event_ticker"), "title": ev.get("title"),
+                       "competition": comp, "teams": [ta, tb],
+                       "prob": [round(pa, 4), round(pb, 4)]})
+    return {
+        "name": name, "kind": "prediction-market", "url": url,
+        "http_status": r.get("status"), "bytes": len(r.get("text") or ""),
+        "is_json": isinstance(data, dict), "competitions": comps[:25], "records": recs,
+        "detail": {"series": series, "events": len(events), "sample_events": events[:6]},
+        "error": None if recs else "no open two-way LoL match market returned",
+    }
+
+
 def probe_bo3():
     name = "bo3.gg (esports match DB + odds)"
     attempts = [
@@ -572,6 +640,7 @@ def main() -> int:
 
     add(probe_pinnacle)
     add(probe_polymarket)
+    add(probe_kalshi)
     for i, (op_name, slug, mkt) in enumerate(KAMBI_OPERATORS):
         if i:
             time.sleep(3.5)   # the Kambi CDN answers 429 to a burst of operators

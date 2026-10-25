@@ -76,10 +76,15 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
                  "rivalsleague.gg", "komplettligaen.no")
-# Research/manual-review links published on the Methodology page. They are never a
-# probability input (no row cites them); they are listed so a reader can repeat the
-# search for a low-tier line. Kept separate from MARKET_HOSTS on purpose.
-REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com")
+# Research/manual-review links published on the Methodology and Flagged pages. They are
+# never a probability input (no row cites them); they are listed so a reader can repeat
+# the search for a low-tier line. Kept separate from MARKET_HOSTS on purpose: being on
+# this list only means the host was fetched and read by hand, not that its data is used.
+# Added 2026-10-25 (session arena/f1cddda8) — every host below was fetched and read that
+# day; see research/betting-sources.md §20 for what each one returned.
+REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
+                "esportsinsider.com", "oddsdigger.com", "oddsportal.com",
+                "bmbets.com", "cloudbet.com", "oddschecker.com")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 

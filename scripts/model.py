@@ -730,7 +730,12 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
             "start_delta_hours": round(delta_h, 1), "competition": rec.get("competition")})
 
     # ---- per-fixture probability -----------------------------------------
-    WEIGHTS = {"pinnacle": 1.0, "unibet": 0.85, "bovada": 0.8, "polymarket": 0.7}
+    # Weights only shape the weighted mean used when fewer than three books
+    # price a fixture; with 3+ sources the median is used. Kalshi sits above
+    # Polymarket (a regulated exchange with a two-sided book) and below the
+    # traditional books (a thinner, retail-heavy esports book).
+    WEIGHTS = {"pinnacle": 1.0, "unibet": 0.85, "bovada": 0.8, "kalshi": 0.75,
+               "polymarket": 0.7}
     out = []
     for f in enriched_fixtures:
         row, how = schedule_matches.get(str(f["id"]), (None, None))

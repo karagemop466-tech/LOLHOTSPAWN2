@@ -898,3 +898,107 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
+
+---
+
+## 20. Refresh 2026-10-25 — fresh pass for the non-featured fixtures (session `arena/f1cddda8`)
+
+Brief: re-run the established-books → esportsbooks → esports betting lines → community search for every fixture the
+featured picks cannot price, using candidates **no earlier session had probed**, and record what each one actually
+returned. Nothing below is inferred: every row was fetched and read on 2026-10-25 at the link shown, and the
+production probe (`scripts/source_probe.py`, 53 candidates) now re-measures them on every 6-hour refresh.
+
+Snapshot under test: `docs/data/picks.json` generated 2026-10-25T10:41:50Z — **156 fixtures, 156 priced, 0
+unresolved**, 9 with an external line (8 Worlds + 1 LGC Rising) and **147 priced by our own model** across PRM 3rd
+Division (60), PRM 2nd Division (36), Tunisian Super League (20), RIVALS LEAGUE (14), 4 Nations (4), Arabian League
+2nd Division (4), Komplettligaen Playoffs (3), LCP Promotion (3), LigaGG CELOL A/B (3).
+
+### 20.1 The one genuinely new structured source: Kalshi
+
+| Item | Measured 2026-10-25 |
+|---|---|
+| Endpoint | `https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME&status=open&with_nested_markets=true&limit=200` — **no API key** |
+| Shape | one event per match, holding **two mutually exclusive binary markets** (`"<team> wins"`) with `yes_bid_dollars` / `yes_ask_dollars` |
+| Sample read | G2 Esports **53¢ / 54¢** vs Top Esports **46¢ / 47¢** (mid 0.535 / 0.465) — [market page](https://kalshi.com/markets/kxlolgame/g2-esports-vs-top-esports/kxlolgame-26oct251300g2tes) shows the same 53% / 47% |
+| Other events on the board | Invictus Gaming vs Hanwha Life, LYON vs Gen.G, Dplus KIA vs Movistar KOI, Bilibili vs Karmine Corp, CTBC Flying Oyster vs T1, Team Secret Whales vs LØS, Team Liquid vs Anyone's Legend — **all "Worlds 2026"** |
+| Coverage of our 147 model-only rows | **0.** No PRM, RIVALS, Tunisian, Arabian, 4 Nations, Komplettligaen, LCP Promotion or LigaGG event exists on the board |
+| Settlement sources Kalshi itself names | Sofascore, BO3, eGamersWorld ([event JSON](https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME&status=open)) |
+
+**Why Kalshi was missed before:** the earlier probe asked `/trade-api/v2/series?category=Esports`, which Kalshi answers
+with `{"series":null}` — its esports series carry `"category":"Sports"` and are only reachable by `series_ticker`.
+The wrong-shaped query is recorded as a probe candidate so the correction stays measured, and
+`scripts/probe_lines.py::probe_kalshi` now asks the working endpoint and matches what it returns to the published
+fixtures by team name and start time.
+
+**Promoted into production** (`scripts/fetch_markets.py::fetch_kalshi`, weight 0.75) because it is an independent
+CFTC-regulated exchange with a real two-sided book, and a sample row was verified by hand against the market page.
+It does not change any pick for a low-tier fixture — it adds a fifth independent price to the featured Worlds rows
+(median of 5 instead of 4). Unit tests: `verification/test_entity_and_books.py` (13 new checks, incl. the EDT/EST
+start-time parse and the 4-hour `occurrence_datetime` offset Kalshi prints).
+
+### 20.2 Candidates fetched this session and what they returned
+
+| Source | Link | Observed 2026-10-25 | Covers a model-only fixture? |
+|---|---|---|---|
+| OddsDigger — LoL upcoming | https://oddsdigger.com/e-sports/league-of-legends/upcoming | HTTP 200, live multi-book board (fractional odds + "All Odds" per match) for the Worlds fixtures only | No |
+| OddsDigger — Prime League path | https://oddsdigger.com/e-sports/league-of-legends/prime-league | **HTTP 410 "Page permanently removed"** | No |
+| Cloudbet — LoL hub | https://www.cloudbet.com/en/esports/league-of-legends | reachable; the feed API (`sports-api.cloudbet.com/pub/v2/odds/...`) needs an `X-API-Key` | No |
+| Cloudbet — Prime League 1st Division | https://www.cloudbet.com/en/esports/league-of-legends/germany-t7954-prime-league-1st-division | page exists, "**No Prime League 1st Division events available**"; even the top PRM division is empty, so 2nd/3rd cannot be priced there | No |
+| Esports Insider — LoL odds board | https://esportsinsider.com/betting-odds/lol | HTTP 200; lists an **LCP Promotion 2027** match (FENNEL vs Nothin'Here, "62% / 38%") | **No — and the figure is not a book line.** Its own match page says "**No bookmaker prices yet** — none of the books we track are pricing this match. The ESI model view is in the sidebar." The 62/38 is *Esports Insider's own model*, so it is excluded exactly as Hotspawn's crowd % is |
+| OddsPortal — LoL Prime League | https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ | page exists; "Next Matches will appear here as soon as bookmaker betting odds become available" | No |
+| bmbets — Prime League 2nd Division | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ | page exists, **odds table empty** (client-rendered; the site was also over its reCAPTCHA quota); its LoL index carries only World Championship (9), LCP (1) and Game Changers Rising (1) | No |
+| eSports Betting Lounge — LoL odds | https://esportsbettinglounge.com/odds/lol/ | HTTP 200, PandaScore-fed, "odds shown are representative lines from our partner bookmakers"; board lists Worlds only | No |
+| EsportBet — LoL guide | https://esportbet.com/league-of-legends/ | affiliate guide with a tournament table (it does list *Prime League 2. Liga 2026 Fall* and *Arabian League 2nd Division Summer 2026* as events) but no prices and no feed | No |
+| OddsChecker — esports | https://www.oddschecker.com/esports | **HTTP 404** | No |
+| Kambi `/bs` (Betsson) offering feed | https://eu-offering-api.kambicdn.com/offering/v2018/bs/listView/esports/league_of_legends/all/all/matches.json | **"No access"** — that operator slug is not open on the CDN | No |
+| Prime League (organizer) — 3. Liga | https://www.primeleague.gg/en/liga3 | HTTP 200 with the **current L3 Fall 26/27 group tables** (Group 1: Kanji KIN 3-0 / 9 pts, BlackDivision 3-0 / 7, Babos Gaming Academy 2-1 / 6 …) and per-match links | Not a book — an official results source (see §20.3) |
+| Prime League (organizer) — 2. Liga | https://www.primeleague.gg/en/liga2 | same shape | Not a book |
+| Polymarket (production source, re-read) | https://polymarket.com/teams/league-of-legends/winners | carries a **Prime League 1st Division** market (Unicorns of Love Sexy Edition vs ROSSMANN Centaurs) — i.e. Polymarket does reach the *top* PRM division, but **not** PRM 2nd/3rd Division, which is what Hotspawn lists | No |
+
+Also re-confirmed as unchanged: Pinnacle's league index still lists a single LoL competition (World Championship, id
+9587); the nine Kambi/Unibet country feeds still return the same 8 Worlds events; GG.Bet / Thunderpick / Rivalry /
+Midnite / Betway / Marathonbet / Betano / Stake still answer 403/404/503 from CI.
+
+### 20.3 What actually prices the other 147 fixtures (unchanged, and still the production answer)
+
+No source found in this pass prices a single one of them, so the cascade stays: Leaguepedia `MatchSchedule` Elo →
+Leaguepedia `Standings` blend (`MODEL_ELO_STANDINGS`) → competition prior → explicit 50/50 `UNRESOLVED` published on
+the Unresolved & Limitations page. The organiser pages added to the probe (`primeleague.gg/en/liga3`,
+`primeleague.gg/en/liga2`, `komplettligaen.no/lol`, `rivalsleague.gg/lol`) are results/standings cross-checks for a
+human, never a probability input — primeleague.gg answered **403 Bunny Shield** from CI on 2026-10-21 and **200 with
+current group tables** when read on 2026-10-25, so the probe now re-measures it every run instead of trusting the old
+status.
+
+### 20.4 Verification log additions
+
+* `scripts/source_probe.py`: 37 → **53 candidates**; each new row carries an https link, an HTTP status and a verdict
+  (verifier check D22). No probe row ever carries a probability.
+* `scripts/probe_lines.py`: new `probe_kalshi()` — structured two-way prices, matched to the published fixtures by
+  team name and start time, so `data/diag/line_probe.json` reports how many currently model-only rows Kalshi would
+  cover (measured: 0).
+* `scripts/fetch_markets.py`: new `fetch_kalshi()` + `data/diag/kalshi_lol.json` snapshot per run.
+* `scripts/model.py`: `WEIGHTS` gains `"kalshi": 0.75` (only shapes the weighted mean used below 3 sources; ≥3
+  sources use the exact median).
+* Site text updated wherever the book list was enumerated (index, leagues, methodology, unresolved, README, app.js
+  probe note) so the site never claims four sources when five are queried.
+* Local gates on this commit: `verify_site.py` **44 PASS · 0 FAIL · 0 WARN · 1 SKIP**; `check_dom_render.js`
+  **55/55** (incl. a new self-test that a 5-source market row renders a link for every book); `render_check.cjs`
+  PASS; `check_dom_contract.py` PASS; `test_dom_contract.py` 7/7; `test_verifier.py` 45/45;
+  `test_entity_and_books.py` 28/28; `test_standings_model.py` ALL PASS.
+
+### 20.5 Irregularities found this session (non-blocking, published on Flagged)
+
+1. **Kalshi's `occurrence_datetime` runs ~4 h ahead of the real start** on all 7 open LoL events read
+   (e.g. G2 vs Top Esports: real start 2026-10-25T17:00Z, `occurrence_datetime` 2026-10-25T21:00Z). The true start
+   is printed inside the market's `rules_primary` ("originally scheduled for Oct 25, 2026 at 1:00 PM EDT"), so
+   `fetch_kalshi()` parses that text and only falls back to `occurrence_datetime`. A consumer that trusted the
+   timestamp field would mis-time every Kalshi row.
+2. **Esports Insider's board mixes model output into an odds table.** Its LoL board shows "62% / 38%" for an LCP
+   Promotion match while its own match page states no book prices it. Treated as a model, not a line — the same rule
+   that excludes Hotspawn crowd percentages.
+3. **OddsDigger's Prime League path is HTTP 410** while its LoL board is live, so a future retry must not assume the
+   aggregator dropped LoL.
+4. **Cloudbet's Prime League 1st Division page exists but is empty** even during the split, so the absence of
+   tier-2/tier-3 LoL on that book is not a temporary gap.
+5. **primeleague.gg reachability flips between runs** (403 from CI, 200 when read directly). The probe records the
+   status of each run rather than a remembered one.

@@ -1494,8 +1494,52 @@ than 60 minutes as of 2026-10-25 10:5x UTC; the most recent board entries are `a
 
 | Task | Status | Owner | Files (claimed scope) |
 |---|---|---|---|
-| T27 Fresh source research for the non-featured (low-tier) fixtures: new bookmaker / esportsbook / aggregator / community candidates that no earlier session probed, each recorded with what was observed and a citation; new candidates added to the production reachability probe so every 6-hour run publishes their status | in progress | arena/f1cddda8 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/probe_sources.py`, `data/diag/source_probe.json` (generated) |
-| T28 Mobile & executive-summary usability pass at 390 px: confirm the summary's in-site pick links, the separate unresolved + limitations section, and phone readability of every probability; fix only what the audit shows broken | unclaimed | arena/f1cddda8 | `docs/**`, `verification/mobile_audit.md`, `verification/check_dom_render.js` |
-| T29 Integration: run the live pipeline on this branch, re-verify line by line, open PR → `main`, merge without waiting, confirm GitHub Pages, record PR + merge result here | unclaimed | arena/f1cddda8 | `COORDINATION.md` (board entries), generated artifacts under `docs/data/`, `verification/report.json` |
+| T27 Fresh source research for the non-featured (low-tier) fixtures: new bookmaker / esportsbook / aggregator / community candidates that no earlier session probed, each recorded with what was observed and a citation; new candidates added to the production reachability probe so every 6-hour run publishes their status | done | arena/f1cddda8 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/probe_lines.py`, `scripts/fetch_markets.py`, `scripts/model.py`, `data/diag/*` (generated) |
+| T28 Mobile & executive-summary usability pass at 390 px: confirm the summary's in-site pick links, the separate unresolved + limitations section, and phone readability of every probability; fix only what the audit shows broken | done | arena/f1cddda8 | `docs/**`, `verification/mobile_audit.md`, `verification/check_dom_render.js`, `verification/mobile_audit_390.py` (new), `verification/mobile_render_390.cjs` (new), `.github/workflows/verify.yml`, `.github/workflows/pipeline-test.yml` |
+| T29 Integration: run the live pipeline on this branch, re-verify line by line, open PR → `main`, merge without waiting, confirm GitHub Pages, record PR + merge result here | in progress | arena/f1cddda8 | `COORDINATION.md` (board entries), generated artifacts under `docs/data/`, `verification/report.json` |
 
 Any session needing a file in this scope must log a request here instead of editing it.
+
+### T27/T28 results (session `arena/f1cddda8`, 2026-10-25)
+
+**T27 — fresh source research.** Snapshot under test: `docs/data/picks.json` generated 2026-10-25T10:41:50Z —
+**156 fixtures · 156 priced · 0 unresolved · 9 with an external line · 147 model-priced**. 16 new candidates were
+fetched and read by hand on 2026-10-25 (`research/betting-sources.md` §20, every row with its link):
+
+* **One genuinely new structured source: Kalshi.** `api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME`
+  answers **with no API key** and returns two mutually exclusive match-winner markets per event with yes bid/ask
+  (G2 Esports 53¢/54¢ vs Top Esports 46¢/47¢, mid 0.535/0.465 — the market page shows the same 53/47). Its LoL board is
+  **Worlds 2026 only**, so it covers **0** of the 147 model-only rows; it was nevertheless **promoted into production**
+  (`scripts/fetch_markets.py::fetch_kalshi`, weight 0.75) as a fifth independent price for the featured rows. Earlier
+  sessions recorded Kalshi as "no LoL series" because they queried `/series?category=Esports`, which Kalshi answers
+  with `{"series":null}` — the esports series are filed under `category=Sports` and are reachable by `series_ticker`.
+* **No source prices a single low-tier fixture.** Also measured this pass: OddsDigger (live Worlds board; its Prime
+  League path is **HTTP 410**), Cloudbet (Prime League 1st Division page exists but is **empty**; feed API needs a key),
+  Esports Insider (lists an LCP Promotion match at 62/38 — but its own match page says **"No bookmaker prices yet"**,
+  i.e. that is *its model*, excluded on the same rule as Hotspawn crowd %), OddsPortal Prime League ("next matches will
+  appear here as soon as bookmaker betting odds become available"), bmbets Prime League 2nd Division (empty table),
+  eSports Betting Lounge (PandaScore-fed representative lines), EsportBet (affiliate guide), OddsChecker `/esports`
+  (**HTTP 404**), Kambi `/bs` (**"No access"**), plus the official organiser pages primeleague.gg/en/liga3 + /liga2,
+  komplettligaen.no/lol and rivalsleague.gg/lol (results cross-checks, never a price).
+* `scripts/source_probe.py` grew 37 → **53 candidates**, so every 6-hour refresh re-measures all of them
+  (verifier D22 requires an https link, an HTTP status and a verdict per row, and forbids any probability).
+
+**T28 — 390 px phone pass.** Two new CI scripts replace "a manual pass on a physical phone remains the final check":
+`verification/mobile_audit_390.py` (17/17 declared-geometry checks parsed out of `style.css`) and
+`verification/mobile_render_390.cjs` (23/23 rendered-content checks in jsdom at 390 px: the summary's in-site links,
+the four "Where the updated picks are" cards with live counts, the separate unresolved + limitations section, a row
+per fixture with the pick and both probabilities, ≥1 source link per row, no element wider than 390 px, the 6-link
+bottom navigation, no script error on any page). They run in `verify.yml` and `pipeline-test.yml`.
+
+**Defects found and fixed in this pass (both caught by the new checks, not by inspection):**
+
+| ID | Defect | Fix |
+|---|---|---|
+| M1 | `docs/assets/app.js` `row()` capped source links at **3** while the caption said "N verified links" — with Kalshi as a fifth source every featured row silently dropped two book links. | Cap raised to 5; `check_dom_render.js` gained a self-test that injects a 5-source row and asserts all five links render (55/55). |
+| M2 | The new CSS parser treated a `/* comment */` before a selector as part of the selector and could not resolve `var(--nav-h)`, so it measured nothing for `.icon-btn` / `.bottom-nav a`; the width check also read `@media (min-width: 700px)` preludes as element rules. | Comments stripped, custom properties resolved, media preludes excluded — verified non-vacuous because the unpatched parser failed exactly those three checks. |
+
+**Local gates on this commit:** `verify_site.py` **44 PASS · 0 FAIL · 0 WARN · 1 SKIP** · `check_dom_render.js` 55/55 ·
+`render_check.cjs` PASS · `mobile_audit_390.py` 18/18 · `check_dom_contract.py` PASS · `test_dom_contract.py` 7/7 ·
+`test_verifier.py` 45/45 · `test_entity_and_books.py` 28/28 (13 new Kalshi checks) · `test_standings_model.py` ALL PASS ·
+`audit/test_model.py` 23/23. Model check with a synthetic fifth source: median of 5 = 0.4592, evidence string names all
+five books, confidence High.

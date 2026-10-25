@@ -99,11 +99,66 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
      "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
      "sportsbook-api", "market"),
     # --- prediction markets --------------------------------------------------
-    ("Kalshi esports series", "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
+    # NOTE (measured 2026-10-25, session arena/f1cddda8): the esports series do
+    # NOT live under `category=Esports` — Kalshi answers that with
+    # {"series":null}. Its LoL events carry `"category":"Sports"` and are found
+    # by series_ticker instead, e.g. series_ticker=KXLOLGAME. Both URLs are kept
+    # so the wrong-shaped query stays measured rather than being retried blindly.
+    ("Kalshi esports series index (category=Esports -> null, measured 2026-10-25)",
+     "https://api.elections.kalshi.com/trade-api/v2/series?category=Esports",
+     "prediction-market-api", "market"),
+    ("Kalshi — LoL match-winner events (public API, no key; series KXLOLGAME)",
+     "https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME"
+     "&status=open&with_nested_markets=true&limit=200",
      "prediction-market-api", "market"),
     ("Manifold Markets LoL search",
      "https://api.manifold.markets/v0/search-markets?term=league%20of%20legends&limit=5",
      "prediction-market-api", "market"),
+    # --- added 2026-10-25 (session arena/f1cddda8) ---------------------------
+    # Each of these was fetched and read on 2026-10-25 during the fresh
+    # established-books -> esportsbooks -> aggregators -> community pass. The
+    # measured result is written up in research/betting-sources.md §20; nothing
+    # here is assumed, and no value from any of them is used in a probability.
+    ("OddsDigger — LoL upcoming odds comparison (Worlds board, multi-book)",
+     "https://oddsdigger.com/e-sports/league-of-legends/upcoming", "aggregator-page", "market"),
+    ("OddsDigger — LoL Prime League path (HTTP 410 measured 2026-10-25)",
+     "https://oddsdigger.com/e-sports/league-of-legends/prime-league", "aggregator-page", "market"),
+    ("Cloudbet — LoL hub (crypto esportsbook, feed API needs a key)",
+     "https://www.cloudbet.com/en/esports/league-of-legends", "esportsbook-page", "market"),
+    ("Cloudbet — Prime League 1st Division (page exists, no events 2026-10-25)",
+     "https://www.cloudbet.com/en/esports/league-of-legends/germany-t7954-prime-league-1st-division",
+     "esportsbook-page", "market"),
+    ("Esports Insider — LoL odds board (PandaScore-fed; its 62/38 LCP Promotion figure is ESI's own model)",
+     "https://esportsinsider.com/betting-odds/lol", "aggregator-page", "market"),
+    ("OddsPortal — LoL Prime League (\"next matches appear when odds become available\")",
+     "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/",
+     "aggregator-page", "market"),
+    ("bmbets — LoL Prime League 2nd Division comparison (odds table empty 2026-10-25)",
+     "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
+     "aggregator-page", "market"),
+    ("eSports Betting Lounge — LoL odds (PandaScore-fed \"representative lines\")",
+     "https://esportsbettinglounge.com/odds/lol/", "aggregator-page", "market"),
+    ("EsportBet — LoL odds guide (affiliate guide, no feed)",
+     "https://esportbet.com/league-of-legends/", "odds-guide", "market"),
+    ("OddsChecker — esports section (HTTP 404 measured 2026-10-25)",
+     "https://www.oddschecker.com/esports", "aggregator-page", "market"),
+    ("Kambi / Betsson offering feed (control: answered \"No access\" 2026-10-25)",
+     "https://eu-offering-api.kambicdn.com/offering/v2018/bs/listView/esports/league_of_legends"
+     "/all/all/matches.json?lang=en_GB&market=SE&useCombined=true",
+     "sportsbook-api", "market"),
+    # Official organiser pages for the divisions Hotspawn lists but no book prices.
+    # These are results/standings sources (the input to our own line), never a
+    # bookmaker price. primeleague.gg answered 403 Bunny Shield from CI on
+    # 2026-10-21 but 200 with current group tables when read on 2026-10-25, so
+    # the probe re-measures it every run instead of trusting the old status.
+    ("Prime League (organizer) — 3. Liga official standings & match links",
+     "https://www.primeleague.gg/en/liga3", "results-page", "results"),
+    ("Prime League (organizer) — 2. Liga official standings & match links",
+     "https://www.primeleague.gg/en/liga2", "results-page", "results"),
+    ("Komplettligaen (organizer) — official LoL results by division",
+     "https://www.komplettligaen.no/lol/", "results-page", "results"),
+    ("RIVALS LEAGUE (organizer) — official Swedish league",
+     "https://www.rivalsleague.gg/lol", "results-page", "results"),
     # --- community / official results ----------------------------------------
     ("gol.gg tournament index", "https://gol.gg/tournament/list/", "results-page", "results"),
     ("bo3.gg LoL matches", "https://bo3.gg/lol/matches", "results-page", "results"),

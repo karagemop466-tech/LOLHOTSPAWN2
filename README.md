@@ -23,7 +23,7 @@ Rows are priced in a strict 5-tier cascade:
 > executive summary itself** — every unresolved fixture is listed there with its source
 > links, next to a per-league table of what prices that league and where its limit is.
 
-1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada and Polymarket (median if ≥3 sources, otherwise a fixed-quality weighted mean).
+1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada, Polymarket and Kalshi (median if ≥3 sources, otherwise a fixed-quality weighted mean).
 2. **Chronological Tier-Anchored Elo (`MODEL_ELO` / `MODEL_ELO_THIN`)** — computed from 24 months of completed series on Leaguepedia (`MatchSchedule`), anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting, head-to-head smoothing, competition-scoped disambiguation, and deterministic UTC schedule bridging.
 3. **Standings model (`MODEL_STANDINGS` 📊)** — when there is no book line and a side has no Elo yet but has a current-split win-loss record on Leaguepedia *Standings*, the record becomes a smoothed Elo offset from the competition prior, capped at Low/Medium confidence because it ignores strength of schedule.
 4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one team lacks both match history and split standings; the competition median/tier prior is substituted, shrunk toward 50/50 and capped at Low confidence.
@@ -77,6 +77,7 @@ published list **and** a human has verified a sample row — neither probe ever 
 | Unibet (Kambi CDN JSON) | 2-way pre-match series moneyline | https://www.unibet.com/betting/sports/filter/esports/league_of_legends |
 | Bovada coupon JSON | 2-way pre-match series moneyline | https://www.bovada.lv/sports/esports/league-of-legends |
 | Polymarket Gamma API | Public prediction-market reference probabilities | https://gamma-api.polymarket.com |
+| Kalshi trade API v2 | CFTC-regulated exchange: two-way match-winner prices (no key needed) | https://api.elections.kalshi.com/trade-api/v2/events?series_ticker=KXLOLGAME |
 | Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) — page-prefix probe fixed 2026-10-24 | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
 | External-source probe (22 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
@@ -94,6 +95,8 @@ python3 scripts/verify_site.py                  # full schema + link + page audi
 python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all pages (incl. the theme toggle)
 node verification/check_dom_render.js           # jsdom render checks (all pages)
+python3 verification/mobile_audit_390.py       # 390 px phone audit: declared CSS geometry
+node verification/mobile_render_390.cjs       # 390 px phone audit: rendered content in jsdom
 ```
 
 The header carries a working colour-theme button on every page (`<html data-theme>`, persisted in

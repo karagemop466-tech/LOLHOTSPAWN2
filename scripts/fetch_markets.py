@@ -6,6 +6,7 @@ Sources, in priority order:
   2. Unibet (Kambi)  - established European/Australian sportsbook network, public Kambi JSON feed.
   3. Bovada          - established North-American sportsbook, public coupon JSON.
   4. Polymarket      - prediction market, public Gamma API.
+  5. Kalshi          - CFTC-regulated exchange, public trade API (no key).
 
 Every price is de-vigged (two-way normalisation) before it is stored, and every
 provider is deduplicated to at most one main match-winner market per fixture so
@@ -21,7 +22,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
 from lib_common import (clamp, decimal_from_american, devig_two, get_json, log,
-                        norm, now_utc, utc_iso, write_json)
+                        norm, now_utc, parse_iso, utc_iso, write_json)
 
 OUT = "data/cache/markets.json"
 PIN_KEY = {"x-api-key": "CmX2KcMrXuFmNg6YFbmTxE0y9CIrOi0R", "Accept": "application/json"}
@@ -578,10 +579,124 @@ def fetch_polymarket() -> dict:
     return {"status": status, "records": records}
 
 
+# --- 5. Kalshi (CFTC-regulated exchange) ----------------------------------- #
+# Public trade API, no key. One LoL match is a single event holding two
+# mutually exclusive binary markets ("<team> wins"); the mid of each side's
+# yes bid/ask is the two-way line. Measured 2026-10-25: the LoL board carries
+# the Worlds 2026 series only, so this source prices the same tier-1 fixtures
+# Pinnacle/Unibet/Bovada/Polymarket already cover - it is added because it is
+# an independent regulated exchange, not because it reaches tier-3.
+KALSHI_API = ("https://api.elections.kalshi.com/trade-api/v2/events"
+              "?series_ticker=KXLOLGAME&status=open&with_nested_markets=true&limit=200")
+KALSHI_PAGE = "https://kalshi.com/markets/"
+
+# Kalshi prints the real start inside the market rules text ("originally
+# scheduled for Oct 25, 2026 at 1:00 PM EDT"). `occurrence_datetime` runs ~4 h
+# ahead of it - measured on all 7 open LoL events read on 2026-10-25 - so the
+# rules text is parsed first and occurrence_datetime is only a fallback.
+_KALSHI_SCHED = re.compile(
+    r"originally scheduled for\s+([A-Za-z]{3})\s+(\d{1,2}),\s+(\d{4})\s+at\s+"
+    r"(\d{1,2}):(\d{2})\s*([AaPp])\.?[Mm]\.?\s+([A-Za-z]{2,5})")
+_KALSHI_MONTHS = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+                  "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12}
+_KALSHI_TZ = {"utc": 0, "gmt": 0, "bst": 1, "cet": 1, "cest": 2,
+              "edt": -4, "est": -5, "cdt": -5, "cst": -6,
+              "mdt": -6, "mst": -7, "pdt": -7, "pst": -8}
+
+
+def _kalshi_start(market: dict):
+    """UTC start of a Kalshi LoL market, from its own rules text."""
+    m = _KALSHI_SCHED.search(str(market.get("rules_primary") or ""))
+    if m:
+        mon = _KALSHI_MONTHS.get(m.group(1).lower())
+        off = _KALSHI_TZ.get(m.group(7).lower())
+        if mon and off is not None:
+            hour = int(m.group(4)) % 12 + (12 if m.group(6).lower() == "p" else 0)
+            try:
+                return (datetime(int(m.group(3)), mon, int(m.group(2)), hour,
+                                 int(m.group(5)), tzinfo=timezone(timedelta(hours=off)))
+                        .astimezone(timezone.utc))
+            except ValueError:
+                pass
+    return parse_iso(market.get("occurrence_datetime"))
+
+
+def _slug(s: str) -> str:
+    return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", str(s or "").lower())).strip("-")
+
+
+def fetch_kalshi() -> dict:
+    status = {"source": "Kalshi", "key": "kalshi", "url": KALSHI_API,
+              "status": "error", "count": 0}
+    data, r = get_json(KALSHI_API)
+    records, seen = [], set()
+    events = (data or {}).get("events") or []
+    for ev in events:
+        if not isinstance(ev, dict):
+            continue
+        sides = []
+        for m in ev.get("markets") or []:
+            if not isinstance(m, dict):
+                continue
+            team = str(m.get("yes_sub_title") or "").strip()
+            try:
+                bid = float(m.get("yes_bid_dollars") or 0)
+                ask = float(m.get("yes_ask_dollars") or 0)
+            except (TypeError, ValueError):
+                continue
+            if not team or bid <= 0 or ask <= 0 or ask < bid:
+                continue
+            sides.append((team, (bid + ask) / 2.0, m))
+        if len(sides) != 2:            # a two-way market has exactly two sides
+            continue
+        (ta, pa, ma), (tb, pb, _) = sides
+        start = _kalshi_start(ma)
+        if start is None:
+            continue
+        rules = str(ma.get("rules_primary") or "")
+        lg = re.search(r"wins the (.+?):", rules)
+        ticker = str(ev.get("event_ticker") or "")
+        try:
+            volume = sum(float(m.get("volume_fp") or 0) for m in ev.get("markets") or [])
+        except (TypeError, ValueError):
+            volume = None
+        rec = _record(
+            "Kalshi", "kalshi",
+            "Kalshi: " + (lg.group(1).strip() if lg else "League of Legends"),
+            start, ta, tb, pa, pb,
+            KALSHI_PAGE + _slug(ev.get("title") or "") + "/" + ticker.lower(),
+            decimal_a=round(1.0 / pa, 4), decimal_b=round(1.0 / pb, 4),
+            note=f"Kalshi {ticker}: mid of each side's yes bid/ask",
+            raw={"event_ticker": ticker, "api_url": KALSHI_API,
+                 "series": ev.get("series_ticker"), "volume": volume,
+                 "market_type": "series", "settlement": "official result"},
+        )
+        if rec and ticker not in seen:
+            seen.add(ticker)
+            records.append(rec)
+    status.update({
+        "status": "ok" if records else "no_data",
+        "count": len(records),
+        "events_seen": len(events),
+        "note": ("Public Kalshi trade API (no key): two mutually exclusive match-winner "
+                 "markets per LoL event, mid of yes bid/ask, de-vigged by _record."),
+    })
+    # Diagnostic snapshot for manual review + replay tests (never a probability
+    # input, and a failure here must not break the run).
+    try:
+        write_json("data/diag/kalshi_lol.json", {
+            "checked_at": utc_iso(now_utc()), "url": KALSHI_API,
+            "http_status": r.get("status"), "events": events, "records": records})
+    except Exception as e:  # noqa: BLE001
+        log(f"kalshi snapshot write failed: {e!r}")
+    return {"status": status, "records": records}
+
+
 def main() -> int:
     results = []
     statuses = []
-    for fn in (fetch_pinnacle, fetch_unibet, fetch_bovada, fetch_polymarket):
+    for fn in (fetch_pinnacle, fetch_unibet, fetch_bovada, fetch_polymarket,
+               fetch_kalshi):
         try:
             out = fn()
         except Exception as e:  # noqa: BLE001 - one broken book must not stop the run
