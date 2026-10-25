@@ -1,18 +1,18 @@
 # Verification report — PASS
-_2026-10-25T15:14:55.440872+00:00_
-156 matches · UNRESOLVED: 0 · MARKET_SINGLE: 1 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO: 91 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0 · MODEL_ELO_STANDINGS: 54 · MODEL_ELO_THIN: 2 · MARKET_CONSENSUS: 8 · MARKET_POLYMARKET: 0
+_2026-10-25T17:04:37.387524+00:00_
+139 matches · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO: 83 · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 2 · MARKET_CONSENSUS: 7 · UNRESOLVED: 0 · MODEL_ELO_STANDINGS: 46 · MODEL_STANDINGS: 0 · MARKET_POLYMARKET: 0 · MARKET_BOOKS: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T15:14:00.052655Z (0.0h old) |
-| D2 two distinct teams and a start time on every match | PASS | all 156 rows have team1, team2 and a start time |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 139 matches, generated_at=2026-10-25T17:03:55.791951Z (0.0h old) |
+| D2 two distinct teams and a start time on every match | PASS | all 139 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
 | D5 pick_prob equals the larger probability | PASS | pick_prob matches max(prob_team1, prob_team2) on every row |
 | D6 method is one of ['MARKET_BOOKS', 'MARKET_CONSENSUS', 'MARKET_POLYMARKET', 'MARKET_SINGLE', 'MODEL_ELO', 'MODEL_ELO_STANDINGS', 'MODEL_ELO_THIN', 'MODEL_LEAGUE_PRIOR', 'MODEL_STANDINGS', 'UNRESOLVED'] | PASS | all methods documented |
 | D6b confidence labels are from the documented set | PASS | High/Medium/Low/None only |
 | D7c every source URL is absolute http(s) | PASS | all source URLs well formed |
-| D7 every row links at least one source URL | PASS | all 156 rows carry at least one source URL |
+| D7 every row links at least one source URL | PASS | all 139 rows carry at least one source URL |
 | D8a market rows link a bookmaker/prediction-market URL | PASS | every market row links its market |
 | D8c model rows link a results-source URL | PASS | every model row links a results source |
 | D8d model rows with generic results-table sources are flagged | PASS | generic Leaguepedia table links are explicitly flagged as less directly auditable |
@@ -21,14 +21,14 @@ _2026-10-25T15:14:55.440872+00:00_
 | D16 no single-game (Game 1/Map 1) market used as a series probability | PASS | no non-BO1 row cites a single-game market |
 | D12 Hotspawn is never the probability source (fixture list only) | PASS | no market/model row cites hotspawn.com as its probability source |
 | D10 declared counts agree with the rows | PASS | counts.resolved/unresolved consistent |
-| D11 declared count equals number of rows | PASS | declared=156, rows=156 |
+| D11 declared count equals number of rows | PASS | declared=139, rows=139 |
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
-| D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=156, priced=156, missing=0, extra=0, excluded=9, leaked=0 |
+| D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=139, priced=139, missing=0, extra=0, excluded=18, leaked=0 |
 | D22 external-source probe rows are sourced and never carry a probability | PASS | 48 probed source(s), each with an https link, HTTP status and verdict |
-| D24 estimates are distinguished from official results verification | PASS | 156 rows audited; official confirmation left blank |
+| D24 estimates are distinguished from official results verification | PASS | 139 rows audited; official confirmation left blank |
 | D25 saved decimal prices reproduce no-vig probabilities and consensus | PASS | Recomputed from saved values only, not a current quote or outcome guarantee |
-| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 133/133 matched fixture times agree with Leaguepedia; 23 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T15:10:20.754639+00:00 (0.1h old). |
+| D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 34 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | PASS | 122/122 matched fixture times agree with Leaguepedia; 17 fixture(s) not in the snapshot; 0 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-25T17:02:03.313583+00:00 (0.0h old). |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | D23 no committed artifact contains git conflict markers | PASS | no conflict markers in docs/, data/, verification/, research/, scripts/, .github/ |
 | S1 all required site files exist | PASS | 10 files present |
@@ -46,7 +46,7 @@ _2026-10-25T15:14:55.440872+00:00_
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 45 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 50 external link(s) collected for manual review; 0 plain-http |
 | S11 every CSS class used by a page is defined in style.css | PASS | 7 page(s), no unstyled class |
 | S18 every page has the same quick-jump bar; the summary explains non-featured picks in-site | PASS | 7 pages, 6 jump targets, #nonfeatured present with a source table |
 | S19 phone layout contract: viewport meta, a <=430px breakpoint, no fixed width above 430px | PASS | 390px-safe: device-width viewport on every page, phone breakpoint present, no fixed width above 430px |
@@ -56,7 +56,7 @@ _2026-10-25T15:14:55.440872+00:00_
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |
 | W2 update workflow runs the generator with contents: write | PASS | audit-pipeline.yml runs scripts/update_picks.py; contents write present |
 | W3 Hotspawn crowd % is never a probability input | PASS | static scan found no crowd->probability usage |
-| X1 external links reachable (official-source links resolve) | WARN | 35/45 returned 2xx/3xx; 7 blocked by the host; 3 transient/5xx; 0 dead (404/410) |
+| X1 external links reachable (official-source links resolve) | WARN | 40/50 returned 2xx/3xx; 8 blocked by the host; 1 transient/5xx; 0 dead (404/410) |
 | REQ requirements traceability | PASS | REQ1 PASS; REQ2 PASS; REQ3 PASS; REQ4 PASS; REQ5 PASS; REQ6 PASS; REQ7 PASS; REQ8 PASS; REQ9 PASS; REQ10 PASS; REQ11 PASS; REQ12 PASS |
 
 ## Requirements traceability
@@ -78,15 +78,14 @@ _2026-10-25T15:14:55.440872+00:00_
 
 **X1 items:**
 - https://www.oddsportal.com/esports/league-of-legends/ -> 503
-- https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ -> 503
-- https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 -> 0
-- https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json -> 429
 - https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist -> 403
 - https://lol.fandom.com/wiki/Arabian_League_2nd_Division -> 403
 - https://lol.fandom.com/wiki/LigaGG -> 403
+- https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split -> 403
 - https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule -> 403
 - https://lol.fandom.com/wiki/Special:CargoTables/Standings -> 403
 - https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season -> 403
+- https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 -> 403
 
 **REQ items:**
 - REQ1: A pick exists for every match (pick is one of the two teams) -> PASS
