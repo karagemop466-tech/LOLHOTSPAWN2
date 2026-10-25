@@ -116,6 +116,54 @@
     </div>
   </section>
 
+  <section id="source-coverage-flags-2026-10-25">
+    <h2>Coverage &amp; source flags found on 2026-10-25</h2>
+    <p class="small">Found while re-verifying coverage against the live lobby and re-checking established books for the
+      competitions that have no featured betting line. Each row links the page that was actually opened; the write-up
+      is <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md §20</a>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Ref</th><th scope="col">What was irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>F20.1</b></td>
+            <td>A fixture listed on the lobby had <b>no pick and no exclusion entry</b> in the 2026-10-25T10:41Z payload:
+              <i>Team Lucidity Esports vs Fritt Fall</i> (RIVALS LEAGUE Season 2, 2026-10-31T17:30Z, id 1090065). The priced
+              set was built from the fixtures-API rows only, so a lobby-listed fixture the API lagged on was dropped silently.</td>
+            <td><a href="https://www.hotspawn.com/matches/team-lucidity-esports-vs-fritt-fall-rivals-league-season-2-1090065" target="_blank" rel="noopener">Hotspawn match page ↗</a></td>
+            <td><span class="chip green">Fixed</span> — priced as MODEL_ELO_STANDINGS 60.0% (Medium) in the 14:20Z payload; the priced set is now the union of lobby and API, and a coverage gate fails a refresh on an unexplained gap</td>
+          </tr>
+          <tr>
+            <td><b>F20.2</b></td>
+            <td>Cloudbet markets Prime League 2nd Division but serves an empty board: “No Prime League 2nd Division events available”.</td>
+            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">Cloudbet Prime League 2nd Division ↗</a></td>
+            <td><span class="chip amber">Upstream</span> — no price exists to use</td>
+          </tr>
+          <tr>
+            <td><b>F20.3</b></td>
+            <td>bmbets has a Prime League 2nd Division URL, but the live board lists only LoL World Championship, LoL – LCP and LoL Game Changers Rising.</td>
+            <td><a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets Prime League 2nd Division ↗</a></td>
+            <td><span class="chip amber">Upstream</span> — competition not priced</td>
+          </tr>
+          <tr>
+            <td><b>F20.4</b></td>
+            <td>OddsPortal's League of Legends index lists one competition only (“League of Legends World Championship (10)”), and its Prime League page says prices “will appear here as soon as bookmaker betting odds become available”.</td>
+            <td><a href="https://www.oddsportal.com/esports/league-of-legends/" target="_blank" rel="noopener">OddsPortal LoL index ↗</a></td>
+            <td><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
+          </tr>
+          <tr>
+            <td><b>F20.5</b></td>
+            <td>The three Komplettligaen Playoffs lobby cards link to a placeholder (<code>https://www.hotspawn.com/?fixtures=waiting-for-information-2208</code>) instead of a match page, so no per-match permalink exists upstream. The rows keep the fixture id and link the competition page.</td>
+            <td><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a></td>
+            <td><span class="chip amber">Upstream</span> — no match page to link</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="source-limitations" class="warnbox">
     <h2>Source limitations: official vs. community data</h2>
     <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>
