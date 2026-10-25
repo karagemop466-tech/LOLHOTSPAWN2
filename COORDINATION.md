@@ -1774,10 +1774,10 @@ Baseline at claim: `main` = `2173cc9` (scheduled refresh), payload generated 202
 
 | Task | Status | Owner | Files (claimed scope) |
 |---|---|---|---|
-| T27 Fresh line-source research for the 147 fixtures with no bookmaker line (established books → esportsbooks → esports betting lines → aggregators), evidence recorded with URLs + date | in progress | arena/57975298 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/update_picks.py` (source lists only) |
-| T28 Publish the re-tested sources in every refresh (`checked_unavailable` + `market_probe`) so the site states what was actually tried today | in progress | arena/57975298 | `scripts/update_picks.py`, `scripts/source_probe.py` |
-| T29 Executive-summary clarity: state explicitly how many published matches had **no** reachable betting line, with in-site links to those lists, and keep the separate unresolved/limitations section | in progress | arena/57975298 | `docs/index.html`, `docs/assets/app.js`, `verification/check_dom_render.js` |
-| T30 Integration: branch pipeline run, re-verify, PR → `main`, merge without waiting, confirm Pages deploy, record here | in progress | arena/57975298 | `COORDINATION.md`, generated `docs/data/picks.json` |
+| T27 Fresh line-source research for the 147 fixtures with no bookmaker line (established books → esportsbooks → esports betting lines → aggregators), evidence recorded with URLs + date | done | arena/57975298 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/update_picks.py` (source lists only) |
+| T28 Publish the re-tested sources in every refresh (`checked_unavailable` + `market_probe`) so the site states what was actually tried today | done | arena/57975298 | `scripts/update_picks.py`, `scripts/source_probe.py` |
+| T29 Executive-summary clarity: state explicitly how many published matches had **no** reachable betting line, with in-site links to those lists, and keep the separate unresolved/limitations section | done | arena/57975298 | `docs/index.html`, `docs/assets/app.js`, `verification/check_dom_render.js` |
+| T30 Integration: branch pipeline run, re-verify, PR → `main`, merge without waiting, confirm Pages deploy, record here | done | arena/57975298 | `COORDINATION.md`, generated `docs/data/picks.json` |
 
 No other session holds a claim younger than 60 minutes. Scope is non-overlapping with #55 (`docs/assets/app.js` conflict markers — already absent on `main`; this session rewrites only the executive-summary block in that file) and #59 (coordination record only).
 
@@ -2163,3 +2163,20 @@ Main advanced only through generated files and publication notes after that test
 | C1 / C2 / C3 / C4 | **done**. Primary-organizer result-by-result confirmation remains **needs review**, explicitly published with blank official-confirmation fields; not silently represented as verified. |
 
 This record-only follow-up changes no website, model, workflow or generated value. The primary PR is merged and the deployed feature code, production publisher and live-site verifier have all succeeded. Runtime deprecation/Ubuntu migration annotations are infrastructure notices, not failed checks; both browser suites ran successfully on the current runner.
+
+### Session `arena/57975298-lolhotspawn2` — T27–T30 close-out: PR #83 MERGED, main pipeline + Pages verified (recorded 2026-10-25)
+
+| Item | Confirmed result |
+|---|---|
+| Feature PR | [#83](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/83) **MERGED** 2026-10-25T15:20:28Z; merge commit `47a9205`. Merged autonomously without waiting for owner approval (`mergeable=true`, 3 merges of `origin/main` resolved keeping both sides). |
+| Pre-merge branch verification | [40205638717](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40205638717) **SUCCESS** on `f73a1d9`; verifier 52 PASS / 0 FAIL / 1 WARN (7 host-blocked URLs, **0 dead 404/410**), X1 34/42 sources 2xx. |
+| Local gates on the final merged tree | `verify_site.py` **51 PASS / 0 FAIL / 0 WARN / 1 skip** · `check_dom_render.js` **98/98** · `render_check.cjs` PASS · `check_dom_contract.py` PASS · `test_dom_contract.py` 7/7 · `test_verifier.py` **74/74** · `test_evidence_scope.py` OK · `test_provenance.py` OK · `test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS · `audit/test_model.py` 23 · `test_lobby_union.py` 5/5 · `test_freshness.cjs` PASS |
+| Post-merge `main` verification | [40206470192](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40206470192) **SUCCESS** on `47a9205` (live sources, external link check, both DOM suites). |
+| Pages deployment of the merged site | [40206469662](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40206469662) **SUCCESS** for `47a9205`. |
+| Live-site confirmation (read after deploy) | [Executive summary](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/index.html) serves the new no-line count (**147** of **156**) plus `#unresolved-summary`; [methodology](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/methodology.html#what-this-site-promises) serves all **12** requirement rows; [Flagged](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/flagged.html) serves the L1–L6 line-source re-test section. |
+| Production six-hourly publisher after merge | [40206470193](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40206470193) **SUCCESS**; refresh commit `7a82d49` (`picks: scheduled refresh [skip ci]`), payload `2026-10-25T15:22:49Z`: **156 fixtures, 9 market, 147 model, 54 standings blend, 11 Low, 0 unresolved, 9 cancelled excluded**, 42 probed candidates. Re-verified on this branch after fast-forwarding to `7a82d49`: verifier **51 PASS / 0 FAIL**, DOM **98/98**. |
+| Work shipped by T27–T30 | New **line-source re-test** for the 147 no-line fixtures (Flagged `#line-source-retest-2026-10-25`, L1–L6; `research/betting-sources.md` §26); executive-summary **no-line count paragraph** with in-site links; the 12-row **requirement → proof** table at `docs/methodology.html#what-this-site-promises`; A12 / Everygame dead-link removal (no URL published that we did not actually read); README probe-count correction. |
+| Remaining limitations (needs review, not blockers) | The 147 model rows still have **no retrieved bookmaker line** — no accessible established book, esportsbook, odds-comparison site or prediction market priced them on 2026-10-25 (Cloudbet "no events", OddsPortal archive-only, bmbets/betmonitor no PRM board, Rainbet blocked locally while CI gets HTML, Everygame LoL paths 404, Polymarket lists only Worlds + LGC Rising). 7 sources are **host-blocked (403/Turnstile), not dead**; they stay `WARN` on X1, not `FAIL`. Community results/standings remain not organizer-verified. No value was inferred or filled in. |
+| Tasks T27 / T28 / T29 / T30 | **done**, all implementation, integration, merge and deployment checks complete. |
+
+This record changes documentation only; it does not regenerate, patch or replace the published payload.
