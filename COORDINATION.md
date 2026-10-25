@@ -1,6 +1,19 @@
 # Coordination Board
 
-## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
+## Session `arena/6d169c43-lolhotspawn2` — 2026-10-25 (claim)
+
+No other session holds an open claim younger than 60 minutes as of 2026-10-25 14:15 UTC. All prior sessions' results are merged to `main` (latest scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z, 156 matches, 156 picks resolved, 9 market rows, 147 model rows, 0 unresolved). This session works strictly inside the claimed scope.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Line-by-line verification: run all unit suites, test_verifier, test_standings_model, test_dom_contract, test_entity_and_books, jsdom render harnesses, verify_site.py (REQ1–REQ12) | in progress | arena/6d169c43 | `verification/**`, `scripts/verify_site.py` |
+| T28 Fresh source research for low-tier LoL matches (established betting sites, esportsbooks, prediction markets, and community results); document findings for 2026-10-25 | in progress | arena/6d169c43 | `research/betting-sources.md`, `data/**` |
+| T29 Site usability & mobile experience pass: verify and polish the executive summary with in-site links to updated picks, starting-soon immediate picks, mobile layout at 375px–390px, and separate unresolved & limitations section | in progress | arena/6d169c43 | `docs/**`, `README.md` |
+| T30 Integration, PR & merge: verify all contracts, PR → `main`, merge without waiting, confirm deployment, record evidence here | claimed | arena/6d169c43 | `COORDINATION.md` |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
+## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (done, merged)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
 
