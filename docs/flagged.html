@@ -106,6 +106,68 @@
     </div>
   </section>
 
+  <section id="source-coverage-flags-2026-10-25">
+    <h2>Source-coverage flags — re-tested 2026-10-25</h2>
+    <p class="small">Irregularities found while looking for a line on the <b>147 fixtures that had none</b> in the
+      2026-10-25 snapshot. Each row links the page that was actually opened; the full notes, with the quoted text each
+      page rendered, are in <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md §20 ↗</a>.
+      None of these is used in any probability.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Ref</th><th scope="col">What is irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>F20.1</b></td>
+            <td>Cloudbet publishes a <b>Prime League 2nd Division</b> page, but the board renders
+              <i>“No Prime League 2nd Division events available”</i> and Cloudbet's LoL hub lists only the World
+              Championship. A page existing is not a price.</td>
+            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">Cloudbet PRM 2nd Division ↗</a></td>
+            <td><span class="chip amber">No events</span> — nothing used</td>
+          </tr>
+          <tr>
+            <td><b>F20.2</b></td>
+            <td>OddsPortal's Prime League page says upcoming matches appear <i>“as soon as bookmaker betting odds
+              become available”</i>: it holds results and <b>closing</b> odds for finished matches only, so it cannot
+              price a fixture before lock. Its status also moved from HTTP 503 (2026-10-23) to HTTP 200 (2026-10-25).</td>
+            <td><a href="https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/" target="_blank" rel="noopener">OddsPortal Prime League ↗</a></td>
+            <td><span class="chip amber">Archive only</span> — nothing used</td>
+          </tr>
+          <tr>
+            <td><b>F20.3</b></td>
+            <td>bmbets has a Prime League 2nd Division URL whose body is its LoL league index — which lists only
+              <i>World Championship (9)</i>, <i>LCP (1)</i> and <i>Game Changers Rising (1)</i>. There is no Prime League
+              market to compare, so an empty comparison page is not evidence of a price.</td>
+            <td><a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets PRM 2nd Division ↗</a></td>
+            <td><span class="chip amber">Empty board</span> — nothing used</td>
+          </tr>
+          <tr>
+            <td><b>F20.4</b></td>
+            <td>Rainbet answered <b>HTTP 200 HTML</b> from the CI runner while this workspace received a Cloudflare
+              Turnstile interstitial with <i>“Access is forbidden from your location”</i>. Either way the body carries no
+              machine-readable price — recorded as a transport difference, not as coverage.</td>
+            <td><a href="https://rainbet.com/sportsbook/league-of-legends-110" target="_blank" rel="noopener">Rainbet LoL board ↗</a></td>
+            <td><span class="chip amber">Unreadable</span> — nothing used</td>
+          </tr>
+          <tr>
+            <td><b>F20.5</b></td>
+            <td>Affiliate guides credit <b>Everygame</b> with Prime League coverage, but its LoL path answers
+              <b>HTTP 404</b>. The claim is published as <b>unverified</b> rather than repeated as fact.</td>
+            <td><a href="https://www.everygame.eu/en/sportsbook/esports/league-of-legends" target="_blank" rel="noopener">Everygame LoL path ↗</a></td>
+            <td><span class="chip amber">Unverified</span> — nothing used</td>
+          </tr>
+          <tr>
+            <td><b>F20.6</b></td>
+            <td>Documentation drift found and fixed this session: the README described the per-refresh source probe as
+              <i>22 candidates</i> while <code>source_probe.py</code> actually requests <b>42</b> (37 market + 5 results).
+              The count in the README now matches the code.</td>
+            <td><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/scripts/source_probe.py" target="_blank" rel="noopener">scripts/source_probe.py ↗</a></td>
+            <td><span class="chip green">Fixed</span> — no data impact</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="source-limitations" class="warnbox">
     <h2>Source limitations: official vs. community data</h2>
     <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>

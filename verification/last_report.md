@@ -43,7 +43,7 @@ _2026-10-25T14:18:44.808644+00:00_
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 18 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 24 external link(s) collected for manual review; 0 plain-http |
 | S11 every CSS class used by a page is defined in style.css | PASS | 7 page(s), no unstyled class |
 | S12 all pages share one navigation, freshness slot and unique ids | PASS | 7 pages, identical nav with 6 primary targets |
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |

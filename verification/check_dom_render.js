@@ -284,6 +284,14 @@ async function main() {
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));
   check("methodology: backtest block rendered",
         (mpage.document.querySelector("#backtest") || {}).textContent.trim().length > 0);
+  // "What this site promises" — one row per requirement, each pointing at an in-site page.
+  const reqRows = Array.from(mpage.document.querySelectorAll("#what-this-site-promises tbody tr"));
+  const reqLinked = reqRows.filter((r) => Array.from(r.querySelectorAll("a[href]"))
+    .some((a) => !/^https?:/i.test(a.getAttribute("href") || "")));
+  check("methodology: requirements table has 12 rows", reqRows.length === 12, `${reqRows.length} rows`);
+  check("methodology: every requirement links a page on this site",
+        reqRows.length === 12 && reqLinked.length === reqRows.length,
+        `${reqLinked.length}/${reqRows.length} rows with an in-site link`);
 
   // ---------- match detail --------------------------------------------------
   if (firstId) {
