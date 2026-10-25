@@ -1016,3 +1016,34 @@ stands: OddsDigger is probed and published every refresh, and never feeds a prob
 The run also shows why `fixtures_matched_and_previously_unpriced` was 0 rather than 1: `Mental Rush vs
 Vitality Rising Bees` already carries a Polymarket line in the payload, so it is not counted as "previously
 unpriced", and the Ground Zero row was the one lost to the footer bug. The next run should report 1.
+
+### 20.6 The corrected parser, measured live (Actions run `40202775347`, checked 2026-10-25T14:37:27Z)
+
+The third attempt bounded each row structurally — the row ends at its own trailing *All Odds* anchor, which
+carries the same event href — instead of by a character budget. Measured against the real page:
+
+| Measurement | 14:23:17Z (unbounded slice) | 14:28:26Z (1500-char budget) | **14:37:27Z (structural bound)** |
+|---|---|---|---|
+| HTTP / bytes | 200 / 212 KB | 200 | **200** |
+| Event links / unique events | 42 / 14 | 42 / 14 | **42 / 14** |
+| Two-way series prices extracted | 13 | **0** | **14** |
+| Matched to a published fixture | 8 (7 fixtures) | 0 | **9 (8 fixtures)** |
+| **Fixtures matched that had no external line** | 0 | 0 | **1** |
+| `candidates_with_new_coverage` | `[]` | `[]` | **`["OddsDigger upcoming LoL board"]`** |
+
+The single new-coverage row is the one §20.2 flagged:
+
+```
+Ground Zero vs Frank Esports   1.0149 / 8.3333
+  -> Ground Zero Gaming vs Frank Esports | LCP 2027 Promotion | 2026-11-11T09:00:00Z
+```
+
+`records_not_matched` (published so a human can see what the board offered that we could not tie to a fixture)
+names the five misses and their causes: `KOI vs Dplus` and `T1 Esports vs CTBC Flying Oyster` are name variants
+of fixtures already priced, `Los Grandes vs Team Secret Whales` is our `LØS vs Team Secret Whales`, and
+`Team Liquid vs Anyone's Legend.Young` carries an academy suffix our fixture does not.
+
+**Bottom line, stated plainly because it supersedes §15:** exactly **one** reachable source prices **one**
+fixture that the four production feeds miss, and that source also lists a Worlds fixture twice with opposite
+favourites. It is therefore probed and published every refresh and **never** used as a probability. The other
+146 model-priced fixtures still have no external line anywhere we can reach.
