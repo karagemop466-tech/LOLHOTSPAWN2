@@ -73,15 +73,6 @@
   <section id="picks-here" aria-labelledby="picks-here-heading">
     <h2 id="picks-here-heading">📌 Where the updated picks are</h2>
     <p class="small">Four taps — every list on this site is one of these. All lists refresh automatically every 6 hours.</p>
-    <div class="legend" aria-label="What the method chips mean">
-      <span class="chip green">💰 Market consensus</span><span class="legend-t">two or more independent books or prediction markets price this match (de-vigged average)</span>
-      <span class="chip green">💰 Single book line</span><span class="legend-t">only one reachable book prices it — a line, not a consensus</span>
-      <span class="chip blue">🧮 Own Elo model</span><span class="legend-t">our model on Leaguepedia's recorded results</span>
-      <span class="chip blue">📊 Elo + standings</span><span class="legend-t">the model blended with the current split table</span>
-      <span class="chip amber">🧮 Elo (thin history)</span><span class="legend-t">few recorded games — wide error bars, marked Low confidence</span>
-      <span class="chip">📐 League prior</span><span class="legend-t">no usable team history; league-average only</span>
-      <span class="chip red">⚠️ Unresolved</span><span class="legend-t">explicit 50/50 placeholder — never an edge, listed separately</span>
-    </div>
     <div class="linkgrid">
       <a class="linkcard" href="picks.html" id="here-all">
         <span class="ico" aria-hidden="true">📋</span>
@@ -104,6 +95,18 @@
         <span class="arrow" aria-hidden="true">→</span>
       </a>
     </div>
+    <details class="hero-details">
+      <summary class="small">What the method chips mean (tap to expand)</summary>
+      <div class="legend" aria-label="What the method chips mean">
+        <span class="chip green">💰 Market consensus</span><span class="legend-t">two or more independent books or prediction markets price this match (de-vigged average)</span>
+        <span class="chip green">💰 Single book line</span><span class="legend-t">only one reachable book prices it — a line, not a consensus</span>
+        <span class="chip blue">🧮 Own Elo model</span><span class="legend-t">our model on Leaguepedia's recorded results</span>
+        <span class="chip blue">📊 Elo + standings</span><span class="legend-t">the model blended with the current split table</span>
+        <span class="chip amber">🧮 Elo (thin history)</span><span class="legend-t">few recorded games — wide error bars, marked Low confidence</span>
+        <span class="chip">📐 League prior</span><span class="legend-t">no usable team history; league-average only</span>
+        <span class="chip red">⚠️ Unresolved</span><span class="legend-t">explicit 50/50 placeholder — never an edge, listed separately</span>
+      </div>
+    </details>
   </section>
 
   <section aria-label="Coverage metrics">

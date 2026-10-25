@@ -78,3 +78,40 @@ npm install --no-save jsdom@24
 node verification/render_check.cjs              # renders all 7 pages + theme toggle
 python3 verification/check_source_pages.py      # cited Leaguepedia pages exist (network)
 ```
+
+## 7. Addendum — 2026-10-25 (session `arena/419cd73a`, task T29)
+
+One structural defect found and fixed on the executive summary.
+
+**Defect.** Inside `#picks-here` ("📌 Where the updated picks are") the child order was
+`H2 → P.small → DIV.legend → DIV.linkgrid`. The seven-chip method glossary (400+ characters)
+sat *between* the heading and the four pick links. `style.css:429` collapses `.legend` to a
+single column below its breakpoint, so on a 390 px phone the glossary rendered as roughly
+14 lines of chip-plus-explanation before the first tappable link — exactly the "I can't find
+the picks" failure the site is meant to avoid.
+
+**Fix.** The glossary moved *below* the four link cards and into a collapsed
+`<details class="hero-details">` ("What the method chips mean (tap to expand)"). Rendered
+child order is now `H2 → P.small → DIV.linkgrid → DETAILS`, so the links are the first thing
+under the heading. No content was removed.
+
+**Verification (all run this session, on this tree).**
+
+| Check | Result |
+|---|---|
+| `node verification/check_dom_render.js` | **55/55** (was 53; two new assertions added) |
+| New assertion: *the pick links come before the method glossary* | passes at `linkgrid at 2, glossary at 3` |
+| New assertion: *glossary is collapsed by default* | passes at `DETAILS closed` |
+| **Non-vacuity of both** | re-inserting a `.legend` in front turns them **FAIL** (`linkgrid at 3, glossary at 2`; `DIV closed`) — 53/55 |
+| `node verification/render_check.cjs` | RENDER CHECK PASS (all 7 pages + theme toggle) |
+| `python3 verification/check_dom_contract.py` | PASS (7 pages) |
+| `python3 scripts/verify_site.py --leaguepedia-schedule data/diag` | 44 PASS · 0 FAIL · 1 WARN (D18 stale snapshot, by design) |
+
+**First attempt was wrong and was caught.** The initial assertion used
+`k.querySelector(".legend")`, which does not match a child that *is* the legend, so a bare
+`.legend` re-inserted in front of the links still passed. Replaced with
+`k.matches(".legend") || k.querySelector(".legend")` and re-run against the broken layout
+until it failed. The negative run above is that run.
+
+**Still true from §5:** jsdom has no layout engine, so this is a DOM-order and CSS-rule
+audit, not a pixel measurement. A manual pass on a physical phone remains the final check.
