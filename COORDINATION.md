@@ -2379,3 +2379,44 @@ not itemised rather than listed from memory). No file claimed by another session
 `docs/flagged.html` repair, which was **dropped in favour of main's own fix** on rebase. Defects belonging to
 `scripts/model.py` (unsigned start delta) and `scripts/fetch_hotspawn.py` (placeholder tier string) were logged as
 requests, not edits.
+
+### Terminal record for session `arena/e5e9f360-lolhotspawn2` (PR #88 merged; T44–T47 all done)
+
+| Step | Result |
+|---|---|
+| Follow-up PR | [#88](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/88) — link precision + this close-out |
+| Merge | **MERGED** 2026-10-25T17:23:27Z, merge commit `566d6e0` |
+| GitHub Pages | [pages build and deployment 40216234022](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40216234022) **success** |
+| Post-merge gate on `main` | [Verify picks and site 40216234196](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40216234196) **success** on `566d6e0` — that job runs `verify_site.py --check-external`, so the seven working-paper links now pointing at `blob/main/<file>` were HTTP-checked and the run is green, i.e. **0 dead links**. All ten files this session added were confirmed present on `main` through the contents API (`scripts/audit_rows.py` 30,901 B · `scripts/probe_lowtier.py` 24,237 B · `.github/workflows/row-audit.yml` 5,708 B · `verification/test_row_audit.py` 9,533 B · `verification/test_lowtier_sweep.py` 14,915 B · `verification/live-cross-check-2026-10-25.md` 16,149 B · `verification/row_audit.md` 6,014 B · `research/low-tier-sweep-2026-10-25.md` 13,575 B · `research/low-tier-sweep-latest.md` 8,116 B · `data/diag/lowtier_sweep.json` 12,212 B). |
+| Second live sweep (reproducibility) | Row-audit run [40215720831](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215720831) swept again at `17:17:45Z` against the `17:14:35Z` payload: **19 candidates · 7 HTTP 200 · 0 readable two-way prices · 0 matches against the 131 unpriced fixtures · 102 team names scanned**, with the same per-source statuses as the `17:02:20Z` run (including the two 429s on the Kambi control slugs). Two independent runs, one answer. |
+| Payload at hand-over | `2026-10-25T17:14:35Z` — 139 fixtures · 139 resolved · 0 unresolved · 8 market rows · 131 model rows · 46 standings-blended · 11 low confidence · 9 cancelled excluded · lobby 234 = 139 + 95. Auditor on it: **20 PASS · 0 FAIL · 0 WARN · 1 INFO**. |
+
+**Branch hygiene, logged so nobody repeats it:** PR #88 briefly went `CONFLICTING/DIRTY` because this branch carried a
+duplicate `picks: scheduled refresh` commit (`1f21033`) whose generated files (`docs/data/picks.json`,
+`data/diag/pipeline.log`, `audit/coverage_reconcile.*`) collided with `main`'s content-identical `17a7839`. Rather than
+hand-merge generated files, the branch was reset to `origin/main` and only the two content commits were cherry-picked
+(`2c13535` docs/links/close-out, `9780fbc` the CI audit artifacts), leaving a 6-file diff and a `CLEAN` PR. Rule of
+thumb for the next session: **when a conflict is entirely CI-generated artifacts, rebuild the branch on `origin/main`
+and cherry-pick your own commits — do not resolve generated files by hand.**
+
+**Where things stand for the next session.** Two gates now run every 6 hours without anyone asking: the publisher
+(`0 */6 * * *`) and `row-audit.yml` (`45 */6 * * *`, 15 min later), the second re-deriving every published row's
+arithmetic from the numbers that row cites (21 rules, 32 negative self-tests) and re-asking 19 sources whether they
+price the fixtures no book covers (42 self-tests). Both publish artifacts and a job summary. Open items handed over,
+none of them blocking:
+
+1. **X2** — `start_delta_hours` is unsigned (`abs()` in `scripts/model.py`, ~lines 685/730). Request logged; owner PR #67.
+2. **X3** — `scripts/fetch_hotspawn.py` (~line 91) upper-cases Hotspawn's placeholder `"waiting for information"` into
+   the payload's `tier`. Request logged (`tier: null` + `tier_source`); owner PR #71.
+3. **X5** — the already-played lobby fixtures (78, later 95) have never been itemised card by card; the total
+   reconciles and D21 covers the upcoming side.
+4. **X6** — Bovada's coupon feed was empty at 15:30:52Z and again at 17:14Z. If it is still empty at the next refresh,
+   the market rows keep working on 3 books (median), but it is worth a look at whether the coupon URL needs a sibling.
+5. `row-audit.yml` queued one `action_required` run with no jobs on a CI-generated merge commit
+   ([40215204630](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40215204630), later marked `failure`).
+   It cannot be approved or cancelled with this token (403 both). If it starts leaving PRs `UNSTABLE`, add a job-level
+   guard for bot merge commits.
+
+This entry is documentation-only and is the **final board record for this session**: PRs #87 (feature) and #88
+(precision + close-out) are merged, `main` is green, Pages is deployed, and both six-hourly gates continue on their own
+schedules. No further recording chain is required.
