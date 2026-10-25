@@ -935,9 +935,19 @@ path, and the payload's `rule` string states the union rule. Guard rails added i
   minutes after the audit has neither a pick nor a documented exclusion (fixtures that appear inside that
   window, and transient network failures, are warnings so a good refresh is never discarded).
 
-Status: the code fix is on the branch; the live run of the 6-hour publisher after this merge is what must show
-the fixture priced (or excluded with a stated reason). Until that run is recorded here, the row is treated as
-**open** — it is not claimed as fixed on the strength of unit tests alone.
+**Live result (branch pipeline run, payload generated 2026-10-25T14:16:34Z).** The fixture is now priced:
+`Fritt Fall vs Team Lucidity Esports`, 2026-10-31T17:30Z, `MODEL_ELO_STANDINGS`, 60.0% / 40.0%, Medium
+confidence. The independent audit written by the same run (`audit/coverage_reconcile.json`) reports
+`required_future_fixtures: 165`, `published_matches: 156`, `missing_from_payload: 9`,
+`excluded_by_pipeline: 9` (all nine "Hotspawn status is 'cancelled'; not priced"), `unexplained_missing: []`,
+`coverage_ok: true`. The run also recorded `lobby_lol_listed: 234`, which equals the lobby header's own
+"All tiers (234)" on 2026-10-25 — an independent check of the fixture count.
+
+Two honest caveats: (a) at generation time the union added **no** rows (`lobby_only_in_union: []`), i.e. by
+14:16 the fixtures API had caught up with the lobby, so this run cannot prove the union path was the thing that
+priced the fixture — what it proves is that the priced set now matches the union of both sources with zero
+unexplained gaps, and that the silent-drop failure mode is closed and gated; (b) the earlier 10:41Z payload did
+not contain the id at all, which is the observation that motivated the fix.
 
 ### 20.2 Books and esportsbooks re-checked for the competitions the featured picks cannot price (2026-10-25)
 
