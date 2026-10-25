@@ -348,6 +348,54 @@ def main() -> int:
         results.append(assert_status({c2["id"]: c2 for c2 in rep.checks}, "S17", vs.FAIL,
                                      "missing flagged.html fails S17"))
 
+    # ---------------------------------------------------------------- S18 quick jumps
+    JUMP = ('<nav class="jumpbar"><a href="picks.html">All picks</a>'
+            '<a href="picks.html?filter=next24">Next 24 h</a>'
+            '<a href="leagues.html">By league</a>'
+            '<a href="unresolved.html">Unresolved</a></nav>')
+    VIEWPORT = '<meta name="viewport" content="width=device-width, initial-scale=1">'
+    css_mobile = (".card { padding: 1px } .top-nav { border: 0 } .bottom-nav { display: grid } "
+                  "@media (max-width: 430px) { .card { padding: 2px } }")
+
+    def page(body, head=VIEWPORT):
+        return f'<html><head>{head}</head><body><div class="card">ok</div>{body}</body></html>'
+
+    nf_table = ('<section id="nonfeatured"><table><tr><td>a</td></tr><tr><td>b</td></tr>'
+                '<tr><td>c</td></tr><tr><td>d</td></tr></table></section>'
+                '<a href="index.html#nonfeatured">what we checked</a>')
+    c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
+    results.append(assert_status(c, "S18", vs.PASS, "jump bar + non-featured section pass S18"))
+    results.append(assert_status(c, "S19", vs.PASS, "device-width + phone breakpoint pass S19"))
+
+    # a page that loses the jump bar is not findable on a phone
+    c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + nf_table),
+                                      "picks.html": page(GOOD_NAV + JUMP)})
+    results.append(assert_status(c, "S18", vs.FAIL, "missing jump bar fails S18"))
+
+    # different jump targets between pages
+    c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP + nf_table),
+                                      "picks.html": page(GOOD_NAV + JUMP.replace("All picks", "Picks"))})
+    results.append(assert_status(c, "S18", vs.FAIL, "mismatched jump bar fails S18"))
+
+    # the summary must carry the non-featured explanation, not just a link to another page
+    c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP)})
+    results.append(assert_status(c, "S18", vs.FAIL, "summary without #nonfeatured fails S18"))
+
+    # ------------------------------------------------------------- S19 phone widths
+    css_wide = css_mobile + " .hero-inner { width: 900px }"
+    c = structure_checks(css_wide, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
+    results.append(assert_status(c, "S19", vs.FAIL, "fixed 900px width fails S19"))
+    c = structure_checks(css_mobile, {"index.html": page(GOOD_NAV + JUMP + nf_table, head="")})
+    results.append(assert_status(c, "S19", vs.FAIL, "missing viewport meta fails S19"))
+    css_no_phone_bp = (".card { padding: 1px } .top-nav { border: 0 } .bottom-nav { display: grid } "
+                       "@media (min-width: 700px) { .card { padding: 2px } }")
+    c = structure_checks(css_no_phone_bp, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
+    results.append(assert_status(c, "S19", vs.FAIL, "no phone breakpoint fails S19"))
+    # a media-query condition is not a fixed layout width
+    css_query_only = css_mobile + " @media (min-width: 860px) { .card { padding: 3px } }"
+    c = structure_checks(css_query_only, {"index.html": page(GOOD_NAV + JUMP + nf_table)})
+    results.append(assert_status(c, "S19", vs.PASS, "min-width media query is not a fixed width"))
+
     # helper parsing
     helper_ok = (vs.html_class_names('<div class="a b">') == {"a", "b"}
                  and vs.css_class_names(".a{x} /* .z{} */ .b>.c{x}") == {"a", "b", "c"}

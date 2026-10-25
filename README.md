@@ -19,13 +19,17 @@ Fresh research and reproducible checks: [2026-10-25 source audit](research/sourc
 
 Rows are priced in a strict 5-tier cascade:
 
-> **Finding the picks on a phone.** The executive summary opens with one full-width
-> "Find every pick" button, then a *Where the picks are* card grid (counts included),
-> then the matches locking soonest, and only then the coverage and unresolved sections.
-> The fixed bottom bar repeats Summary · Picks · Leagues · Unresolved · Flagged · Method on
-> every page. **Unresolved picks and their limitations are a separate section on the
+> **Finding the picks on a phone.** Every page carries the same six-target **quick-jump
+> bar** (All picks · Next 24 h · No book line · By league · Unresolved · Flagged) directly
+> under the header, plus the fixed bottom bar (Summary · Picks · Leagues · Unresolved ·
+> Flagged · Method). The executive summary then runs: *Where the updated picks are* →
+> the matches locking soonest (cards) → coverage → **"🧮 Matches without a featured
+> betting line — how each pick is made"** → per-competition table → featured picks →
+> unresolved. **Unresolved picks and their limitations are a separate section on the
 > executive summary itself** — every unresolved fixture is listed there with its source
 > links, next to a per-league table of what prices that league and where its limit is.
+> Long research tables are collapsed into `<details>` so a 390 px phone reaches the picks
+> without scrolling past them.
 
 1. **External market consensus (`MARKET_CONSENSUS` / `MARKET_SINGLE`)** — deduplicated full-match two-way lines (1 main board per bookmaker; all child prop/map markets rejected, enforced by check `D20`) from Pinnacle, Unibet (Kambi), Bovada and Polymarket (median if ≥3 sources, otherwise a fixed-quality weighted mean).
 2. **Chronological Tier-Anchored Elo (`MODEL_ELO` / `MODEL_ELO_THIN`)** — computed from 24 months of completed series on Leaguepedia (`MatchSchedule`), anchored to competition-strength tiers, with inactivity decay, BestOf/margin weighting, head-to-head smoothing, competition-scoped disambiguation, and deterministic UTC schedule bridging.
@@ -42,6 +46,28 @@ probability, and the sources needing API keys are recorded as such instead of gu
 **Hotspawn is used for the fixture list only.** Its crowd percentages are displayed as
 context and are never an input to any probability. Every table row carries direct links to
 its verified sources, and any upstream irregularity is surfaced on *Flagged for review*.
+
+## Matches the featured picks cannot resolve
+
+Everything with a bookmaker line is a *featured* pick. Everything else still gets a pick,
+from our own line, and the site says exactly what that line is built on: a
+**"Matches without a featured betting line"** section on the executive summary with one
+row per competition (fixtures, how many have a book line, the Elo / split-standings /
+prior mix behind the rest, the confidence cap and the competition's results page) plus a
+dated table of the books and esportsbooks that were actually opened for those leagues and
+what each returned. Nothing in that table is used as a probability input.
+
+**Coverage rule (fixed 2026-10-25).** A fixture is priced when it is listed on the
+Hotspawn lobby with status `scheduled`, taking the **union** of the lobby transfer state
+and the fixtures API. Before this change the priced set came from the API rows only, so a
+fixture the lobby listed but the API lagged on was silently dropped: `Team Lucidity
+Esports vs Fritt Fall` (RIVALS LEAGUE Season 2, 2026-10-31T17:30Z, fixture 1090065) had
+no pick and no exclusion entry in the 2026-10-25T10:41Z payload. `merge_fixture_sources()`
+now unions both sources, `coverage_reconciliation.lobby_only_in_union` /
+`lobby_only_priced` record what came from that path, `audit/coverage_reconcile.py`
+re-reads both sources with its own parser after every refresh, and
+`audit/coverage_gate.py` fails a refresh when a Hotspawn fixture that starts more than 30
+minutes later has neither a pick nor a documented exclusion.
 
 ## Line-source research: is there a book line for the low-tier fixtures?
 
@@ -68,6 +94,9 @@ published list **and** a human has verified a sample row — neither probe ever 
 ## Automation & Verification
 
 - `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
+- Both publisher workflows run `audit/coverage_reconcile.py` + `audit/coverage_gate.py` after
+  the payload is written, so a Hotspawn fixture with no pick fails the run instead of
+  disappearing, and the reconciliation report is committed next to the payload.
 - `.github/workflows/verify.yml` runs every 6 hours (`30 */6 * * *`) against external links and the deployed GitHub Pages URL (`--check-external --live-url`), and runs the jsdom render harness so a page that fails to render cannot pass verification.
 - `verification/check_dom_render.js` renders all seven pages from the committed payload in jsdom and asserts the visible result: row counts, pick ∈ {team1, team2}, probabilities summing to 100%, a source link on every row, the summary's in-site pick links, and the separate unresolved section (including a synthetic payload with unresolved fixtures, so the section is never vacuous).
 - `.github/workflows/pipeline-test.yml` runs end-to-end live verification on `arena/**` branches (`check_dom_contract.py`, `test_verifier.py`, `test_entity_and_books.py`, `verify_site.py --leaguepedia-schedule data/diag --check-external`).
@@ -93,7 +122,10 @@ python3 verification/check_dom_contract.py      # C1–C7: ids, header/nav skele
 python3 verification/test_dom_contract.py       # negative self-tests — every rule must fail on a broken page
 python3 verification/test_verifier.py           # verifier rule self-tests (incl. D22 probe + S11–S15 structure)
 python3 verification/test_entity_and_books.py   # entity & bookmaker unit tests (incl. Bovada period regression)
+python3 verification/test_lobby_union.py        # lobby ∪ fixtures-API merge (coverage rule)
 python3 verification/check_source_pages.py      # every cited Leaguepedia tournament page must exist (needs network)
+python3 audit/coverage_reconcile.py             # independent lobby/API vs payload reconciliation (needs network)
+python3 audit/coverage_gate.py                  # fails only on a real coverage hole (>30 min out)
 python3 scripts/verify_site.py                  # full schema + link + page audit (incl. S11–S15)
 python3 scripts/probe_lines.py                  # fixture-matched line-source probe (diagnostic)
 npm i --no-save jsdom && node verification/render_check.cjs   # executes the real JS on all pages (incl. the theme toggle)
@@ -107,7 +139,10 @@ Leaguepedia answers **HTTP 200 with an empty body** for a title that does not ex
 MediaWiki API in one batched read-only request. `verification/mobile_audit.md` records the 2026-10-24 audit
 of the pages against their stylesheet.
 
-`scripts/verify_site.py` includes **S11** (every CSS class a page uses must have a rule in `style.css` — the
+`scripts/verify_site.py` includes **S18** (every page ships the same quick-jump bar and the
+executive summary itself contains the non-featured section with its source table) and
+**S19** (phone layout contract: `width=device-width` everywhere, a breakpoint at or below
+430 px, and no hard-coded width above 430 px), on top of **S11** (every CSS class a page uses must have a rule in `style.css` — the
 check that catches an unstyled or clipped header) and **S12** (all pages share one navigation, a visible
 freshness slot and unique ids). `verification/render_check.cjs` loads each page in jsdom with the committed
 payload and asserts that the picks, tables and counts actually render.

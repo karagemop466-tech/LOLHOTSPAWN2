@@ -84,6 +84,18 @@ jobs:
           python3 verification/test_provenance.py
           python3 scripts/verify_site.py
 
+      - name: Independent Hotspawn coverage reconciliation (lobby + API vs published picks)
+        timeout-minutes: 8
+        run: |
+          set +e
+          python3 audit/coverage_reconcile.py
+          rc=$?
+          set -e
+          if [ "$rc" != "0" ]; then
+            echo "::warning title=Coverage audit could not run::exit ${rc}; the gate will skip"
+          fi
+          python3 audit/coverage_gate.py
+
       - name: Commit the failure log (if this run failed)
         if: failure()
         run: |
@@ -100,7 +112,7 @@ jobs:
           set -euo pipefail
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          git add docs/data data/diag/pipeline.log
+          git add docs/data data/diag/pipeline.log audit/coverage_reconcile.json audit/coverage_reconcile.md
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "picks: scheduled refresh [skip ci]"
           # Discard unstaged verifier reports so concurrent PR merges into main
