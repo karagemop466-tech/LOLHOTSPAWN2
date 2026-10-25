@@ -2,7 +2,7 @@
 
 ## Scope and latest integrated snapshot
 
-This is an independent audit of the integrated repository state, not a generated-data update. Snapshot read from `docs/data/picks.json` on branch base `31c989d` (`origin/main`): generated **2026-10-25T14:29:06.319763Z**; next scheduled refresh **2026-10-25T20:29:06.319763Z**.
+This is an independent audit of the integrated repository state, not a generated-data update. Snapshot read from `docs/data/picks.json` on branch base `028c5a5` (`origin/main`): generated **2026-10-25T14:31:30.074855Z**; next scheduled refresh **2026-10-25T20:31:30.074855Z**.
 
 | Measure | Snapshot value | What it means |
 |---|---:|---|
@@ -34,7 +34,7 @@ The current page text has one wording inconsistency worth a follow-up: `docs/ind
 
 ### Current diagnostic probes (not probability inputs)
 
-The payload's embedded market probe ran at **14:29:06Z**: 39 named candidates checked, 20 reachable, 6 structured JSON responses and 4 with LoL references. It is an endpoint-level discovery check, not a count of usable fixture prices. A separate, wider CI diagnostic `data/diag/source_probe.json` ran at **14:27:32Z**: 43 candidates checked, 23 reachable, 6 JSON and 4 with LoL references (38 market candidates; 20 reachable; 3 reachable results/metadata sources). The fixture-matched line probe in `data/diag/line_probe.json` ran at **14:18:48Z** and checked all 147 fixtures without an external line; no candidate produced new matching coverage. Only validated production adapters can contribute odds.
+The payload's embedded market probe ran at **14:31:30Z**: 43 named candidates checked, 23 reachable, 6 structured JSON responses and 4 with LoL references (38 market candidates; 20 reachable; 3 reachable results/metadata sources). It is an endpoint-level discovery check, not a count of usable fixture prices. The separate fixture-matched line probe in `data/diag/line_probe.json` ran at **14:18:48Z** and checked all 147 fixtures without an external line; no candidate produced new matching coverage. That fixture-matched probe is older than the current payload and is cited only as historical evidence, not as a new 14:31 verification. Only validated production adapters can contribute odds.
 
 Representative observations from the latest payload's probe:
 
