@@ -202,6 +202,30 @@ async function main() {
         (idoc.querySelector("#hero-status") || {}).textContent.trim().length > 0);
   check("summary: picks-locking-soonest section rendered", !!idoc.querySelector("#starting-soon"));
 
+  // non-featured matches: the section that explains how a match with no bookmaker
+  // line is priced must actually render, with a source link on every row.
+  const nfBody = idoc.querySelector("#nonfeatured-body");
+  const nfRows = Array.from(idoc.querySelectorAll("#nonfeatured-body tr"));
+  check("summary: non-featured resolution table rendered", nfRows.length > 0,
+        `${nfRows.length} rows`);
+  check("summary: every non-featured row links its source",
+        nfRows.length > 0 && nfRows.every((tr) => tr.querySelector('a[href^="http"]')),
+        `${nfRows.filter((tr) => !tr.querySelector('a[href^="http"]')).length} row(s) without a link`);
+  const nfCounts = idoc.querySelector("#nonfeatured-counts");
+  check("summary: non-featured counts rendered",
+        !!nfCounts && nfCounts.querySelectorAll("div").length >= 4,
+        nfCounts ? `${nfCounts.querySelectorAll("div").length} stats` : "missing");
+  const bookRows = Array.from(idoc.querySelectorAll("#nonfeatured table tr"))
+    .filter((tr) => !tr.closest("#nonfeatured-body") && tr.querySelector("td"));
+  check("summary: book/esportsbook check table has a link on every row",
+        bookRows.length >= 4 && bookRows.every((tr) => tr.querySelector("a[href]"))
+        && bookRows.filter((tr) => tr.querySelector('a[href^="https://"]')).length >= 4,
+        `${bookRows.length} rows, `
+        + `${bookRows.filter((tr) => tr.querySelector('a[href^="https://"]')).length} with an external link`);
+  check("summary: non-featured section sits before the unresolved section",
+        nfBody && idoc.querySelector("#unresolved-section") &&
+        (nfBody.compareDocumentPosition(idoc.querySelector("#unresolved-section")) & 4) === 4);
+
   // ---------- picks page ----------------------------------------------------
   const picks = await render("picks.html");
   const pdoc = picks.document;
