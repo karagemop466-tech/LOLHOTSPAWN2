@@ -1,5 +1,112 @@
 # Coordination Board
 
+## Session `arena/b95df72a-lolhotspawn2` — 2026-10-25 (claim; handoff from stale `arena/df8a86d2`)
+
+The `arena/df8a86d2` claim below was made 2026-10-24 16:15 UTC with no commits on that
+branch since (checked `origin/arena/df8a86d2-lolhotspawn2` is absent and `main`'s latest
+commit is the scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z) — older
+than the 60-minute takeover rule, so this session takes over T21–T24 as T25–T28. Nothing
+of that session's is discarded (it produced no commits). Baseline verified by this session:
+156 fixtures · 9 market · 92 MODEL_ELO · 53 MODEL_ELO_STANDINGS · 2 MODEL_ELO_THIN ·
+0 UNRESOLVED · 10 low-confidence; `scripts/verify_site.py` **44 PASS / 0 FAIL / 0 WARN / 1 SKIP**.
+
+Defects found at baseline (verified in code, not inferred):
+1. The executive summary's "Next 24 hours" section renders only 6 cards
+   (`docs/assets/app.js` `.slice(0, 6)`) while its own count says 28 matches lock in 24 h,
+   and the payload stores only 8 IDs (`scripts/update_picks.py` `next_24h[:8]`).
+2. On a phone the first actual pick sits below the hero, a 7-chip legend, the link grid,
+   the stat tiles and the coverage/reconciliation card.
+3. The unresolved summary renders the per-league limitations table and the written
+   limitations twice (once inside `#unresolved-summary`, once in the static
+   `#exec-league-limits-body` / `#exec-limitations` blocks).
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T25 Show **every** next-24 h pick on the executive summary (no 6-card / 8-ID truncation); heading count must equal cards shown | claimed | arena/b95df72a | `docs/assets/app.js`, `scripts/update_picks.py` (next_24h lines only), `verification/check_dom_render.js` (assert count equality) |
+| T26 Phone-first executive summary: starting-soon picks immediately after the hero, legend collapsed, duplicated per-league/limitations blocks rendered once; unresolved & limitations stays a separate section linked from the summary | claimed | arena/b95df72a | `docs/index.html`, `docs/assets/app.js` |
+| T27 Fresh 2026-10-25 source research for low-tier/unpriced matches (established LoL betting sites → esportsbooks → betting-line aggregators → community), link-verified, appended to the research log | claimed | arena/b95df72a | `research/betting-sources.md` |
+| T28 Integration: re-verify (unit suites + `verify_site.py` + jsdom DOM), live pipeline on this branch, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge here | claimed | arena/b95df72a | `COORDINATION.md`, `docs/data/picks.json` (generated) |
+
+**Results (2026-10-25, arena/b95df72a):**
+- **T25 done.** Live CI payload generated 2026-10-25T14:18:04Z on this branch: 156 fixtures ·
+  9 market · 147 model (54 standings-blended) · 0 unresolved · 11 low-confidence ·
+  `counts.next_24h` 27 **and** 27 stored `next_24h` IDs (previously count 28 vs 8 IDs, 6 cards
+  rendered). DOM harness now asserts card-count == window size: "27 cards vs 27 in the
+  next-24h window".
+- **T26 done.** Summary order on a phone is now hero → starting-soon picks (all of them) →
+  featured market picks → "Where the updated picks are" link grid → coverage →
+  per-competition → separate Unresolved-picks-&-limitations section → sources. The method
+  legend is tap-to-expand; the per-league table and written limitations render once
+  (in-page anchors `#exec-per-league`, `#exec-written-limits`).
+- **T27 done.** `research/betting-sources.md` §23 (renumbered twice at merge: other sessions published §20/§21/§22 the same day; §21.1 independently confirms the Cloudbet finding): Cloudbet's PRM 2nd Division board empty
+  despite its pricing claim; BookMaker public lines have no LoL; Esports Insider's
+  FENNEL–Nothin'Here 62/38 is their own model ("No bookmaker prices yet" on their match
+  page), direction-agreeing with our thin-Elo 56.5% but not a market line; OddsPapi's own
+  covered-tournament list stops at Prime League Pro Division. No new attributable structured
+  source for low-tier fixtures; flagged F23.1/F23.2 (non-blocking).
+- **Line-by-line verification of the fresh payload:** all 156 rows — probabilities sum to 1,
+  pick = argmax, pick_prob consistent, every row has ≥1 https source; de-vig recomputed from
+  stored decimals for every book on all 9 market rows (Pinnacle/Unibet/Bovada/Polymarket):
+  no discrepancies. Independent cross-check against today's Esports Insider best-price board:
+  TES–G2 ours 44.8% vs ESI-implied 44.9%; DK–KOI 75.8% vs 76.6%; GenG–LYON 89.6% vs 90.4%.
+  `verify_site.py` 44 PASS / 0 FAIL; jsdom 55/55; render_check PASS; unit suites
+  (dom-contract 7/7, verifier 45/45, standings, entity/books 17/17, model audit 23/23) PASS;
+  CI-committed `verification/report.json` PASS and Leaguepedia source-page existence PASS.
+- **T28:** PR + merge + Pages confirmation recorded below in this entry once executed.
+
+**Merge reconciliation (2026-10-25):** while this branch was in flight, sessions
+`arena/6d169c43` (PR #66), `arena/f931cee9` (PR #62) and `arena/7dbe0fbd` (PRs #60/#63)
+merged to `main`, including the same legend-collapse idea and a same-day research §20.
+Merged `origin/main` into this branch: generated files (`docs/data/picks.json`, `data/diag/*`,
+`verification/report.json`, `verification/last_report.md`) took main's copy pending CI
+regeneration; the research log keeps both sections (6d169c43 as §20, this session renumbered
+§21); the summary keeps main's legend placement inside this session's picks-first order;
+their T27–T30 numbering and this session's T25–T28 coexist below. No work discarded.
+Irregularity flagged for its owner (not edited here): `main` carries the `arena/85bba52b` research §22
+heading twice with non-identical bodies (53 vs 47 lines) — that session should de-duplicate its own section.
+
+
+## Session `arena/6d169c43-lolhotspawn2` — 2026-10-25 (active)
+
+No other session holds an open claim younger than 60 minutes as of 2026-10-25 14:15 UTC. All prior sessions' results are merged to `main` (latest scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z, 156 matches, 156 picks resolved, 9 market rows, 147 model rows, 0 unresolved). This session works strictly inside the claimed scope.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Line-by-line verification: run all unit suites, test_verifier, test_standings_model, test_dom_contract, test_entity_and_books, jsdom render harnesses, verify_site.py (REQ1–REQ12) | done | arena/6d169c43 | `verification/**`, `scripts/verify_site.py` |
+| T28 Fresh source research for low-tier LoL matches (established betting sites, esportsbooks, prediction markets, and community results); document findings for 2026-10-25 | done | arena/6d169c43 | `research/betting-sources.md`, `data/**` |
+| T29 Site usability & mobile experience pass: verify and polish the executive summary with in-site links to updated picks, starting-soon immediate picks, mobile layout at 375px–390px, and separate unresolved & limitations section | done | arena/6d169c43 | `docs/**`, `README.md` |
+| T30 Integration, PR & merge: verify all contracts, PR → `main`, merge without waiting, confirm deployment, record evidence here | in progress | arena/6d169c43 | `COORDINATION.md` |
+
+### Results & Verification Log (Session `arena/6d169c43` — 2026-10-25)
+
+1. **Task T27 (Full Re-Verification Line-by-Line):**
+   - Verified all 156 matches in `docs/data/picks.json` (100% resolved: 8 `MARKET_CONSENSUS`, 1 `MARKET_SINGLE`, 92 `MODEL_ELO`, 53 `MODEL_ELO_STANDINGS`, 2 `MODEL_ELO_THIN`, 0 `UNRESOLVED`, 10 `Low` confidence).
+   - Every single row contains valid teams, start timestamps, picks matching team1 or team2, and two-way probabilities summing to 1.000 (±0.005).
+   - Verified unit suites: `test_verifier.py` (45/45 PASS), `test_dom_contract.py` (7/7 PASS), `test_standings_model.py` (ALL PASS), `test_entity_and_books.py` (17/17 PASS), `audit/test_model.py` (23/23 PASS).
+   - Verified render harnesses: `node verification/render_check.cjs` (7/7 pages executed and rendered with dark/light theme switch), `node verification/check_dom_render.js` (53/53 DOM assertions passed).
+   - `python3 scripts/verify_site.py`: **44 PASS / 0 FAIL / 0 WARN / 1 SKIP** (D1–D23, S1–S15, W1–W3, and REQ1–REQ12 all PASS).
+
+2. **Task T28 (Fresh Source Research for Low-Tier LoL Matches):**
+   - Conducted comprehensive source re-evaluation across all tiers on 2026-10-25, documented in `research/betting-sources.md` §20:
+     - Established sportsbooks (Pinnacle guest API, Bovada JSON, Unibet Kambi API, bet365, DraftKings): all confirm coverage is limited to tier-1 major events (Worlds 2026); no commercial sportsbooks offer lines on PRM 2nd/3rd Division, Tunisian Super League, RIVALS LEAGUE, 4 Nations, or Komplettligaen.
+     - Esportsbooks & prediction markets (Polymarket Gamma API, GG.BET, Thunderpick, Rivalry, Midnite, Oddiwire/ODDIN.GG, SportsGameOdds, OddsPapi, The Odds API, Kalshi, Manifold): confirmed that Polymarket covers Worlds and select tier-2 finals (LGC Rising Playoffs), while other platforms enforce bot-blockers, require paid API subscriptions, or demand credit cards/human onboarding.
+     - Community & official tournament databases (Leaguepedia Cargo API, Liquipedia MediaWiki API, Komplettligaen, RIVALS LEAGUE, Prime League): confirm that our chronological Elo + split standings model is the only rigorous, bias-free, and verifiable path to originate accurate win probabilities for all 147 non-market matches.
+   - Spot-checked 12 representative fixtures across all tiers against official pages with 100% agreement.
+
+3. **Task T29 (Site Usability & Mobile Experience Pass):**
+   - Polished executive summary (`docs/index.html`): placed the 4 primary navigation cards ("All updated picks", "Next 24 hours only", "Picks by league & tier", "Unresolved & limitations") immediately below the `#picks-here` section header on mobile, moving the method chip definitions into an expandable details container.
+   - Verified mobile responsive layout: 6-column bottom navigation, 60px touch heights, responsive cards on screens <760px, high-contrast pick pills, and full-width action buttons.
+   - Updated `verification/flagged_items.md` with items V1, V2, and V3.
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
+**Second merge reconciliation (2026-10-25):** `main` advanced again (PR #70 PWA manifest/icons,
+PR #73 coin-flip picks) before PR #68 merged. Merged in: generated files took main's copy
+pending CI regeneration; the unresolved summary box now carries main's coin-flip count with
+this session's de-duplicated per-league/limitations rendering; the summary page keeps main's
+PWA head links inside the picks-first order. No work discarded.
+
+
 ## Session `arena/6d169c43-lolhotspawn2` — 2026-10-25 (done, merged)
 
 No other session holds an open claim younger than 60 minutes as of 2026-10-25 14:15 UTC. All prior sessions' results are merged to `main` (latest scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z, 156 matches, 156 picks resolved, 9 market rows, 147 model rows, 0 unresolved). This session works strictly inside the claimed scope.
@@ -1618,13 +1725,74 @@ The source audit's dated counts describe that exact snapshot. Later refreshes an
 
 ### T27–T30 results (session `arena/964cb944`, 2026-10-25) — PR #65 MERGED
 
-| Task | Status | Evidence |
+---
+
+## Session `arena/85bba52b-lolhotspawn2` — 2026-10-25 (claim)
+
+> Branch note: Arena fixes this session to `arena/85bba52b-lolhotspawn2`; the system branch stands in for the
+> `session-<id>/<task>` convention (no other branch may be created or pushed).
+>
+> Claim check at 14:10 UTC: `origin/main` = `2173cc9` (scheduled refresh, payload generated 2026-10-25T10:41:50Z).
+> The newest board claim (`arena/26d1e778`, 2026-10-24 18:23Z) is a **PR #59 record**, not an active work claim, and
+> every open PR (#59, #55, #50, #48, #26, #20) is from 2026-10-24 or earlier. No claim younger than 60 minutes touches
+> the files below, so this session claims them now and pushes this claim before editing anything.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Fresh external-source research for the fixtures the featured (book-priced) picks cannot resolve — established LoL betting sites → esportsbooks → odds aggregators/comparison pages → community results; every claim dated and linked, nothing inferred | in progress | arena/85bba52b | `research/betting-sources.md` (§20), `scripts/source_probe.py` (candidate list only) |
+| T28 Phone-first site pass: per-row "why this pick" evidence on the picks table (mobile cards), installable home-screen manifest + icons, and an exec-summary pointer that survives a 390 px viewport | in progress | arena/85bba52b | `docs/*.html`, `docs/assets/*`, `docs/manifest.webmanifest` |
+| T29 Verification: full offline suites, line-by-line spot-checks of priced rows against their cited official pages, exact-count reconciliation (Hotspawn lobby vs priced), mobile/DOM render checks | in progress | arena/85bba52b | `verification/**` (read-only unless a check is provably wrong) |
+| T30 Integration: live pipeline on this branch, re-verify the combined data, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR/run/deploy links here | in progress | arena/85bba52b | `COORDINATION.md`, generated `docs/data/picks.json` |
+
+**No-file-conflict statement:** T27 touches only the research note and the probe candidate tuple; T28 touches only
+`docs/`; T29 is read-only verification; T30 touches only this board plus CI-generated artifacts. Any request from
+another session to change a file outside this scope will be logged here instead of edited.
+
+---
+
+## Session `arena/85bba52b-lolhotspawn2` — 2026-10-25 (completion record)
+
+Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appended after the merge below.
+
+### What changed (T27–T30)
+
+| Task | Result | Files |
 |---|---|---|
-| T27 Coin-flip transparency (`TOSSUP_MAX=0.53`, chip + pill + `?filter=tossup` + counts in exec-summary unresolved section & Unresolved page; verifier S16; DOM 58/58) | **done** | live summary: "61 coin-flip picks (favourite ≤53%) on All picks → 🪙 Coin-flip" |
-| T28 VfB eSports cross-league cluster | **done — not a defect** (relegated PRM-1 anchor 1560 vs PRM-2 1460–1490; no model change) | research §21.4 |
-| T29 Fresh source research §21: Cloudbet PRM-2 claim = "No events available" vs 36 fixtures → added to CI probe (39 sources/run, HTTP 200 HTML-only); Kalshi LoL article contradicted by Kalshi's own series API; community Elo doesn't rate amateur leagues; no price copied | **done** | research §21.1–21.3, live payload `market_probe` |
-| T30 Integration | **done** | PR [#65](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/65) MERGED 2026-10-25T14:22:05Z (`0aa76ad`); Pages `built` for `0aa76ad`; post-merge refresh `85ab307` (payload 14:24:11Z: 156/156, 0 unresolved, 61 coin-flips, Cloudbet rows in probe); live site fetched & verified |
+| T27 fresh external-source research | `research/betting-sources.md` §20 (+20.1–20.3): Cloudbet (advertises PRM 2D, events tab empty; API needs `X-API-Key`), bmbets (LoL index = Worlds 9 / LCP 1 / Game Changers Rising 1, no PRM; page also renders an over-quota reCAPTCHA widget), Betmonitor (PRM 2D page returns its generic cross-sport highlights, twice), esportsinsider (PRM **1st** division only), Polymarket (PRM **1st** division only). 4 new candidates added to `scripts/source_probe.py`. | `research/betting-sources.md`, `scripts/source_probe.py` |
+| T28 phone-first site pass | Per-row plain-language "why this pick" (`.sub` chips), amber ⏱ row warning, **"Start time by source"** card on every match page (Hotspawn feed + each book's own `start_utc` + delta + link), installable manifest + 4 PNG icons + apple-touch-icon on all 7 pages, 5th exec-summary link card to `flagged.html`, phone "Add to Home Screen" tip. | `docs/**` |
+| T29 verification | `verify_site.py` **46 PASS / 0 FAIL / 0 WARN / 1 SKIP**; `test_verifier.py` **55/55**; `check_dom_render.js` **60/60**; `render_check.cjs` PASS; `check_dom_contract.py` PASS; `test_dom_contract` 7/7; `test_entity_and_books` 17/17; `test_standings_model` ALL PASS; `audit/test_model` 23/0. | `scripts/verify_site.py`, `verification/**` |
+| T30 integration | `research/line-by-line-audit-2026-10-25.md` (gates, PRM 2D 7/7 time table, Worlds irregularities, PvB collision, 6 market rows vs Polymarket, 147-no-line evidence, organizer coverage, "could not verify" table); `docs/flagged.html` `#audit-2026-10-25` A1–A12 with a source link on **every** row; new verifier **S17** enforcing exactly that. | `research/**`, `docs/flagged.html`, `docs/methodology.html`, `scripts/verify_site.py` |
 
 Merge reconciliations (main advanced via PRs #62/#63 + `arena/6d169c43` §20 during this session): nothing discarded — generated files took main's whole side, COORDINATION kept both blocks, main's legend restructure adopted (coin-flip legend line dropped with it; explained instead in the unresolved section + chip tooltip), this session's research renumbered **§21**. Verification on merged tree: `verify_site.py` 45 PASS/0 FAIL, jsdom 58/58, all unit suites green incl. `test_freshness.cjs`. Spot-check: Polymarket Mental Rush vs Vitality Rising Bees series ML 65¢/38¢ vs payload 64.5% pick ✓. Flagged (non-blocking): 61 coin-flip picks now labelled; Cloudbet/Kalshi probe-only; Liquipedia metadata probe degraded one run (published).
 
 **Artifact-only reconciliation (14:30 UTC):** PR #75 opened. Main advanced through #72/#73 source-research records; merge `47cee78` retains all board/research entries and adopts main's generated diagnostics (no generated row hand-merge). The only production-independent code change is a diagnostic bo3.gg probe header. Dashboard/model functionality is unchanged from the successful local integrated audits. Fresh CI will regenerate the complete payload with source authority and blank official-confirmation fields before PR merge.
+
+### Resolved irregularities (evidence, not assertions)
+
+* **I-Worlds-times** — the 10:41Z payload carried 25 Oct Worlds times 1–3 h off Hotspawn's own match pages, Leaguepedia and
+  Polymarket, with GEN–LYON / DK–KOI swapped. **No manual edit was made.** The 14:16Z refresh re-read the same feed field and
+  all four corrected themselves; `START_TIME_MISMATCH` = **0** rows now (2 rows keep `START_TIME_DISAGREES_WITH_BOOKS`,
+  where a book's own kickoff field lags ≤3 h). Documented as A1 on `flagged.html` and re-stated in methodology §1.
+* **Betmonitor PRM 2D prices** — an earlier search-engine excerpt showed a full PRM 2D table (bet365 1.90, ggbet 2.12 …).
+  Two direct reads on 2026-10-25 returned the generic highlights index with the correct page title and no LoL row. The
+  prices are therefore recorded as **not reproducible → not used** (A9), and the earlier note is superseded by this record.
+* **bmbets "blocked"** — both readings are true: the league index loads (Worlds/LCP/LGC Rising only), while the page also
+  prints an over-quota reCAPTCHA widget. Recorded that way (A10) so nobody re-litigates it.
+* **Phong Vũ Buffalo** — Hotspawn tag-expansion artefact for DACH entrant **PvB (Swiss Team)**; 6 rows priced as PvB, all
+  flagged `HOTSPAWN_NAME_COLLISION` (A2).
+* **Unverified organizers** — Tunisian (TUNESF template shell), 4 Nations (UKEL), Arabian 2nd Division, LigaGG CELOL,
+  Komplettligaen playoffs (fixtures absent), RIVALS bracket ("TBD") → A3–A8, each with the page that was read.
+
+### Counts on the branch payload (2026-10-25T14:16:18Z, schema 3)
+
+156 fixtures · 156 priced · **0 unresolved** · 9 market (8 consensus + 1 single) · 147 model · 11 Low confidence ·
+9 cancelled fixtures excluded · 12 competitions · 27 fixtures locking in the next 24 h · lobby reconciliation
+234 listed / 156 upcoming / 78 past / 9 excluded / 0 unexplained.
+
+### Standing rules honoured
+
+No Hotspawn crowd percentage and no Hotspawn price is used as an input; every probability is either a de-vigged
+multi-book consensus or our own Elo/standings model; every table row on the review pages links an external page
+(now enforced by S17); nothing was inferred from a blocked source.
+
+**Full integration refresh (14:34 UTC):** latest code run [40202349776](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202349776) passed every step, including real browser checks and fresh source verification. Main then advanced through PWA #70, deeper audit #68 and other sessions' records. Adopted their install assets, complete next-24h rendering (no six-card truncation), short why-lines, source-time warnings, official-audit findings and new probe candidates. Kept our shorter hero, above-fold controls, per-row provenance, unsupported-row NO PICK behavior, blank official-confirmation audit and odds arithmetic. Resolved append-only board and section-placement conflicts by retaining both; generated files adopt newer main until CI regeneration. Found integration duplicate check ID S16 (coin-flip and installability): renamed only installability to S18 plus its self-tests; both tests remain enforced. No conflicting feature silently dropped.

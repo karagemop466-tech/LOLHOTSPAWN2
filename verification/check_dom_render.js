@@ -162,6 +162,23 @@ async function main() {
         `${quickRows.length} rows`);
   check("summary: starting-soon cards render", idoc.querySelectorAll("#next24 article.match").length > 0,
         `${idoc.querySelectorAll("#next24 article.match").length} cards`);
+  // The section heading publishes the size of the next-24h window, so the
+  // card list must be the whole window, never a truncated preview. (It used
+  // to render 6 cards under a count of 28.)
+  const soonExpected = matches.filter((m) => {
+    const t = new Date(m.start_utc).getTime();
+    return t >= Date.now() - 300000 && t <= Date.now() + 86400000;
+  }).length;
+  const soonCards = idoc.querySelectorAll("#next24 article.match").length;
+  check("summary: every next-24h match gets a card (no truncation)",
+        soonExpected === 0 ? soonCards > 0 : soonCards === soonExpected,
+        `${soonCards} cards vs ${soonExpected} in the next-24h window`);
+  // Picks must be findable before the navigation/coverage blocks on a phone:
+  // the starting-soon picks precede the "where the picks are" link grid.
+  const soonEl = idoc.querySelector("#starting-soon");
+  const hereEl = idoc.querySelector("#picks-here");
+  check("summary: starting-soon picks come before the link grid",
+        soonEl && hereEl && (soonEl.compareDocumentPosition(hereEl) & 4) === 4);
 
   // separate unresolved section: fixture list + per-league limitations, both in the summary
   const uList = idoc.querySelector("#unresolved-list");
@@ -191,6 +208,34 @@ async function main() {
   check("picks: countline reports every fixture",
         pdoc.querySelector("#countline").textContent.includes(String(matches.length)),
         pdoc.querySelector("#countline").textContent.trim());
+
+  // Every visible pick row must also say WHY, in plain language. Before 2026-10-25
+  // the table only named the method ("Own Elo model"), which does not tell a phone
+  // visitor anything; the short reason now sits under the pick on every row.
+  const whyRows = Array.from(pdoc.querySelectorAll("#picks-body tr"));
+  const whyMissing = whyRows.filter((tr) => {
+    const sub = tr.querySelector(".pickcell .sub");
+    return !sub || !sub.textContent.trim();
+  });
+  check("picks: every row states why the pick was made", whyRows.length > 0 && whyMissing.length === 0,
+        `${whyRows.length - whyMissing.length}/${whyRows.length} rows carry a reason`);
+  const whyWrong = whyRows.filter((tr) => {
+    const sub = (tr.querySelector(".pickcell .sub") || {}).textContent || "";
+    const method = tr.querySelector("[data-label=\"Method\"]");
+    const chip = method ? method.textContent : "";
+    if (/Market|Single book/.test(chip)) return !/book/i.test(sub);
+    if (/Elo|standings|prior/i.test(chip)) return !/Elo|standings|prior|history/i.test(sub);
+    return false;
+  });
+  check("picks: the stated reason matches the method actually used", whyWrong.length === 0,
+        `${whyWrong.length} row(s) disagree with their method chip`);
+  const marketReason = whyRows
+    .filter((tr) => /Market|Single book/.test((tr.querySelector("[data-label=\"Method\"]") || {}).textContent || ""))
+    .map((tr) => (tr.querySelector(".pickcell .sub") || {}).textContent || "");
+  check("picks: a single-book row is labelled as not a consensus",
+        marketReason.filter((t) => /single source, not a consensus/.test(t)).length
+          === matches.filter((m) => m.method === "MARKET_SINGLE").length,
+        `${marketReason.filter((t) => /single source/.test(t)).length} single-source row(s)`);
 
   // filter deep-links used by the summary must actually filter
   const next24 = matches.filter((m) => {
@@ -303,6 +348,34 @@ async function main() {
     check("match detail: no JS error", (dpage.__errors || []).length === 0, (dpage.__errors || []).join(" | "));
     check("match detail: renders both teams", dtext.includes(m.team1) && dtext.includes(m.team2));
     check("match detail: renders the pick", dtext.includes(m.pick));
+  }
+
+  // ---------- match detail: start times by source ----------------------------
+  // Synthetic payload, so this never goes vacuous when the live snapshot happens to
+  // have no flagged fixture (it had none after the 2026-10-25 14:16Z refresh).
+  const mmRow = matches.find((m) => (m.market?.sources || []).some((s) => s.start_utc));
+  if (mmRow) {
+    const timed = JSON.parse(JSON.stringify(PAYLOAD));
+    timed.matches = timed.matches.map((m) => (String(m.id) === String(mmRow.id)
+      ? Object.assign({}, m, { flags: Array.from(new Set([...(m.flags || []), "START_TIME_MISMATCH"])) })
+      : m));
+    const tpage = await render("match.html", { query: `?id=${encodeURIComponent(mmRow.id)}`, payload: timed });
+    const card = Array.from(tpage.document.querySelectorAll("#match-detail .card"))
+      .find((c) => /Start time by source/.test(c.textContent));
+    check("match detail: start-time-by-source card renders on a flagged fixture", !!card);
+    if (card) {
+      const bookTimes = (mmRow.market?.sources || []).filter((s) => s.start_utc).length;
+      check("match detail: every book's reported start time is listed",
+            bookTimes > 0 && card.querySelectorAll("li").length >= bookTimes + 1,
+            `${card.querySelectorAll("li").length} lines vs 1 Hotspawn + ${bookTimes} book time(s)`);
+      check("match detail: the disagreement is stated in words",
+            /disagrees on this fixture|differs/i.test(card.textContent));
+    }
+    const clean = await render("match.html", { query: `?id=${encodeURIComponent(mmRow.id)}` });
+    const cleanCard = Array.from(clean.document.querySelectorAll("#match-detail .card"))
+      .find((c) => /Start time by source/.test(c.textContent));
+    check("match detail: an unflagged fixture is NOT reported as disagreeing",
+          cleanCard && !/at least one source disagrees/i.test(cleanCard.textContent));
   }
 
   // ---------- self-test: the separate unresolved section must not be vacuous ----

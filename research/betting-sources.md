@@ -1018,3 +1018,166 @@ Community Elo projects (e.g. https://lolproelo.com/rankings, https://tgv-analyti
 ### 21.6 Live spot-check (2026-10-25)
 `Mental Rush vs Vitality Rising Bees` (LGC Rising, `MARKET_SINGLE` Polymarket): live event page shows series Moneyline **Vitality Rising Bees 65¢ / Mental Rush 38¢** vs payload Mental Rush 0.355 → pick Vitality Rising Bees 64.5% — consistent within drift since the 10:41Z refresh. Source: https://polymarket.com/event/lol-rb-mr-2026-10-27. (Also confirms the selector takes the series Moneyline, not the Game-N child markets listed below it on the same page.)
 **Bottom line (unchanged, re-measured):** no new structured per-match line source qualified. Low-tier picks remain our own Elo/standings line; what changed is that the weakest of them now say "coin-flip" on the row itself.
+
+---
+
+## 22. Refresh 2026-10-25 — targeted check of sources that *advertise* low-tier LoL coverage (session `arena/85bba52b`)
+
+Purpose: §19 concluded that no reachable book prices the model-only fixtures. The remaining way that conclusion
+could be wrong is a source that **advertises** Prime League / amateur coverage but is not on our probe list, or a
+source whose marketing copy is ahead of its actual board. This pass re-read those sources directly on
+**2026-10-25** and recorded what each one actually returned. Every row below was observed today unless it says
+otherwise; nothing here is inferred, and nothing here is used in a probability.
+
+### 22.1 Crypto/established books that advertise Prime League
+
+| Source | What its own page said on 2026-10-25 | Verdict | Link (for manual review) |
+|---|---|---|---|
+| **Cloudbet** — Prime League 2nd Division landing page | Marketing copy: “Cloudbet prices the Prime League 2nd Division through the split, with the match winner, map handicap, and total maps on every series…”. The **events tab returned: “No Prime League 2nd Division events available — Check back later.”** | Advertised coverage ≠ events on the board. Nothing to price, nothing used. | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events |
+| **Cloudbet** — sports API | Documented as `https://sports-api.cloudbet.com/pub/v2/odds/...` with an `X-API-Key` header; keys are issued through an Affiliate/Trading account. **No key is configured in this repo and the brief forbids manual sign-up steps.** | Key required → not usable autonomously. Added to the production probe so the status is re-measured every refresh. | https://cloudbet.github.io/wiki/en/docs/sports/api/ |
+| **bmbets** — “LoL - Prime League” comparison page | The page returned its e-sports league index plus a reCAPTCHA. In that index the **only** League of Legends leagues listed today were `LoL World Championship (9)`, `LoL - LCP (1)` and `League of Legends - Game Changers Rising (1)`. No Prime League fixture was listed. | No low-tier LoL board today (matches the 2026-10-24 finding). Not used. | https://www.bmbets.com/e-sports/world/lol---prime-league/ |
+| **bmbets** — “LoL - Prime League 2nd Division” page | The URL exists and carries odds-format controls (EU/UK/US), i.e. the template for a comparison page, but no current fixture or price was present in the retrieved page today. | URL exists, no readable price → unverified, not used. Added to the probe. | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ |
+| **Betmonitor** — Prime League 2nd Division odds comparison | Page answers, but the text returned to an unauthenticated fetch today was the site’s general football/tennis/basketball highlights; **no League of Legends match row and no PRM price appeared in it**. Search engines index the URL with bet365/ggbet rows, which is not evidence of a live line. | Client-rendered comparison widget → no machine-readable current price → not used. | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| **Polymarket** — Prime League **1st** Division | Live markets exist (`Eintracht Frankfurt vs E WIE EINFACH E-SPORTS (BO3)` etc.). That is the **1st** Division, which is not in Hotspawn’s current LoL fixture list; our production Polymarket adapter matched 9 fixtures this refresh (8 Worlds + 1 Game Changers Rising). | Real external prices, but for a division we are not asked to price today. Not used for PRM 2nd/3rd. | https://polymarket.com/esports/league-of-legends/prime-league-1st-division |
+| **esportsinsider** — PRM 1st Division odds page | Page exists with a live standings table for the 1st Division; it is an editorial/odds page, not a feed. | Human cross-check only; not used. | https://esportsinsider.com/betting-odds/lol/league-of-legends-prime-league-pro-division-summer-2026 |
+
+### 22.2 Organizer / official pages for the leagues that have none in the payload
+
+The brief asks for a link to an official site on every row. Where the payload still shows no organizer link, this
+pass checked whether a verifiable official page exists — and did **not** add one where the only candidate is a
+template or an unverified mapping.
+
+| League (fixtures in this refresh) | Official organizer (verified) | Official page usable as a per-row source? | Verdict |
+|---|---|---|---|
+| Tunisian Super League 2026 (20) | **Tunisian Esports Federation (TUNESF)** — its own site describes the federation and the LoL Super League. | The LoL event page at `esports.tunesf.com/events/tunisian-league-of-legends-super-league` returns a **template shell**: “Status: Finished”, “Registered Teams: 0”, empty format/platform/location fields. It is **not** evidence for the 2026 season row. | Left blank; flagged. Leaguepedia remains the per-row results source. |
+| 4 Nations 2026 Halloween Heist (4) | **UK Esports League (UKEL)** per its own announcement of the Halloween Heist and Leaguepedia’s organizer field. | No UKEL page dedicated to the Halloween Heist fixtures was verified today. | Left blank; flagged. |
+| Arabian League 2nd Division 2026 Summer (4) | **Riot Games + Vanguard** (Leaguepedia/Liquipedia organizer fields). | No public official fixture page verified today. | Left blank; flagged. |
+| LigaGG CELOL A/B 2026 Split 2 Playoffs (3) | **LigaGG** (Brazilian community league). | No official fixture page verified today. | Left blank; flagged. |
+
+Added to the production probe (so every refresh re-measures them instead of trusting this note):
+`Cloudbet — Prime League 2nd Division events`, `Cloudbet — sports API (no key configured)`,
+`bmbets — LoL Prime League 2nd Division`, `esportsinsider — PRM 1st Division odds page`.
+
+### 22.3 What this changes
+
+5 of the 10 Low-confidence rows involve VfB eSports, all `CROSS_LEAGUE_MODEL`. Per-row model data shows why: VfB's recent competition is **Prime League 1st Division 2026 Spring** (competition base 1560) while its PRM 2nd Division opponents anchor to 1460–1490 bases — a relegated team being compared across league anchors, exactly what the flag exists for. Evidence per row, e.g. "Elo 1511 vs 1512 (51/33 games in 365d; competition bases 1560/1480)", tournament page https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split. **No model change made**; the Low cap is the honest treatment.
+
+### 21.5 Coin-flip picks — the real remaining gap, now labelled
+
+62 of 156 picks (40%) have their favourite at ≤53% — the pick exists but is a practical coin-flip, concentrated in PRM 3rd/RIVALS/Tunisian model rows where shrinkage toward the competition prior dominates. Previously nothing on a row said so. This session adds (verifier S16 + DOM render checks): a `🪙 coin-flip ≤53%` chip on every such card/match page, "· coin-flip" in the pick pill, an **All picks → 🪙 Coin-flip** filter (`picks.html?filter=tossup`), the count in the picks count-line, in the executive summary's unresolved/limitations section (with the deep link), and on the Unresolved page. Threshold is single-sourced (`TOSSUP_MAX = 0.53` in `docs/assets/app.js`).
+
+### 21.6 Live spot-check (2026-10-25)
+
+`Mental Rush vs Vitality Rising Bees` (LGC Rising, `MARKET_SINGLE` Polymarket): live event page shows series Moneyline **Vitality Rising Bees 65¢ / Mental Rush 38¢** vs payload Mental Rush 0.355 → pick Vitality Rising Bees 64.5% — consistent within drift since the 10:41Z refresh. Source: https://polymarket.com/event/lol-rb-mr-2026-10-27. (Also confirms the selector takes the series Moneyline, not the Game-N child markets listed below it on the same page.)
+
+**Bottom line (unchanged, re-measured):** no new structured per-match line source qualified. Low-tier picks remain our own Elo/standings line; what changed is that the weakest of them now say "coin-flip" on the row itself.
+
+---
+
+## 22. Refresh 2026-10-25 — targeted check of sources that *advertise* low-tier LoL coverage (session `arena/85bba52b`)
+
+Purpose: §19 concluded that no reachable book prices the model-only fixtures. The remaining way that conclusion
+could be wrong is a source that **advertises** Prime League / amateur coverage but is not on our probe list, or a
+source whose marketing copy is ahead of its actual board. This pass re-read those sources directly on
+**2026-10-25** and recorded what each one actually returned. Every row below was observed today unless it says
+otherwise; nothing here is inferred, and nothing here is used in a probability.
+
+### 22.1 Crypto/established books that advertise Prime League
+
+| Source | What its own page said on 2026-10-25 | Verdict | Link (for manual review) |
+|---|---|---|---|
+| **Cloudbet** — Prime League 2nd Division landing page | Marketing copy: “Cloudbet prices the Prime League 2nd Division through the split, with the match winner, map handicap, and total maps on every series…”. The **events tab returned: “No Prime League 2nd Division events available — Check back later.”** | Advertised coverage ≠ events on the board. Nothing to price, nothing used. | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events |
+| **Cloudbet** — sports API | Documented as `https://sports-api.cloudbet.com/pub/v2/odds/...` with an `X-API-Key` header; keys are issued through an Affiliate/Trading account. **No key is configured in this repo and the brief forbids manual sign-up steps.** | Key required → not usable autonomously. Added to the production probe so the status is re-measured every refresh. | https://cloudbet.github.io/wiki/en/docs/sports/api/ |
+| **bmbets** — “LoL - Prime League” comparison page | The page returned its e-sports league index plus a reCAPTCHA. In that index the **only** League of Legends leagues listed today were `LoL World Championship (9)`, `LoL - LCP (1)` and `League of Legends - Game Changers Rising (1)`. No Prime League fixture was listed. | No low-tier LoL board today (matches the 2026-10-24 finding). Not used. | https://www.bmbets.com/e-sports/world/lol---prime-league/ |
+| **bmbets** — “LoL - Prime League 2nd Division” page | The URL exists and carries odds-format controls (EU/UK/US), i.e. the template for a comparison page, but no current fixture or price was present in the retrieved page today. | URL exists, no readable price → unverified, not used. Added to the probe. | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ |
+| **Betmonitor** — Prime League 2nd Division odds comparison | Page answers, but the text returned to an unauthenticated fetch today was the site’s general football/tennis/basketball highlights; **no League of Legends match row and no PRM price appeared in it**. Search engines index the URL with bet365/ggbet rows, which is not evidence of a live line. | Client-rendered comparison widget → no machine-readable current price → not used. | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| **Polymarket** — Prime League **1st** Division | Live markets exist (`Eintracht Frankfurt vs E WIE EINFACH E-SPORTS (BO3)` etc.). That is the **1st** Division, which is not in Hotspawn’s current LoL fixture list; our production Polymarket adapter matched 9 fixtures this refresh (8 Worlds + 1 Game Changers Rising). | Real external prices, but for a division we are not asked to price today. Not used for PRM 2nd/3rd. | https://polymarket.com/esports/league-of-legends/prime-league-1st-division |
+| **esportsinsider** — PRM 1st Division odds page | Page exists with a live standings table for the 1st Division; it is an editorial/odds page, not a feed. | Human cross-check only; not used. | https://esportsinsider.com/betting-odds/lol/league-of-legends-prime-league-pro-division-summer-2026 |
+
+### 22.2 Organizer / official pages for the leagues that have none in the payload
+
+The brief asks for a link to an official site on every row. Where the payload still shows no organizer link, this
+pass checked whether a verifiable official page exists — and did **not** add one where the only candidate is a
+template or an unverified mapping.
+
+| League (fixtures in this refresh) | Official organizer (verified) | Official page usable as a per-row source? | Verdict |
+|---|---|---|---|
+| Tunisian Super League 2026 (20) | **Tunisian Esports Federation (TUNESF)** — its own site describes the federation and the LoL Super League. | The LoL event page at `esports.tunesf.com/events/tunisian-league-of-legends-super-league` returns a **template shell**: “Status: Finished”, “Registered Teams: 0”, empty format/platform/location fields. It is **not** evidence for the 2026 season row. | Left blank; flagged. Leaguepedia remains the per-row results source. |
+| 4 Nations 2026 Halloween Heist (4) | **UK Esports League (UKEL)** per its own announcement of the Halloween Heist and Leaguepedia’s organizer field. | No UKEL page dedicated to the Halloween Heist fixtures was verified today. | Left blank; flagged. |
+| Arabian League 2nd Division 2026 Summer (4) | **Riot Games + Vanguard** (Leaguepedia/Liquipedia organizer fields). | No public official fixture page verified today. | Left blank; flagged. |
+| LigaGG CELOL A/B 2026 Split 2 Playoffs (3) | **LigaGG** (Brazilian community league). | No official fixture page verified today. | Left blank; flagged. |
+
+Added to the production probe (so every refresh re-measures them instead of trusting this note):
+`Cloudbet — Prime League 2nd Division events`, `Cloudbet — sports API (no key configured)`,
+`bmbets — LoL Prime League 2nd Division`, `esportsinsider — PRM 1st Division odds page`.
+
+### 22.3 What this changes
+
+* **No probability changes.** No new source produced a readable two-way price for any fixture we publish, so the
+  production cascade is unchanged: external lines where a line exists (9 rows this refresh), otherwise the Elo /
+  split-standings model (147 rows), with 0 explicit 50/50 placeholders.
+* **What does change:** the site can state, from a dated observation rather than a memory, that the books which
+  *advertise* Prime League coverage had **no events on the board** on 2026-10-25, and that the two crypto/aggregator
+  routes are blocked by an API key (Cloudbet) or client rendering (Betmonitor).
+* **Open item for review:** if Cloudbet or Betmonitor ever list a PRM 2nd/3rd fixture, an adapter is possible, but it
+  needs either an API key (forbidden by “no manual input”) or a terms-of-use review before scraping. Neither is done.
+
+## 23. Refresh 2026-10-25 — three more candidates checked (session `arena/b95df72a`)
+
+Question restated for this pass: the 147 of 156 currently listed fixtures that no reachable
+book prices (payload generated 2026-10-25T10:41:50Z: 9 market · 92 `MODEL_ELO` · 53
+`MODEL_ELO_STANDINGS` · 2 `MODEL_ELO_THIN` · 0 unresolved · 10 low-confidence) — does any
+established LoL betting site, esportsbook or betting-line board not yet in §§13–19 quote the
+low-tier divisions (PRM 2nd/3rd Division, Tunisian Super League, RIVALS LEAGUE, 4 Nations,
+Arabian League 2nd Div, Komplettligaen, LigaGG, LCP Promotion)? Three candidates surfaced by
+fresh search were opened and read on 2026-10-25. Observations only; nothing below is used in
+any probability.
+
+### 23.1 Established / esportsbook candidates — observed
+
+| Source | What was observed on 2026-10-25 | Verdict |
+|---|---|---|
+| [Cloudbet — Prime League 2nd Division](https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division) | The page copy claims "Cloudbet prices the Prime League 2nd Division through the split… Odds for the next matchday go up once the schedule is confirmed", but the events panel itself reads **"No Prime League 2nd Division events available"** — on a day when Hotspawn lists 36 upcoming PRM 2nd Division fixtures (next ones today, 2026-10-25 16:00 UTC). Marketing copy is not a board. Session `arena/964cb944` independently recorded the identical observation (§21.1) and added Cloudbet to the production probe — two sessions, same result. | No price available today; no structured feed. **Not usable.** Re-check manually if their board ever populates. |
+| [BookMaker public lines (`lines.bookmaker.eu`)](https://lines.bookmaker.eu/en/sports/e-gaming/) | The indexed LoL path (`/en/sports/e-sports/lol/`) returns **404 "Page not found"**. The live e-gaming board carries only simulated leagues (Esoccer / Ebasketball / Efootball H2H, "429 e-gaming games … in 3 leagues") — no League of Legends at any tier. | **Not usable.** |
+| [Esports Insider LoL odds board](https://esportsinsider.com/betting-odds/lol) | Server-rendered and current ("Updated October 25, 2026 · Live from the ESI esports feed"; 12 upcoming series / 3 active tournaments). Coverage today: Worlds 2026 (8 series), LGC Rising 2026 (Vitality Rising Bees vs Mental Rush, best book prices 1.43 / 2.78) and LCP Promotion 2027 (FENNEL vs Nothin'Here shown as **62% / 38%**). No PRM 2nd/3rd Division, Tunisian, RIVALS, 4 Nations, Arabian, Komplettligaen or LigaGG fixture appears. | Human cross-check only — see 20.2. **Not ingested.** |
+
+### 23.2 The one overlapping low-tier fixture, checked line by line
+
+FENNEL vs Nothin'Here (LCP 2027 Promotion, 2026-11-10T05:00:00Z, Bo5) is one of our two
+`MODEL_ELO_THIN` low-confidence rows (our line: FENNEL 56.5%). ESI lists the identical
+fixture (same teams, 10 Nov 05:00 GMT, BO5), but its own match page states under
+"Match Winner Odds": **"No bookmaker prices yet — None of the books we track are pricing
+this match. The ESI model view is in the sidebar."**
+([match page](https://esportsinsider.com/betting-odds/lol/match/fennel-league-of-legends-vs-nothin-here-1766739)).
+So the board's 62/38 is ESI's proprietary model percentage, not a bookmaker line, and its
+basis is undisclosed (their form widget on the same page shows FENNEL 0W–6L vs Nothin'Here
+3W–0L, which points the other way). It agrees with our pick's *direction*; it is **not** a
+market source and is not used as one. The other overlap, Mental Rush vs Vitality Rising
+Bees (2026-10-27), is already market-priced here from Polymarket (MR 35.5%); ESI's
+unattributed "best price across books" 2.78 / 1.43 de-vigs to ≈ MR 34.0% — same side,
+within ~1.5 pts, recorded as corroboration only because ESI does not name the book behind
+the price and this project never publishes a line it cannot attribute to a source.
+
+### 23.3 Vendor confirmation from the supply side
+
+OddsPapi's own esports-odds-API guide (Aug 2026) lists its League of Legends tournaments
+with odds coverage as "Worlds, LEC, LCS, LCK, LPL, CBLOL, LJL, **Prime League Pro
+Division**" — i.e. the commercial aggregated board stops at the Prime League *1st*
+Division and does not claim the 2nd/3rd Divisions or any of our other model-only leagues
+([oddspapi.io guide](https://oddspapi.io/blog/esports-odds-api-guide-how-to-get-pinnacle-cs2-lol-data-for-free/)).
+It remains key-gated in any case (§19.3).
+
+### 23.4 Outcome (limitations, as published on the site)
+
+No new structured, attributable line source exists for the model-only fixtures as of
+2026-10-25. Every currently listed Hotspawn LoL fixture still carries a pick and both win
+probabilities via the documented cascade — external market (Pinnacle / Unibet-Kambi /
+Bovada / Polymarket) → Leaguepedia-results Elo → Elo blended with current-split standings
+→ (competition prior) → explicit 50/50 `UNRESOLVED`. The 10 low-confidence rows and the
+per-league signal limits are published in the executive summary's separate
+"Unresolved picks & limitations" section and in full on
+[Unresolved & limitations](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/unresolved.html).
+Flagged for manual review (non-blocking): **F23.1** Cloudbet's empty PRM 2nd Division
+board vs its pricing claim — worth a human re-check on a PRM matchday before anyone
+concludes they never price it; **F23.2** ESI's model percentages must not be mistaken for
+book prices by a future session — their match pages distinguish the two explicitly.
