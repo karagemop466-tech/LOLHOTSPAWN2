@@ -1,5 +1,25 @@
 # Coordination Board
 
+## Session `arena/419cd73a-lolhotspawn2` — 2026-10-25 (claim)
+
+**Handoff note (2026-10-25 14:1x UTC).** `origin/main` is at `2173cc9` (bot refresh, payload generated
+2026-10-25T10:41:50Z). No PR has merged since `arena/26d1e778` (#58/#59, 2026-10-24T18:19Z) and no session has
+committed in the last ~20 h, so the open claims from 2026-10-24 (`arena/df8a86d2` T21–T24, `arena/26d1e778`
+T21–T25, `arena/ac089f33` T26) are all older than 60 minutes with no commits. Their merged work (PRs #53–#59)
+is already on `main`; the still-open PRs #50 / #55 / #59 are stale branch copies of work that either merged or
+was superseded (main already passes `D23` no-conflict-markers, which is what #55 was written to fix). Per the
+board rule this session takes over the open integration scope and records the handoff here. No other session's
+work is discarded — `main` is adopted as the baseline and only additive changes are made.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Fresh 2026-10-25 line-source research for the fixtures with no book line (established LoL books → esportsbooks → esports betting lines → community), each candidate re-checked live and recorded with its link + observed status | claimed | arena/419cd73a | `research/betting-sources.md`, `scripts/probe_sources.py`, `scripts/probe_lines.py`, `data/diag/source_probe*.json`, `data/diag/line_probe.json` |
+| T28 Line-by-line verification of the *current* payload against official sources (market rows vs the books, standings rows vs Leaguepedia, fixture list vs Hotspawn), spot-check report with links, irregularities flagged | claimed | arena/419cd73a | `verification/spot-checks-2026-10-25.md`, `verification/report.json`, `verification/last_report.md`, `verification/flagged_items.md` |
+| T29 Mobile / executive-summary usability pass at phone width: picks reachable in ≤2 taps, unresolved + limitations section complete when the unresolved count is 0, no dead controls | claimed | arena/419cd73a | `docs/**` |
+| T30 Integration: live pipeline on this branch, re-verify the combined data, PR → `main`, merge without waiting, confirm the GitHub Pages deploy, record the PR link + merge result here | claimed | arena/419cd73a | `COORDINATION.md` (board entries), `docs/data/picks.json` (CI-generated) |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
 ## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
