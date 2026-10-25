@@ -44,11 +44,11 @@ model-only fixtures: **16 sources probed, 8 reachable, 5 name one of our competi
 
 **4. Verification**
 
-* `scripts/verify_site.py` **44 PASS · 0 FAIL · 0 WARN** (1 SKIP offline: Leaguepedia snapshot not available locally)
+* `scripts/verify_site.py` **45 PASS · 0 FAIL · 0 WARN** (1 SKIP offline: Leaguepedia snapshot not available locally)
 * `verification/test_verifier.py` 45/45 · `test_entity_and_books.py` 17/17 · `test_standings_model.py` ALL PASS ·
-  `audit/test_model.py` 23/23 · `test_dom_contract.py` 7/7 · `check_dom_contract.py` PASS
-* `verification/check_dom_render.js` **58/58**, including five new assertions for the pick panel, the coverage strip
-  and the section order (the picks must come before the explanatory blocks)
+  `audit/test_model.py` 23/23 · `test_dom_contract.py` 7/7 · `check_dom_contract.py` PASS · `test_freshness.cjs` PASS
+* `verification/check_dom_render.js` **63/63** (five new assertions for the pick panel, the coverage strip and section
+  order, plus the coin-flip labelling checks contributed by the session that merged first)
 * **new** `verification/check_mobile_css.py` 10/10 — viewport, no non-media width > 390 px, tables scroll and stack,
   ≥ 44 px tap targets, ≥ 11 px text; wired into `pipeline-test.yml` **and** `verify.yml`
 * **new** `verification/test_prm_probe.py` 8/8 — a basketball page, a CSS gradient, a league-name-only page, a single
