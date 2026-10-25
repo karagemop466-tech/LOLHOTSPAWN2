@@ -1,6 +1,6 @@
 {
- "audited_at": "2026-10-25T17:05:48+00:00",
- "payload_generated_at": "2026-10-25T17:03:55.791951Z",
+ "audited_at": "2026-10-25T17:15:10+00:00",
+ "payload_generated_at": "2026-10-25T17:14:35.027608Z",
  "rows": 139,
  "summary": {
   "PASS": 20,
@@ -126,7 +126,7 @@
    "id": "R12",
    "title": "no cancelled/excluded fixture is priced",
    "status": "PASS",
-   "detail": "18 excluded fixture(s); 0 also priced",
+   "detail": "9 excluded fixture(s); 0 also priced",
    "evidence": []
   },
   {

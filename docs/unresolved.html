@@ -188,8 +188,8 @@
             <td data-label="Result"><b>234 = 156 + 78.</b> The lobby's own tier filter says 234 League of Legends matches; we price the 156
               upcoming ones and the other 78 are already played (on the 17:03:55Z refresh the same arithmetic reads
               234 = 139 + 95, with both difference lists still empty). Crowd percentages stay display-only: the mean distance
-              between our probability and the crowd number over the 147 model rows is 0.3672, and 0 rows land within
-              0.5 point of it (0.367 on the 14:29:06Z payload and 0.367 on the 15:32:40Z one).</td>
+              between our probability and the crowd number is <b>0.367</b> over the 147 model rows, and <b>0 rows</b>
+              land within 0.5 point of it — measured the same way on the 14:29:06Z and 15:32:40Z payloads.</td>
             <td data-label="Source"><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">play.hotspawn.com/lol-pickems</a></td>
           </tr>
           <tr>
@@ -198,14 +198,15 @@
               that source (24 of 24 on the 14:29:06Z payload, 16 of 16 on the 15:32:40Z one); 9/9 market rows'
               consensus recomputes; counts, coverage and all 12 league rows re-foot;
               no cancelled fixture is priced; every row cites at least one https source that is not Hotspawn.</td>
-            <td data-label="Source"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/verification" target="_blank" rel="noopener">verification/row_audit.md ↗</a></td>
+            <td data-label="Source"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/verification/row_audit.md" target="_blank" rel="noopener">verification/row_audit.md ↗</a></td>
           </tr>
           <tr>
             <td data-label="What was re-read">Pinnacle's 8 rows and Bovada's 8 rows</td>
             <td data-label="Result"><b>Unverified from this network path</b> — Pinnacle's guest API answers 401 without its API key (the
               refresh job holds the key) and Bovada's coupon endpoint returned an empty body here while CI read 8
               events at 14:29Z. Left blank rather than guessed; both rows' decimals are still re-derived from the
-              prices the rows cite (rule R4).</td>
+              prices the rows cite (rule R4). That empty Bovada body turned out to be real and upstream — CI's own
+              next read came back empty too, which is irregularity <b>X6</b> below.</td>
             <td data-label="Source"><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest API</a></td>
           </tr>
           <tr>
@@ -219,7 +220,7 @@
               still publish no line. This is why those rows say <span class="flag">NO_EXTERNAL_MARKET</span> and are
               labelled "Own estimate · community records".</td>
             <td data-label="Source"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40214473210" target="_blank" rel="noopener">CI sweep run 40214473210 ↗</a> ·
-                <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/research" target="_blank" rel="noopener">research/low-tier-sweep-2026-10-25.md ↗</a></td>
+                <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/low-tier-sweep-2026-10-25.md" target="_blank" rel="noopener">research/low-tier-sweep-2026-10-25.md ↗</a></td>
           </tr>
         </tbody>
       </table>
@@ -282,7 +283,7 @@
               reconciled (234 = 156 + 78) and CI's union gate asserts no <i>upcoming</i> lobby fixture is missing, but
               the 78 themselves were not listed individually — left open for the next verification pass rather than
               asserted.</td>
-            <td data-label="Evidence"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/verification" target="_blank" rel="noopener">verification/live-cross-check-2026-10-25.md ↗</a></td>
+            <td data-label="Evidence"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/verification/live-cross-check-2026-10-25.md" target="_blank" rel="noopener">verification/live-cross-check-2026-10-25.md ↗</a></td>
           </tr>
           <tr>
             <td data-label="ID"><span class="flag">X6</span></td>
@@ -294,15 +295,15 @@
               (Invictus Gaming vs Hanwha Life: 0.273 → 0.281, dispersion 0.040 → 0.018). The same empty body was
               read from a second network path at 15:10Z, which is what confirms it upstream rather than a
               sandbox artefact. No row lost its pick and nothing was edited; the feed is re-read every 6 h.</td>
-            <td data-label="Evidence"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/verification" target="_blank" rel="noopener">verification/live-cross-check-2026-10-25.md §3 + X6 ↗</a></td>
+            <td data-label="Evidence"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/verification/live-cross-check-2026-10-25.md" target="_blank" rel="noopener">verification/live-cross-check-2026-10-25.md §3 + X6 ↗</a></td>
           </tr>
         </tbody>
       </table>
     </div>
     <p class="small">Working papers for this pass:
-      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/verification" target="_blank" rel="noopener">live cross-check ↗</a> ·
-      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/research" target="_blank" rel="noopener">low-tier line sweep ↗</a> ·
-      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/tree/main/verification" target="_blank" rel="noopener">row-by-row audit ↗</a> ·
+      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/verification/live-cross-check-2026-10-25.md" target="_blank" rel="noopener">live cross-check ↗</a> ·
+      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/low-tier-sweep-2026-10-25.md" target="_blank" rel="noopener">low-tier line sweep ↗</a> ·
+      <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/verification/row_audit.md" target="_blank" rel="noopener">row-by-row audit ↗</a> ·
       <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions" target="_blank" rel="noopener">CI runs</a></p>
   </section>
 
