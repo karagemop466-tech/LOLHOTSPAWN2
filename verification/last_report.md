@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-25T14:17:18.070152+00:00_
-156 matches · MARKET_CONSENSUS: 8 · UNRESOLVED: 0 · MODEL_ELO: 91 · MARKET_POLYMARKET: 0 · MARKET_SINGLE: 1 · MODEL_ELO_THIN: 2 · MODEL_ELO_STANDINGS: 54 · MODEL_LEAGUE_PRIOR: 0 · MARKET_BOOKS: 0 · MODEL_STANDINGS: 0
+_2026-10-25T14:28:50.404123+00:00_
+156 matches · UNRESOLVED: 0 · MODEL_ELO_THIN: 2 · MARKET_CONSENSUS: 8 · MODEL_STANDINGS: 0 · MARKET_POLYMARKET: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_BOOKS: 0 · MODEL_ELO: 91 · MARKET_SINGLE: 1 · MODEL_ELO_STANDINGS: 54
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:13:20.786341Z (0.1h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:13:20.786341Z (0.3h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 156 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -43,7 +43,7 @@ _2026-10-25T14:17:18.070152+00:00_
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 24 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 23 external link(s) collected for manual review; 0 plain-http |
 | S11 every CSS class used by a page is defined in style.css | PASS | 7 page(s), no unstyled class |
 | S12 all pages share one navigation, freshness slot and unique ids | PASS | 7 pages, identical nav with 6 primary targets |
 | W1 picks update is scheduled every 4-8 hours | PASS | update-picks.yml: cron '0 */6 * * *' = every 6h |

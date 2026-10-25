@@ -923,7 +923,7 @@ is what the page actually rendered (quoted where it was a sentence).
 | Source | URL opened 2026-10-25 | What the page actually showed | Verdict |
 |---|---|---|---|
 | Rainbet | https://rainbet.com/sportsbook/league-of-legends-110 (generic path `…/sports/esports/league-of-legends` → **HTTP 404**) | Cloudflare Turnstile interstitial plus **“Access is forbidden from your location”** and a **“Rainbet is not available in the United States”** notice. | Unreadable (geo/Cloudflare) — no |
-| Everygame | https://www.everygame.eu/en/sportsbook/esports/league-of-legends | **HTTP 404**. Affiliate guides list Everygame as carrying the Prime League; that claim could not be verified at any LoL path tried, so it stays *unverified*, not assumed. | Unverified — no |
+| Everygame | every LoL path tried under `everygame.eu` (`/en/sportsbook/esports/league-of-legends`) | **HTTP 404** on 2026-10-25. Affiliate guides credit Everygame with Prime League coverage; that claim could not be verified at any LoL path tried, so it stays *unverified*, not assumed. No link is published for a dead path (a 404 is not evidence). | Unverified — no |
 | bet365 | (no public page/API; only appears as a bookmaker column inside comparison pages) | No automated route exists and no comparison page served a bet365 price for our fixtures today (see betmonitor row above). | No readable line — no |
 
 ### 20.3 What changed in the pipeline as a result

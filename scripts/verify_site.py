@@ -84,8 +84,7 @@ REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
                 # opened and rejected (empty board, archive only, geo-blocked, 404).
                 # Being on this list means "a human opened it and recorded what it said",
                 # never "this is a data source": no payload row cites them.
-                "cloudbet.com", "oddsportal.com", "bmbets.com", "rainbet.com",
-                "everygame.eu")
+                "cloudbet.com", "oddsportal.com", "bmbets.com", "rainbet.com")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 

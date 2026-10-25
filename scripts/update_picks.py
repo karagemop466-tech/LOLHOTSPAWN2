@@ -107,9 +107,6 @@ CHECKED_UNAVAILABLE = [
     {"name": "Rainbet — LoL sportsbook", "url": "https://rainbet.com/sportsbook/league-of-legends-110",
      "observed": "2026-10-25: the generic LoL path answers HTTP 404; the real sportsbook path serves a Cloudflare Turnstile interstitial ('Access is forbidden from your location', US geo-block) from this workspace, while the CI probe of the same refresh recorded HTTP 200 with HTML only and no structured prices",
      "consequence": "Client-rendered/geo-gated on both sides: no per-match price can be read, so nothing was copied. The 200-vs-forbidden difference is a transport artefact, not a line."},
-    {"name": "Everygame — esports LoL path", "url": "https://www.everygame.eu/en/sportsbook/esports/league-of-legends",
-     "observed": "HTTP 404 on 2026-10-25 (affiliate guides list Everygame as carrying the Prime League, but the cited LoL path does not resolve)",
-     "consequence": "No price readable; the claim could not be verified, so it is recorded as unverified rather than assumed."},
 ]
 
 LIMITATIONS = [
