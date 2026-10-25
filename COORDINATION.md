@@ -1482,3 +1482,21 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+## Session `arena/81e6a4e3-lolhotspawn2` — 2026-10-25 (claim)
+
+All earlier open claims in this board are dated 2026-10-24 or earlier (>60 minutes old);
+this session takes over the stale integration/re-verification scope. Baseline is main
+`2173cc9`. Arena requires the fixed branch `arena/81e6a4e3-lolhotspawn2` (no extra branches).
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| V1 Audit current coverage, provenance, stale data and unresolved/tied recommendations; add targeted regression gates | in progress | arena/81e6a4e3 | `scripts/**`, `verification/**`, `audit/**` |
+| V2 Research missing-line alternatives using established books, esportsbooks and community sources; distinguish unreachable from verified | in progress | arena/81e6a4e3 | `research/**`, `data/diag/**` |
+| V3 Mobile picks/executive-summary clarity and honest evidence labels; integrate tested fixes | in progress | arena/81e6a4e3 | `docs/**`, `README.md` |
+| V4 Live workflow, PR/merge, Pages confirmation and coordination evidence | in progress | arena/81e6a4e3 | `.github/workflows/**`, `COORDINATION.md` |
+
+Initial blocker: GitHub Actions REST request returned HTTP 403 API rate limit exceeded
+at 2026-10-25T14:09Z; git fetch succeeds. External hosts are unavailable directly from
+this sandbox; live source verification must run through GitHub Actions, not be claimed
+from cached data. No verified status will be inferred from a source link alone.
