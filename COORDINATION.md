@@ -1482,3 +1482,74 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+---
+
+## Session `arena/bc88ae90-lolhotspawn2` — 2026-10-25 (fresh research, exec-summary verification, site state)
+
+Branch note: Arena fixes this session to `arena/bc88ae90-lolhotspawn2` (branched from `2173cc9d`, the latest scheduled refresh commit). The branch is identical to `main` at claim time; this session does not change any generated data or pipeline code. Scope: `research/betting-sources.md` (append fresh research), `COORDINATION.md` (this record). No other session is active.
+
+### Tasks completed
+
+| Task | Status | Files |
+|---|---|---|
+| Fresh source research for matches that cannot be resolved the same way as featured (bookmaker-priced) picks — established LoL betting sites → esportsbooks → esports betting lines → community | done | `research/betting-sources.md` §20 |
+| Live verification of the executive summary: in-site links to every picks list, separate unresolved section with limitations, mobile readability | done | `docs/index.html` (read-only), `docs/assets/app.js` (read-only), live site fetch |
+| Live site state: every Hotspawn LoL fixture has a pick, source links on every row, mobile-friendly dashboard | done | `docs/data/picks.json` (read-only), live https fetch |
+| Record findings in COORDINATION.md | done | this file |
+
+### What was done
+
+**Fresh source research (2026-10-25).** A web search for current (2026) LoL betting sites, esportsbooks and esports betting lines was performed, plus a direct live fetch of the most promising candidate (Betmonitor's Prime League 2nd Division comparison page). Findings are recorded in `research/betting-sources.md` §20, with source links for every claim:
+
+1. **No accessible book prices the tier-2/3 leagues on Hotspawn's list.** Reviews of every established book (bet365, Bovada, Thunderpick, GG.Bet, BetOnline, Betway, TonyBet, SportsBetting.ag, Stake, Rainbet, Vave, CocoBet) name only LCK/LPL/LEC/LCS/LFL/PRM-Pro-Division/TCL/Worlds/MSI. Where "PRM" is named it means the Pro/1st Division; PRM 2nd/3rd, RIVALS LEAGUE, Tunisian Super League, Arabian 2nd Division, 4 Nations, Komplettligaen, LCP Promotion and LigaGG are not named by any review.
+2. **Betmonitor and BMBets show PRM 2nd Division comparison pages** with real bookmaker odds (bet365, unibet, efbet, novibet, ladbrokes, draftkings). These are **client-rendered HTML comparison pages** with no structured API, the underlying books are EU-facing/geo-restricted, and there is no per-fixture team-name matching — so they cannot be used as a data source. This finding is noted; it does not change the site's accurate statement ("no bookmaker feed we may legally use prices them").
+3. **GG.Bet's "tier-2/3 coverage" claim is marketing language not supported by accessible data.** The accessible GG.Bet board (eGamersWorld, HTTP 200) shows only Worlds + LGC Rising; GG.Bet returns HTTP 403 to automated requests. Not usable.
+4. **Oddiwire (ODDIN.GG feed) and SportsGameOdds** are candidates but require human key/card signup — not integrated per the no-manual-input requirement.
+5. **The answer to "resolve a pick for any match we don't have a pick for"** is unchanged and live-verified: 0 fixtures are unresolved in the current snapshot. Every model-priced fixture (147) uses Leaguepedia recorded results + current-split standings as its per-row source, with the Leaguepedia tournament page linked on each row.
+
+**Executive summary verification (live, 2026-10-25).** The live site at `https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/` was fetched and confirmed to have:
+
+- A **"Where the updated picks are" block** with 4 one-tap link cards, each carrying a live count: All updated picks (156), Next 24 hours (28), By league / tier (12 competitions), Unresolved & limitations (0 unresolved · 10 low confidence).
+- A **hero "Find every pick (156)"** button linking to `picks.html`.
+- A **separate unresolved section** (`#unresolved-section`) on the executive summary itself — not buried on a subpage — listing: the unresolved/limitations headline (correctly worded for 0 unresolved), every unresolved fixture (empty state when 0), the per-league limitations table, the external-source re-check strip, and the 12 written limitations.
+- A **6-link bottom navigation** (Summary / Picks / Leagues / Unresolved / Flagged / Method) on every page.
+- **156/156 = 100% coverage**: 9 bookmaker lines, 94 Elo model, 53 split standings, 0 priors, 0 unresolved, 9 cancelled excluded.
+
+**Mobile readability.** Viewport meta on all 6 pages; full-width hero buttons under 620 px; 6-column bottom nav; `overflow-wrap: anywhere` on long source URLs; ≥44 px tap targets. The site is usable on a phone without horizontal scrolling.
+
+### Live payload state (generated 2026-10-25T10:41:50Z)
+
+| Metric | Value |
+|---|---|
+| Total upcoming fixtures | 156 |
+| Priced (with a pick) | 156 (100%) |
+| External bookmaker lines | 9 (8 consensus + 1 single) |
+| Model (Elo / standings) | 147 (92 MODEL_ELO + 53 MODEL_ELO_STANDINGS + 2 MODEL_ELO_THIN) |
+| Unresolved (50/50 placeholder) | 0 |
+| Low confidence | 10 |
+| Cancelled, excluded | 9 |
+| Leagues covered | 12 |
+| Per-row source link | Every row has Hotspawn fixture link + Leaguepedia tournament page link |
+
+### Sources used (fresh check 2026-10-25)
+
+| Source | Checked | Link |
+|---|---|---|
+| Live site (executive summary + picks) | fetched | https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ |
+| Hotspawn LoL Pick'em lobby | referenced | https://play.hotspawn.com/lol-pickems |
+| Betmonitor PRM 2nd Division comparison page | fetched live | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 |
+| BMBets PRM 2nd Division odds page | found via search | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ |
+| Esports betting-site reviews (2026) | read | https://esports.gg/guides/betting/league-of-legends-betting-sites/ · https://www.egaminghq.com/guide/lol-betting-odds-2026-guide/ · https://esportsbetadvisor.com/league-of-legends/ · https://ibebet.com/betting/esports/league-of-legends/ |
+| Leaguepedia tournament pages (12 cited in payload) | verified by CI | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
+
+### Irregularities / items for review (non-blocking)
+
+1. **Betmonitor PRM 2nd Division page shows real bookmaker odds** — finding, not a defect. The site already says the accurate thing. A human reviewer with a bet365/Ladbrokes account could verify specific PRM 2nd Division prices against our model rows, but that requires manual input + an account (out of scope).
+2. **GG.Bet "tier-2/3" claim in 2026 reviews** — flagged as marketing language not supported by accessible data. Worth revisiting if a future session gains lawful access to GG.Bet and verifies specific PRM 2nd/3rd prices.
+3. **Oddiwire** — candidate for a future probe if a human obtains an API key (email + Cloudflare verification required). Free tier (100 REST calls/day) would be sufficient. Noted, not integrated.
+4. **BMBets PRM 2nd Division page** — HTML comparison page, same verdict as Betmonitor. Not a data source.
+
+### Coordination note
+
+No other session holds a live claim on `research/betting-sources.md` (the last claim on it, `arena/df8a86d2`, was for §19 and is complete) or on `docs/index.html` / `docs/assets/app.js`. This session edited only `research/betting-sources.md` (append §20) and `COORDINATION.md`. No conflicts with other sessions' scopes.
