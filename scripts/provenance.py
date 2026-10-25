@@ -44,3 +44,38 @@ def annotate_matches(matches):
             ),
         }
     return matches
+
+
+def market_arithmetic_errors(matches):
+    """Recompute no-vig/consensus arithmetic from the saved source values only.
+
+    Does NOT prove the provider still quotes those prices or verify team identity.
+    Decimal fields are nullable for prediction markets; never synthesize them.
+    Tolerance allows the stored four-decimal rounding of odds/probabilities.
+    """
+    from statistics import median
+    weights = {"pinnacle": 1.0, "unibet": .85, "bovada": .8, "polymarket": .7}
+    errors = []
+    for m in matches:
+        market = m.get("market") or {}
+        records = market.get("sources") or []
+        for r in records:
+            a, b = r.get("decimal_team1"), r.get("decimal_team2")
+            if a is None or b is None:
+                continue  # cannot confirm an absent value; leave it blank
+            try:
+                if a <= 1 or b <= 1:
+                    raise ValueError("decimal odds must exceed 1")
+                expected = (1 / a) / (1 / a + 1 / b)
+                if abs(expected - r["prob_team1"]) > .0003:
+                    raise ValueError("recorded no-vig probability disagrees with decimal odds")
+            except (KeyError, TypeError, ValueError) as e:
+                errors.append(f"{m.get('id')}/{r.get('source')}: {e}")
+        if records and all(isinstance(r.get("prob_team1"), (int, float)) for r in records):
+            ps = [r["prob_team1"] for r in records]
+            ws = [weights.get(r.get("source_key"), .6) for r in records]
+            expected = median(ps) if len(ps) >= 3 else sum(p*w for p, w in zip(ps, ws))/sum(ws)
+            observed = market.get("consensus_team1")
+            if not isinstance(observed, (int, float)) or abs(observed - expected) > .00015:
+                errors.append(f"{m.get('id')}: consensus disagrees with recorded source probabilities")
+    return errors
