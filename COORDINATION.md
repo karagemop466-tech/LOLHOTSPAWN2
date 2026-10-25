@@ -1482,3 +1482,16 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+---
+
+## Session `arena/7dbe0fbd-lolhotspawn2` — 2026-10-25 (claim: final user-requirement audit)
+
+**Claim:** final independent audit of the already-integrated LoL picks dashboard against the requested
+coverage, source traceability, unresolved/limitations, mobile findability, and scheduled-refresh requirements.
+Scope: `verification/**`, `audit/**`, and this coordination log only. Existing older verification/integration
+claims in this board have no commits newer than 2026-10-24 and are more than 60 minutes old; this session
+records the handoff under the board's takeover rule. No changes to generated picks, models, shared site
+navigation, or workflow code unless a critical verifiable defect is found; if one is found, log a request
+rather than touching another scope. Baseline: `2173cc9` (`origin/main`); payload timestamp
+`2026-10-25T10:41:50Z`, 156 fixtures, 9 market-derived, 147 model-derived, 0 unresolved, 10 low-confidence.
