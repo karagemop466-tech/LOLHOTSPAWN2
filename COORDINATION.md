@@ -1,6 +1,6 @@
 # Coordination Board
 
-## Session `arena/6d169c43-lolhotspawn2` — 2026-10-25 (active)
+## Session `arena/6d169c43-lolhotspawn2` — 2026-10-25 (done, merged)
 
 No other session holds an open claim younger than 60 minutes as of 2026-10-25 14:15 UTC. All prior sessions' results are merged to `main` (latest scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z, 156 matches, 156 picks resolved, 9 market rows, 147 model rows, 0 unresolved). This session works strictly inside the claimed scope.
 
@@ -9,7 +9,7 @@ No other session holds an open claim younger than 60 minutes as of 2026-10-25 14
 | T27 Line-by-line verification: run all unit suites, test_verifier, test_standings_model, test_dom_contract, test_entity_and_books, jsdom render harnesses, verify_site.py (REQ1–REQ12) | done | arena/6d169c43 | `verification/**`, `scripts/verify_site.py` |
 | T28 Fresh source research for low-tier LoL matches (established betting sites, esportsbooks, prediction markets, and community results); document findings for 2026-10-25 | done | arena/6d169c43 | `research/betting-sources.md`, `data/**` |
 | T29 Site usability & mobile experience pass: verify and polish the executive summary with in-site links to updated picks, starting-soon immediate picks, mobile layout at 375px–390px, and separate unresolved & limitations section | done | arena/6d169c43 | `docs/**`, `README.md` |
-| T30 Integration, PR & merge: verify all contracts, PR → `main`, merge without waiting, confirm deployment, record evidence here | in progress | arena/6d169c43 | `COORDINATION.md` |
+| T30 Integration, PR & merge: verify all contracts, PR → `main`, merge without waiting, confirm deployment, record evidence here | done | arena/6d169c43 | `COORDINATION.md` |
 
 ### Results & Verification Log (Session `arena/6d169c43` — 2026-10-25)
 
@@ -17,7 +17,7 @@ No other session holds an open claim younger than 60 minutes as of 2026-10-25 14
    - Verified all 156 matches in `docs/data/picks.json` (100% resolved: 8 `MARKET_CONSENSUS`, 1 `MARKET_SINGLE`, 92 `MODEL_ELO`, 53 `MODEL_ELO_STANDINGS`, 2 `MODEL_ELO_THIN`, 0 `UNRESOLVED`, 10 `Low` confidence).
    - Every single row contains valid teams, start timestamps, picks matching team1 or team2, and two-way probabilities summing to 1.000 (±0.005).
    - Verified unit suites: `test_verifier.py` (45/45 PASS), `test_dom_contract.py` (7/7 PASS), `test_standings_model.py` (ALL PASS), `test_entity_and_books.py` (17/17 PASS), `audit/test_model.py` (23/23 PASS).
-   - Verified render harnesses: `node verification/render_check.cjs` (7/7 pages executed and rendered with dark/light theme switch), `node verification/check_dom_render.js` (53/53 DOM assertions passed).
+   - Verified render harnesses: `node verification/render_check.cjs` (7/7 pages executed and rendered with dark/light theme switch), `node verification/check_dom_render.js` (53/53 DOM assertions passed), `node verification/test_freshness.cjs` (PASS).
    - `python3 scripts/verify_site.py`: **44 PASS / 0 FAIL / 0 WARN / 1 SKIP** (D1–D23, S1–S15, W1–W3, and REQ1–REQ12 all PASS).
 
 2. **Task T28 (Fresh Source Research for Low-Tier LoL Matches):**
@@ -31,6 +31,12 @@ No other session holds an open claim younger than 60 minutes as of 2026-10-25 14
    - Polished executive summary (`docs/index.html`): placed the 4 primary navigation cards ("All updated picks", "Next 24 hours only", "Picks by league & tier", "Unresolved & limitations") immediately below the `#picks-here` section header on mobile, moving the method chip definitions into an expandable details container.
    - Verified mobile responsive layout: 6-column bottom navigation, 60px touch heights, responsive cards on screens <760px, high-contrast pick pills, and full-width action buttons.
    - Updated `verification/flagged_items.md` with items V1, V2, and V3.
+
+4. **Task T30 (Integration, PR & Deployment):**
+   - Opened PR [#66](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/66) from `arena/6d169c43-lolhotspawn2` to `main`.
+   - Merged PR #66 without waiting for external approval via `gh pr merge 66 --merge` (merge commit `7a8b8d1`, 2026-10-25T14:18:04Z).
+   - Confirmed GitHub Pages deployment status: `status: built` via GitHub Pages API (`https://api.github.com/repos/karagemop466-tech/LOLHOTSPAWN2/pages`).
+   - Live canonical URL: https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ (root `index.html` redirects to `docs/`).
 
 Any session that needs a file in this scope must log a request here instead of editing it.
 
