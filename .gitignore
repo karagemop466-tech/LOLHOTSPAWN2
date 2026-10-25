@@ -7,3 +7,6 @@ data/picks.json
 # jsdom install for verification/check_dom_render.js (CI installs it per run)
 node_modules/
 package-lock.json
+
+# Ephemeral output of the optional real-browser layout regression test
+verification/mobile-browser.json

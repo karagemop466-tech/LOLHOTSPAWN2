@@ -1,6 +1,8 @@
 {
- "checked_at": "2026-10-25T14:38:59.225600Z",
+ "checked_at": "2026-10-25T14:32:21.212733Z",
  "fixture_count": 156,
+ "fixture_snapshot_at": "2026-10-25T14:29:06.319763Z",
+ "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [],
  "candidates": [
@@ -33,7 +35,7 @@
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4582575,
+   "bytes": 4582706,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -1280,7 +1282,7 @@
    "kind": "esports-aggregator",
    "url": "https://api.bo3.gg/api/v1/matches",
    "http_status": 200,
-   "bytes": 201433,
+   "bytes": 201434,
    "is_json": true,
    "schedule_records": 0,
    "detail": {
@@ -1415,7 +1417,7 @@
      },
      {
       "sport_id": 109,
-      "status": 0
+      "status": 203
      }
     ]
    },
@@ -1451,7 +1453,7 @@
    "kind": "aggregator-page",
    "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
    "http_status": 200,
-   "bytes": 879285,
+   "bytes": 878731,
    "is_json": false,
    "detail": {
     "odd_cells": 18,
@@ -1518,7 +1520,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366117,
+   "bytes": 366116,
    "is_json": false,
    "lol_mentions": null,
    "error": null,

@@ -32,6 +32,9 @@ jobs:
       - name: Verifier self-tests (each rule must fail on bad data)
         run: python3 verification/test_verifier.py
 
+      - name: Evidence scope regression tests
+        run: python3 verification/test_evidence_scope.py
+
       - name: Fixture-coverage union unit tests (lobby + fixtures API)
         run: python3 verification/test_lobby_union.py
 
@@ -74,6 +77,15 @@ jobs:
             echo "jsdom not installed; render checks will SKIP"
           node verification/render_check.cjs
           node verification/check_dom_render.js
+
+      - name: Real phone and tablet layout checks (Chromium)
+        run: |
+          set -o pipefail
+          mkdir -p data/diag
+          {
+            npm install --no-save --no-package-lock --no-audit --no-fund jsdom playwright-core @sparticuz/chromium
+            BROWSER_REPORT=data/diag/browser.json node verification/check_browser.cjs
+          } 2>&1 | tee data/diag/browser.log
 
       - name: Upload verification artifacts
         if: always()

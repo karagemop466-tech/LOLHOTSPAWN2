@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-25T14:43:12.874129+00:00_
-156 matches · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · MARKET_SINGLE: 1 · MODEL_STANDINGS: 0 · MODEL_ELO: 91 · MODEL_ELO_THIN: 2 · UNRESOLVED: 0 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO_STANDINGS: 54
+_2026-10-25T14:45:53.308952+00:00_
+156 matches · MODEL_ELO_STANDINGS: 54 · MARKET_POLYMARKET: 0 · MARKET_BOOKS: 0 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO_THIN: 2 · MODEL_ELO: 91 · MARKET_CONSENSUS: 8 · MODEL_STANDINGS: 0 · UNRESOLVED: 0 · MARKET_SINGLE: 1
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:39:09.976401Z (0.1h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:41:58.904656Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 156 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -44,7 +44,7 @@ _2026-10-25T14:43:12.874129+00:00_
 | S6 no broken internal links | PASS | all internal href/src resolve |
 | S7 shared JS/CSS exist and are responsive | PASS | assets load data and contain responsive rules |
 | S8 root index.html sends visitors into the site | PASS | root redirects to docs/ |
-| S9 all external links use https | PASS | 41 external link(s) collected for manual review; 0 plain-http |
+| S9 all external links use https | PASS | 44 external link(s) collected for manual review; 0 plain-http |
 | S11 every CSS class used by a page is defined in style.css | PASS | 7 page(s), no unstyled class |
 | S18 every page has the same quick-jump bar; the summary explains non-featured picks in-site | PASS | 7 pages, 6 jump targets, #nonfeatured present with a source table |
 | S19 phone layout contract: viewport meta, a <=430px breakpoint, no fixed width above 430px | PASS | 390px-safe: device-width viewport on every page, phone breakpoint present, no fixed width above 430px |

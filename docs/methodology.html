@@ -53,11 +53,19 @@
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
+  <div id="input-health" class="hidden" role="status"></div>
 
   <p class="eyebrow">Method &amp; verification</p>
   <h1>How every pick &amp; win probability is originated</h1>
-  <p class="lede">Fixtures come from Hotspawn. Probabilities never do. Every fixture passes through a verified 5-tier cascade:
+  <p class="lede">Fixtures come from Hotspawn. Probabilities never do. Every fixture passes through a documented 5-tier cascade:
   external bookmaker consensus → tier-anchored Elo → split standings → competition prior → explicit 50/50 placeholder.</p>
+
+  <section id="input-freshness">
+    <h2>Input timestamps &amp; verification scope</h2>
+    <p class="small">Source collection times below are recorded by the collector, not invented from the dashboard build time. “ok” means a feed was collected, not that every value was confirmed by an event organizer. Blank timestamps remain unverified. Historical model rows also link their latest recorded competition, which may differ from the upcoming split.</p>
+    <div data-input-freshness></div>
+    <p class="small">50/50 unresolved rows have <b>no recommended team</b>. For backwards compatibility the raw JSON may retain a deterministic team in its legacy <code>pick</code> field; this is a placeholder, never an evidence-backed selection. Equal model probabilities likewise indicate no preferred side. Rows whose Hotspawn lock time has passed are labelled “Lock time passed”; they remain in the complete snapshot until the next refresh.</p>
+  </section>
 
   <section class="card">
     <h3>1. Fixture discovery &amp; lobby reconciliation (every 6 hours)</h3>
