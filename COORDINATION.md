@@ -1,17 +1,17 @@
 # Coordination Board
 
-## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
+## Session `arena/52743a08-lolhotspawn2` — 2026-10-25 (takeover + full validation)
 
-No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
+**Takeover:** The prior T21–T24 claim by `arena/df8a86d2` is dated 2026-10-24 and has no commits on this active branch; it is older than 60 minutes. Taking over its outstanding goals. Per Arena session constraints, work remains on `arena/52743a08-lolhotspawn2` (the fixed session branch); no alternate branch will be created.
 
 | Task | Status | Owner | Files (claimed scope) |
 |---|---|---|---|
-| T21 Full re-verification of the current payload line-by-line: run all unit suites + `verify_site.py`, coverage reconciliation, spot-check priced rows against their cited official sources, mobile/exec-summary link audit | claimed | arena/df8a86d2 | `verification/**`, `audit/**`, `scripts/verify_site.py` (fixes only if a check is wrong) |
-| T22 Fresh source research for low-tier / unpriced matches (established LoL betting sites → esportsbooks → esports betting lines → community), update the research log with link-verified results | claimed | arena/df8a86d2 | `research/betting-sources.md`, `scripts/probe_sources.py` |
-| T23 Site usability pass: executive summary with in-site links to the picks list, unresolved/limitations section reachable from the summary, phone/mobile readability at 390 px | claimed | arena/df8a86d2 | `docs/**` |
-| T24 Integration: run the live pipeline on this branch, re-verify, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge result here | claimed | arena/df8a86d2 | `COORDINATION.md` (board entries), `docs/data/picks.json` (generated) |
+| T21 Full re-verification: tests, payload coverage, sourced row checks, mobile and links | in progress | arena/52743a08 | `verification/**`, `audit/**`, `scripts/verify_site.py` (fixes only if needed) |
+| T22 Current source/research audit for unpriced fixtures and documented limitations | in progress | arena/52743a08 | `research/betting-sources.md`, `scripts/probe_sources.py` |
+| T23 Validate/fix executive-summary pick navigation, unresolved section, mobile readability | in progress | arena/52743a08 | `docs/**` |
+| T24 Integration verification and publication record, if a meaningful fix is required | in progress | arena/52743a08 | `COORDINATION.md` |
 
-Any session that needs a file in this scope must log a request here instead of editing it.
+Claim push (2026-10-25): take-over claim for stale T21–T24 scope. Previous claim entry remains in historical log below; no files were edited outside this scope.
 
 ## Session `arena/92bfcdd3-lolhotspawn2` — 2026-10-23 (done, merged)
 | Task | Status | Owner | Files |
