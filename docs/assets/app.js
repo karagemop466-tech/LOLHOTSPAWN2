@@ -75,8 +75,14 @@
     return ms >= 0 ? `in ${Math.round(hrs / 24)} d` : `${Math.round(hrs / 24)} d ago`;
   }
   function isFresh(d) {
-    if (!d.stale_after_utc) return true;
-    return new Date(d.stale_after_utc) > new Date();
+    const now = Date.now();
+    const generated = Date.parse(d.generated_at);
+    const expires = Date.parse(d.stale_after_utc);
+    // A missing deadline must never silently turn an unknown-age file green.
+    // Eight hours is the maximum requested refresh interval, not a live-feed claim.
+    return Number.isFinite(generated) && Number.isFinite(expires)
+      && generated <= now + 5 * 60000 && generated > now - 8 * 3600000
+      && expires > now && expires > generated;
   }
   function methodInfo(m) { return METHOD[m.method] || { label: m.method, cls: "", ico: "•" }; }
   function matchClass(m) {
@@ -179,13 +185,14 @@
     if (fu) fu.textContent = `Data generated ${whenUTC(d.generated_at)} · automatic refresh every 6 hours.`;
     if (fresh) {
       const ok = isFresh(d);
-      fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Live data" : "Stale — check the scheduled update"}`;
+      fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Recent snapshot · not live odds" : "Stale or unverified timestamp"}`;
       fresh.title = `Next scheduled update: ${whenUTC(d.next_update_utc)}`;
     }
     const warn = $("#freshness-warning");
-    if (warn && !isFresh(d)) {
-      warn.className = "warnbox";
-      warn.innerHTML = `<b>This data is older than expected.</b> Last update ${esc(t.text)}; next expected ${esc(whenUTC(d.next_update_utc))}. The 6-hour GitHub Action may have failed — check the repository Actions tab.`;
+    if (warn) {
+      warn.className = isFresh(d) ? "hidden" : "warnbox";
+      warn.setAttribute("role", "status");
+      warn.innerHTML = isFresh(d) ? "" : `<b>Snapshot freshness cannot be confirmed.</b> Last update ${esc(t.text)}; next expected ${esc(whenUTC(d.next_update_utc))}. The 6-hour GitHub Action may have failed — check the repository Actions tab.`;
     }
   }
 
@@ -345,7 +352,7 @@
     const mix = pricingMix(d);
     const stCount = mix.standings;
     const covText = $("#coverage-text");
-    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a verified pick (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
+    if (covText) covText.innerHTML = `<b>${cov.resolved ?? 0} of ${cov.fixtures ?? 0}</b> fixtures have a published pick or estimate (${cov.resolved_pct ?? 0}%): <b>${mix.market}</b> from external betting lines, <b>${mix.elo}</b> from our chronological Elo model, <b>${stCount}</b> from split standings, <b>${mix.prior}</b> from competition priors, and <b>${mix.unresolved}</b> explicit 50/50 placeholders (total ${mix.total}). See <a href="picks.html">All picks</a> · <a href="leagues.html">By league</a> · <a href="unresolved.html">Unresolved &amp; limitations</a>.`;
     const covBar = $("#coverage-bar");
     if (covBar) covBar.innerHTML = `<i style="width:${cov.resolved_pct || 0}%"></i><b style="width:${100 - (cov.resolved_pct || 0)}%"></b>`;
 
@@ -866,6 +873,9 @@
     try {
       DATA = await load();
       setHeader(DATA);
+      // Re-evaluate a tab left open on a phone; do not keep yesterday's green badge.
+      window.addEventListener("focus", () => setHeader(DATA));
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) setHeader(DATA); });
       if (PAGE === "summary") renderIndex(DATA);
       if (PAGE === "leagues") renderLeagues(DATA);
       if (PAGE === "picks") { wirePicks(); renderPicks(DATA); }
