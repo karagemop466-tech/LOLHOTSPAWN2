@@ -78,6 +78,7 @@ _2026-10-25T17:10:35.208208+00:00_
 
 **X1 items:**
 - https://www.oddsportal.com/esports/league-of-legends/ -> 503
+- https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ -> 503
 - https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist -> 403
 - https://lol.fandom.com/wiki/Arabian_League_2nd_Division -> 403
 - https://lol.fandom.com/wiki/LigaGG -> 403
