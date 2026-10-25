@@ -446,7 +446,15 @@
     }
 
     const nowMs = Date.now();
-    const next = (d.matches || [])
+    // Every match locking in the next 24 hours gets a card here — the heading
+    // and count above this list publish the window size, so silently cutting
+    // the list to a preview made the summary read as if the rest had no pick.
+    // Only when the 24 h window is empty do we fall back to the next few
+    // upcoming matches, and the heading/count say so.
+    const in24 = (d.matches || [])
+      .filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; })
+      .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+    const next = in24.length ? in24 : (d.matches || [])
       .filter((m) => new Date(m.start_utc).getTime() >= nowMs - 300000)
       .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
       .slice(0, 6);
@@ -454,9 +462,10 @@
     if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No matches locking in the next 24 hours. <a href="picks.html">Browse all upcoming picks →</a></div>`;
     const soonCount = $("#soon-count");
     if (soonCount) {
-      const n24 = (d.matches || []).filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; }).length;
-      soonCount.textContent = n24 ? `${n24} match${n24 === 1 ? "" : "es"} locking in the next 24 hours` : "Next scheduled matches on Hotspawn's list";
+      soonCount.textContent = in24.length ? `${in24.length} match${in24.length === 1 ? "" : "es"} locking in the next 24 hours — every one is listed below` : "Next scheduled matches on Hotspawn's list";
     }
+    const soonHeading = $("#soon-heading");
+    if (soonHeading && !in24.length) soonHeading.textContent = "Starting soon — next matches";
 
     const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 10);
     const featBox = $("#featured");
@@ -465,7 +474,6 @@
 
     const u = d.unresolved || {};
     const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
-    const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
     const uCount = u.count ?? 0;
     const lcCount = u.low_confidence_count ?? 0;
     const ubox = $("#unresolved-summary");
@@ -479,15 +487,17 @@
         : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
            external betting line, our Elo model, or a current-split standings record. Anything that later
            loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
-      // Per-league limitations with verified source links are rendered in
-      // #exec-league-limits-body immediately below in #unresolved-section; avoid
-      // duplicating an unlinked inner table inside the warning callout.
+      // The per-league limitation table and the full written limitations are
+      // rendered once, in the static blocks directly below this box
+      // (#exec-league-limits-body / #exec-limitations) — they are part of the
+      // executive summary, and rendering a second copy inside this box made
+      // the section read twice.
       const tCount = all0.filter((m) => isTossUp(m)).length;
       ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount}) &amp; 🪙 Coin-flip picks (${tCount})</h3>
       <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
-      <p class="small">Per-competition pricing mix and verified source links are listed in the <a href="#exec-league-limits-table">per-league limits table immediately below ↓</a>.</p>
+      <p class="small">Which signal prices each league: <a href="#exec-per-league">per-league limits table below ↓</a> ·
+      written limits: <a href="#exec-written-limits">limitations for generating picks below ↓</a></p>
       <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; full per-league limitations page →</a></p></div>`;
     }
 
