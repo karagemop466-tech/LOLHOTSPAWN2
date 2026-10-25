@@ -70,6 +70,9 @@ class Ids(HTMLParser):
         self._has_ul = False
         self.viewport = ""
         self._in_theme_color = False
+        self._in_tbody = 0
+        self.unlabelled_tds = 0
+        self.parent_escape_hrefs: list[str] = []
 
     # -- helpers ----------------------------------------------------------
     @staticmethod
@@ -90,6 +93,14 @@ class Ids(HTMLParser):
         for key in ("href", "src"):
             if d.get(key):
                 self.refs.add(d[key])
+        href = str(d.get("href") or "").strip()
+        if href.startswith("../"):
+            self.parent_escape_hrefs.append(href)
+        if tag == "tbody":
+            self._in_tbody += 1
+        elif tag == "td" and self._in_tbody:
+            if not d.get("colspan") and not str(d.get("data-label") or "").strip():
+                self.unlabelled_tds += 1
 
         if tag == "header" and "site-header" in classes:
             self.in_header = 1
@@ -114,6 +125,8 @@ class Ids(HTMLParser):
             self._button_id = d.get("id")
 
     def handle_endtag(self, tag):
+        if tag == "tbody" and self._in_tbody:
+            self._in_tbody -= 1
         if tag == "header" and self.in_header:
             self.in_header -= 1
         if tag == "nav" and self._in_top_nav:
@@ -226,8 +239,26 @@ def main() -> int:
     for name, p in pages.items():
         if "width=device-width" not in p.viewport:
             problems.append(f"C6 {name}: viewport meta missing 'width=device-width'")
+        if "viewport-fit=cover" not in p.viewport:
+            problems.append(f"C6 {name}: viewport meta missing 'viewport-fit=cover'")
         if 'name="theme-color"' not in html[name]:
             problems.append(f"C6 {name}: no theme-color meta")
+
+    # ---- C7: mobile stacked-table labels on static <td> cells ---------------
+    for name, p in pages.items():
+        if p.unlabelled_tds:
+            problems.append(
+                f"C7 {name}: {p.unlabelled_tds} static <tbody> <td> cell(s) lack data-label "
+                "(mobile stacked tables hide <thead> and rely on td[data-label]::before)"
+            )
+
+    # ---- C8: no parent-directory relative hrefs escaping docs/ --------------
+    for name, p in pages.items():
+        if p.parent_escape_hrefs:
+            problems.append(
+                f"C8 {name}: parent-relative href(s) {p.parent_escape_hrefs} escape docs/ "
+                "and break for repo .md files on GitHub Pages"
+            )
     def _media_blocks(text: str) -> list[str]:
         """Return the bodies of every `@media (max-width: Npx)` block (brace matched)."""
         bodies = []

@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-25T15:00:45.045198Z",
+ "checked_at": "2026-10-25T15:01:00.333501Z",
  "books": [
   {
    "name": "Pinnacle (guest JSON)",
@@ -286,13 +286,13 @@
    "url": "https://www.oddsportal.com/lol/",
    "kind": "aggregator-page",
    "category": "market",
-   "http_status": 200,
+   "http_status": 429,
    "is_json": false,
-   "bytes": 491898,
-   "lol_mentions": 7,
+   "bytes": 0,
+   "lol_mentions": null,
    "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
-   "reachable": true,
+   "verdict": "rate limited (HTTP 429) — coverage unverified; nothing used",
+   "reachable": false,
    "structured": false
   },
   {
@@ -358,7 +358,7 @@
    "category": "market",
    "http_status": 200,
    "is_json": false,
-   "bytes": 399304,
+   "bytes": 399305,
    "lol_mentions": 407,
    "vs_style_items": null,
    "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
@@ -478,76 +478,6 @@
    "structured": false
   },
   {
-   "name": "Cloudbet — LoL hub (competitions listed)",
-   "url": "https://www.cloudbet.com/en/esports/league-of-legends",
-   "kind": "esportsbook-page",
-   "category": "market",
-   "http_status": 200,
-   "is_json": false,
-   "bytes": 336488,
-   "lol_mentions": 590,
-   "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
-   "reachable": true,
-   "structured": false
-  },
-  {
-   "name": "Cloudbet — Prime League 2nd Division board",
-   "url": "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
-   "kind": "esportsbook-page",
-   "category": "market",
-   "http_status": 200,
-   "is_json": false,
-   "bytes": 206185,
-   "lol_mentions": 21,
-   "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
-   "reachable": true,
-   "structured": false
-  },
-  {
-   "name": "OddsPortal — Prime League odds page",
-   "url": "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/",
-   "kind": "aggregator-page",
-   "category": "market",
-   "http_status": 429,
-   "is_json": false,
-   "bytes": 0,
-   "lol_mentions": null,
-   "vs_style_items": null,
-   "verdict": "rate limited (HTTP 429) — coverage unverified; nothing used",
-   "reachable": false,
-   "structured": false
-  },
-  {
-   "name": "BMBets — Prime League 2nd Division board",
-   "url": "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
-   "kind": "aggregator-page",
-   "category": "market",
-   "http_status": 200,
-   "is_json": false,
-   "bytes": 864643,
-   "lol_mentions": 1,
-   "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
-   "reachable": true,
-   "structured": false
-  },
-  {
-   "name": "Rainbet — LoL sportsbook (geo-restricted)",
-   "url": "https://rainbet.com/sportsbook/league-of-legends-110",
-   "kind": "esportsbook-page",
-   "category": "market",
-   "http_status": 200,
-   "is_json": false,
-   "bytes": 161216,
-   "lol_mentions": 3,
-   "vs_style_items": null,
-   "verdict": "reachable HTML only — no structured per-match prices parsed; human cross-check only, never used in a probability",
-   "reachable": true,
-   "structured": false
-  },
-  {
    "name": "Unibet DE Kambi brand feed (control)",
    "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ubde/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
    "kind": "sportsbook-api",
@@ -624,7 +554,7 @@
    "category": "results",
    "http_status": 200,
    "is_json": false,
-   "bytes": 179550,
+   "bytes": 179561,
    "lol_mentions": 157,
    "vs_style_items": null,
    "verdict": "reachable results/metadata page (HTML or API) — not parsed, and never a probability input; Leaguepedia remains the results source and this is a manual cross-check only",
@@ -675,12 +605,12 @@
   }
  ],
  "summary": {
-  "checked": 48,
-  "reachable": 28,
+  "checked": 43,
+  "reachable": 23,
   "structured_json": 6,
   "structured_with_lol": 4,
-  "market_sources_checked": 43,
-  "market_sources_reachable": 25,
+  "market_sources_checked": 38,
+  "market_sources_reachable": 20,
   "results_sources_reachable": 3,
   "note": "Probe only: no probed value is used in any probability. Only the four production feeds (Pinnacle, Unibet/Kambi, Bovada, Polymarket) produce market probabilities."
  }

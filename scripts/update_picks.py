@@ -8,6 +8,9 @@ list, never a probability.
 from __future__ import annotations
 
 import argparse
+import os
+import subprocess
+import sys
 from collections import Counter
 from datetime import timedelta
 
@@ -234,6 +237,63 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     return rows
 
 
+PREFLIGHT_SCRIPT = os.path.join("scripts", "verify_site.py")
+
+
+def preflight_verification(timeout: int = 900) -> int:
+    """Run the project's own verifier on the payload this run just published and
+    write its verdict into the build log.
+
+    Why this exists (2026-10-25): the publisher runs ``scripts/verify_site.py`` in a
+    later workflow step. When that step fails, the Actions job keeps only
+    ``data/diag/pipeline.log`` -- the one file the failure step commits -- so the
+    verifier's own report dies with the runner. Scheduled run 40156916426
+    (2026-10-25T03:05Z) failed at that step and left no check name, no row and no
+    reason behind: only "step 6 failed". Running the same verifier here puts the
+    failing check ids and the offending rows into the log that survives.
+
+    This function never changes what is published: it does not edit the payload, does
+    not raise, and its exit status is ignored by the caller (the workflow step stays
+    the gate). It only makes a failure explainable.
+    """
+    if not os.path.exists(PREFLIGHT_SCRIPT):
+        log(f"preflight: {PREFLIGHT_SCRIPT} not found; skipped")
+        return 0
+    try:
+        proc = subprocess.run([sys.executable, PREFLIGHT_SCRIPT],
+                              capture_output=True, text=True, timeout=timeout)
+    except Exception as e:  # noqa: BLE001 - a pre-flight must never break the pipeline
+        log(f"preflight: could not run {PREFLIGHT_SCRIPT}: {e!r}")
+        return 0
+    out = (proc.stdout or "") + (proc.stderr or "")
+    summary = next((ln.strip() for ln in reversed(out.splitlines()) if ln.strip()), "")
+    if proc.returncode == 0:
+        log(f"preflight: verify_site.py PASS (exit 0) - {summary}")
+        return 0
+    log(f"preflight: verify_site.py FAILED (exit {proc.returncode}) - the verifier's own "
+        f"output follows so this run stays diagnosable from the committed log")
+    keep = [ln for ln in out.splitlines()
+            if ln.startswith("[FAIL]") or ln.startswith("         ·")
+            or ln.startswith("== ") or "Traceback" in ln or "Error" in ln]
+    for ln in (keep or out.splitlines()[-40:]):
+        print(ln, file=sys.stderr, flush=True)
+    log(f"preflight: {len(keep)} failing/annotation line(s) reproduced above; the payload "
+        f"was still written and the workflow's own verify step remains the gate")
+    return 1
+
+
+def _low_conf_reason(m: dict) -> str:
+    if m["method"] == "MODEL_STANDINGS":
+        return "Standings-based line (few decided series)"
+    if "ONE_TEAM_NO_HISTORY" in m["flags"]:
+        return "One team has no recorded history (league prior used)"
+    if "CROSS_LEAGUE_MODEL" in m["flags"]:
+        return "Cross-league comparison (confidence capped at Low)"
+    if m["method"] in ("MODEL_ELO_THIN", "MODEL_ELO_STANDINGS") or "THIN_HISTORY" in m["flags"]:
+        return "Thin history (<8 games in 365 days)"
+    return "Other model uncertainty"
+
+
 def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     now = now_utc()
     matches = annotate_matches(picks["matches"])
@@ -251,16 +311,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if m["method"] in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
-            reasons["Standings-based line (few decided series)"] += 1
-        elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
-            reasons["One team has no recorded history (league prior used)"] += 1
-        elif "CROSS_LEAGUE_MODEL" in m["flags"]:
-            reasons["Cross-league comparison (confidence capped at Low)"] += 1
-        elif "THIN_HISTORY" in m["flags"]:
-            reasons["Thin history (<5 games in 365 days)"] += 1
-        else:
-            reasons["Other model uncertainty"] += 1
+        reasons[_low_conf_reason(m)] += 1
 
     next_24h = [m for m in matches if (start := parse_iso(m.get("start_utc")))
                 and now <= start <= now + timedelta(hours=24)]
@@ -379,12 +430,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
             "low_confidence_count": len(low_conf),
             "reasons": [{"reason": k, "count": v} for k, v in reasons.most_common()],
             "low_confidence_reasons": [{"reason": k, "count": v}
-                                       for k, v in Counter(
-                                           "One team has no recorded history (league prior used)"
-                                           if "ONE_TEAM_NO_HISTORY" in m["flags"] else
-                                           "Cross-league comparison" if "CROSS_LEAGUE_MODEL" in m["flags"] else
-                                           "Thin history (<8 games in 365 days)"
-                                           for m in low_conf).most_common()],
+                                       for k, v in Counter(_low_conf_reason(m) for m in low_conf).most_common()],
             "limitations": LIMITATIONS,
             "by_league": by_league_list,
         },
@@ -417,6 +463,8 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--use-cache", action="store_true", help="reuse data/cache/*.json (local debugging)")
+    ap.add_argument("--skip-preflight", action="store_true",
+                    help="do not re-run scripts/verify_site.py inside this run (diagnostics only)")
     args = ap.parse_args()
     if not args.use_cache:
         fetch_hotspawn.main()
@@ -443,6 +491,8 @@ def main() -> int:
     payload = build_payload(fixtures, markets, leaguepedia, picks, market_probe)
     write_json(DOCS_DATA, payload, compact=True)
     log(f"wrote {DOCS_DATA}: {payload['counts']}")
+    if not args.skip_preflight:
+        preflight_verification()
     return 0
 
 
