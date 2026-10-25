@@ -192,6 +192,34 @@ async function main() {
         pdoc.querySelector("#countline").textContent.includes(String(matches.length)),
         pdoc.querySelector("#countline").textContent.trim());
 
+  // Every visible pick row must also say WHY, in plain language. Before 2026-10-25
+  // the table only named the method ("Own Elo model"), which does not tell a phone
+  // visitor anything; the short reason now sits under the pick on every row.
+  const whyRows = Array.from(pdoc.querySelectorAll("#picks-body tr"));
+  const whyMissing = whyRows.filter((tr) => {
+    const sub = tr.querySelector(".pickcell .sub");
+    return !sub || !sub.textContent.trim();
+  });
+  check("picks: every row states why the pick was made", whyRows.length > 0 && whyMissing.length === 0,
+        `${whyRows.length - whyMissing.length}/${whyRows.length} rows carry a reason`);
+  const whyWrong = whyRows.filter((tr) => {
+    const sub = (tr.querySelector(".pickcell .sub") || {}).textContent || "";
+    const method = tr.querySelector("[data-label=\"Method\"]");
+    const chip = method ? method.textContent : "";
+    if (/Market|Single book/.test(chip)) return !/book/i.test(sub);
+    if (/Elo|standings|prior/i.test(chip)) return !/Elo|standings|prior|history/i.test(sub);
+    return false;
+  });
+  check("picks: the stated reason matches the method actually used", whyWrong.length === 0,
+        `${whyWrong.length} row(s) disagree with their method chip`);
+  const marketReason = whyRows
+    .filter((tr) => /Market|Single book/.test((tr.querySelector("[data-label=\"Method\"]") || {}).textContent || ""))
+    .map((tr) => (tr.querySelector(".pickcell .sub") || {}).textContent || "");
+  check("picks: a single-book row is labelled as not a consensus",
+        marketReason.filter((t) => /single source, not a consensus/.test(t)).length
+          === matches.filter((m) => m.method === "MARKET_SINGLE").length,
+        `${marketReason.filter((t) => /single source/.test(t)).length} single-source row(s)`);
+
   // filter deep-links used by the summary must actually filter
   const next24 = matches.filter((m) => {
     const t = new Date(m.start_utc).getTime();

@@ -42,6 +42,7 @@ import hashlib
 import json
 import os
 import re
+import struct
 import sys
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
@@ -1110,6 +1111,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
                 f"{len(unverified_hosts)} host(s) need manual review", unverified_hosts[:12])
 
     verify_structure(rep, DOCS)
+    verify_phone_install(rep, DOCS)
 
 
 # --------------------------------------------------------------------------- structure
@@ -1178,6 +1180,103 @@ def verify_structure(rep: Report, docs_dir: str) -> None:
             PASS if not nav_problems else FAIL,
             f"{len(tops)} pages, identical nav with {len(next(iter(tops.values()), ()))} "
             f"primary targets" if not nav_problems else "; ".join(nav_problems))
+
+
+def _png_size(path: str) -> tuple[int, int] | None:
+    """Read width/height from a PNG IHDR chunk without any image library."""
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(33)
+    except OSError:
+        return None
+    if len(head) < 33 or head[:8] != b"\x89PNG\r\n\x1a\n" or head[12:16] != b"IHDR":
+        return None
+    return struct.unpack(">II", head[16:24])
+
+
+def verify_phone_install(rep: Report, docs_dir: str) -> None:
+    """S16: the dashboard must be installable on a phone home screen.
+
+    The brief asks that a visitor can open the site on a phone and find the picks
+    without hunting. A manifest + apple-touch-icon is what makes the picks list a
+    one-tap icon instead of a bookmark; if either is missing or points at a broken
+    file, Chrome/Safari silently fall back to a screenshot and a long URL. This
+    check keeps the three moving parts (manifest file, icons, per-page <link>)
+    from drifting apart, and it fails loudly rather than degrading quietly.
+    """
+    problems: list[str] = []
+    manifest_path = os.path.join(docs_dir, "manifest.webmanifest")
+    icons: dict[str, tuple[int, int] | None] = {}
+    manifest: dict = {}
+    if not os.path.exists(manifest_path):
+        problems.append("docs/manifest.webmanifest is missing")
+    else:
+        try:
+            with open(manifest_path, encoding="utf-8") as fh:
+                manifest = json.load(fh)
+        except (OSError, json.JSONDecodeError) as e:
+            problems.append(f"manifest is not valid JSON ({e})")
+        if manifest:
+            for key in ("name", "short_name", "start_url", "display"):
+                if not manifest.get(key):
+                    problems.append(f"manifest has no {key}")
+            if manifest.get("display") not in ("standalone", "fullscreen", "minimal-ui"):
+                problems.append(f"manifest display={manifest.get('display')!r} is not app-like")
+            entries = manifest.get("icons") or []
+            if not entries:
+                problems.append("manifest lists no icons")
+            maskable = False
+            for icon in entries:
+                src = str(icon.get("src") or "")
+                if not src:
+                    problems.append("an icon entry has no src")
+                    continue
+                icon_path = os.path.join(docs_dir, src)
+                if not os.path.exists(icon_path):
+                    problems.append(f"{src} referenced by the manifest does not exist")
+                    continue
+                actual = _png_size(icon_path)
+                icons[src] = actual
+                declared = str(icon.get("sizes") or "")
+                if actual is None:
+                    problems.append(f"{src} is not a readable PNG")
+                elif declared and f"{actual[0]}x{actual[1]}" != declared:
+                    problems.append(f"{src} is {actual[0]}x{actual[1]} but the manifest says {declared}")
+                if "maskable" in str(icon.get("purpose") or ""):
+                    maskable = True
+            if not maskable:
+                problems.append("no maskable icon (Android adaptive icons will be letterboxed)")
+            if any(actual and actual[0] < 192 for actual in icons.values() if actual):
+                problems.append("icons must be at least 192 px for installability")
+
+    linked: list[str] = []
+    for pg in pages_in(docs_dir):
+        try:
+            with open(pg, encoding="utf-8", errors="replace") as fh:
+                html = fh.read()
+        except OSError:
+            continue
+        name = os.path.basename(pg)
+        if 'rel="manifest"' not in html:
+            problems.append(f"{name} does not link the manifest")
+        if 'rel="apple-touch-icon"' not in html:
+            problems.append(f"{name} has no apple-touch-icon")
+        if 'name="viewport"' not in html:
+            problems.append(f"{name} has no viewport meta")
+        linked.append(name)
+
+    apple = os.path.join(docs_dir, "assets", "apple-touch-icon.png")
+    if not os.path.exists(apple):
+        problems.append("docs/assets/apple-touch-icon.png is missing")
+    elif _png_size(apple) is None:
+        problems.append("apple-touch-icon.png is not a readable PNG")
+
+    rep.add("S16", "site is installable on a phone home screen (manifest, icons, per-page links)",
+            PASS if not problems else FAIL,
+            (f"{len(linked)} pages link the manifest + apple-touch-icon; "
+             f"{len(icons)} declared icon(s) present with matching sizes")
+            if not problems else "; ".join(problems[:8]),
+            problems[:8])
 
 
 # --------------------------------------------------------------------------- workflow
