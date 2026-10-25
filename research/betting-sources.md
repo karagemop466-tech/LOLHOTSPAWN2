@@ -899,7 +899,145 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
 
-## 20. Scheduled source reachability snapshot (2026-10-25 10:41 UTC)
+---
+
+## 20. Refresh 2026-10-25 — comprehensive source research, low-tier coverage audit, and line-by-line verification (session `arena/6d169c43`)
+
+Scope recap — user requirements addressed by this audit (not a claim that every fixture source was freshly re-opened):
+1. Originate independent win probabilities and picks for **every** League of Legends match listed on Hotspawn (including low-tier and amateur matches not priced by commercial books or Polymarket).
+2. Seek information sources from established LoL betting sites, esportsbooks, prediction markets, and community results databases.
+3. Provide a separate section for unresolved picks and the specific limitations for generating picks for them, featured in the executive summary.
+4. Enhance the executive summary with clear, direct in-site links to where updated picks are found, optimized for mobile phones and handheld devices.
+5. Strict verification line-by-line against verified official sources, no hallucinations, and all irregularities flagged for manual review.
+
+### 20.1 Current snapshot audit (156 upcoming fixtures, generated 2026-10-25T10:41:50Z)
+
+| Metric | Measured value | Verification status |
+|---|---|---|
+| Total scheduled fixtures | 156 upcoming matches | ✅ 100% mirror of Hotspawn lobby LoL schedule |
+| Fully resolved with a pick | 156 / 156 (100.0%) | ✅ All rows carry a valid pick ∈ {team1, team2} |
+| Probabilities | Sum to 1.000 (±0.005) on all rows | ✅ Verified by check D4 |
+| External market consensus (`MARKET_CONSENSUS`) | 8 fixtures (Worlds 2026 Main Event) | ✅ 4 independent sources per row (Pinnacle, Unibet, Bovada, Polymarket) |
+| Single market source (`MARKET_SINGLE`) | 1 fixture (LGC Rising 2026 Playoffs) | ✅ Polymarket Match Winner line |
+| Chronological Elo model (`MODEL_ELO`) | 92 fixtures | ✅ Anchored to 24 months of completed series on Leaguepedia |
+| Elo + split standings blend (`MODEL_ELO_STANDINGS`) | 53 fixtures | ✅ Leaguepedia split win-loss blended for thin rows |
+| Elo thin history (`MODEL_ELO_THIN`) | 2 fixtures | ✅ Low confidence, error bounds disclosed |
+| Competition tier prior (`MODEL_LEAGUE_PRIOR`) | 0 fixtures | ✅ All teams have specific match history or split standings |
+| Unresolved placeholders (`UNRESOLVED`) | 0 fixtures | ✅ 0 matches unpriced; fallback pipeline ready for future gaps |
+| Low confidence rows | 10 fixtures | ✅ Explicitly flagged and capped at Low confidence |
+
+### 20.2 Established LoL betting sites re-check (2026-10-25)
+
+**Scope:** the observations below describe only the named endpoint, runner, and timestamp. A blocked page, HTML shell, missing event in one response, or absent key is **not** proof that no bookmaker anywhere offers a low-tier line. Only a current, fixture-matched two-way price verified from the provider is treated as an odds input.
+
+| Established Bookmaker / Site | Current observation & coverage (2026-10-25) | Usable for low-tier matches? | Reference URL (endpoint/page observed) |
+|---|---|---|---|
+| **Pinnacle** | The observed `guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues` response returned HTTP 200 and listed league 9587 (`League of Legends - World Championship`). This endpoint did not demonstrate a low-tier line; it cannot establish what every other book offers. | No low-tier line verified from this endpoint | https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues |
+| **Bovada** | The observed public pre-match coupon returned HTTP 200 with 8 Worlds 2026 series moneylines (period `Game`, `main: true`). This coupon snapshot did not include a low-tier fixture; it is not a claim that no Bovada market exists elsewhere or later. | No low-tier line verified in this coupon snapshot | https://www.bovada.lv/sports/esports/league-of-legends/ |
+| **Unibet (Kambi API)** | The observed `ubca` offering feed returned HTTP 200 with 8 Worlds matches. No low-tier fixture price was manually verified in this check; the separate DE probe returned LoL-related JSON but did not validate a match price. | No low-tier line verified in these feeds | https://www.unibet.com.au/betting/sports/filter/esports/league_of_legends |
+| **bet365 / DraftKings / FanDuel** | This session did not verify an unauthenticated public odds feed or a sample low-tier fixture line. Account/geofencing and third-party coverage claims are not evidence that no lower-tier market exists. | No low-tier price independently verified | https://www.bet365.com, https://sportsbook.draftkings.com |
+| **Betfair Exchange / Smarkets** | The tested exchange page/API paths returned 403/404 from the automated runner. Liquidity could not be measured; these statuses do not prove no market or no liquidity. | Unknown; no line retrieved | https://smarkets.com/sport/esports/league-of-legends |
+
+### 20.3 Esportsbooks & prediction markets re-check (2026-10-25)
+
+| Esportsbook / Market | Current status (2026-10-25) | Coverage & verdict | Verified reference link |
+|---|---|---|---|
+| **Polymarket** | The LoL tag response included Worlds markets and the LGC Rising Playoffs final (`lol-rb-mr-2026-10-27`). No match winner for the listed PRM 3rd Div, RIVALS, or Tunisian fixtures was verified in this sample; tag-level absence is not proof no other event market exists. | Usable only for exact verified event matches | https://gamma-api.polymarket.com/events?tag_slug=league-of-legends |
+| **GG.BET / Thunderpick** | The tested pages returned HTTP 403 from the CI runner, so current prices and coverage could not be checked. Third-party listings are not treated as proof of their complete league coverage. | Unknown; no line retrieved | https://gg.bet/en/esports/lol, https://thunderpick.io |
+| **Rivalry / Midnite** | The tested pages were client-rendered/HTML-only and no structured low-tier two-way fixture price was parsed. This does not establish that the books lack other markets. | No low-tier line verified by this probe | https://www.rivalry.com/lol, https://www.midnite.com |
+| **Oddiwire (ODDIN.GG)** | The access flow observed in the cited pass required interactive verification and an email-issued key; the observed homepage listed 8 LoL events. No low-tier price was verified, and the page snapshot does not prove full coverage. | Not usable autonomously in this run; coverage unknown | https://oddiwire.com/ |
+| **SportsGameOdds** | The cited pricing page indicated card-required signup in the observed pass; a league list or fixture sample was not verified here. | Not usable autonomously in this run; coverage unknown | https://sportsgameodds.com/pricing |
+| **OddsPapi / The Odds API** | Earlier keyless checks were 401; current endpoint probes have different path/status results (see §22). No credentialed feed or low-tier fixture line was verified in this session. | No usable credentialed line feed configured | https://oddspapi.io/sports/esports/lol |
+| **Kalshi** | The observed esports series endpoint returned HTTP 200 with no LoL reference in its response. This does not prove no LoL contract exists on another endpoint or later. | No LoL series found in this response | https://kalshi.com |
+| **Manifold Markets** | The observed search response contained LoL references, but did not verify a current fixture's full-match head-to-head price. | No match-winner line verified | https://manifold.markets |
+
+### 20.4 Community & results sources for originating our own lines
+
+For matches where the currently integrated feeds do not return a verified line, the system produces a disclosed model estimate from recorded match data and split standings. This is not an official probability or a claim that no bookmaker anywhere offers a market. Leaguepedia is community-maintained (not a Riot or tournament-operator feed):
+
+1. **Leaguepedia (`lol.fandom.com` Cargo API):**
+   - A community-maintained results database used by this pipeline; it is not a Riot or tournament-operator source, and model outputs derived from it are estimates rather than official probabilities.
+   - 31,633+ completed series spanning 24 months across 5,493 teams.
+   - Provides exact Best-of series lengths, map scores, dates, and split standings tables.
+   - Paced requests with local caching (`data/cache/`) protect against anonymous rate limits.
+   - Official API documentation: https://lol.fandom.com/api.php?action=help&modules=cargoquery.
+   - Tournament pages cited directly in the payload:
+     - `Prime League 3rd Division/2027 Season/Fall Split`: https://lol.fandom.com/wiki/Prime_League_3rd_Division/2027_Season/Fall_Split
+     - `Prime League 2nd Division/2027 Season/Fall Split`: https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split
+     - `Tunisian Super League/2026 Season`: https://lol.fandom.com/wiki/Tunisian_Super_League/2026_Season
+     - `RIVALS LEAGUE/2026 Season/Season 2`: https://lol.fandom.com/wiki/RIVALS_LEAGUE/2026_Season/Season_2
+     - `4 Nations/2026 Season/Halloween Heist`: https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist
+     - `Komplettligaen/2026 Season/Autumn Playoffs`: https://lol.fandom.com/wiki/Komplettligaen/2026_Season/Autumn_Playoffs
+     - `Arabian League 2nd Division/2026 Season/Summer Split`: https://lol.fandom.com/wiki/Arabian_League_2nd_Division/2026_Season/Summer_Split
+     - `LCP/2027 Season/Promotion`: https://lol.fandom.com/wiki/LCP/2027_Season/Promotion
+     - `LigaGG/CELOL Série A/2026 Season/Split 2 Playoffs`: https://lol.fandom.com/wiki/LigaGG/CELOL_S%C3%A9rie_A/2026_Season/Split_2_Playoffs
+     - `LigaGG/CELOL Série B/2026 Season/Split 2 Playoffs`: https://lol.fandom.com/wiki/LigaGG/CELOL_S%C3%A9rie_B/2026_Season/Split_2_Playoffs
+
+2. **Liquipedia MediaWiki API (`liquipedia.net/api-terms-of-use`):**
+   - Secondary verification and metadata discovery under CC BY-SA 3.0 license.
+   - Polled with custom User-Agent, gzip encoding, and polite request throttling (≥2.2s spacing).
+   - Validates tournament participant structures and organizer metadata.
+
+3. **Organizer Official Pages:**
+   - `Komplettligaen` (Norwegian official organizer): https://www.komplettligaen.no/lol/ — verified HTML match reports align with Leaguepedia records.
+   - `RIVALS LEAGUE` (Swedish official organizer): https://www.rivalsleague.gg/ — verified Season 2 tournament schedule.
+   - `Prime League` (German official organizer): https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627 — provides structure and team rosters (blocked from CI runners by Bunny Shield, verified via browser).
+
+### 20.5 Line-by-line verification spot checks of fixtures (snapshot 2026-10-25)
+
+The rows below are the prior session's recorded spot checks, not a fresh manual re-opening of every cited page during this integration audit. Preserve that timestamp distinction when interpreting any value.
+
+| Fixture ID | Match & Tournament | Start Time (UTC) | Method & Stated Probabilities | Cited Sources & Verification |
+|---|---|---|---|---|
+| `1079027` | Babos Gaming vs Hannover Esports e.V. (PRM 2nd Division) | 2026-10-25 16:00 | `MODEL_ELO_STANDINGS` · 47.9% vs 52.1% · Pick: Hannover Esports e.V. | ✅ Verified against Leaguepedia PRM 2nd Division split standings & match records. |
+| `1079028` | Austrian Force WILLHABEN vs ROSENHEIM Esports (PRM 2nd Division) | 2026-10-25 16:00 | `MODEL_ELO` · 63.6% vs 36.4% · Pick: Austrian Force WILLHABEN | ✅ Verified against Leaguepedia 24-month series Elo ratings (1595 vs 1499). |
+| `1079029` | Esport Rhein-Neckar vs Sea & Air Esports (PRM 2nd Division) | 2026-10-25 16:00 | `MODEL_ELO_STANDINGS` · 51.7% vs 48.3% · Pick: Esport Rhein-Neckar | ✅ Verified against PRM 2nd Division split standings (5-1 vs 4-2). |
+| `1079030` | Hertha BSC eSport vs DKB DiamondShield (PRM 2nd Division) | 2026-10-25 16:00 | `MODEL_ELO` · 61.2% vs 38.8% · Pick: Hertha BSC eSport | ✅ Verified against Leaguepedia match history. |
+| `1079031` | Magdeburg eSports e.V. vs Dortmund eSports (PRM 2nd Division) | 2026-10-25 16:00 | `MODEL_ELO` · 47.4% vs 52.6% · Pick: Dortmund eSports | ✅ Verified against Leaguepedia series records. |
+| `1081699` | Brod n Friends vs Outlaws (4 Nations 2026 Halloween Heist) | 2026-10-26 19:00 | `MODEL_ELO` · 62.0% vs 38.0% · Pick: Brod n Friends | ✅ Verified against 4 Nations 2026 Halloween Heist schedule and Summer records. |
+| `1081700` | Inari Esports vs Bulldog Esports (4 Nations 2026 Halloween Heist) | 2026-10-26 19:00 | `MODEL_ELO` · 54.3% vs 45.7% · Pick: Inari Esports | ✅ Disambiguated to `Inari Esports (British Team)` vs `Bulldog Esports` (Bo3, R2). |
+| `1079075` | Top Esports vs G2 Esports (Worlds 2026 Main Event) | 2026-10-25 14:00 | `MARKET_CONSENSUS` · 45.2% vs 54.8% · Pick: G2 Esports | ✅ De-vigged consensus of Pinnacle (44.6/55.4), Unibet (44.2/55.8), Bovada (45.9/54.1), Polymarket (47.5/52.5). |
+| `1079076` | Invictus Gaming vs Hanwha Life Esports (Worlds 2026 Main Event) | 2026-10-25 13:00 | `MARKET_CONSENSUS` · 27.5% vs 72.5% · Pick: Hanwha Life Esports | ✅ De-vigged consensus of Pinnacle (27.5/72.5), Unibet (30.0/70.0), Bovada (25.0/75.0), Polymarket (27.5/72.5). |
+| `1079077` | Gen.G vs LYON (Worlds 2026 Main Event) | 2026-10-25 18:00 | `MARKET_CONSENSUS` · 89.3% vs 10.7% · Pick: Gen.G | ✅ De-vigged consensus of Pinnacle (89.2/10.8), Unibet (85.6/14.4), Bovada (89.5/10.5), Polymarket (90.5/9.5). |
+| `1079078` | Dplus KIA vs Movistar KOI (Worlds 2026 Main Event) | 2026-10-25 15:00 | `MARKET_CONSENSUS` · 75.0% vs 25.0% · Pick: Dplus KIA | ✅ De-vigged consensus of Pinnacle (75.1/24.9), Unibet (71.9/28.1), Bovada (75.0/25.0), Polymarket (76.5/23.5). |
+| `1081741` | Mental Rush vs Vitality Rising Bees (LGC Rising 2026 Playoffs) | 2026-10-27 18:00 | `MARKET_SINGLE` · 35.5% vs 64.5% · Pick: Vitality Rising Bees | ✅ Polymarket Match Winner market id 6036989 (`lol-rb-mr-2026-10-27`). |
+
+---
+
+## 21. Refresh 2026-10-25 — Cloudbet PRM-2 claim tested, Kalshi claim re-tested, coin-flip transparency (session `arena/964cb944`)
+
+Baseline (payload 2026-10-25T10:41:50Z): 156 fixtures · 156 resolved · 0 unresolved · 9 market (8 four-book Worlds consensus + 1 Polymarket single) · 147 model · 10 Low · 62 coin-flips (favourite ≤53%, newly counted/labelled — see below).
+
+### 21.1 New candidate: Cloudbet (established crypto sportsbook / esportsbook)
+
+| Check | Observed 2026-10-25 | Source |
+|---|---|---|
+| Cloudbet publishes a dedicated page claiming it "prices the Prime League 2nd Division through the split, with the match winner, map handicap, and total maps on every series" | The same page's Events section read **"No Prime League 2nd Division events available"** on 2026-10-25 while Hotspawn listed **36 upcoming PRM 2nd Division fixtures**. The claim is therefore *unverified in practice* today — marketing copy, not a live board. | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division |
+| Machine-readable feed | None found/documented; page is a client-rendered sportsbook. No price was copied. Both the PRM-2 page and the LoL hub were added to `scripts/source_probe.py`, so every 6-hour run re-tests reachability and would surface a change. | https://www.cloudbet.com/en/esports/league-of-legends |
+
+### 21.2 Kalshi LoL claim — third-party article vs the exchange's own API
+
+An August 2026 affiliate article states LoL "trades on Kalshi" with per-match markets (https://www.oddsshopper.com/articles/prediction-markets/league-of-legends-betting-odds). Our production probe queries Kalshi's official series API every run and again on 2026-10-25T10:41Z found **JSON 200 but no League of Legends series** (https://api.elections.kalshi.com/trade-api/v2/series?category=Esports). The exchange's own API outranks the article: **no Kalshi line is used**, and the probe keeps re-testing so a future LoL series would be detected the run it appears.
+
+### 21.3 Community ratings (gol.gg / power rankings) — do they cover the amateur rows?
+
+The reviewed Elo/ranking pages (including https://lolproelo.com/rankings, https://tgv-analytics.com/teams, and https://liquipedia.net/leagueoflegends/Global_Power_Rankings) did not provide a current, fixture-matched rating we could validate for the low-tier rows checked here. This is a limited observation, not an exhaustive claim about every community project or roster. No value from those pages is used in picks; they remain candidates for manual review if they publish comparable ratings for a listed fixture.
+
+### 21.4 VfB eSports "cross-league inside its own tournament" — investigated, not a defect
+
+5 of the 10 Low-confidence rows involve VfB eSports, all `CROSS_LEAGUE_MODEL`. Per-row model data shows why: VfB's recent competition is **Prime League 1st Division 2026 Spring** (competition base 1560) while its PRM 2nd Division opponents anchor to 1460–1490 bases — a relegated team being compared across league anchors, exactly what the flag exists for. Evidence per row, e.g. "Elo 1511 vs 1512 (51/33 games in 365d; competition bases 1560/1480)", tournament page https://lol.fandom.com/wiki/Prime_League_2nd_Division/2027_Season/Fall_Split. **No model change made**; the Low cap is the honest treatment.
+
+### 21.5 Coin-flip picks — the real remaining gap, now labelled
+
+62 of 156 picks (40%) have their favourite at ≤53% — the pick exists but is a practical coin-flip, concentrated in PRM 3rd/RIVALS/Tunisian model rows where shrinkage toward the competition prior dominates. Previously nothing on a row said so. This session adds (verifier S16 + DOM render checks): a `🪙 coin-flip ≤53%` chip on every such card/match page, "· coin-flip" in the pick pill, an **All picks → 🪙 Coin-flip** filter (`picks.html?filter=tossup`), the count in the picks count-line, in the executive summary's unresolved/limitations section (with the deep link), and on the Unresolved page. Threshold is single-sourced (`TOSSUP_MAX = 0.53` in `docs/assets/app.js`).
+
+### 21.6 Live spot-check (2026-10-25)
+
+`Mental Rush vs Vitality Rising Bees` (LGC Rising, `MARKET_SINGLE` Polymarket): live event page shows series Moneyline **Vitality Rising Bees 65¢ / Mental Rush 38¢** vs payload Mental Rush 0.355 → pick Vitality Rising Bees 64.5% — consistent within drift since the 10:41Z refresh. Source: https://polymarket.com/event/lol-rb-mr-2026-10-27. (Also confirms the selector takes the series Moneyline, not the Game-N child markets listed below it on the same page.)
+
+**Bottom line (unchanged, re-measured):** no new structured per-match line source qualified. Low-tier picks remain our own Elo/standings line; what changed is that the weakest of them now say "coin-flip" on the row itself.
+
+## 22. Scheduled source reachability snapshot (2026-10-25 10:41 UTC)
 
 This is a record of the production pipeline's **HTTP/reachability probe**, not an odds scrape or a fresh human review of every provider. The snapshot is embedded in [`docs/data/picks.json` → `market_probe`](../docs/data/picks.json). It checked 37 candidates: 18 were reachable, 6 returned structured JSON, 4 structured responses contained LoL references. Those response-level counts do **not** mean four newly usable books or four fixtures priced. No value from this diagnostic probe enters a probability. The 156 published picks at that refresh remained 9 external-line rows plus 147 model rows.
 
@@ -917,7 +1055,7 @@ This is a record of the production pipeline's **HTTP/reachability probe**, not a
 
 **Decision:** no new low-tier bookmaker adapter was justified by this response-level probe. For the no-market rows, the published estimates continue to use the existing results-based model and source links; any blocked, HTML-only, or unverified candidate remains a limitation rather than a guessed probability. The current executive summary links to the separate [Unresolved & limitations page](../docs/unresolved.html), which distinguishes missing market coverage from an unresolved 50/50 placeholder.
 
-## 21. Live Pages check after the 12:00 UTC refresh (snapshot 2026-10-25 14:15 UTC)
+## 23. Live Pages check after the 12:00 UTC refresh (snapshot 2026-10-25 14:15 UTC)
 
 This later check used the live published payload and the site's rendered source table, not a claim that every provider page was manually opened. Public payload: [`picks.json`](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/data/picks.json?cachebust=14-17). Its `generated_at` is **2026-10-25T14:15:07Z**; it lists 156 upcoming fixtures, 156 priced, 0 unresolved, 9 external-line rows, 147 model rows, and the latest source-probe time is also 14:15Z. The page's [source-by-source table](https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/unresolved.html#sources-checked) records 37 requests, 19 responses, 6 structured JSON responses, 4 with LoL references; the market subset is 32 checked / 16 reachable. These counts describe reachability and content shape only—not independently verified prices or fixture coverage.
 
