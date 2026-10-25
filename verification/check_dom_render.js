@@ -195,6 +195,17 @@ async function main() {
         `${limRows.length} rows vs ${leagues.length} competitions`);
   check("summary: limitations text present on the page",
         /limitation/i.test(idoc.body.textContent));
+  // The separate section has to say, in numbers, how many published matches the
+  // featured (bookmaker-priced) approach could NOT resolve, and link to them.
+  const noLineCount = matches.filter((m) => !m.market).length;
+  const uSummary = idoc.querySelector("#unresolved-summary") || {};
+  const uSummaryText = (uSummary.textContent || "").replace(/\s+/g, " ");
+  check("summary: separate section states the no-betting-line count",
+        uSummaryText.includes(String(noLineCount)),
+        `want ${noLineCount} of ${matches.length} — got "${uSummaryText.slice(0, 120)}"`);
+  check("summary: separate section links the no-line pick list",
+        !!Array.from(idoc.querySelectorAll("#unresolved-summary a"))
+          .find((a) => (a.getAttribute("href") || "") === "picks.html?filter=model"));
   check("summary: coverage bar rendered",
         idoc.querySelector("#coverage-bar").innerHTML.includes("width:"));
   check("summary: \"where the picks are\" strip rendered", !!idoc.querySelector("#picks-here"));
@@ -295,6 +306,14 @@ async function main() {
   check("picks: ?filter=market deep link applies",
         marketView.document.querySelectorAll("#picks-body tr").length === market,
         `${marketView.document.querySelectorAll("#picks-body tr").length} rows vs ${market} market rows`);
+  // The summary's "no reachable betting line" link has to land on exactly the
+  // fixtures that have no market row — those are the ones the user asked to see
+  // separately from the featured (bookmaker-priced) picks.
+  const noLine = matches.filter((m) => !m.market).length;
+  const modelView = await render("picks.html", { query: "?filter=model" });
+  check("picks: ?filter=model deep link lists exactly the no-line fixtures",
+        modelView.document.querySelectorAll("#picks-body tr").length === noLine,
+        `${modelView.document.querySelectorAll("#picks-body tr").length} rows vs ${noLine} without a market`);
 
   // ---------- leagues page --------------------------------------------------
   const lpage = await render("leagues.html");
@@ -365,6 +384,14 @@ async function main() {
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));
   check("methodology: backtest block rendered",
         (mpage.document.querySelector("#backtest") || {}).textContent.trim().length > 0);
+  // "What this site promises" — one row per requirement, each pointing at an in-site page.
+  const reqRows = Array.from(mpage.document.querySelectorAll("#what-this-site-promises tbody tr"));
+  const reqLinked = reqRows.filter((r) => Array.from(r.querySelectorAll("a[href]"))
+    .some((a) => !/^https?:/i.test(a.getAttribute("href") || "")));
+  check("methodology: requirements table has 12 rows", reqRows.length === 12, `${reqRows.length} rows`);
+  check("methodology: every requirement links a page on this site",
+        reqRows.length === 12 && reqLinked.length === reqRows.length,
+        `${reqLinked.length}/${reqRows.length} rows with an in-site link`);
   const lowConfText = (mpage.document.querySelector("#meth-lowconf-summary") || {}).textContent || "";
   check("methodology: live low-confidence count matches payload",
         lowConfText.includes(`${PAYLOAD.counts.low_confidence} of ${PAYLOAD.counts.fixtures} rows`),

@@ -37,8 +37,9 @@ Rows are priced in a strict 5-tier cascade:
 4. **League prior (`MODEL_LEAGUE_PRIOR`)** — one team lacks both match history and split standings; the competition median/tier prior is substituted, shrunk toward 50/50 and capped at Low confidence.
 5. **Unresolved (`UNRESOLVED`)** — neither external lines nor recorded team/standings evidence exist: published strictly as an explicit `50.0% / 50.0%` placeholder on its own Unresolved & Limitations page (including a per-league table of which signal prices each league). Never an edge.
 
-Every refresh also re-requests a fixed list of 22 established sportsbooks, esportsbooks, exchanges,
-odds aggregators, prediction markets and community/official result pages **once each** and publishes
+Every refresh also re-requests a fixed list of 42 candidate sources — 37 sportsbooks, esportsbooks,
+exchanges, odds aggregators and prediction markets plus 5 community/official result pages — **once each**
+(`scripts/source_probe.py`) and publishes
 exactly what they returned (`market_probe`: HTTP status, JSON or HTML, and whether any League of Legends
 match market was visible). That is reachability evidence only — no probed value is ever used in a
 probability, and the sources needing API keys are recorded as such instead of guessed at.
@@ -91,6 +92,17 @@ eGamersWorld, Oddspedia, GGScore, Winamax, Marathonbet, Betano, Stake, GG.Bet, T
 fields. A source is only promoted into `scripts/fetch_markets.py` when it returns prices for fixtures in the
 published list **and** a human has verified a sample row — neither probe ever writes a probability.
 
+**Re-tested again on 2026-10-25** for the 147 fixtures that had no line (`research/betting-sources.md` §20): Cloudbet's
+LoL hub lists only the World Championship and its Prime League 2nd Division board renders "No Prime League 2nd Division
+events available"; OddsPortal's Prime League page says upcoming matches appear "as soon as bookmaker betting odds become
+available"; bmbets' Prime League 2nd Division page serves a league index containing only the World Championship, LCP and
+Game Changers Rising; betmonitor's Prime League comparison path resolves to its generic landing page; eGamersWorld lists
+only the World Championship and LGC Rising; Rainbet is geo-blocked/Cloudflare-interstitialled and Everygame's LoL path
+404s. Those five sources are now re-requested **on every refresh** (`market_probe`, shown on the site), and every row of
+that evidence sits in `checked_unavailable` with its URL. No row changed on market grounds: the pick for each of those
+matches is originated by the model from recorded results and split standings, and the executive summary states the count
+explicitly with in-site links to those lists.
+
 ## Automation & Verification
 
 - `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
@@ -112,7 +124,7 @@ published list **and** a human has verified a sample row — neither probe ever 
 | Polymarket Gamma API | Public prediction-market reference probabilities | https://gamma-api.polymarket.com |
 | Leaguepedia CargoExport (CC BY-SA 3.0) | Recorded series results (`MatchSchedule`) + split standings (`Standings`) | https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule |
 | Liquipedia MediaWiki API (CC-BY-SA 3.0) | Compliant tournament metadata index (`api.php`, gzip, ≥2.2s pacing) — page-prefix probe fixed 2026-10-24 | https://liquipedia.net/leagueoflegends/api.php?action=query&meta=siteinfo&format=json |
-| External-source probe (22 candidates, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
+| External-source probe (42 candidates: 37 market + 5 results, diagnostic) | Per-refresh reachability of books/esportsbooks/aggregators; never a probability input | https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md |
 
 ## Local verification
 

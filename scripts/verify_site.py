@@ -77,14 +77,15 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
                  "gol.gg", "lolesports.com", "riotgames.com", "leagueoflegends.com",
                  "gamesofdesktop", "oracleselixir.com", "primeleague.gg",
                  "rivalsleague.gg", "komplettligaen.no")
-# Research/manual-review links (never a probability input). Two sessions extended this
-# list on 2026-10-25: pages checked for a Prime League / RIVALS / national-division line
-# (oddsportal, bmbets, cloudbet, betmonitor), esportsinsider, and the official organizers
-# cited for manual review. None of them may become a probability input.
+# Research/manual-review links (never a probability input). Extended on 2026-10-25 by
+# two sessions with pages checked for a Prime League / RIVALS / national-division line
+# (oddsportal, bmbets, cloudbet, betmonitor, esportsinsider) and the official/operator
+# pages cited for manual review. Being on this list means "a human opened it and
+# recorded what it said", never "this is a data source": no payload row cites them.
 REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
                 "oddsportal.com", "bmbets.com", "cloudbet.com", "esportsinsider.com",
                 "cloudbet.github.io", "primeleague.gg", "rivalsleague.gg",
-                "komplettligaen.no", "tunesf.com")
+                "komplettligaen.no", "tunesf.com", "rainbet.com")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 

@@ -560,8 +560,24 @@
       // executive summary, and rendering a second copy inside this box made
       // the section read twice.
       const tCount = all0.filter((m) => isTossUp(m)).length;
+      // Counted from the rows themselves (same helper as the unresolved page), so the
+      // "how many had no betting line" sentence can never disagree with the tables.
+      const mix = pricingMix(d);
+      const noLineN = Math.max(0, mix.total - mix.market);
+      const noLine = mix.total
+        ? `<p><b>${noLineN}</b> of the <b>${mix.total}</b> published matches in this snapshot had
+             <b>no reachable betting line</b> — ${mix.market} were priced from a sportsbook or prediction
+             market. Each of those ${noLineN} still carries a pick and a win probability for both teams,
+             produced from recorded series results and current-split standings, and each one is labelled
+             with its method and its limit:
+             <a href="picks.html?filter=model">open the ${noLineN} matches without a betting line →</a> ·
+             <a href="picks.html?filter=low">the ${lcCount} low-confidence rows →</a> ·
+             <a href="#unresolved-section">the per-league limits below</a>.</p>`
+        : "";
       ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount}) &amp; 🪙 Coin-flip picks (${tCount})</h3>
-      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
+      <p>${headline}</p>
+      ${noLine}
+      <p><b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       <p class="small">Which signal prices each league: <a href="#exec-per-league">per-league limits table below ↓</a> ·
       written limits: <a href="#exec-written-limits">limitations for generating picks below ↓</a></p>

@@ -1766,6 +1766,21 @@ failures observed on this branch today:
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
 
+---
+
+## Session `arena/57975298-lolhotspawn2` — 2026-10-25 (claim)
+
+Baseline at claim: `main` = `2173cc9` (scheduled refresh), payload generated 2026-10-25T10:41:50Z: **156 fixtures, 156 priced, 0 unresolved**, 9 rows from external lines (Worlds 8 + LGC Rising 1), 147 model rows, 10 Low-confidence. `scripts/verify_site.py` 44 PASS / 0 FAIL / 0 WARN at claim. Other sessions' PRs #55 and #59 are open against `main`; this session does **not** touch their files or merge their branches.
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T27 Fresh line-source research for the 147 fixtures with no bookmaker line (established books → esportsbooks → esports betting lines → aggregators), evidence recorded with URLs + date | in progress | arena/57975298 | `research/betting-sources.md`, `scripts/source_probe.py`, `scripts/update_picks.py` (source lists only) |
+| T28 Publish the re-tested sources in every refresh (`checked_unavailable` + `market_probe`) so the site states what was actually tried today | in progress | arena/57975298 | `scripts/update_picks.py`, `scripts/source_probe.py` |
+| T29 Executive-summary clarity: state explicitly how many published matches had **no** reachable betting line, with in-site links to those lists, and keep the separate unresolved/limitations section | in progress | arena/57975298 | `docs/index.html`, `docs/assets/app.js`, `verification/check_dom_render.js` |
+| T30 Integration: branch pipeline run, re-verify, PR → `main`, merge without waiting, confirm Pages deploy, record here | in progress | arena/57975298 | `COORDINATION.md`, generated `docs/data/picks.json` |
+
+No other session holds a claim younger than 60 minutes. Scope is non-overlapping with #55 (`docs/assets/app.js` conflict markers — already absent on `main`; this session rewrites only the executive-summary block in that file) and #59 (coordination record only).
+
 ## Session `arena/c1e74f5e-lolhotspawn2` — 2026-10-25 (claim)
 
 All earlier claims are over 60 minutes old; baseline `2173cc9` is the current main. This session uses the Arena-fixed branch above (no alternate branch). No other active claim was found in the board; existing open PRs are left untouched.
