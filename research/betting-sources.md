@@ -898,3 +898,61 @@ Unresolved & Limitations page with per-league signal limits. Hotspawn crowd % is
 2. **Lobby header now reads `This week 161 matches`** (was `139` on 2026-10-23, flagged then as unverified). The counter changes daily and still does not reconcile to a definition we can verify — remains flagged/unverified, never used in data.
 3. **Oddiwire and SportsGameOdds need human key/card signup** — logged as candidates; per the "no manual input" requirement they are not integrated, and no key request was made.
 4. **OddsPapi live page reports `0 Fixtures scheduled` for LoL** while Worlds matches are actively priced elsewhere — their feed appears stale or their tournament ids rotated; without a key this cannot be investigated further. Flagged as observation only.
+
+## 20. Refresh 2026-10-25 — re-testing the sources that claim low-tier LoL coverage (session `arena/57975298`)
+
+Question asked by this refresh: the 2026-10-25T10:41Z payload published **156 fixtures, 156 picks,
+0 unresolved**, but only **9** came from an external betting line (Worlds 2026 ×8 + LGC Rising ×1) while
+**147** came from our model. Can any established LoL betting site, esportsbook or esports betting-line
+aggregator price those 147 fixtures? Each URL below was opened directly on **2026-10-25** and the observation
+is what the page actually rendered (quoted where it was a sentence).
+
+### 20.1 Established LoL betting sites
+
+| Source | URL opened 2026-10-25 | What the page actually showed | Verdict for the 147 |
+|---|---|---|---|
+| Cloudbet — LoL hub | https://www.cloudbet.com/en/esports/league-of-legends | Under **International** the only competition listed is **`LoL World Championship`**. No ERL, Prime League, RIVALS, Tunisian or national board. | Worlds only — no |
+| Cloudbet — Prime League 2nd Division | https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division | The board renders **“No Prime League 2nd Division events available”** (same with `?tab=events`). The marketing copy on the same page says odds go up “once the schedule is confirmed”, so the page exists but carries no price today. | No line to read — no |
+| OddsPortal — Prime League | https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/ | Literal notice: **“eSports League of Legends Prime League Next Matches will appear here as soon as bookmaker betting odds become available.”** Results/standings/closing odds exist for *finished* matches only. | Historical archive, no live line — no |
+| betmonitor — Prime League 2nd Division comparison | https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464 | The path resolves to betmonitor's **generic odds-comparison landing page** (football/tennis/basketball highlights), i.e. no Prime League event is being compared. Search engines index a bet365/efbet cell for this URL, but the rendered page does not serve one for our fixtures. | No live price — no |
+| bmbets — Prime League 2nd Division board | https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/ | The page served its LoL league navigation containing **`LoL World Championship (9)`, `LoL - LCP (1)`, `League of Legends - Game Changers Rising (1)`** and no Prime League row, so the board itself is empty. | No live price — no |
+| eGamersWorld — LoL odds board | https://egamersworld.com/lol/bets | Board lists **`2026 World Championship`** and **`LGC 2026 Rising`** only, priced by Vave / Thunderpick / Rainbet / Underdog / CocoBet. No PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Komplettligaen, LigaGG, Icelandic, Benelux, 4 Nations, Superstrike, Hitpoint or Arabian board. | Cross-check only — no |
+
+### 20.2 Esportsbooks & esports betting lines
+
+| Source | URL opened 2026-10-25 | What the page actually showed | Verdict |
+|---|---|---|---|
+| Rainbet | https://rainbet.com/sportsbook/league-of-legends-110 (generic path `…/sports/esports/league-of-legends` → **HTTP 404**) | Cloudflare Turnstile interstitial plus **“Access is forbidden from your location”** and a **“Rainbet is not available in the United States”** notice. | Unreadable (geo/Cloudflare) — no |
+| Everygame | https://www.everygame.eu/en/sportsbook/esports/league-of-legends | **HTTP 404**. Affiliate guides list Everygame as carrying the Prime League; that claim could not be verified at any LoL path tried, so it stays *unverified*, not assumed. | Unverified — no |
+| bet365 | (no public page/API; only appears as a bookmaker column inside comparison pages) | No automated route exists and no comparison page served a bet365 price for our fixtures today (see betmonitor row above). | No readable line — no |
+
+### 20.3 What changed in the pipeline as a result
+
+* `scripts/source_probe.py` now re-requests **five** of the above on **every** 6-hour refresh — Cloudbet LoL hub,
+  Cloudbet Prime League 2nd Division, OddsPortal Prime League, bmbets Prime League 2nd Division and Rainbet LoL —
+  and publishes the HTTP status and verdict in `market_probe`, so the site states today's observation instead of
+  repeating this document.
+* `scripts/update_picks.py` → `checked_unavailable` gained the five rows above (with observed text and URL), which
+  render on **Flagged → sources checked** and **Methodology**, each with its link.
+* **No probability, pick or method changed.** Zero of the 147 model-priced fixtures gained an external line, so no
+  row could be re-priced from a book. That is the honest outcome: the low-tier competitions Hotspawn lists are not
+  on any accessible book's board today.
+* Standing rule, unchanged: a source is promoted into `scripts/fetch_markets.py` only when a probe returns
+  **structured two-way prices for fixtures in our published list** *and* a human verifies a sample row. None of the
+  sources above returned a single price for a single listed fixture.
+
+### 20.4 Standing limitations this re-test confirms
+
+1. **Prime League (DACH) is only quoted by books one tier up.** Cloudbet and OddsPortal both have Prime League
+   landing pages but no open 2nd/3rd Division market; Rainbet's own reviews credit it with PRM **1st** Division
+   only, and it is geo-blocked from here anyway. Hotspawn's list is dominated by PRM **2nd/3rd** Division
+   (36 + 60 = 96 of 156 fixtures).
+2. **Amateur/national divisions (RIVALS, Tunisian, Komplettligaen, LigaGG, Icelandic, 4 Nations, Hitpoint,
+   Superstrike)** have no board on any of the sources above, nor on Pinnacle/Kambi/Bovada/Polymarket (the four
+   production feeds).
+3. **Comparison sites cannot fill the gap when the underlying books have no market** — bmbets' PRM page and
+   betmonitor's PRM page are empty because there is nothing to compare.
+4. Therefore the picks for those fixtures are **originated** by our model from recorded series results
+   (Leaguepedia `MatchSchedule`) and current-split standings, published with a method chip, a confidence label and
+   per-row source links, and listed together with their limits on the site's separate
+   *Unresolved picks, matches without a betting line & limitations* section.

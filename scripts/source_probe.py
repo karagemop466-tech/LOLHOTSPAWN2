@@ -89,6 +89,33 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
      "https://www.bmbets.com/e-sports/world/lol---prime-league/", "aggregator-page", "market"),
     ("Strafe — LoL odds (Oddspedia feed)",
      "https://www.strafe.com/esports-betting/odds/league-of-legends/", "aggregator-page", "market"),
+    # --- added 2026-10-25 (session arena/57975298) -------------------------------
+    # Each URL below was opened by hand first on 2026-10-25 and the observation
+    # recorded in research/betting-sources.md §16 before being added here:
+    #   Cloudbet publishes a Prime League 2nd Division *page* but rendered
+    #   "No Prime League 2nd Division events available"; its LoL hub listed only
+    #   the World Championship; OddsPortal's Prime League page said upcoming
+    #   matches appear "as soon as bookmaker betting odds become available";
+    #   bmbets' Prime League 2nd Division page served its league index with LoL
+    #   World Championship (9), LoL - LCP (1) and Game Changers Rising (1) and no
+    #   Prime League; Rainbet answers HTTP 404 at the generic path and a
+    #   location-forbidden interstitial at its real sportsbook path.
+    # They stay in the probe so every refresh records what these sources return
+    # today instead of repeating a 2026-10-24 claim. Nothing here is ever a
+    # probability input.
+    ("Cloudbet — LoL hub (competitions listed)", "https://www.cloudbet.com/en/esports/league-of-legends",
+     "esportsbook-page", "market"),
+    ("Cloudbet — Prime League 2nd Division board",
+     "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
+     "esportsbook-page", "market"),
+    ("OddsPortal — Prime League odds page",
+     "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/",
+     "aggregator-page", "market"),
+    ("BMBets — Prime League 2nd Division board",
+     "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
+     "aggregator-page", "market"),
+    ("Rainbet — LoL sportsbook (geo-restricted)",
+     "https://rainbet.com/sportsbook/league-of-legends-110", "esportsbook-page", "market"),
     # Kambi powers several Unibet brands. `ub`/`ubca` are the feeds production uses;
     # these two prove per-brand feeds are not a route to lower-tier leagues: ubde is
     # rejected outright and the `market=` parameter does not widen coverage.

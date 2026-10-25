@@ -440,8 +440,24 @@
             <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
           </tr>`).join("")}</tbody>
         </table></div>` : "";
+      // Counted from the rows themselves (same helper as the unresolved page), so the
+      // "how many had no betting line" sentence can never disagree with the tables.
+      const mix = pricingMix(d);
+      const noLineN = Math.max(0, mix.total - mix.market);
+      const noLine = mix.total
+        ? `<p><b>${noLineN}</b> of the <b>${mix.total}</b> published matches in this snapshot had
+             <b>no reachable betting line</b> — ${mix.market} were priced from a sportsbook or prediction
+             market. Each of those ${noLineN} still carries a pick and a win probability for both teams,
+             produced from recorded series results and current-split standings, and each one is labelled
+             with its method and its limit:
+             <a href="picks.html?filter=model">open the ${noLineN} matches without a betting line →</a> ·
+             <a href="picks.html?filter=low">the ${lcCount} low-confidence rows →</a> ·
+             <a href="#unresolved-section">the per-league limits below</a>.</p>`
+        : "";
       ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
-      <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
+      <p>${headline}</p>
+      ${noLine}
+      <p><b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
       ${perLeague}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>

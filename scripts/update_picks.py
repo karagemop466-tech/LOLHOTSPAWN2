@@ -90,11 +90,31 @@ CHECKED_UNAVAILABLE = [
     {"name": "Oracle's Elixir (community results CSVs)", "url": "https://oracleselixir.com/tools/downloads",
      "observed": "Official downloads page (checked 2026-10-24): free daily CSVs via Google Drive for LCS/LEC/LCK/LPL/PCS/CBLoL and more; no bookmaker odds; some content itself courtesy of Leaguepedia (CC-BY-SA 3.0)",
      "consequence": "Not ingested: majors-focused results would duplicate Leaguepedia MatchSchedule, which is the wider source for the tier-3/amateur fixtures Hotspawn lists."},
+
+    # Re-opened by hand on 2026-10-25 (session arena/57975298) while looking for a
+    # line on the 147 fixtures that had none. Each line below is what the page
+    # actually rendered that day, quoted or paraphrased, with the URL above.
+    {"name": "Cloudbet — Prime League 2nd Division board", "url": "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
+     "observed": "HTTP 200 on 2026-10-25; the board rendered 'No Prime League 2nd Division events available' and Cloudbet's LoL hub listed only 'LoL World Championship' under International",
+     "consequence": "No Cloudbet price exists for any PRM 2nd Division fixture in this snapshot, so nothing was copied and those rows stay model-priced."},
+    {"name": "OddsPortal — League of Legends Prime League", "url": "https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/",
+     "observed": "HTTP 200 on 2026-10-25 with the notice 'eSports League of Legends Prime League Next Matches will appear here as soon as bookmaker betting odds become available' (results and closing odds exist only for finished matches)",
+     "consequence": "A historical odds archive, not a live line; no upcoming Prime League price was available to read."},
+    {"name": "bmbets — Prime League 2nd Division board", "url": "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/",
+     "observed": "HTTP 200 on 2026-10-25; the page served its LoL league navigation listing only 'LoL World Championship (9)', 'LoL - LCP (1)' and 'League of Legends - Game Changers Rising (1)' — no Prime League row",
+     "consequence": "The comparison site has no Prime League 2nd Division market to compare, so no line could be taken."},
+    {"name": "Rainbet — LoL sportsbook", "url": "https://rainbet.com/sportsbook/league-of-legends-110",
+     "observed": "2026-10-25: generic LoL path answers HTTP 404; the real sportsbook path returns a Cloudflare Turnstile interstitial plus 'Access is forbidden from your location' and a United States geo-block notice",
+     "consequence": "No Rainbet price is readable from CI or from this workspace; nothing copied."},
+    {"name": "Everygame — esports LoL path", "url": "https://www.everygame.eu/en/sportsbook/esports/league-of-legends",
+     "observed": "HTTP 404 on 2026-10-25 (affiliate guides list Everygame as carrying the Prime League, but the cited LoL path does not resolve)",
+     "consequence": "No price readable; the claim could not be verified, so it is recorded as unverified rather than assumed."},
 ]
 
 LIMITATIONS = [
     "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
     "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on recorded results and official standings.",
+    "Re-checked again by hand on 2026-10-25 for the exact competitions still without a line: Cloudbet's Prime League 2nd Division board rendered 'No Prime League 2nd Division events available' (its LoL hub lists only the World Championship), OddsPortal's Prime League page says upcoming matches appear only 'as soon as bookmaker betting odds become available', bmbets' Prime League 2nd Division page served a league index containing only the World Championship, LCP and Game Changers Rising, betmonitor's Prime League comparison path resolves to its generic landing page, eGamersWorld's LoL board lists only the World Championship and LGC Rising, and Rainbet/Everygame were unreachable (geo/Cloudflare interstitial, HTTP 404). No new line source was found, so every match below that lacks a market row is priced by the model and says so.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",

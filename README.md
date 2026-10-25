@@ -61,6 +61,17 @@ eGamersWorld, Oddspedia, GGScore, Winamax, Marathonbet, Betano, Stake, GG.Bet, T
 fields. A source is only promoted into `scripts/fetch_markets.py` when it returns prices for fixtures in the
 published list **and** a human has verified a sample row — neither probe ever writes a probability.
 
+**Re-tested again on 2026-10-25** for the 147 fixtures that had no line (`research/betting-sources.md` §20): Cloudbet's
+LoL hub lists only the World Championship and its Prime League 2nd Division board renders "No Prime League 2nd Division
+events available"; OddsPortal's Prime League page says upcoming matches appear "as soon as bookmaker betting odds become
+available"; bmbets' Prime League 2nd Division page serves a league index containing only the World Championship, LCP and
+Game Changers Rising; betmonitor's Prime League comparison path resolves to its generic landing page; eGamersWorld lists
+only the World Championship and LGC Rising; Rainbet is geo-blocked/Cloudflare-interstitialled and Everygame's LoL path
+404s. Those five sources are now re-requested **on every refresh** (`market_probe`, shown on the site), and every row of
+that evidence sits in `checked_unavailable` with its URL. No row changed on market grounds: the pick for each of those
+matches is originated by the model from recorded results and split standings, and the executive summary states the count
+explicitly with in-site links to those lists.
+
 ## Automation & Verification
 
 - `.github/workflows/update-picks.yml` runs every 6 hours (`0 */6 * * *`), fetches live fixtures, market odds, Leaguepedia results/standings, and Liquipedia API metadata, runs `scripts/verify_site.py`, and commits updated `docs/data/picks.json` directly to `main`.
