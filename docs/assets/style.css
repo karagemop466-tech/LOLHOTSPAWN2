@@ -429,3 +429,17 @@ details > summary { min-height: 44px; display: flex; align-items: center; }
   .legend { grid-template-columns: 1fr; gap: 2px; }
   .legend-t { margin: 0 0 8px; }
 }
+
+/* Narrow phones: never let a long team name or league label widen the page.
+   Do not hide overflow: retain every character and wrap the badge instead. */
+@media (max-width: 760px) {
+  .pickcell { white-space: normal; }
+  .pick-pill, .chip {
+    max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere;
+  }
+  .chips .chip { flex-shrink: 0; white-space: nowrap; }
+  .probrow > span { min-width: 0; overflow-wrap: anywhere; }
+}
+@media (max-width: 760px) {
+  .cat-nav .chipbtn { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+}
