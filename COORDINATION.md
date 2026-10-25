@@ -256,6 +256,30 @@ Merged-tree checks: `verify_site.py` **49 PASS / 0 FAIL / 1 WARN (D18)** · `tes
 **`test_line_probe.py` 34/34** · **`test_lobby_union.py` 5/5** · `audit/test_model.py` 23/23 ·
 `check_dom_contract.py` PASS · `render_check.cjs` PASS · **`check_dom_render.js` 74/74**.
 
+### The merge broke CI, and here is exactly what broke
+
+The first pipeline run on the merged tree (**run `40203644697`, commit `049d367`**) **FAILED** at step
+*“Verify contracts, unit tests & published site”*. The Actions log host is not reachable from this sandbox, so
+the failing rule was read out of the **CI-committed `verification/report.json`** — the workflow's
+*“Commit outputs for review”* step runs with `if: always()`, so its `items` list survived the failure:
+
+```
+X1 FAIL | external links reachable — 38/48 returned 2xx/3xx; 9 blocked; 1 dead (404/410)
+  https://polymarket.com/esports/league-of-legends/prime-league-1st-division -> 404
+```
+
+Opening that URL by hand returns Polymarket's own *“Page not found”* page. The claim it supported was also
+wrong: [Polymarket's LoL index](https://polymarket.com/esports/league-of-legends) (200 OK, 2026-10-25) lists
+exactly two LoL tournaments — **LGC Rising (1)** and **Worlds (8)** — with no Prime League board of any
+division. Fix: row **A12** now states what was actually verified and records the 1st-division claim as
+**unverified**; **F24.4** records the dead citation and that no pick depended on it; the same dead URL was
+replaced in `research/betting-sources.md` (2 rows) and `research/line-by-line-audit-2026-10-25.md` (1 row).
+No probability changed. `verify_site.py --check-external` now reports **0 dead links**.
+
+**Lesson recorded for the next session:** rule X1 treats a 404 as FAIL but a 401/403/405/429 as WARN, so a dead
+citation only shows up on a runner with network — it is invisible in a sandbox. When a pipeline run fails and the
+log is unreachable, read `verification/report.json` from the branch: the commit step is `if: always()`.
+
 | T30 Integration: live pipeline on this branch, re-verify the combined data, PR → `main`, merge without waiting, confirm the GitHub Pages deploy, record the PR link + merge result here | **done** | arena/419cd73a | `COORDINATION.md` (board entries), `docs/data/picks.json` (CI-generated) |
 
 Any session that needs a file in this scope must log a request here instead of editing it.
