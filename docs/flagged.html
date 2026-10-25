@@ -99,7 +99,7 @@
 
   <section id="source-coverage-flags">
     <h2>Source-coverage flags (re-checked 2026-10-24)</h2>
-    <p class="small">Irregularities found while looking for an external line on the 160 fixtures without a featured market. Each row links the
+    <p class="small">Irregularities found while looking for an external line on fixtures without a featured market in that historical snapshot. Each row links the
     page that was actually fetched; the full notes are in <a href="../research/betting-sources.md">research/betting-sources.md §14</a>.</p>
     <div class="table-wrap">
       <table>
@@ -113,7 +113,7 @@
           </tr>
           <tr>
             <td><b>F14.2</b></td>
-            <td>The only multi-book LoL odds API found (133 books on a tier-1 sample) requires an <code>apiKey</code>; no key is configured here and no price from it is used. Its "0 fixtures scheduled" reading at 04:15 UTC on 2026-10-24 is reported as-is.</td>
+            <td>A multi-book LoL odds API examined (133 books on a tier-1 sample) requires an <code>apiKey</code>; no key is configured here and no price from it is used. Its "0 fixtures scheduled" reading at 04:15 UTC on 2026-10-24 is reported as-is.</td>
             <td><a href="https://oddspapi.io/sports/esports/lol" target="_blank" rel="noopener">OddsPapi LoL board ↗</a></td>
             <td><span class="chip amber">Key-gated</span> — no data used</td>
           </tr>
@@ -125,7 +125,7 @@
           </tr>
           <tr>
             <td><b>F14.4</b></td>
-            <td>Pinnacle's esports feed carries only the <i>League of Legends – World Championship</i> competition, so every other Hotspawn league has no sharp reference price at all. This is the upstream reason 160 rows are model-priced.</td>
+            <td>Pinnacle's esports feed carries only the <i>League of Legends – World Championship</i> competition, so every other Hotspawn league has no Pinnacle reference price in that snapshot. This historical probe does not establish that other bookmakers offer no line. Current model counts appear on the executive summary.</td>
             <td><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest leagues JSON ↗</a></td>
             <td><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
           </tr>
@@ -237,12 +237,9 @@
           </tr>
           <tr>
             <td><b>A12</b></td>
-            <td><b>Historical Polymarket PRM category link is unverified.</b> The earlier Prime League 1st Division category path
-            returned HTTP 404 in the 2026-10-25 integration check. Earlier reports of markets there are not current coverage evidence.
-            Only matched, validated full-series lines from the production feed are used; additional PRM coverage remains unverified.</td>
-            <td><a href="https://gamma-api.polymarket.com" target="_blank" rel="noopener">Polymarket public API ↗</a> ·
-            <a href="../research/evidence-audit-2026-10-25.md">Dated failure evidence</a></td>
-            <td><span class="chip amber">Needs review</span> — historical category returned 404; no price inferred</td>
+            <td><b>Prime League category claim not confirmed.</b> The earlier claim that a dedicated 1st-division board had live markets is unverified. The cited category path returned HTTP 404 during the 25 Oct integrated CI check. No price or division-coverage conclusion may be drawn from it; no such line is used for the PRM fixtures.</td>
+            <td><a href="https://polymarket.com/" target="_blank" rel="noopener">Polymarket publisher ↗</a><span class="sub">Attempted path: <code>/esports/league-of-legends/prime-league-1st-division</code></span> <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025" target="_blank" rel="noopener">Observed 404 / check evidence ↗</a></td>
+            <td><span class="chip amber">Unverified / dead category</span> — not used</td>
           </tr>
         </tbody>
       </table>
@@ -301,6 +298,16 @@
     <h2>Source limitations: official vs. community data</h2>
     <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>
     <p class="small">All model-only picks are marked <span class="flag">NO_EXTERNAL_MARKET</span>. Unverified tiers, missing Hotspawn match pages, upstream tag collisions, thin history, and schedule differences carry explicit row-level flags below.</p>
+  </section>
+
+  <section id="official-results-audit">
+    <h2>Model evidence: official results not independently confirmed</h2>
+    <p class="small"><a href="../research/source-audit-2026-10-25-c1e74f5e.md">Dated source research, verification details and limitations (25 Oct) →</a></p>
+    <p class="small">These are predictions, not verified facts. Every non-market fixture is listed below with its Hotspawn listing and available community references. The organizer-confirmed results column is deliberately blank (—) and flagged unverified: this pipeline has not checked every historical game against primary organizer records. A league homepage or a successful HTTP response does not verify those records. No official win probability is claimed.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Match</th><th scope="col">Estimate</th><th scope="col">Organizer-confirmed results</th><th scope="col">Source references</th></tr></thead>
+      <tbody id="official-results-body"><tr><td colspan="4">Loading evidence audit…</td></tr></tbody>
+    </table></div>
   </section>
 
   <section>

@@ -55,6 +55,14 @@ jobs:
                     f"{c.get('fixtures_matched_and_previously_unpriced', 0)} | {c.get('verdict')} |")
           PY
 
+      - name: Upload source research evidence (even if publishing later fails)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: line-source-research
+          path: data/diag/line_probe.json
+          retention-days: 30
+
       - name: Commit the probe evidence
         if: always()
         run: |
