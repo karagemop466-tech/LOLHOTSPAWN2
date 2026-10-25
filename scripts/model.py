@@ -1063,7 +1063,7 @@ def build_matches(hotspawn, leaguepedia, markets, aliases):
         if eff_page:
             lp_url = "https://lol.fandom.com/wiki/" + eff_page.replace(" ", "_")
             claim_note = (f"Recorded results & schedule ({eff_page})." if row
-                          else f"Community tournament overview & standings ({eff_page}; pairing not yet on MatchSchedule).")
+                          else f"Community-reported tournament overview & standings ({eff_page}; pairing not yet on MatchSchedule).")
             sources.append({"name": "Leaguepedia tournament", "url": lp_url, "claim": claim_note})
         elif model_method:
             sources.append({"name": "Leaguepedia results",

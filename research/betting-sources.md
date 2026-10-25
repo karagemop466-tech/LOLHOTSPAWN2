@@ -1275,9 +1275,12 @@ counter-examples to the “just use the book line” assumption, and both are li
   `verification/test_verifier.py`, and the rendering of the new section is asserted in
   `verification/check_dom_render.js`.
 
+## Correction — A12 category claim (2026-10-25, c1e74f5e)
+
+The earlier entries claiming live Prime League 1st Division prices at the dedicated Polymarket category URL are **not currently verified**. Integrated source check [40202840025](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025) observed HTTP 404 for path `/esports/league-of-legends/prime-league-1st-division`. That does not establish any active market or the absence of other divisions. The Flagged page A12 now states this limitation and links the reachable Gamma LoL feed and dated check, rather than offering broken navigation or implying those prices were confirmed. No value from the category is used in a probability. Valid matched individual event markets from the production Gamma adapter are unaffected.
+
 ---
 
 ## 25. Addendum 2026-10-25 — Reason-Tally, Dead-Link & Mobile Audit Verification (session `arena/07b651a3`)
 
 Verified the 14:39Z 43-candidate `market_probe` (`18` reachable, `6` structured JSON, `4` with LoL references — zero adding prices outside the 9 covered Worlds + LGC Rising matches), fixed `A12`'s dead `HTTP 404` Polymarket seasonal path in `docs/flagged.html` (replacing it with the live HTTP 200 Gamma LoL feed URL), and confirmed all 11 Low-confidence non-market rows (`9` `CROSS_LEAGUE_MODEL` across PRM 2nd Div / Tunisian / 4 Nations + `2` `MODEL_ELO_THIN` in LCP 2027 Promotion) reconcile identically between `unresolved.reasons` and `unresolved.low_confidence_reasons` after fixing `_low_conf_reason(m)` in `scripts/update_picks.py`.
-

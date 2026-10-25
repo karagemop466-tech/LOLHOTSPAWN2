@@ -1,3 +1,5 @@
+> **Later correction (c1e74f5e, 25 Oct):** A12’s dedicated Polymarket Prime League category returned HTTP 404 in [CI run 40202840025](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025). Its earlier “live markets exist” statement below is unverified and superseded; no price or division-coverage fact is confirmed from that path. See Flagged A12.
+
 # Line-by-line audit — 2026-10-25 (session `arena/85bba52b-lolhotspawn2`)
 
 Scope: the payload committed at `2173cc9` (`docs/data/picks.json`, `generated_at` **2026-10-25T10:41:50Z**,

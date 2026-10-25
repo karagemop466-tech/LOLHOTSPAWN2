@@ -114,7 +114,7 @@
           </tr>
           <tr>
             <td data-label="Ref"><b>F14.2</b></td>
-            <td data-label="What is irregular">The only multi-book LoL odds API found (133 books on a tier-1 sample) requires an <code>apiKey</code>; no key is configured here and no price from it is used. Its "0 fixtures scheduled" reading at 04:15 UTC on 2026-10-24 is reported as-is.</td>
+            <td data-label="What is irregular">A multi-book LoL odds API examined (133 books on a tier-1 sample) requires an <code>apiKey</code>; no key is configured here and no price from it is used. Its "0 fixtures scheduled" reading at 04:15 UTC on 2026-10-24 is reported as-is.</td>
             <td data-label="Source checked"><a href="https://oddspapi.io/sports/esports/lol" target="_blank" rel="noopener">OddsPapi LoL board ↗</a></td>
             <td data-label="Status"><span class="chip amber">Key-gated</span> — no data used</td>
           </tr>
@@ -126,7 +126,7 @@
           </tr>
           <tr>
             <td data-label="Ref"><b>F14.4</b></td>
-            <td data-label="What is irregular">Pinnacle's esports feed carries only the <i>League of Legends – World Championship</i> competition, so every other Hotspawn league has no sharp reference price at all. This is the upstream reason <span id="flagged-model-count">all non-market</span> rows in the current snapshot are model-priced.</td>
+            <td data-label="What is irregular">Pinnacle's esports feed carries only the <i>League of Legends – World Championship</i> competition, so every other Hotspawn league has no Pinnacle reference price (<span id="flagged-model-count">all non-market</span> rows in the current snapshot are model-priced; this probe does not by itself establish that blocked/key-gated bookmakers offer no line).</td>
             <td data-label="Source checked"><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest leagues JSON ↗</a></td>
             <td data-label="Status"><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
           </tr>
@@ -238,10 +238,10 @@
           </tr>
           <tr>
             <td data-label="Ref"><b>A12</b></td>
-            <td data-label="What is irregular"><b>Historical Polymarket PRM category link is unverified (no 2nd/3rd Division markets).</b> The seasonal Prime League 1st Division category path returned <code>HTTP 404</code> in the 2026-10-25 integration check, and the live Gamma LoL events feed carries 0 Prime League 2nd/3rd Division fixtures. Only matched, validated full-series lines from the production feed are used; additional PRM coverage remains unverified.</td>
+            <td data-label="What is irregular"><b>Prime League category claim not confirmed (no 2nd/3rd Division markets).</b> The earlier claim that a dedicated 1st-division board had live markets is unverified: path <code>/esports/league-of-legends/prime-league-1st-division</code> returned <code>HTTP 404</code> during the 25 Oct integrated CI check, and the live Gamma LoL feed carries 0 PRM 2nd/3rd Division rows. No price or division-coverage conclusion may be drawn from the 404 path; only validated full-series lines from the Gamma feed are used.</td>
             <td data-label="Source checked"><a href="https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&amp;active=true&amp;closed=false&amp;limit=200" target="_blank" rel="noopener">Polymarket Gamma LoL events JSON ↗</a> ·
-            <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/evidence-audit-2026-10-25.md" target="_blank" rel="noopener">Dated failure evidence ↗</a></td>
-            <td data-label="Status"><span class="chip amber">Needs review</span> — historical category returned 404; no price inferred</td>
+            <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025" target="_blank" rel="noopener">Observed 404 / check evidence ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Unverified / dead category</span> — not used</td>
           </tr>
         </tbody>
       </table>
@@ -300,6 +300,16 @@
     <h2>Source limitations: official vs. community data</h2>
     <p class="small">External market probabilities link directly to the named bookmaker or prediction market. For fixtures without a market line, our Elo / standings estimates use recorded results from <a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia</a>, a community-maintained database rather than an official Riot or tournament-organizer odds feed. The <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn fixture link</a> confirms the fixture listing only, never win probability.</p>
     <p class="small">All model-only picks are marked <span class="flag">NO_EXTERNAL_MARKET</span>. Unverified tiers, missing Hotspawn match pages, upstream tag collisions, thin history, and schedule differences carry explicit row-level flags below.</p>
+  </section>
+
+  <section id="official-results-audit">
+    <h2>Model evidence: official results not independently confirmed</h2>
+    <p class="small"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/source-audit-2026-10-25-c1e74f5e.md" target="_blank" rel="noopener">Dated source research, verification details and limitations (25 Oct) →</a></p>
+    <p class="small">These are predictions, not verified facts. Every non-market fixture is listed below with its Hotspawn listing and available community references. The organizer-confirmed results column is deliberately blank (—) and flagged unverified: this pipeline has not checked every historical game against primary organizer records. A league homepage or a successful HTTP response does not verify those records. No official win probability is claimed.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">Match</th><th scope="col">Estimate</th><th scope="col">Organizer-confirmed results</th><th scope="col">Source references</th></tr></thead>
+      <tbody id="official-results-body"><tr><td colspan="4">Loading evidence audit…</td></tr></tbody>
+    </table></div>
   </section>
 
   <section>
