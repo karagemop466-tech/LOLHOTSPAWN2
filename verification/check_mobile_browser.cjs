@@ -48,6 +48,11 @@ const base = process.argv[2] || 'http://127.0.0.1:8080/docs/';
           if (width===390 && process.env.MOBILE_SCREENSHOT) await page.screenshot({path:process.env.MOBILE_SCREENSHOT,fullPage:false});
         }
         if (file==='picks.html') {
+          if (width < 768) {
+            const pick = await page.locator('#picks-body tr').first().locator('.pick-pill').boundingBox();
+            const chances = await page.locator('#picks-body tr').first().locator('.probcell').boundingBox();
+            check(`${width}px picks: first recommendation and both chances above fold`,pick && chances && Math.max(pick.y+pick.height,chances.y+chances.height)<784);
+          }
           const all = await page.locator('#picks-body tr').count();
           await page.locator('#q').fill(firstMatch.team1);
           await page.waitForFunction(n => document.querySelectorAll('#picks-body tr').length < n, all);
