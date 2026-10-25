@@ -392,7 +392,15 @@
     }
 
     const nowMs = Date.now();
-    const next = (d.matches || [])
+    // Every match locking in the next 24 hours gets a card here — the heading
+    // and count above this list publish the window size, so silently cutting
+    // the list to a preview made the summary read as if the rest had no pick.
+    // Only when the 24 h window is empty do we fall back to the next few
+    // upcoming matches, and the heading/count say so.
+    const in24 = (d.matches || [])
+      .filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; })
+      .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
+    const next = in24.length ? in24 : (d.matches || [])
       .filter((m) => new Date(m.start_utc).getTime() >= nowMs - 300000)
       .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
       .slice(0, 6);
@@ -400,9 +408,10 @@
     if (nextBox) nextBox.innerHTML = next.length ? next.map((m) => matchCard(m, { sources: 3 })).join("") : `<div class="card">No matches locking in the next 24 hours. <a href="picks.html">Browse all upcoming picks →</a></div>`;
     const soonCount = $("#soon-count");
     if (soonCount) {
-      const n24 = (d.matches || []).filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; }).length;
-      soonCount.textContent = n24 ? `${n24} match${n24 === 1 ? "" : "es"} locking in the next 24 hours` : "Next scheduled matches on Hotspawn's list";
+      soonCount.textContent = in24.length ? `${in24.length} match${in24.length === 1 ? "" : "es"} locking in the next 24 hours — every one is listed below` : "Next scheduled matches on Hotspawn's list";
     }
+    const soonHeading = $("#soon-heading");
+    if (soonHeading && !in24.length) soonHeading.textContent = "Starting soon — next matches";
 
     const featured = (d.matches || []).filter((m) => m.market).sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || "")).slice(0, 10);
     const featBox = $("#featured");
@@ -411,7 +420,6 @@
 
     const u = d.unresolved || {};
     const reasons = (u.reasons || []).map((r) => `<li><b>${r.count}</b> — ${esc(r.reason)}</li>`).join("");
-    const lims = (u.limitations || []).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join("");
     const uCount = u.count ?? 0;
     const lcCount = u.low_confidence_count ?? 0;
     const ubox = $("#unresolved-summary");
@@ -425,26 +433,15 @@
         : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
            external betting line, our Elo model, or a current-split standings record. Anything that later
            loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
-      // Per-league limitations are part of the executive summary, not only on
-      // the separate Unresolved page, so the reader sees which signal prices
-      // each competition without leaving this page.
-      const bl = d.unresolved?.by_league || [];
-      const perLeague = bl.length ? `
-        <p class="small"><b>Per-league limitations — which signal prices each competition</b></p>
-        <div class="table-wrap"><table>
-          <thead><tr><th scope="col">Competition</th><th scope="col">Fixtures</th><th scope="col">Pricing mix</th><th scope="col">Limitation</th></tr></thead>
-          <tbody>${bl.map((b) => `<tr>
-            <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(b.tournament))}"><b>${esc(b.tournament)}</b></a></td>
-            <td data-label="Fixtures"><b>${b.fixtures}</b></td>
-            <td data-label="Pricing mix" class="small">💰 ${b.market ?? 0} mkt · 🧮 ${b.elo ?? 0} Elo · 📊 ${b.standings ?? 0} st · 📐 ${b.prior_only ?? 0} prior · ⚠️ ${b.unresolved ?? 0} unres</td>
-            <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
-          </tr>`).join("")}</tbody>
-        </table></div>` : "";
+      // The per-league limitation table and the full written limitations are
+      // rendered once, in the static blocks directly below this box
+      // (#exec-league-limits-body / #exec-limitations). Rendering a second
+      // copy of both inside this summary box made the section read twice.
       ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount})</h3>
       <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      ${perLeague}
-      <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
+      <p class="small">Which signal prices each league: <a href="#exec-per-league">per-league limits table below ↓</a> ·
+      written limits: <a href="#exec-written-limits">limitations for generating picks below ↓</a></p>
       <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; full per-league limitations page →</a></p></div>`;
     }
 

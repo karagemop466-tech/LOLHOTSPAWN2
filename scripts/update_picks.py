@@ -361,7 +361,9 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         "market_probe": market_probe or {"checked_at": None, "books": [], "summary": {}},
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
-        "next_24h": [m["id"] for m in next_24h[:8]],
+        # Every match in the window, not a truncated preview: the summary
+        # heading publishes this count, so the list must be complete.
+        "next_24h": [m["id"] for m in next_24h],
         "fixtures_without_page": [{"team1": m["team1"], "team2": m["team2"], "start_utc": m["start_utc"]}
                                   for m in matches if not m.get("hotspawn_url")],
         "matches": matches,
