@@ -21,8 +21,9 @@ every finding below is a fact about the committed files and is backed by an auto
 ## 2. Independent checks performed this session
 
 1. **Render harness (real payload, all pages):** `node verification/render_check.cjs` → RENDER CHECK PASS;
-   `node verification/check_dom_render.js` → **53/53 passed**, including the theme toggle click/persist
-   test on every page and the pricing-mix arithmetic (market + Elo + standings + prior + unresolved = total).
+   `node verification/check_dom_render.js` → **53/53 passed on this branch, 67/67 after merging the parallel
+   2026-10-25 sessions' PWA/coin-flip work from `main`**, including the theme toggle click/persist test on
+   every page and the pricing-mix arithmetic (market + Elo + standings + prior + unresolved = total).
 2. **No unstyled classes / duplicate ids / nav drift:** `verify_site.py` S11/S12 PASS; the header skeleton
    (`.site-header > .header-inner`) is identical on all seven pages — the 2026-10-24 clipped-header defect
    class (`.bar` wrapper) cannot recur because S14 fails any page reusing the 12 px bar rule as a header.

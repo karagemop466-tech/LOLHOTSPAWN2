@@ -57,6 +57,16 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
     ("Midnite LoL", "https://www.midnite.com/esports/league-of-legends", "esportsbook-page", "market"),
     ("BC.Game LoL", "https://bc.game/sports/esports/league-of-legends", "esportsbook-page", "market"),
     ("Stake LoL", "https://stake.com/sports/esports/league-of-legends", "esportsbook-page", "market"),
+    # Cloudbet publishes a dedicated Prime League 2nd Division page claiming it
+    # "prices the Prime League 2nd Division through the split" — but on
+    # 2026-10-25 the page itself showed "No Prime League 2nd Division events
+    # available" while Hotspawn listed 36 upcoming PRM 2nd fixtures. Probed
+    # every run so the claim is re-tested, not assumed (research §21).
+    ("Cloudbet — Prime League 2nd Division (claimed coverage)",
+     "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division",
+     "esportsbook-page", "market"),
+    ("Cloudbet LoL hub", "https://www.cloudbet.com/en/esports/league-of-legends",
+     "esportsbook-page", "market"),
     ("1xBet line feed (sports index)", "https://1xbet.com/LineFeed/GetSportsShortZip?lng=en&country=1",
      "esportsbook-api", "market"),
     # --- odds aggregators (keys are NOT configured) --------------------------
@@ -87,6 +97,20 @@ CANDIDATES: tuple[tuple[str, str, str, str], ...] = (
      "https://oddspedia.com/league-of-legends/odds", "aggregator-page", "market"),
     ("BMBets — LoL Prime League (book-by-book comparison)",
      "https://www.bmbets.com/e-sports/world/lol---prime-league/", "aggregator-page", "market"),
+    # --- added 2026-10-25 (session arena/85bba52b), all observed by hand first -----
+    # Cloudbet advertises Prime League 2nd Division pricing in its copy, yet its
+    # events tab said "No Prime League 2nd Division events available" on 2026-10-25.
+    # The sports API is documented with an X-API-Key header and no key exists here.
+    ("Cloudbet — Prime League 2nd Division events",
+     "https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events",
+     "esportsbook-page", "market"),
+    ("Cloudbet sports API (no key configured)",
+     "https://sports-api.cloudbet.com/pub/v2/odds/sports", "esportsbook-api", "market"),
+    ("bmbets — LoL Prime League 2nd Division",
+     "https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/", "aggregator-page", "market"),
+    ("esportsinsider — PRM 1st Division odds page",
+     "https://esportsinsider.com/betting-odds/lol/league-of-legends-prime-league-pro-division-summer-2026",
+     "odds-guide", "market"),
     ("Strafe — LoL odds (Oddspedia feed)",
      "https://www.strafe.com/esports-betting/odds/league-of-legends/", "aggregator-page", "market"),
     # Kambi powers several Unibet brands. `ub`/`ubca` are the feeds production uses;

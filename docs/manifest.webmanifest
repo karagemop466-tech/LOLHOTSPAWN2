@@ -1,0 +1,51 @@
+{
+  "name": "Hotspawn LoL Picks — one pick per match",
+  "short_name": "LoL Picks",
+  "description": "Independent League of Legends picks and win probabilities for every fixture on Hotspawn's Pick'em lobby: external betting lines first, otherwise our own Elo model and split standings.",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f7fb",
+  "theme_color": "#0b1220",
+  "lang": "en",
+  "categories": ["sports", "news"],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "All updated picks",
+      "short_name": "All picks",
+      "url": "./picks.html"
+    },
+    {
+      "name": "Picks locking in the next 24 hours",
+      "short_name": "Next 24h",
+      "url": "./picks.html?filter=next24"
+    },
+    {
+      "name": "Unresolved picks and limitations",
+      "short_name": "Unresolved",
+      "url": "./unresolved.html"
+    }
+  ]
+}

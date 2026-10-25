@@ -1,8 +1,8 @@
 # Line-by-line payload audit — 2026-10-25 (session `arena/b5f85948`)
 
-- Payload: `docs/data/picks.json`, generated `2026-10-25T14:29:14.491229Z` (0.1 h old at audit time)
+- Payload: `docs/data/picks.json`, generated `2026-10-25T14:31:30.074855Z` (0.2 h old at audit time)
 - Rows: **156** · declared fixtures: **156**
-- Next scheduled update: `2026-10-25T20:29:14.491229Z` · stale after: `2026-10-25T22:29:14.491229Z`
+- Next scheduled update: `2026-10-25T20:31:30.074855Z` · stale after: `2026-10-25T22:31:30.074855Z`
 
 ## Method and confidence mix
 
@@ -16,7 +16,7 @@
 
 Confidence: {'High': 23, 'Medium': 122, 'Low': 11}  
 Upcoming starts: 156 · already-started rows in payload: 0  
-Bookmaker source citations: 25 · Leaguepedia citations: 210 · Hotspawn fixture citations: 156
+Bookmaker source citations: 33 · Leaguepedia citations: 210 · Hotspawn fixture citations: 156
 
 ## Per-competition tally (re-derived from rows)
 
@@ -47,9 +47,9 @@ Bookmaker source citations: 25 · Leaguepedia citations: 210 · Hotspawn fixture
 - `1079052` ex-A41G vs Babos Gaming — cancelled: Hotspawn status is 'cancelled'; not priced (source present)
 - `1079061` BvP vs ex-A41G — cancelled: Hotspawn status is 'cancelled'; not priced (source present)
 
-## External-source probe (50 rows in this payload)
+## External-source probe (43 rows in this payload)
 
-Reachable (HTTP 200): 23/50. Every row has an https URL, integer status and an auto-generated verdict; no row carries a probability. Full table on the Unresolved page.
+Reachable (HTTP 200): 23/43. Every row has an https URL, integer status and an auto-generated verdict; no row carries a probability. Full table on the Unresolved page.
 
 ## Verdict
 

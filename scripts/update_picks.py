@@ -95,7 +95,7 @@ CHECKED_UNAVAILABLE = [
 LIMITATIONS = [
     "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
     "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on recorded results and official standings.",
-    "On 2026-10-25 the production probe was expanded from 37 to 50 independently measured sources, adding the established books bwin, DraftKings, FanDuel, Betsson, NordicBet, Tipico and MyBookie plus the esports-specialist books Unikrn, Loot.bet, Cyber.bet and Duelbits and Riot's official schedule page (research log: research/betting-sources.md §20, per-source HTTP status in this payload's market_probe block and on the Unresolved & Limitations page). Public documentation of every new entrant describes major-event LoL coverage (Worlds/MSI/top regionals) only; none documents the national/amateur divisions on Hotspawn's list. German-licensed books such as Tipico are additionally barred from esports markets by the Gluecksspielstaatsvertrag (State Treaty on Gambling), so the German Prime League divisions cannot be priced by the regulated domestic market at all. Specialist books render odds in client-side JavaScript and geo-block automated readers, so a single polite request can record reachability but never a citable price; no headless browser, account or key is used.",
+    "On 2026-10-25 the production probe was expanded with 13 independently measured sources (37 to 50 on this branch; 56 total after the parallel Cloudbet/esportsinsider additions the same day), adding the established books bwin, DraftKings, FanDuel, Betsson, NordicBet, Tipico and MyBookie plus the esports-specialist books Unikrn, Loot.bet, Cyber.bet and Duelbits and Riot's official schedule page (research log: research/betting-sources.md §24, per-source HTTP status in this payload's market_probe block and on the Unresolved & Limitations page). Public documentation of every new entrant describes major-event LoL coverage (Worlds/MSI/top regionals) only; none documents the national/amateur divisions on Hotspawn's list. German-licensed books such as Tipico are additionally barred from esports markets by the Gluecksspielstaatsvertrag (State Treaty on Gambling), so the German Prime League divisions cannot be priced by the regulated domestic market at all. Specialist books render odds in client-side JavaScript and geo-block automated readers, so a single polite request can record reachability but never a citable price; no headless browser, account or key is used.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
@@ -244,7 +244,12 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         else:
             reasons["Other model uncertainty"] += 1
 
-    next_24h = [m for m in matches if m["start_utc"] <= utc_iso(now + timedelta(hours=24))]
+    # Same window the site uses client-side (5-minute grace for a match that
+    # started while the page was open), so the payload count, the stored ID
+    # list and the rendered cards can never disagree.
+    next_24h = [m for m in matches
+                if utc_iso(now - timedelta(minutes=5)) <= m["start_utc"]
+                <= utc_iso(now + timedelta(hours=24))]
     tournaments = Counter(m["tournament"] for m in matches)
 
     # Per-league resolution breakdown: which signal prices each league, so the
@@ -362,7 +367,9 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         "market_probe": market_probe or {"checked_at": None, "books": [], "summary": {}},
         "market_unmatched": picks.get("market_unmatched", [])[:40],
         "featured": [m["id"] for m in market_matches],
-        "next_24h": [m["id"] for m in next_24h[:8]],
+        # Every match in the window, not a truncated preview: the summary
+        # heading publishes this count, so the list must be complete.
+        "next_24h": [m["id"] for m in next_24h],
         "fixtures_without_page": [{"team1": m["team1"], "team2": m["team2"], "start_utc": m["start_utc"]}
                                   for m in matches if not m.get("hotspawn_url")],
         "matches": matches,
