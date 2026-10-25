@@ -592,6 +592,8 @@ def main() -> int:
     write_json(OUT, {
         "checked_at": utc_iso(now_utc()),
         "fixture_count": len(matches),
+        "fixture_snapshot_at": (picks or {}).get("generated_at"),
+        "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
         "fixtures_without_external_line": len(index.unpriced),
         "candidates_with_new_coverage": [r["name"] for r in usable],
         "candidates": results,

@@ -15,7 +15,7 @@ import fetch_hotspawn
 import fetch_leaguepedia
 import fetch_markets
 import model
-from lib_common import load_json, log, now_utc, utc_iso, write_json
+from lib_common import load_json, log, now_utc, parse_iso, utc_iso, write_json
 from source_probe import probe_sources
 from standings_and_books import probe_liquipedia_pages
 
@@ -57,13 +57,13 @@ CHECKED_UNAVAILABLE = [
     # that currently rely on the model; evidence in data/diag/line_probe.json.
     {"name": "Pinnacle league index (every LoL league)", "url": "https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues",
      "observed": "HTTP 200; the only League of Legends league listed is 'League of Legends - World Championship'",
-     "consequence": "No Pinnacle line exists for PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG."},
+     "consequence": "This public feed returned no line for PRM 2nd/3rd Division, RIVALS LEAGUE, Tunisian Super League, Arabian League 2nd Division, 4 Nations, Komplettligaen, LCP Promotion or LigaGG."},
     {"name": "Kambi/Unibet country markets (GB, DE, SE, IT, NL, FR, PL, AU, ZZ)", "url": "https://eu-offering-api.kambicdn.com/offering/v2018/ub/listView/esports/league_of_legends/all/all/matches.json?lang=en_GB&market=DE&useCombined=true",
      "observed": "HTTP 200 in every market; each returns the same 8 World Championship matches and no other LoL competition",
      "consequence": "The German market does not carry Prime League either; no extra line is available."},
     {"name": "Kambi/Betsson, NordicBet, LeoVegas, Betcity", "url": "https://eu-offering-api.kambicdn.com/offering/v2018/betsson/listView/esports/league_of_legends/all/all/matches.json",
      "observed": "HTTP 429 (Betsson, NordicBet) and HTTP 400 (LeoVegas, Betcity) from a CI runner",
-     "consequence": "Same Kambi odds pool as Unibet; no extra line."},
+     "consequence": "Other operator coverage remains unverified because these requests failed; no extra line was read."},
     {"name": "bmbets esports odds comparison", "url": "https://www.bmbets.com/e-sports/world/lol---world-championship/",
      "observed": "HTTP 200 HTML; the LoL league index lists only 'LoL World Championship', 'LoL - LCP' and 'Game Changers Rising' on 2026-10-24",
      "consequence": "The comparison site does not cover the unpriced competitions either; not parsed."},
@@ -94,7 +94,7 @@ CHECKED_UNAVAILABLE = [
 
 LIMITATIONS = [
     "No bookmaker or prediction market we can access prices most tier-3/amateur fixtures. Pinnacle, Unibet (Kambi), Bovada and Polymarket list the World Championship and top tier-2/EMEA events, not regional amateur leagues.",
-    "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on recorded results and official standings.",
+    "This was re-tested systematically on 2026-10-24 by scripts/probe_lines.py: Pinnacle, nine Kambi/Unibet country markets, bmbets, bo3.gg, SofaScore, the 1xBet/Betwinner/Melbet LineFeed, eGamersWorld, Oddspedia, GGScore, BetExplorer, Winamax, Marathonbet, Betano, Stake, BetOnline, BC.Game, Vave, Rainbet, Thunderpick, GG.Bet and others were each asked for a two-way price on the fixtures that currently rely on the model, and none returned one (evidence: data/diag/line_probe.json). For those matches there is no external line to quote, so the pick rests entirely on community-recorded results and standings, not organizer-verified odds.",
     "The Elo model pools results across competitions and anchors each team to a strength tier for its league (international, top regional, ERL, national, academy). Those tiers are a documented prior: without cross-play the absolute gap between two leagues cannot be measured, only estimated. Cross-league rows are flagged and capped at Low confidence.",
     "Leaguepedia's MatchSchedule and Standings tables record results for many regional leagues, but coverage is uneven: some competitions only start being recorded part-way through a split, and brand-new or withdrawn teams have no games at all.",
     "Amateur rosters change frequently between splits, so historic team strength is a weaker signal than in tier-1 leagues.",
@@ -190,11 +190,11 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
         elif mkt > 0:
             lim = f"{mkt}/{len(ms)} match(es) have external market odds; remaining matches rely on Leaguepedia recorded history{standings_note}."
         elif unres > 0:
-            lim = f"No external bookmaker prices this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
+            lim = f"No external line was retrieved for this competition; {unres} match(es) lack recorded split history on Leaguepedia and stay explicit 50/50 placeholders."
         elif prior > 0:
-            lim = f"No bookmaker prices this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
+            lim = f"No external line was retrieved for this league; {prior} match(es) involve a debut/unrecorded side priced against the {lp_page or 'competition'} median prior (Low confidence)."
         else:
-            lim = ("No external sportsbook prices this division; 100% of fixtures resolved via "
+            lim = ("No external line was retrieved for this division; 100% of fixtures resolved via "
                    f"Leaguepedia recorded match results{standings_note}.")
         rows.append({
             "tournament": tour,
@@ -243,12 +243,8 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         else:
             reasons["Other model uncertainty"] += 1
 
-    # Same window the site uses client-side (5-minute grace for a match that
-    # started while the page was open), so the payload count, the stored ID
-    # list and the rendered cards can never disagree.
-    next_24h = [m for m in matches
-                if utc_iso(now - timedelta(minutes=5)) <= m["start_utc"]
-                <= utc_iso(now + timedelta(hours=24))]
+    next_24h = [m for m in matches if (start := parse_iso(m.get("start_utc")))
+                and now <= start <= now + timedelta(hours=24)]
     tournaments = Counter(m["tournament"] for m in matches)
 
     # Per-league resolution breakdown: which signal prices each league, so the
@@ -279,7 +275,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         b["best_signal"] = ("External betting lines" if b["market"]
                             else "Elo + split standings" if b["elo"] and b["standings"]
                             else "Elo on recorded results" if b["elo"]
-                            else "Official standings record" if b["standings"]
+                            else "Community standings record" if b["standings"]
                             else "League prior only" if b["prior_only"]
                             else "No verified signal")
         b["limitation"] = league_limits.get(b["tournament"])
@@ -305,7 +301,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     st_used = sum(1 for m in matches if m.get("method") in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"))
     source_status.append({"name": "Leaguepedia Standings",
                           "url": "https://lol.fandom.com/wiki/Special:CargoTables/Standings",
-                          "status": "ok" if st_count > 0 else "no_data",
+                          "status": ("degraded" if lp_degraded else "ok") if st_count > 0 else "no_data",
                           "count": st_count,
                           "note": (f"Split series/game records for low-tier & amateur leagues "
                                    f"(CC BY-SA 3.0): {st_count} rows across {st_pages} competition page(s); "
@@ -323,8 +319,23 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     payload = {
         "schema_version": 3,
         "generated_at": utc_iso(now),
-        "next_update_utc": utc_iso(now + timedelta(hours=6)),
+        "next_update_utc": utc_iso(now.replace(minute=0, second=0, microsecond=0)
+                                   + timedelta(hours=6 - now.hour % 6)),
         "stale_after_utc": utc_iso(now + timedelta(hours=8)),
+        "input_freshness": [
+            {"name": "Hotspawn fixtures", "as_of": fixtures.get("generated_at"),
+             "status": "ok", "url": fixtures["lobby"],
+             "note": "Publisher fixture list only; not probability evidence."},
+            {"name": "External market feeds", "as_of": markets.get("generated_at"),
+             "status": "partial" if any(s.get("status") != "ok" for s in markets.get("statuses", [])) else "ok",
+             "url": "methodology.html",
+             "note": "Collection timestamp, not a guarantee that each quote is executable or still open."},
+            {"name": "Leaguepedia community records", "as_of": leaguepedia.get("generated_at"),
+             "status": "degraded" if lp_degraded else "ok",
+             "last_attempt_utc": leaguepedia.get("last_attempt_utc"),
+             "url": "https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule",
+             "note": leaguepedia.get("degraded_reason") or "Community records; not independently organizer-verified. Model probabilities are estimates."},
+        ],
         "hotspawn_lobby": fixtures["lobby"],
         "hotspawn_lobby_generic": fixtures.get("lobby_generic"),
         "counts": {

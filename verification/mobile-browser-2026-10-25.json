@@ -1,0 +1,287 @@
+{
+  "checked_at": "2026-10-25T14:17:29.751Z",
+  "engine": "Chromium 153.0.8010.0 via Playwright",
+  "scope": "Actual CSS/layout and runtime audit, not a screen-reader or official source verification audit.",
+  "results": [
+    {
+      "width": 320,
+      "path": "index.html",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 320,
+      "path": "picks.html",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 320,
+      "path": "leagues.html",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 320,
+      "path": "unresolved.html",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 320,
+      "path": "flagged.html",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 320,
+      "path": "methodology.html",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 320,
+      "path": "match.html?id=1079027",
+      "scroll": 320,
+      "loading": [],
+      "header": 133.125,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "index.html",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "picks.html",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "leagues.html",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "unresolved.html",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "flagged.html",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "methodology.html",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 390,
+      "path": "match.html?id=1079027",
+      "scroll": 390,
+      "loading": [],
+      "header": 116.875,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "index.html",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "picks.html",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "leagues.html",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "unresolved.html",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "flagged.html",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "methodology.html",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "path": "match.html?id=1079027",
+      "scroll": 768,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 60,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "index.html",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "picks.html",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "leagues.html",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "unresolved.html",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "flagged.html",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "methodology.html",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 1280,
+      "path": "match.html?id=1079027",
+      "scroll": 1280,
+      "loading": [],
+      "header": 123,
+      "minMobileNavHeight": 0,
+      "errors": [],
+      "pass": true
+    }
+  ]
+}
