@@ -22,10 +22,10 @@ Defects found at baseline (verified in code, not inferred):
 
 | Task | Status | Owner | Files (claimed scope) |
 |---|---|---|---|
-| T25 Show **every** next-24 h pick on the executive summary (no 6-card / 8-ID truncation); heading count must equal cards shown | claimed | arena/b95df72a | `docs/assets/app.js`, `scripts/update_picks.py` (next_24h lines only), `verification/check_dom_render.js` (assert count equality) |
-| T26 Phone-first executive summary: starting-soon picks immediately after the hero, legend collapsed, duplicated per-league/limitations blocks rendered once; unresolved & limitations stays a separate section linked from the summary | claimed | arena/b95df72a | `docs/index.html`, `docs/assets/app.js` |
-| T27 Fresh 2026-10-25 source research for low-tier/unpriced matches (established LoL betting sites → esportsbooks → betting-line aggregators → community), link-verified, appended to the research log | claimed | arena/b95df72a | `research/betting-sources.md` |
-| T28 Integration: re-verify (unit suites + `verify_site.py` + jsdom DOM), live pipeline on this branch, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge here | claimed | arena/b95df72a | `COORDINATION.md`, `docs/data/picks.json` (generated) |
+| T25 Show **every** next-24 h pick on the executive summary (no 6-card / 8-ID truncation); heading count must equal cards shown | done | arena/b95df72a | `docs/assets/app.js`, `scripts/update_picks.py` (next_24h lines only), `verification/check_dom_render.js` (assert count equality) |
+| T26 Phone-first executive summary: starting-soon picks immediately after the hero, legend collapsed, duplicated per-league/limitations blocks rendered once; unresolved & limitations stays a separate section linked from the summary | done | arena/b95df72a | `docs/index.html`, `docs/assets/app.js` |
+| T27 Fresh 2026-10-25 source research for low-tier/unpriced matches (established LoL betting sites → esportsbooks → betting-line aggregators → community), link-verified, appended to the research log | done | arena/b95df72a | `research/betting-sources.md` |
+| T28 Integration: re-verify (unit suites + `verify_site.py` + jsdom DOM), live pipeline on this branch, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge here | done | arena/b95df72a | `COORDINATION.md`, `docs/data/picks.json` (generated) |
 
 **Results (2026-10-25, arena/b95df72a):**
 - **T25 done.** Live CI payload generated 2026-10-25T14:18:04Z on this branch: 156 fixtures ·
@@ -52,7 +52,18 @@ Defects found at baseline (verified in code, not inferred):
   `verify_site.py` 44 PASS / 0 FAIL; jsdom 55/55; render_check PASS; unit suites
   (dom-contract 7/7, verifier 45/45, standings, entity/books 17/17, model audit 23/23) PASS;
   CI-committed `verification/report.json` PASS and Leaguepedia source-page existence PASS.
-- **T28:** PR + merge + Pages confirmation recorded below in this entry once executed.
+- **T28 done.** PR [#68](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/68) **merged**
+  2026-10-25T14:30:12Z (merge commit `31c989d`). Post-merge `update-picks` run on `main`
+  regenerated the payload with the fixed generator (generated 2026-10-25T14:35:37Z:
+  `counts.next_24h` 27 == 27 stored IDs; one earlier refresh commit `ac8298c` had been
+  produced by a run that started on pre-merge `main` and pushed after the merge — superseded
+  4 minutes later, no action needed). **GitHub Pages confirmed live** by fetching the deployed
+  site: executive summary shows "Next 24 hours — immediate picks … 27 matches locking in the
+  next 24 hours — every one is listed below" directly after the hero at
+  https://karagemop466-tech.github.io/LOLHOTSPAWN2/docs/ (build serving payload generated
+  2026-10-25T14:38Z). One pre-existing display nit flagged for its owner, not changed here:
+  a card can show pair percentages summing-rounded (56.3%) while its pick pill rounds
+  independently (56.4%) — a 0.1 pt display mismatch in `pctPair` vs `pickPill`.
 
 **Merge reconciliation (2026-10-25):** while this branch was in flight, sessions
 `arena/6d169c43` (PR #66), `arena/f931cee9` (PR #62) and `arena/7dbe0fbd` (PRs #60/#63)
