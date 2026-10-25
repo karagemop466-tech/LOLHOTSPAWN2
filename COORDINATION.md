@@ -1517,3 +1517,9 @@ probabilities and did not use Hotspawn crowd percentages.
 **Audit disposition:** task done; no non-overlapping site/model code defect was established by this audit, so no feature files
 were modified. The two live-check caveats above remain non-blocking and should remain visible to readers; do not mark the
 stale schedule snapshot or blocked source checks as freshly verified.
+
+### PR / publication record for final audit
+
+- **PR #60** — https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/60 — merged 2026-10-25T14:12:23Z by merge commit `65de12bc5c75c7c721a965db1dc0e53941c8d0c5`.
+- Post-merge Pages build `1313374096` was still reported as `building` at the time of this record (source commit `65de12b`). The public dashboard was fetched successfully during the verification window and rendered the current snapshot: 156/156 picks, 9 bookmaker-line matches, 0 unresolved placeholders, 10 low-confidence, next refresh shown as 16:41Z. This confirms the existing published site content; it is not evidence that the new audit-only commit has finished deployment.
+- The site implementation and scheduled publisher were already present on `main`; PR #60 only adds this verification/coordination record. The GitHub Actions run list endpoint returned HTTP 403 rate-limit response, so no current action-run conclusion is asserted.
