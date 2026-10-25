@@ -112,8 +112,12 @@
       : "";
   }
   function pickPill(m) {
-    const tone = m.method === "UNRESOLVED" ? "red" : ((m.confidence === "Low" || isTossUp(m)) ? "amber" : "");
-    const prefix = m.method === "UNRESOLVED" ? "⚠️ 50/50:" : "✅ PICK:";
+    // Keep exact ties and unresolved placeholders neutral, while preserving
+    // the shared <=53% coin-flip label for weak (but non-equal) favourites.
+    if (m.method === "UNRESOLVED") return '<span class="pick-pill red">⚠️ Unresolved · 50/50 · no pick</span>';
+    if (Number(m.prob_team1) === 0.5) return '<span class="pick-pill amber">No edge · 50/50 · no preferred team · coin-flip</span>';
+    const tone = m.confidence === "Low" || isTossUp(m) ? "amber" : "";
+    const prefix = new Date(m.start_utc).getTime() < Date.now() ? "LOCK TIME PASSED:" : "✅ PICK:";
     const flip = isTossUp(m) ? " · coin-flip" : "";
     return `<span class="pick-pill ${tone}">${prefix} ${esc(m.pick)} · ${pct1(m.pick_prob)}${flip}</span>`;
   }
@@ -177,7 +181,7 @@
       <td class="probcell" data-label="Win probability"><span class="p1">${esc(m.team1)} ${pair[0]}</span><span class="sub"><span class="p2">${esc(m.team2)} ${pair[1]}</span></span><div class="bar" aria-hidden="true"><i style="width:${pct(m.prob_team1)}"></i><b style="width:${pct(m.prob_team2)}"></b></div></td>
       <td class="pickcell" data-label="Pick">${pickPill(m)}${whyLine(m) ? `<span class="sub" title="${esc(m.evidence || "")}">${esc(whyLine(m))}</span>` : ""}</td>
       <td data-label="Method"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="sub"><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")}</span></span></td>
-      <td data-label="Sources"><span class="sub">${srcCount} verified link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
+      <td data-label="Sources"><span class="sub">${srcCount} source link${srcCount === 1 ? "" : "s"}</span><div class="src-links">${srcLinks}</div></td>
     </tr>`;
   }
 
@@ -233,6 +237,20 @@
       fresh.innerHTML = `<span class="dot ${ok ? "" : "stale"}"></span>${ok ? "Recent snapshot · not live odds" : "Stale or unverified timestamp"}`;
       fresh.title = `Next scheduled update: ${whenUTC(d.next_update_utc)}`;
     }
+    const inputs = d.input_freshness || [];
+    const degraded = inputs.filter((s) => s.status === "degraded");
+    const health = $("#input-health");
+    if (health) {
+      health.className = degraded.length ? "warnbox" : "hidden";
+      health.innerHTML = degraded.map((s) => `<p><b>${esc(s.name)}: degraded input.</b> Snapshot ${esc(whenUTC(s.as_of))}. ${esc(s.note || "")} A fresh dashboard timestamp does not make cached evidence fresh. <a href="methodology.html#input-freshness">Source timestamps →</a></p>`).join("");
+    }
+    $$("[data-input-freshness]").forEach((box) => {
+      box.innerHTML = inputs.length ? `<div class="table-wrap"><table><thead><tr><th>Input / source</th><th>Snapshot collected (UTC)</th><th>Status / limitation</th></tr></thead><tbody>${inputs.map((s) => `<tr>
+        <td data-label="Input / source"><a href="${esc(s.url)}">${esc(s.name)}</a></td>
+        <td data-label="Snapshot collected">${esc(whenUTC(s.as_of))}${!s.as_of ? '<span class="sub">Unverified — not supplied</span>' : ""}</td>
+        <td data-label="Status / limitation"><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span> ${esc(s.note || "")}</td>
+      </tr>`).join("")}</tbody></table></div>` : '<p class="small">Input timestamps were not recorded in this older payload — unverified. The dashboard generation time is not a source collection time.</p>';
+    });
     const warn = $("#freshness-warning");
     if (warn) {
       warn.className = isFresh(d) ? "hidden" : "warnbox";
@@ -352,7 +370,7 @@
 
     const cov0 = d.coverage || {};
     const all0 = d.matches || [];
-    const n24 = all0.filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= Date.now() - 300000 && t <= Date.now() + 86400000; }).length;
+    const n24 = all0.filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= Date.now() && t <= Date.now() + 86400000; }).length;
     set("#here-all-count", all0.length);
     set("#here-24-count", n24);
     set("#here-leagues-count", computeLeagueBreakdown(d).length);
@@ -445,6 +463,50 @@
       </tr>`).join("");
     }
 
+    // Non-featured matches: the ones that cannot be priced the way a featured pick is.
+    // One row per competition, showing what the pick is built on and the evidence page.
+    const nfCounts = $("#nonfeatured-counts");
+    if (nfCounts) {
+      const noLine = all0.filter((m) => !m.market);
+      const nfElo = noLine.filter((m) => m.method === "MODEL_ELO" || m.method === "MODEL_ELO_THIN").length;
+      const nfSt = noLine.filter((m) => m.method === "MODEL_STANDINGS" || m.method === "MODEL_ELO_STANDINGS").length;
+      const nfPrior = noLine.filter((m) => m.method === "MODEL_LEAGUE_PRIOR").length;
+      const nfUnres = noLine.filter((m) => m.method === "UNRESOLVED").length;
+      const nfLow = noLine.filter((m) => m.confidence === "Low").length;
+      nfCounts.innerHTML = `
+        <div><b>${noLine.length}</b><span>matches without a book line</span></div>
+        <div><b>${nfElo}</b><span>priced by our Elo model</span></div>
+        <div><b>${nfSt}</b><span>Elo blended with split standings</span></div>
+        <div class="${nfUnres ? "bad" : "good"}"><b>${nfUnres}</b><span>explicit 50/50 (never an edge)</span></div>
+        <div class="${nfLow ? "" : "good"}"><b>${nfLow}</b><span>capped at Low confidence</span></div>`;
+      const mktEl = $("#nonfeatured-mkt-count");
+      if (mktEl) mktEl.textContent = String(all0.filter((m) => m.market).length);
+    }
+    const nfBody = $("#nonfeatured-body");
+    if (nfBody) {
+      const withLine = lbs.filter((lb) => lb.market < lb.fixtures);
+      nfBody.innerHTML = withLine.length ? withLine.map((lb) => {
+        const ms = all0.filter((m) => (m.tournament || "Unknown competition") === lb.tournament);
+        const low = ms.filter((m) => m.confidence === "Low").length;
+        const high = ms.filter((m) => m.confidence === "High").length;
+        const conf = lb.unresolved === lb.fixtures ? "Unresolved (50/50 placeholder)"
+          : [low ? `${low} low` : "", high ? `${high} high` : "",
+             (ms.length - low - high) ? `${ms.length - low - high} medium` : ""].filter(Boolean).join(" · ") || "—";
+        const built = [lb.elo ? `Elo on recorded series (${lb.elo})` : "",
+                       lb.standings ? `split standings blend (${lb.standings})` : "",
+                       lb.league_prior ? `competition prior (${lb.league_prior})` : "",
+                       lb.unresolved ? `explicit 50/50 (${lb.unresolved})` : ""].filter(Boolean).join(" + ") || "—";
+        return `<tr>
+          <td data-label="Competition"><a class="rowlink" href="picks.html?tournament=${encodeURIComponent(lb.tournament)}"><b>${esc(lb.tournament)}</b></a><span class="sub">${esc(lb.category)}</span></td>
+          <td data-label="Fixtures"><b>${lb.fixtures}</b><span class="sub">${lb.fixtures - lb.market} without a book line</span></td>
+          <td data-label="With a book line">${lb.market}</td>
+          <td data-label="Our line built from" class="small">${esc(built)}</td>
+          <td data-label="Confidence" class="small">${esc(conf)}</td>
+          <td data-label="Source">${leagueSourceLinks(lb)}</td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="6">Every match in this snapshot has an external bookmaker line.</td></tr>`;
+    }
+
     const nowMs = Date.now();
     // Every match locking in the next 24 hours gets a card here — the heading
     // and count above this list publish the window size, so silently cutting
@@ -452,10 +514,10 @@
     // Only when the 24 h window is empty do we fall back to the next few
     // upcoming matches, and the heading/count say so.
     const in24 = (d.matches || [])
-      .filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs - 300000 && t <= nowMs + 86400000; })
+      .filter((m) => { const t = new Date(m.start_utc).getTime(); return t >= nowMs && t <= nowMs + 86400000; })
       .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
     const next = in24.length ? in24 : (d.matches || [])
-      .filter((m) => new Date(m.start_utc).getTime() >= nowMs - 300000)
+      .filter((m) => new Date(m.start_utc).getTime() >= nowMs)
       .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""))
       .slice(0, 6);
     const nextBox = $("#next24");
@@ -524,7 +586,7 @@
         .sort((a, b) => (a.start_utc || "").localeCompare(b.start_utc || ""));
       uList.innerHTML = un.length
         ? un.map((m) => matchCard(m, { sources: 3 })).join("")
-        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or official split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>, and ${all0.filter((m) => isTossUp(m)).length} coin-flip picks (favourite ≤${Math.round(TOSSUP_MAX * 100)}%) on <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>.</div>`;
+        : `<div class="okbox"><b>0 unresolved fixtures in this snapshot.</b> Every one of the ${all0.length} upcoming Hotspawn LoL fixtures has a pick from an external betting line, recorded match results, or community split standings — so this list is empty. Low-confidence rows are still labelled on <a href="picks.html?filter=low">All picks</a>, and ${all0.filter((m) => isTossUp(m)).length} coin-flip picks (favourite ≤${Math.round(TOSSUP_MAX * 100)}%) on <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>.</div>`;
     }
 
     const ss = $("#sources-strip");
@@ -577,7 +639,7 @@
     const now = Date.now();
     if (state.filter === "next24") {
       const t = new Date(m.start_utc).getTime();
-      if (!(t >= now - 300000 && t <= now + 86400000)) return false;
+      if (!(t >= now && t <= now + 86400000)) return false;
     }
     if (state.filter === "market" && !m.market) return false;
     if (state.filter === "model" && !(m.model && !m.market)) return false;
@@ -837,7 +899,7 @@
             </ul>
           </div>
           <div class="card"><h3>Flags</h3>${(m.flags || []).length ? `<ul class="clean small">${m.flags.map((f) => `<li><span class="flag">${esc(f)}</span> — ${esc(flagLabel(f))}</li>`).join("")}</ul>` : `<p class="small">No flags.</p>`}</div>
-          <div class="card"><h3>Sources &amp; verification</h3><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
+          <div class="card"><h3>Sources &amp; evidence scope</h3><p class="small">Hotspawn confirms the listed fixture only. Bookmaker links support observed quotes. Leaguepedia links are community records, not official organizer confirmation. Probabilities and ratings are computed estimates; a link or HTTP 200 does not verify every value.</p><ul class="clean small">${(m.sources || []).map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a> — ${esc(s.claim)}</li>`).join("")}</ul>
           <p class="tiny">Crowd context (never used in probability): ${m.crowd?.team1_pct != null ? `${esc(m.crowd.team1_pct)}% picked ${esc(m.team1)} / ${esc(m.crowd.team2_pct)}% picked ${esc(m.team2)}` : "not published"}.</p></div>
         </div>
       </div>

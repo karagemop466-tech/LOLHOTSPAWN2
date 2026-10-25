@@ -1,8 +1,8 @@
 # Line-by-line payload audit — 2026-10-25 (session `arena/b5f85948`)
 
-- Payload: `docs/data/picks.json`, generated `2026-10-25T14:31:30.074855Z` (0.2 h old at audit time)
+- Payload: `docs/data/picks.json`, generated `2026-10-25T14:45:47.846806Z` (0.1 h old at audit time)
 - Rows: **156** · declared fixtures: **156**
-- Next scheduled update: `2026-10-25T20:31:30.074855Z` · stale after: `2026-10-25T22:31:30.074855Z`
+- Next scheduled update: `2026-10-25T18:00:00Z` · stale after: `2026-10-25T22:45:47.846806Z`
 
 ## Method and confidence mix
 
@@ -16,7 +16,7 @@
 
 Confidence: {'High': 23, 'Medium': 122, 'Low': 11}  
 Upcoming starts: 156 · already-started rows in payload: 0  
-Bookmaker source citations: 33 · Leaguepedia citations: 210 · Hotspawn fixture citations: 156
+Bookmaker source citations: 33 · Leaguepedia citations: 415 · Hotspawn fixture citations: 156
 
 ## Per-competition tally (re-derived from rows)
 

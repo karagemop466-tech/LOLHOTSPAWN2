@@ -66,7 +66,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: always()
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Render checks (jsdom renders every page from this run's payload)
         if: always()
@@ -75,12 +75,22 @@ jobs:
           node verification/render_check.cjs
           node verification/check_dom_render.js
 
+      - name: Real phone and tablet layout checks (Chromium)
+        run: |
+          set -o pipefail
+          mkdir -p data/diag
+          {
+            npm install --no-save --no-package-lock --no-audit --no-fund jsdom playwright-core @sparticuz/chromium
+            BROWSER_REPORT=data/diag/browser.json node verification/check_browser.cjs
+          } 2>&1 | tee data/diag/browser.log
+
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
         run: |
           python3 verification/check_dom_contract.py
           python3 verification/test_dom_contract.py
           python3 verification/test_verifier.py
+          python3 verification/test_evidence_scope.py
           python3 verification/test_standings_model.py
           python3 verification/test_entity_and_books.py
           python3 audit/test_model.py
@@ -95,6 +105,23 @@ jobs:
             echo "::error title=Cited source page missing::a tournament page cited by a pick row does not exist on Leaguepedia"
             exit "$src_rc"
           fi
+
+      - name: Unit tests for the lobby + fixtures-API union (new fixture coverage rule)
+        if: always()
+        run: python3 verification/test_lobby_union.py
+
+      - name: Independent Hotspawn coverage reconciliation (lobby + API vs published picks)
+        if: always()
+        timeout-minutes: 8
+        run: |
+          set +e
+          python3 audit/coverage_reconcile.py
+          rc=$?
+          set -e
+          if [ "$rc" != "0" ]; then
+            echo "::warning title=Coverage audit could not run::exit ${rc}; the gate will skip"
+          fi
+          python3 audit/coverage_gate.py
 
       - name: Probe candidate odds sources (diagnostic only, never feeds picks)
         if: always()
@@ -124,12 +151,16 @@ jobs:
           }
           git config user.name "picks-bot"
           git config user.email "actions@github.com"
-          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json data/diag/source_pages.log verification/report.json verification/last_report.md 2>&1); then
+          if out=$(git add docs/data data/diag/pipeline.log data/diag/source_probe.json data/diag/source_pages.log verification/report.json verification/last_report.md audit/coverage_reconcile.json audit/coverage_reconcile.md 2>&1); then
             :
           else
             rc=$?
             fail_publish "git add failed (${rc}): ${out}"
           fi
+          # Preserve diagnostics even when Chromium cannot launch; source data
+          # can pass while the browser gate fails. Do not lose the actual error.
+          if [ -f data/diag/browser.log ]; then git add data/diag/browser.log; fi
+          if [ -f data/diag/browser.json ]; then git add data/diag/browser.json; fi
           if git diff --cached --quiet; then
             echo "no changes"
             exit 0

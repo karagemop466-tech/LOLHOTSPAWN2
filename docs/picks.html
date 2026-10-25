@@ -38,10 +38,21 @@
   </ul>
 </nav>
 </header>
+<nav class="jumpbar" aria-label="Quick jumps">
+  <div class="wrap inner">
+    <a class="hot" href="picks.html">📋 All picks</a>
+    <a href="picks.html?filter=next24">⏰ Next 24 h</a>
+    <a href="index.html#nonfeatured">🧮 No book line</a>
+    <a href="leagues.html">🏆 By league</a>
+    <a href="unresolved.html">⚠️ Unresolved</a>
+    <a href="flagged.html">🚩 Flagged</a>
+  </div>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
+  <div id="input-health" class="hidden" role="status"></div>
 
   <h1>All picks</h1>
   <p class="lede">One row per Hotspawn LoL fixture. Every row links to the Hotspawn fixture and to the evidence used — an external betting line, a Leaguepedia tournament page, or both. Rows with no verified signal are still published, flagged and linked to the <a href="unresolved.html">unresolved explanation</a>.</p>
@@ -96,7 +107,7 @@
 
   <p class="small" style="margin-top:12px">
     <b>Reading the table:</b> 💰 market = de-vigged consensus of external bookmakers/markets · 🧮 model = our Elo model ·
-    📊 standings = official win-loss record in that league (no market line, Elo could not rate both sides) ·
+    📊 standings = community-recorded win-loss record in that league (no market line, Elo could not rate both sides) ·
     ⚠️ low confidence = thin history or league prior used · ❔ unresolved = explicit 50/50 placeholder, not an edge.
     Flags are explained on the <a href="flagged.html">Flagged for review</a> page; the full method is on
     <a href="methodology.html">Methodology &amp; sources</a>.

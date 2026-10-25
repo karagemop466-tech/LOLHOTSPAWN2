@@ -40,10 +40,21 @@
     </ul>
   </nav>
 </header>
+<nav class="jumpbar" aria-label="Quick jumps">
+  <div class="wrap inner">
+    <a class="hot" href="picks.html">📋 All picks</a>
+    <a href="picks.html?filter=next24">⏰ Next 24 h</a>
+    <a href="index.html#nonfeatured">🧮 No book line</a>
+    <a href="leagues.html">🏆 By league</a>
+    <a href="unresolved.html">⚠️ Unresolved</a>
+    <a href="flagged.html">🚩 Flagged</a>
+  </div>
+</nav>
 
 <main id="main" class="wrap">
   <div id="error-box"></div>
   <div id="freshness-warning" class="hidden"></div>
+  <div id="input-health" class="hidden" role="status"></div>
 
   <section class="hero">
     <p class="eyebrow">Executive summary · refreshed every 6 hours</p>
@@ -122,7 +133,7 @@
       </a>
       <a class="linkcard" href="picks.html?filter=next24" id="here-24">
         <span class="ico" aria-hidden="true">⏰</span>
-        <span><b>Next 24 hours only</b><span>What locks soonest, biggest win probability first. <b class="n" id="here-24-count">—</b> matches</span></span>
+        <span><b>Next 24 hours only</b><span>Upcoming lock times, soonest first. <b class="n" id="here-24-count">—</b> matches</span></span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
       <a class="linkcard" href="leagues.html" id="here-leagues">
@@ -182,9 +193,112 @@
     </div>
   </section>
 
+  <details class="card" id="input-freshness">
+    <summary><b>When was the underlying evidence collected?</b></summary>
+    <p class="small">Dashboard generation and input collection are different timestamps. Community results can come from a cached snapshot after an upstream failure; the warning above remains visible even when this dashboard was just rebuilt.</p>
+    <div data-input-freshness></div>
+    <a href="methodology.html#input-freshness">Full evidence and verification limits →</a>
+  </details>
+
+  <section id="nonfeatured" aria-labelledby="nonfeatured-heading">
+    <h2 id="nonfeatured-heading">🧮 Matches without a featured betting line — how each pick is made</h2>
+    <p class="small">The <a href="#featured-heading">featured picks</a> are priced from de-vigged sportsbook and
+      prediction-market lines. Every other match on Hotspawn's list still gets a pick, from <b>our own line</b>:
+      chronological, competition-anchored Elo over Leaguepedia's recorded series, blended with the current split
+      standings when a side has too little history. Where the evidence is thin the row says so and is capped at
+      Low confidence — and if no evidence exists at all the row is published as an explicit 50/50 on
+      <a href="unresolved.html">Unresolved &amp; limitations</a>, never as an edge.</p>
+    <div class="stats-mini" id="nonfeatured-counts"></div>
+    <h3>Established books, esportsbooks and odds sites we checked for these competitions</h3>
+    <p class="small"><b>Checked 2026-10-25.</b> Each row is what the source actually returned to an
+      unauthenticated visitor, with the link so you can re-check it. None of them publishes a full-match two-way
+      price for a competition in this list, which is why the pick for those matches is ours.
+      The same check runs automatically on every refresh (see
+      <a href="unresolved.html#sources-checked">the per-refresh source table</a>), and the write-up with the
+      measurement method is in <a href="methodology.html">Methodology</a>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Source</th>
+            <th scope="col">Type</th>
+            <th scope="col">What it showed on 2026-10-25</th>
+            <th scope="col">Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Source"><b>OddsPortal</b> — League of Legends index</td>
+            <td data-label="Type">Established odds aggregator</td>
+            <td data-label="Observed">Lists exactly one LoL competition: “League of Legends World Championship (10)”.
+              No Prime League, RIVALS, Tunisian, Komplettligaen, LigaGG or Arabian division is on the board.</td>
+            <td data-label="Link"><a href="https://www.oddsportal.com/esports/league-of-legends/" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>OddsPortal</b> — Prime League page</td>
+            <td data-label="Type">Established odds aggregator</td>
+            <td data-label="Observed">“eSports League of Legends Prime League Next Matches will appear here as soon as
+              bookmaker betting odds become available.” No priced fixture.</td>
+            <td data-label="Link"><a href="https://www.oddsportal.com/esports/league-of-legends/league-of-legends-prime-league/" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>bmbets</b> — Prime League 2nd Division</td>
+            <td data-label="Type">Esports odds comparison</td>
+            <td data-label="Observed">Competition URL exists but the live board lists only LoL World Championship (9),
+              LoL – LCP (1) and LoL Game Changers Rising (1) — no Prime League 2nd Division match.</td>
+            <td data-label="Link"><a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>Cloudbet</b> — Prime League 2nd Division</td>
+            <td data-label="Type">Esportsbook</td>
+            <td data-label="Observed">“No Prime League 2nd Division events available — Check back later for the latest
+              updates on upcoming matches.” The page markets the league but prices nothing.</td>
+            <td data-label="Link"><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>Betmonitor</b> — Prime League 2nd Division</td>
+            <td data-label="Type">Odds comparison</td>
+            <td data-label="Observed">The competition URL resolves to the generic odds hub (football/tennis/basketball
+              highlights); no Prime League 2nd Division fixture or price was served.</td>
+            <td data-label="Link"><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">open ↗</a></td>
+          </tr>
+          <tr>
+            <td data-label="Source"><b>Pinnacle, Unibet (Kambi), Bovada, Polymarket</b></td>
+            <td data-label="Type">Sharp book, established book, US book, prediction market</td>
+            <td data-label="Observed">Re-requested on every refresh. On this snapshot they price
+              <b id="nonfeatured-mkt-count">—</b> match(es) — the Worlds fixtures and the rare LCP/LGC line — and
+              nothing from the national divisions. Measured counts are in the coverage card above.</td>
+            <td data-label="Link"><a href="https://gamma-api.polymarket.com" target="_blank" rel="noopener">Polymarket API ↗</a> · <a href="unresolved.html#sources-checked">status table ↗</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin-top:18px">Per-competition: what the pick is built on</h3>
+    <p class="small">One row per competition with no bookmaker line. The source column links the competition's
+      community results page (Leaguepedia, CC BY-SA 3.0), which is the evidence each pick is computed from;
+      <a href="picks.html">All picks</a> shows the individual rows, and
+      <a href="unresolved.html#by-league">Unresolved &amp; limitations</a> states each competition's limit.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Competition</th>
+            <th scope="col">Fixtures</th>
+            <th scope="col">With a book line</th>
+            <th scope="col">Our line built from</th>
+            <th scope="col">Confidence</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody id="nonfeatured-body">
+          <tr><td colspan="6"><div class="loading"><span class="spinner"></span>Loading competitions…</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
   <section>
     <h2>Per-competition breakdown</h2>
-    <p class="small">Every active competition on Hotspawn with its pricing mix and verified source link
+    <p class="small">Every active competition on Hotspawn with its pricing mix and source link
       (<a href="leagues.html">open the full By-League page →</a>).</p>
     <div class="table-wrap">
       <table>
@@ -218,7 +332,7 @@
 
     <h3 style="margin-top:18px" id="exec-per-league">Per-league limits — which signal prices each league</h3>
     <p class="small">No external sportsbook we can reach prices these divisions, so the pick comes from recorded results and split
-      standings. Each row links the competition's verified results page
+      standings. Each row links the competition's community results page
       (<a href="unresolved.html#by-league">full table with organizer links →</a>).</p>
     <div class="table-wrap">
       <table>
