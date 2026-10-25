@@ -1,10 +1,10 @@
 # Verification report — PASS
-_2026-10-25T14:23:26.359049+00:00_
-156 matches · MODEL_ELO_THIN: 2 · MARKET_SINGLE: 1 · MODEL_STANDINGS: 0 · MODEL_LEAGUE_PRIOR: 0 · MARKET_POLYMARKET: 0 · MARKET_CONSENSUS: 8 · MODEL_ELO: 91 · UNRESOLVED: 0 · MODEL_ELO_STANDINGS: 54 · MARKET_BOOKS: 0
+_2026-10-25T14:24:15.761681+00:00_
+156 matches · MODEL_STANDINGS: 0 · MARKET_POLYMARKET: 0 · MARKET_BOOKS: 0 · MODEL_ELO: 91 · MARKET_SINGLE: 1 · MARKET_CONSENSUS: 8 · MODEL_LEAGUE_PRIOR: 0 · MODEL_ELO_STANDINGS: 54 · MODEL_ELO_THIN: 2 · UNRESOLVED: 0
 
 | check | status | detail |
 |---|---|---|
-| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:20:19.108113Z (0.1h old) |
+| D1 payload parses, has matches and a fresh generated_at | PASS | 156 matches, generated_at=2026-10-25T14:19:22.529030Z (0.1h old) |
 | D2 two distinct teams and a start time on every match | PASS | all 156 rows have team1, team2 and a start time |
 | D3 a pick exists and is one of the two teams | PASS | every match has a pick equal to team1 or team2 |
 | D4 probabilities are in range and sum to 1 | PASS | every row sums to 1.0 within 0.005 |
@@ -24,9 +24,9 @@ _2026-10-25T14:23:26.359049+00:00_
 | D11 declared count equals number of rows | PASS | declared=156, rows=156 |
 | D20 each external market provider counted at most once per fixture | PASS | every market row has unique provider keys and matching source_count |
 | D21 every upcoming Hotspawn lobby fixture is priced; no excluded fixture is priced | PASS | lobby upcoming=156, priced=156, missing=0, extra=0, excluded=9, leaked=0 |
-| D22 external-source probe rows are sourced and never carry a probability | PASS | 37 probed source(s), each with an https link, HTTP status and verdict |
+| D22 external-source probe rows are sourced and never carry a probability | PASS | 39 probed source(s), each with an https link, HTTP status and verdict |
 | D13 rows without team evidence are 50/50 and explicitly labelled | PASS | 0 row(s) lack team evidence (UNRESOLVED / NO_TEAM_HISTORY); 0 labelled, 0 non-50/50. Info: 38 model row(s) land within ±2 pts of 50% — these are even-matchup estimates from recorded results, not placeholders. |
-| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 104/117 matched fixture times agree with Leaguepedia; 39 fixture(s) not in the snapshot; 13 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (89.6h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
+| D18 start times cross-checked against Leaguepedia MatchSchedule | WARN | 104/117 matched fixture times agree with Leaguepedia; 39 fixture(s) not in the snapshot; 13 differ (Hotspawn is authoritative for pick lock times; verify current organizer schedules before relying on a delta). Snapshot captured 2026-10-21T20:44:30.124894+00:00 (89.7h old). This is a stale diagnostic snapshot; deltas are historical and do not verify the current schedule. |
 | D14 single published data file (site copy) | PASS | only docs/data/picks.json exists — site copy is the single source |
 | D23 no committed artifact contains git conflict markers | PASS | no conflict markers in docs/, data/, verification/, research/, scripts/, .github/ |
 | S1 all required site files exist | PASS | 10 files present |
@@ -34,6 +34,7 @@ _2026-10-25T14:23:26.359049+00:00_
 | S13 executive summary has a separate unresolved section (every unresolved fixture listed + per-league limits) with the picks listed first | PASS | unresolved section ids present; picks before unresolved section: yes; in-site pick links: yes |
 | S14 no page reuses the 12px .bar probability rule as its header | PASS | headers use .header-inner on every page |
 | S15 jsdom render harness exists and runs in CI | PASS | harness present; wired into pipeline-test.yml, verify.yml |
+| S16 coin-flip picks are labelled, counted in the summary and filterable | PASS | toss-up threshold, chip, summary link and picks filter present |
 | S2 every page is mobile-ready (viewport width=device-width) | PASS | all pages declare a responsive viewport |
 | S3 every page links the shared picks navigation | PASS | navigation present |
 | S4 executive summary links in-site to picks + unresolved and states limitations | PASS | exec summary checks: {'links_picks': True, 'links_unresolved': True, 'mentions_limitations': True, 'mentions_updated': True} |
