@@ -148,12 +148,16 @@
   </section>
 
   <section class="card" id="low-tier-sources">
-    <h3>Where the non-featured matches were searched (re-checked 2026-10-24)</h3>
+    <h3>Where the non-featured matches were searched (re-checked 2026-10-24 and 2026-10-25)</h3>
     <p class="small">
       The fixtures without a featured bookmaker line were re-checked in the order the brief requires:
-      established sportsbooks → esportsbooks / esports betting lines → community results. Every row below is a live
-      observation made on 2026-10-24, at the link shown; nothing is inferred. Full notes with the same links:
-      <a href="../research/betting-sources.md">research/betting-sources.md §14</a> (served from this repository).
+      established sportsbooks → esportsbooks / esports betting lines → community results. The dated rows below are
+      live observations made on 2026-10-24 at the link shown; nothing is inferred. The 2026-10-25 pass added
+      bwin, DraftKings, FanDuel, Betsson, NordicBet, Tipico, MyBookie, Unikrn, Loot.bet, Cyber.bet, Duelbits and
+      the official Riot schedule to the live probe (50 sources total); its measured HTTP table is the
+      <a href="#market-probe">External sources re-checked on this update</a> section above. Full notes with the
+      same links: <a href="../research/betting-sources.md">research/betting-sources.md §14 and §20</a>
+      (served from this repository).
     </p>
     <div class="table-wrap">
       <table>
@@ -181,7 +185,7 @@
           </tr>
           <tr>
             <td><a href="https://lol.fandom.com/wiki/Special:CargoTables/MatchSchedule" target="_blank" rel="noopener">Leaguepedia MatchSchedule / Standings ↗</a></td>
-            <td>31,752 schedule rows and 2,880 standings rows fetched in the current snapshot; every model row links its competition page.</td>
+            <td>Tens of thousands of recorded MatchSchedule series plus the current-split Standings tables are fetched every run (the exact row counts for the current refresh appear in this payload's <code>sources_status</code> and on the Executive Summary); every model row links its own competition page.</td>
             <td><span class="chip green">Used for our own line</span> (CC BY-SA 3.0).</td>
           </tr>
         </tbody>
@@ -189,9 +193,10 @@
     </div>
     <p class="small">
       <b>Limitation this creates:</b> a model line is not a market line. It carries no bookmaker margin and no
-      roster/injury news, and it must not be read as an edge against a bookmaker price. 73 of 169 rows are capped at
-      Low confidence for thin samples (&lt;8 games in 365 days) or cross-league comparisons; 0 rows are unresolved in
-      the current snapshot. The per-league version of this table is on
+      roster/injury news, and it must not be read as an edge against a bookmaker price. Rows with thin samples
+      (&lt;8 games in 365 days) or cross-league comparisons are capped at Low confidence and labelled per row;
+      any row without even model evidence is published as an explicit 50/50 placeholder rather than guessed. The
+      live low-confidence and unresolved counts, and the per-league version of this table, are on
       <a href="unresolved.html">Unresolved &amp; limitations</a>.
     </p>
   </section>
