@@ -179,6 +179,21 @@ def test_payload_book_invariant() -> None:
     check("standings rows cite a competition-specific page", not generic_st,
           (f"offenders: {generic_st[:3]}" if generic_st else "all standings rows specific"))
 
+    # low-confidence reason tallies in unresolved.reasons and low_confidence_reasons must agree
+    unres = data.get("unresolved") or {}
+    r1 = sum(int(x.get("count") or 0) for x in (unres.get("reasons") or []))
+    r2 = sum(int(x.get("count") or 0) for x in (unres.get("low_confidence_reasons") or []))
+    other_r1 = [x for x in (unres.get("reasons") or [])
+                if x.get("reason") == "Other model uncertainty"]
+    thin_rows = [m for m in rows if m.get("confidence") == "Low"
+                 and m.get("method") in ("MODEL_ELO_THIN", "MODEL_ELO_STANDINGS")
+                 and "CROSS_LEAGUE_MODEL" not in (m.get("flags") or [])]
+    thin_r1 = sum(int(x.get("count") or 0) for x in (unres.get("reasons") or [])
+                  if "Thin history" in str(x.get("reason") or ""))
+    check("low-confidence reason counts match across unresolved blocks",
+          r1 == r2 and thin_r1 == len(thin_rows) and not other_r1,
+          f"reasons_sum={r1}, low_conf_reasons_sum={r2}, thin={thin_r1}/{len(thin_rows)}, other={other_r1}")
+
 
 def main() -> int:
     for fn in (test_dedup_key_ignores_team_order_and_time,

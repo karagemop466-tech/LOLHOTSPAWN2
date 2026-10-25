@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Flagged for review — Hotspawn LoL Picks</title>
 <meta name="description" content="Irregularities and unverified items: excluded cancelled rows, upstream team-tag collisions, schedule bridges, thin history, flex-schedule time shifts and model–market disagreements, every row with source links.">
 <meta name="theme-color" content="#0b1220">
@@ -98,39 +99,40 @@
   </section>
 
   <section id="source-coverage-flags">
-    <h2>Source-coverage flags (raised 2026-10-24; probe expanded again 2026-10-25)</h2>
-    <p class="small">Irregularities found while looking for an external line on fixtures without a featured market. These are dated
-    historical records of what was observed on 2026-10-24; the live, per-source HTTP re-check against the current
-    probe candidate list is on the <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a> page and in the
-    payload's <code>market_probe</code> block. Each row links the page that was actually fetched; the full notes are in
-    <a href="../research/betting-sources.md">research/betting-sources.md §14 and §20–§24</a>.</p>
+    <h2>Source-coverage flags (re-checked 2026-10-25)</h2>
+    <p class="small">Irregularities found while looking for an external line on the <b id="flagged-nonmarket-count">non-market</b>
+    fixtures without a featured market. These are dated historical records; the live, per-source HTTP re-check
+    against the current probe candidate list is on the
+    <a href="unresolved.html#sources-checked">Unresolved &amp; limitations</a> page and in the payload's
+    <code>market_probe</code> block. Each row links the page that was actually fetched; full notes are in
+    <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md" target="_blank" rel="noopener">research/betting-sources.md §14–§24 ↗</a>.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th scope="col">Ref</th><th scope="col">What is irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>F14.1</b></td>
-            <td>A comparison page lists <b>bet365 / ggbet</b> prices for Prime League 2nd Division fixtures, but the page body is rendered client-side — the fetched HTML has no per-fixture price, so the numbers cannot be verified or used automatically.</td>
-            <td><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">Betmonitor Prime League 2nd Division ↗</a></td>
-            <td><span class="chip amber">Needs review</span> — not used in any probability</td>
+            <td data-label="Ref"><b>F14.1</b></td>
+            <td data-label="What is irregular">A comparison page lists <b>bet365 / ggbet</b> prices for Prime League 2nd Division fixtures, but the page body is rendered client-side — the fetched HTML has no per-fixture price, so the numbers cannot be verified or used automatically.</td>
+            <td data-label="Source checked"><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">Betmonitor Prime League 2nd Division ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Needs review</span> — not used in any probability</td>
           </tr>
           <tr>
-            <td><b>F14.2</b></td>
-            <td>A multi-book LoL odds API examined (133 books on a tier-1 sample) requires an <code>apiKey</code>; no key is configured here and no price from it is used. Its "0 fixtures scheduled" reading at 04:15 UTC on 2026-10-24 is reported as-is.</td>
-            <td><a href="https://oddspapi.io/sports/esports/lol" target="_blank" rel="noopener">OddsPapi LoL board ↗</a></td>
-            <td><span class="chip amber">Key-gated</span> — no data used</td>
+            <td data-label="Ref"><b>F14.2</b></td>
+            <td data-label="What is irregular">A multi-book LoL odds API examined (133 books on a tier-1 sample) requires an <code>apiKey</code>; no key is configured here and no price from it is used. Its "0 fixtures scheduled" reading at 04:15 UTC on 2026-10-24 is reported as-is.</td>
+            <td data-label="Source checked"><a href="https://oddspapi.io/sports/esports/lol" target="_blank" rel="noopener">OddsPapi LoL board ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Key-gated</span> — no data used</td>
           </tr>
           <tr>
-            <td><b>F14.3</b></td>
-            <td>Polymarket's resolution text for Top Esports vs Anyone's Legend says 7:00 PM ET (23:00 UTC) while its own countdown and the Hotspawn/Leaguepedia schedule say 17:00 UTC. Our lock time follows Hotspawn; the row carries <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>.</td>
-            <td><a href="https://polymarket.com/event/lol-tes-al-2026-10-24" target="_blank" rel="noopener">Polymarket event page ↗</a></td>
-            <td><span class="chip amber">Upstream data</span> — flagged per row</td>
+            <td data-label="Ref"><b>F14.3</b></td>
+            <td data-label="What is irregular">Polymarket's resolution text for Top Esports vs Anyone's Legend says 7:00 PM ET (23:00 UTC) while its own countdown and the Hotspawn/Leaguepedia schedule say 17:00 UTC. Our lock time follows Hotspawn; the row carries <span class="flag">START_TIME_DISAGREES_WITH_BOOKS</span>.</td>
+            <td data-label="Source checked"><a href="https://polymarket.com/event/lol-tes-al-2026-10-24" target="_blank" rel="noopener">Polymarket event page ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Upstream data</span> — flagged per row</td>
           </tr>
           <tr>
-            <td><b>F14.4</b></td>
-            <td>Pinnacle's esports feed carries only the <i>League of Legends – World Championship</i> competition, so every other Hotspawn league has no Pinnacle reference price in that snapshot. This historical probe does not establish that other bookmakers offer no line. Current model counts appear on the executive summary.</td>
-            <td><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest leagues JSON ↗</a></td>
-            <td><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
+            <td data-label="Ref"><b>F14.4</b></td>
+            <td data-label="What is irregular">Pinnacle's esports feed carries only the <i>League of Legends – World Championship</i> competition, so every other Hotspawn league has no Pinnacle reference price (<span id="flagged-model-count">all non-market</span> rows in the current snapshot are model-priced; this probe does not by itself establish that blocked/key-gated bookmakers offer no line).</td>
+            <td data-label="Source checked"><a href="https://guest.api.arcadia.pinnacle.com/0.1/sports/12/leagues" target="_blank" rel="noopener">Pinnacle guest leagues JSON ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
           </tr>
         </tbody>
       </table>
@@ -141,108 +143,109 @@
     <h2>Line-by-line audit — items needing manual review (re-checked 2026-10-25)</h2>
     <p class="small">Every row below was re-opened on 2026-10-25 and is reported exactly as it came back, including the ones
     that came back empty. The full write-up with the fetched values is
-    <a href="../research/line-by-line-audit-2026-10-25.md">research/line-by-line-audit-2026-10-25.md</a>.</p>
+    <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/line-by-line-audit-2026-10-25.md" target="_blank" rel="noopener">research/line-by-line-audit-2026-10-25.md ↗</a>.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th scope="col">Ref</th><th scope="col">What is irregular</th><th scope="col">Source checked</th><th scope="col">Status</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>A1</b></td>
-            <td><b>Worlds 2026, 25 Oct round — start times disagreed across sources.</b> The 10:41Z snapshot carried feed times
+            <td data-label="Ref"><b>A1</b></td>
+            <td data-label="What is irregular"><b>Worlds 2026, 25 Oct round — start times disagreed across sources.</b> The 10:41Z snapshot carried feed times
             that were one to three hours off Hotspawn's own match pages, Leaguepedia and Polymarket for four fixtures
             (TES–G2, IG–HLE, DK–KOI, Gen.G–LYON), and the payload's order of the last two was swapped. <b>Resolved upstream,
             not by hand:</b> the 14:16Z refresh re-read the same feed field and all four corrected themselves to 17:00 / 18:00 /
             19:00 / 22:00 UTC. <span class="flag">START_TIME_MISMATCH</span> now appears on <b>0</b> rows.</td>
-            <td><a href="https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816" target="_blank" rel="noopener">Hotspawn match page (TES–G2) ↗</a> ·
+            <td data-label="Source checked"><a href="https://www.hotspawn.com/matches/top-esports-vs-g2-esports-worlds-2026-main-event-1075816" target="_blank" rel="noopener">Hotspawn match page (TES–G2) ↗</a> ·
             <a href="https://polymarket.com/esports/league-of-legends/worlds" target="_blank" rel="noopener">Polymarket Worlds board ↗</a></td>
-            <td><span class="chip green">Resolved by upstream refresh</span> — no manual edit</td>
+            <td data-label="Status"><span class="chip green">Resolved by upstream refresh</span> — no manual edit</td>
           </tr>
           <tr>
-            <td><b>A2</b></td>
-            <td><b>Team-tag collision: “Phong Vũ Buffalo”.</b> Hotspawn expands the DACH tag <i>PvB</i> to the defunct Vietnamese
+            <td data-label="Ref"><b>A2</b></td>
+            <td data-label="What is irregular"><b>Team-tag collision: “Phong Vũ Buffalo”.</b> Hotspawn expands the DACH tag <i>PvB</i> to the defunct Vietnamese
             team name. The row is priced as <i>PvB (Swiss Team)</i>, a real Prime League 2nd Division entrant, and all 6 affected
             rows carry <span class="flag">HOTSPAWN_NAME_COLLISION</span>.</td>
-            <td><a href="https://www.hotspawn.com/matches/dkb-xperion-nxt-vs-phong-vu-buffalo-prm-2nd-division-26-27-fall-1079031" target="_blank" rel="noopener">Hotspawn fixture ↗</a> ·
+            <td data-label="Source checked"><a href="https://www.hotspawn.com/matches/dkb-xperion-nxt-vs-phong-vu-buffalo-prm-2nd-division-26-27-fall-1079031" target="_blank" rel="noopener">Hotspawn fixture ↗</a> ·
             <a href="https://www.primeleague.gg/en/leagues/prm/3227-fall-split-202627" target="_blank" rel="noopener">Prime League 2nd Division ↗</a></td>
-            <td><span class="chip amber">Upstream naming</span> — resolved, flagged per row</td>
+            <td data-label="Status"><span class="chip amber">Upstream naming</span> — resolved, flagged per row</td>
           </tr>
           <tr>
-            <td><b>A3</b></td>
-            <td><b>Tunisian Super League — organizer page is a template shell.</b> The TUNESF LoL event page reads
+            <td data-label="Ref"><b>A3</b></td>
+            <td data-label="What is irregular"><b>Tunisian Super League — organizer page is a template shell.</b> The TUNESF LoL event page reads
             “Status: Finished · Registered Teams: 0”, so it cannot confirm any of the 24 Tunisian fixtures. No organizer
             link is published for those rows; Leaguepedia + Hotspawn remain the sources.</td>
-            <td><a href="https://esports.tunesf.com/events/tunisian-league-of-legends-super-league" target="_blank" rel="noopener">TUNESF LoL event ↗</a></td>
-            <td><span class="chip amber">Unverified organizer</span> — not used as evidence</td>
+            <td data-label="Source checked"><a href="https://esports.tunesf.com/events/tunisian-league-of-legends-super-league" target="_blank" rel="noopener">TUNESF LoL event ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Unverified organizer</span> — not used as evidence</td>
           </tr>
           <tr>
-            <td><b>A4</b></td>
-            <td><b>4 Nations 2026 Halloween Heist — no organizer fixture page verified.</b> UKEL is the organizer, but no public
+            <td data-label="Ref"><b>A4</b></td>
+            <td data-label="What is irregular"><b>4 Nations 2026 Halloween Heist — no organizer fixture page verified.</b> UKEL is the organizer, but no public
             fixture page could be confirmed today; the 5 rows rest on Leaguepedia and Hotspawn only.</td>
-            <td><a href="https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist" target="_blank" rel="noopener">Leaguepedia: 4 Nations Halloween Heist ↗</a></td>
-            <td><span class="chip amber">Unverified organizer</span></td>
+            <td data-label="Source checked"><a href="https://lol.fandom.com/wiki/4_Nations/2026_Season/Halloween_Heist" target="_blank" rel="noopener">Leaguepedia: 4 Nations Halloween Heist ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Unverified organizer</span></td>
           </tr>
           <tr>
-            <td><b>A5</b></td>
-            <td><b>Arabian League 2nd Division — no official fixture page verified.</b> The competition is a Riot/Vanguard
+            <td data-label="Ref"><b>A5</b></td>
+            <td data-label="What is irregular"><b>Arabian League 2nd Division — no official fixture page verified.</b> The competition is a Riot/Vanguard
             regional league; no public fixture page was confirmed, so the 8 rows rest on Leaguepedia and Hotspawn.</td>
-            <td><a href="https://lol.fandom.com/wiki/Arabian_League_2nd_Division" target="_blank" rel="noopener">Leaguepedia: Arabian League 2nd Division ↗</a></td>
-            <td><span class="chip amber">Unverified organizer</span></td>
+            <td data-label="Source checked"><a href="https://lol.fandom.com/wiki/Arabian_League_2nd_Division" target="_blank" rel="noopener">Leaguepedia: Arabian League 2nd Division ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Unverified organizer</span></td>
           </tr>
           <tr>
-            <td><b>A6</b></td>
-            <td><b>LigaGG CELOL A / B — no official fixture page verified.</b> Leaguepedia carries the splits; the organizer's
+            <td data-label="Ref"><b>A6</b></td>
+            <td data-label="What is irregular"><b>LigaGG CELOL A / B — no official fixture page verified.</b> Leaguepedia carries the splits; the organizer's
             own fixture page was not confirmed, so those 8 rows keep Leaguepedia + Hotspawn sources.</td>
-            <td><a href="https://lol.fandom.com/wiki/LigaGG" target="_blank" rel="noopener">Leaguepedia: LigaGG ↗</a></td>
-            <td><span class="chip amber">Unverified organizer</span></td>
+            <td data-label="Source checked"><a href="https://lol.fandom.com/wiki/LigaGG" target="_blank" rel="noopener">Leaguepedia: LigaGG ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Unverified organizer</span></td>
           </tr>
           <tr>
-            <td><b>A7</b></td>
-            <td><b>Komplettligaen Autumn Playoffs — fixtures not found on the organizer page.</b> The Norwegian site lists its
+            <td data-label="Ref"><b>A7</b></td>
+            <td data-label="What is irregular"><b>Komplettligaen Autumn Playoffs — fixtures not found on the organizer page.</b> The Norwegian site lists its
             regular-season “Kommende kamper” and results, but no matching playoff fixture text for the 3 playoff rows was
             found today. Times are therefore taken from Hotspawn only.</td>
-            <td><a href="https://www.komplettligaen.no/lol/" target="_blank" rel="noopener">Komplettligaen LoL ↗</a></td>
-            <td><span class="chip amber">Not confirmed</span> — flagged</td>
+            <td data-label="Source checked"><a href="https://www.komplettligaen.no/lol/" target="_blank" rel="noopener">Komplettligaen LoL ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Not confirmed</span> — flagged</td>
           </tr>
           <tr>
-            <td><b>A8</b></td>
-            <td><b>RIVALS LEAGUE Season 2 — bracket not filled in.</b> The Swedish organizer lists 146 teams and the Season 2
+            <td data-label="Ref"><b>A8</b></td>
+            <td data-label="What is irregular"><b>RIVALS LEAGUE Season 2 — bracket not filled in.</b> The Swedish organizer lists 146 teams and the Season 2
             structure, but its Division 1 double-elimination bracket shows “TBD” for the rounds in question, so fixture
             identity rests on Leaguepedia + Hotspawn.</td>
-            <td><a href="https://www.rivalsleague.gg/lol" target="_blank" rel="noopener">RIVALS LEAGUE ↗</a></td>
-            <td><span class="chip amber">Bracket TBD</span> — flagged</td>
+            <td data-label="Source checked"><a href="https://www.rivalsleague.gg/lol" target="_blank" rel="noopener">RIVALS LEAGUE ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Bracket TBD</span> — flagged</td>
           </tr>
           <tr>
-            <td><b>A9</b></td>
-            <td><b>Betmonitor PRM 2nd Division — the price table is not reproducible.</b> An earlier search-engine excerpt
+            <td data-label="Ref"><b>A9</b></td>
+            <td data-label="What is irregular"><b>Betmonitor PRM 2nd Division — the price table is not reproducible.</b> An earlier search-engine excerpt
             showed PRM 2D prices; two direct reads of the page on 2026-10-25 returned only the site's generic
             football/tennis/basketball highlights with no LoL row. Because the numbers cannot be re-read on the page itself,
             <b>none of them is used</b> in any probability.</td>
-            <td><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">Betmonitor PRM 2D ↗</a></td>
-            <td><span class="chip amber">Client-rendered</span> — not used</td>
+            <td data-label="Source checked"><a href="https://www.betmonitor.com/odds-comparison/esports/prime-league-2nd-division/10024464" target="_blank" rel="noopener">Betmonitor PRM 2D ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Client-rendered</span> — not used</td>
           </tr>
           <tr>
-            <td><b>A10</b></td>
-            <td><b>bmbets — no Prime League market at all.</b> Its LoL league index today lists
+            <td data-label="Ref"><b>A10</b></td>
+            <td data-label="What is irregular"><b>bmbets — no Prime League market at all.</b> Its LoL league index today lists
             <i>LoL World Championship (9)</i>, <i>LoL – LCP (1)</i> and <i>League of Legends – Game Changers Rising (1)</i>; no PRM
             competition exists there. The same page also renders an over-quota reCAPTCHA widget, which is why an earlier
             attempt recorded the site as blocked — the league index itself did load.</td>
-            <td><a href="https://www.bmbets.com/e-sports/world/lol---prime-league/" target="_blank" rel="noopener">bmbets LoL – Prime League ↗</a></td>
-            <td><span class="chip amber">Coverage gap</span> — no PRM price</td>
+            <td data-label="Source checked"><a href="https://www.bmbets.com/e-sports/world/lol---prime-league/" target="_blank" rel="noopener">bmbets LoL – Prime League ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Coverage gap</span> — no PRM price</td>
           </tr>
           <tr>
-            <td><b>A11</b></td>
-            <td><b>Cloudbet — advertises PRM 2nd Division, has no events.</b> The division page states
+            <td data-label="Ref"><b>A11</b></td>
+            <td data-label="What is irregular"><b>Cloudbet — advertises PRM 2nd Division, has no events.</b> The division page states
             “No Prime League 2nd Division events available — Check back later.”; the Cloudbet sports API needs an
             <code>X-API-Key</code> from an account, and no key is configured. Nothing from Cloudbet is used.</td>
-            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events" target="_blank" rel="noopener">Cloudbet PRM 2D events ↗</a> ·
+            <td data-label="Source checked"><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division?tab=events" target="_blank" rel="noopener">Cloudbet PRM 2D events ↗</a> ·
             <a href="https://cloudbet.github.io/wiki/en/docs/sports/api/" target="_blank" rel="noopener">Cloudbet Sports API docs ↗</a></td>
-            <td><span class="chip amber">No events / key-gated</span> — not used</td>
+            <td data-label="Status"><span class="chip amber">No events / key-gated</span> — not used</td>
           </tr>
           <tr>
-            <td><b>A12</b></td>
-            <td><b>Prime League category claim not confirmed.</b> The earlier claim that a dedicated 1st-division board had live markets is unverified. The cited category path returned HTTP 404 during the 25 Oct integrated CI check. No price or division-coverage conclusion may be drawn from it; no such line is used for the PRM fixtures.</td>
-            <td><a href="https://polymarket.com/" target="_blank" rel="noopener">Polymarket publisher ↗</a><span class="sub">Attempted path: <code>/esports/league-of-legends/prime-league-1st-division</code></span> <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025" target="_blank" rel="noopener">Observed 404 / check evidence ↗</a></td>
-            <td><span class="chip amber">Unverified / dead category</span> — not used</td>
+            <td data-label="Ref"><b>A12</b></td>
+            <td data-label="What is irregular"><b>Prime League category claim not confirmed (no 2nd/3rd Division markets).</b> The earlier claim that a dedicated 1st-division board had live markets is unverified: path <code>/esports/league-of-legends/prime-league-1st-division</code> returned <code>HTTP 404</code> during the 25 Oct integrated CI check, and the live Gamma LoL feed carries 0 PRM 2nd/3rd Division rows. No price or division-coverage conclusion may be drawn from the 404 path; only validated full-series lines from the Gamma feed are used.</td>
+            <td data-label="Source checked"><a href="https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&amp;active=true&amp;closed=false&amp;limit=200" target="_blank" rel="noopener">Polymarket Gamma LoL events JSON ↗</a> ·
+            <a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40202840025" target="_blank" rel="noopener">Observed 404 / check evidence ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Unverified / dead category</span> — not used</td>
           </tr>
         </tbody>
       </table>
@@ -261,36 +264,36 @@
         </thead>
         <tbody>
           <tr>
-            <td><b>F20.1</b></td>
-            <td>A fixture listed on the lobby had <b>no pick and no exclusion entry</b> in the 2026-10-25T10:41Z payload:
+            <td data-label="Ref"><b>F20.1</b></td>
+            <td data-label="What was irregular">A fixture listed on the lobby had <b>no pick and no exclusion entry</b> in the 2026-10-25T10:41Z payload:
               <i>Team Lucidity Esports vs Fritt Fall</i> (RIVALS LEAGUE Season 2, 2026-10-31T17:30Z, id 1090065). The priced
               set was built from the fixtures-API rows only, so a lobby-listed fixture the API lagged on was dropped silently.</td>
-            <td><a href="https://www.hotspawn.com/matches/team-lucidity-esports-vs-fritt-fall-rivals-league-season-2-1090065" target="_blank" rel="noopener">Hotspawn match page ↗</a></td>
-            <td><span class="chip green">Fixed</span> — priced as MODEL_ELO_STANDINGS 60.0% (Medium) in the 14:20Z payload; the priced set is now the union of lobby and API, and a coverage gate fails a refresh on an unexplained gap</td>
+            <td data-label="Source checked"><a href="https://www.hotspawn.com/matches/team-lucidity-esports-vs-fritt-fall-rivals-league-season-2-1090065" target="_blank" rel="noopener">Hotspawn match page ↗</a></td>
+            <td data-label="Status"><span class="chip green">Fixed</span> — priced as MODEL_ELO_STANDINGS 60.0% (Medium) in the 14:20Z payload; the priced set is now the union of lobby and API, and a coverage gate fails a refresh on an unexplained gap</td>
           </tr>
           <tr>
-            <td><b>F20.2</b></td>
-            <td>Cloudbet markets Prime League 2nd Division but serves an empty board: “No Prime League 2nd Division events available”.</td>
-            <td><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">Cloudbet Prime League 2nd Division ↗</a></td>
-            <td><span class="chip amber">Upstream</span> — no price exists to use</td>
+            <td data-label="Ref"><b>F20.2</b></td>
+            <td data-label="What was irregular">Cloudbet markets Prime League 2nd Division but serves an empty board: “No Prime League 2nd Division events available”.</td>
+            <td data-label="Source checked"><a href="https://www.cloudbet.com/en/esports/league-of-legends/germany-t8205-prime-league-2nd-division" target="_blank" rel="noopener">Cloudbet Prime League 2nd Division ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Upstream</span> — no price exists to use</td>
           </tr>
           <tr>
-            <td><b>F20.3</b></td>
-            <td>bmbets has a Prime League 2nd Division URL, but the live board lists only LoL World Championship, LoL – LCP and LoL Game Changers Rising.</td>
-            <td><a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets Prime League 2nd Division ↗</a></td>
-            <td><span class="chip amber">Upstream</span> — competition not priced</td>
+            <td data-label="Ref"><b>F20.3</b></td>
+            <td data-label="What was irregular">bmbets has a Prime League 2nd Division URL, but the live board lists only LoL World Championship, LoL – LCP and LoL Game Changers Rising.</td>
+            <td data-label="Source checked"><a href="https://www.bmbets.com/e-sports/world/lol---prime-league-2nd-division/" target="_blank" rel="noopener">bmbets Prime League 2nd Division ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Upstream</span> — competition not priced</td>
           </tr>
           <tr>
-            <td><b>F20.4</b></td>
-            <td>OddsPortal's League of Legends index lists one competition only (“League of Legends World Championship (10)”), and its Prime League page says prices “will appear here as soon as bookmaker betting odds become available”.</td>
-            <td><a href="https://www.oddsportal.com/esports/league-of-legends/" target="_blank" rel="noopener">OddsPortal LoL index ↗</a></td>
-            <td><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
+            <td data-label="Ref"><b>F20.4</b></td>
+            <td data-label="What was irregular">OddsPortal's League of Legends index lists one competition only (“League of Legends World Championship (10)”), and its Prime League page says prices “will appear here as soon as bookmaker betting odds become available”.</td>
+            <td data-label="Source checked"><a href="https://www.oddsportal.com/esports/league-of-legends/" target="_blank" rel="noopener">OddsPortal LoL index ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Coverage gap</span> — documented on Unresolved</td>
           </tr>
           <tr>
-            <td><b>F20.5</b></td>
-            <td>The three Komplettligaen Playoffs lobby cards link to a placeholder (<code>https://www.hotspawn.com/?fixtures=waiting-for-information-2208</code>) instead of a match page, so no per-match permalink exists upstream. The rows keep the fixture id and link the competition page.</td>
-            <td><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a></td>
-            <td><span class="chip amber">Upstream</span> — no match page to link</td>
+            <td data-label="Ref"><b>F20.5</b></td>
+            <td data-label="What was irregular">The three Komplettligaen Playoffs lobby cards link to a placeholder (<code>https://www.hotspawn.com/?fixtures=waiting-for-information-2208</code>) instead of a match page, so no per-match permalink exists upstream. The rows keep the fixture id and link the competition page.</td>
+            <td data-label="Source checked"><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a></td>
+            <td data-label="Status"><span class="chip amber">Upstream</span> — no match page to link</td>
           </tr>
         </tbody>
       </table>
@@ -305,7 +308,7 @@
 
   <section id="official-results-audit">
     <h2>Model evidence: official results not independently confirmed</h2>
-    <p class="small"><a href="../research/source-audit-2026-10-25-c1e74f5e.md">Dated source research, verification details and limitations (25 Oct) →</a></p>
+    <p class="small"><a href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/source-audit-2026-10-25-c1e74f5e.md" target="_blank" rel="noopener">Dated source research, verification details and limitations (25 Oct) →</a></p>
     <p class="small">These are predictions, not verified facts. Every non-market fixture is listed below with its Hotspawn listing and available community references. The organizer-confirmed results column is deliberately blank (—) and flagged unverified: this pipeline has not checked every historical game against primary organizer records. A league homepage or a successful HTTP response does not verify those records. No official win probability is claimed.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Match</th><th scope="col">Estimate</th><th scope="col">Organizer-confirmed results</th><th scope="col">Source references</th></tr></thead>
