@@ -66,9 +66,14 @@ What this means, stated precisely:
 * Hotspawn's **own** match pages, Leaguepedia and Polymarket agree with each other and disagree with the feed for
   these four rows. The most likely cause is an upstream re-slot of the 25 Oct round that reached the pages but not
   the epoch field at the time of our 10:41Z snapshot.
-* **Not fixed by hand** — a manual edit would be an unverifiable value. The next scheduled refresh (16:41Z) re-reads
-  the feed. Both the summary and the match page now surface the disagreement (row flag ⏱, plus a
-  “start time by source” card listing Hotspawn, Leaguepedia and every book that priced the fixture).
+* **Not fixed by hand** — a manual edit would be an unverifiable value. Both the summary and the match page surface
+  the disagreement (row flag ⏱, plus a “start time by source” card listing Hotspawn, Leaguepedia and every book that
+  priced the fixture).
+* **Resolution measured the same day.** The branch's pipeline run published a fresh payload at **14:16Z**, and the
+  four times corrected themselves to **17:00 (IG–HLE), 18:00 (TES–G2), 19:00 (DK–KOI), 22:00 (Gen.G–LYON) UTC**,
+  which is exactly what the three independent sources said. `START_TIME_MISMATCH` now appears **0 times** in the
+  payload (only 2 rows keep `START_TIME_DISAGREES_WITH_BOOKS`, where a book's own kickoff field lags by ≤3 h).
+  Nothing in the code changed for this: the pipeline reads the epoch field, the upstream feed caught up.
 
 ### 2.3 Team identity — one confirmed upstream collision
 

@@ -57,11 +57,13 @@
     <p class="small"><b>Start times are shown exactly as Hotspawn's feed reports them</b>, because that feed is
     what sets the Pick'em lock. Other sources sometimes give a different time for the same fixture; rather than
     silently choosing one, every row like that is marked <b>⏱</b> and its match page lists the time reported by
-    <b>each</b> source (Hotspawn, Leaguepedia, and every book that priced it) with links. Measured 2026-10-25: of
-    156 fixtures, 10 carried <span class="flag">START_TIME_MISMATCH</span> (Hotspawn vs Leaguepedia) and 2 of
-    those also disagreed with the bookmakers. Example — <i>Top Esports vs G2 Esports</i>: Hotspawn feed 17:00 UTC,
-    Pinnacle 18:15 UTC, Bovada 18:00 UTC, Unibet 17:00 UTC, Polymarket 00:00 UTC the next day, Leaguepedia 18:00 UTC.
-    The disagreement is a data-quality limit of the upstream feeds, not an estimate of ours.</p>
+    <b>each</b> source (Hotspawn, Leaguepedia, and every book that priced it) with links. Measured 2026-10-25: the 10:41Z snapshot carried
+    <span class="flag">START_TIME_MISMATCH</span> on 10 fixtures (Hotspawn feed vs Leaguepedia), including four
+    Worlds fixtures — e.g. <i>Top Esports vs G2 Esports</i> was 17:00 UTC in the feed while Hotspawn's own match page,
+    Leaguepedia and Polymarket all said 18:00 UTC. <b>Nothing was edited by hand</b>: the next 6-hourly run (14:16Z)
+    re-read the feed and those four times corrected themselves to 17:00 / 18:00 / 19:00 / 22:00 UTC, leaving 0
+    <span class="flag">START_TIME_MISMATCH</span> in the current payload. The disagreement is an upstream data-quality
+    limit, and the site's job is to show it rather than hide it.</p>
   </section>
 
   <section class="card">
