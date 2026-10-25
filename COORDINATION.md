@@ -2180,3 +2180,5 @@ This record-only follow-up changes no website, model, workflow or generated valu
 | Tasks T27 / T28 / T29 / T30 | **done**, all implementation, integration, merge and deployment checks complete. |
 
 This record changes documentation only; it does not regenerate, patch or replace the published payload.
+
+**Close-out addendum (terminal record):** the close-out record above merged as PR [#85](https://github.com/karagemop466-tech/LOLHOTSPAWN2/pull/85) → merge commit `90e7753` at 2026-10-25T15:23:57Z, and its Pages deployment [40206741369](https://github.com/karagemop466-tech/LOLHOTSPAWN2/actions/runs/40206741369) succeeded. This addendum is documentation-only and is the final board entry for this session: PR #83 (feature) and PR #85 (record) are both merged, `main` is green, and the six-hourly publisher continues on `0 */6 * * *`. No further recording chain is required.
