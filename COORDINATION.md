@@ -1609,3 +1609,46 @@ Reconciliation f931cee9: main advanced via audit-only PR #60; both coordination 
 **No-file-conflict statement:** T27 touches only the research note and the probe candidate tuple; T28 touches only
 `docs/`; T29 is read-only verification; T30 touches only this board plus CI-generated artifacts. Any request from
 another session to change a file outside this scope will be logged here instead of edited.
+
+---
+
+## Session `arena/85bba52b-lolhotspawn2` — 2026-10-25 (completion record)
+
+Tasks T27–T30 are **done on this branch**; the PR/merge/deploy links are appended after the merge below.
+
+### What changed (T27–T30)
+
+| Task | Result | Files |
+|---|---|---|
+| T27 fresh external-source research | `research/betting-sources.md` §20 (+20.1–20.3): Cloudbet (advertises PRM 2D, events tab empty; API needs `X-API-Key`), bmbets (LoL index = Worlds 9 / LCP 1 / Game Changers Rising 1, no PRM; page also renders an over-quota reCAPTCHA widget), Betmonitor (PRM 2D page returns its generic cross-sport highlights, twice), esportsinsider (PRM **1st** division only), Polymarket (PRM **1st** division only). 4 new candidates added to `scripts/source_probe.py`. | `research/betting-sources.md`, `scripts/source_probe.py` |
+| T28 phone-first site pass | Per-row plain-language "why this pick" (`.sub` chips), amber ⏱ row warning, **"Start time by source"** card on every match page (Hotspawn feed + each book's own `start_utc` + delta + link), installable manifest + 4 PNG icons + apple-touch-icon on all 7 pages, 5th exec-summary link card to `flagged.html`, phone "Add to Home Screen" tip. | `docs/**` |
+| T29 verification | `verify_site.py` **46 PASS / 0 FAIL / 0 WARN / 1 SKIP**; `test_verifier.py` **55/55**; `check_dom_render.js` **60/60**; `render_check.cjs` PASS; `check_dom_contract.py` PASS; `test_dom_contract` 7/7; `test_entity_and_books` 17/17; `test_standings_model` ALL PASS; `audit/test_model` 23/0. | `scripts/verify_site.py`, `verification/**` |
+| T30 integration | `research/line-by-line-audit-2026-10-25.md` (gates, PRM 2D 7/7 time table, Worlds irregularities, PvB collision, 6 market rows vs Polymarket, 147-no-line evidence, organizer coverage, "could not verify" table); `docs/flagged.html` `#audit-2026-10-25` A1–A12 with a source link on **every** row; new verifier **S17** enforcing exactly that. | `research/**`, `docs/flagged.html`, `docs/methodology.html`, `scripts/verify_site.py` |
+
+### Resolved irregularities (evidence, not assertions)
+
+* **I-Worlds-times** — the 10:41Z payload carried 25 Oct Worlds times 1–3 h off Hotspawn's own match pages, Leaguepedia and
+  Polymarket, with GEN–LYON / DK–KOI swapped. **No manual edit was made.** The 14:16Z refresh re-read the same feed field and
+  all four corrected themselves; `START_TIME_MISMATCH` = **0** rows now (2 rows keep `START_TIME_DISAGREES_WITH_BOOKS`,
+  where a book's own kickoff field lags ≤3 h). Documented as A1 on `flagged.html` and re-stated in methodology §1.
+* **Betmonitor PRM 2D prices** — an earlier search-engine excerpt showed a full PRM 2D table (bet365 1.90, ggbet 2.12 …).
+  Two direct reads on 2026-10-25 returned the generic highlights index with the correct page title and no LoL row. The
+  prices are therefore recorded as **not reproducible → not used** (A9), and the earlier note is superseded by this record.
+* **bmbets "blocked"** — both readings are true: the league index loads (Worlds/LCP/LGC Rising only), while the page also
+  prints an over-quota reCAPTCHA widget. Recorded that way (A10) so nobody re-litigates it.
+* **Phong Vũ Buffalo** — Hotspawn tag-expansion artefact for DACH entrant **PvB (Swiss Team)**; 6 rows priced as PvB, all
+  flagged `HOTSPAWN_NAME_COLLISION` (A2).
+* **Unverified organizers** — Tunisian (TUNESF template shell), 4 Nations (UKEL), Arabian 2nd Division, LigaGG CELOL,
+  Komplettligaen playoffs (fixtures absent), RIVALS bracket ("TBD") → A3–A8, each with the page that was read.
+
+### Counts on the branch payload (2026-10-25T14:16:18Z, schema 3)
+
+156 fixtures · 156 priced · **0 unresolved** · 9 market (8 consensus + 1 single) · 147 model · 11 Low confidence ·
+9 cancelled fixtures excluded · 12 competitions · 27 fixtures locking in the next 24 h · lobby reconciliation
+234 listed / 156 upcoming / 78 past / 9 excluded / 0 unexplained.
+
+### Standing rules honoured
+
+No Hotspawn crowd percentage and no Hotspawn price is used as an input; every probability is either a de-vigged
+multi-book consensus or our own Elo/standings model; every table row on the review pages links an external page
+(now enforced by S17); nothing was inferred from a blocked source.
