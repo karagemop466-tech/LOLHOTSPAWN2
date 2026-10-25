@@ -1,4 +1,9 @@
-/* Hotspawn LoL Picks — mobile-first dashboard */
+/* Hotspawn LoL Picks — mobile-first dashboard.
+   Phone rules that are asserted by verification/check_mobile_css.py:
+   the viewport is device-width, .table-wrap scrolls rather than pushing the page
+   sideways, tables become stacked cards <= 760 px, body copy is 16 px, the
+   bottom-nav links are 60 px tall, and the summary's pick cards are >= 44 px.
+   Keep those properties if you restyle: CI fails the build without them. */
 :root {
   --bg: #f5f7fb;
   --surface: #ffffff;
