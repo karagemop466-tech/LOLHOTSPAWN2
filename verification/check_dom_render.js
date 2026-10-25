@@ -315,6 +315,37 @@ async function main() {
   check("methodology: no JS error", (mpage.__errors || []).length === 0, (mpage.__errors || []).join(" | "));
   check("methodology: backtest block rendered",
         (mpage.document.querySelector("#backtest") || {}).textContent.trim().length > 0);
+  const lowConfText = (mpage.document.querySelector("#meth-lowconf-summary") || {}).textContent || "";
+  check("methodology: live low-confidence count matches payload",
+        lowConfText.includes(`${PAYLOAD.counts.low_confidence} of ${PAYLOAD.counts.fixtures} rows`),
+        lowConfText.slice(0, 120));
+
+  // ---------- executive summary de-duplication & mobile labels -------------
+  check("summary: #unresolved-summary does not duplicate a sourceless inner table",
+        idoc.querySelectorAll("#unresolved-summary table").length === 0,
+        `${idoc.querySelectorAll("#unresolved-summary table").length} inner table(s)`);
+  check("summary: #exec-league-limits-body links a verified https source on every row",
+        Array.from(idoc.querySelectorAll("#exec-league-limits-body tr"))
+          .every((r) => r.querySelector("a[href^='https://']")));
+
+  function countUnlabelledTds(d) {
+    return Array.from(d.querySelectorAll("tbody tr td"))
+      .filter((td) => !td.hasAttribute("colspan") && !(td.getAttribute("data-label") || "").trim())
+      .length;
+  }
+
+  for (const [label, win] of [
+    ["index.html", idx],
+    ["picks.html", picks],
+    ["leagues.html", lpage],
+    ["unresolved.html", upage],
+    ["flagged.html", fpage],
+    ["methodology.html", mpage],
+  ]) {
+    const missingLabels = countUnlabelledTds(win.document);
+    check(`mobile labels: every <td> on ${label} has data-label`,
+          missingLabels === 0, `${missingLabels} unlabelled <td>`);
+  }
 
   // ---------- match detail --------------------------------------------------
   if (firstId) {
@@ -324,6 +355,20 @@ async function main() {
     check("match detail: no JS error", (dpage.__errors || []).length === 0, (dpage.__errors || []).join(" | "));
     check("match detail: renders both teams", dtext.includes(m.team1) && dtext.includes(m.team2));
     check("match detail: renders the pick", dtext.includes(m.pick));
+    const mktMatch = matches.find((x) => x.market && (x.market.sources || []).length);
+    if (mktMatch) {
+      const mktPage = await render("match.html", { query: `?id=${encodeURIComponent(mktMatch.id)}` });
+      const unlbl = countUnlabelledTds(mktPage.document);
+      check("match detail (market): every external-line <td> has data-label",
+            unlbl === 0, `${unlbl} unlabelled <td>`);
+    }
+    const blendMatch = matches.find((x) => x.method === "MODEL_ELO_STANDINGS" && x.model && x.model.blended_elo_team1 != null);
+    if (blendMatch) {
+      const bPage = await render("match.html", { query: `?id=${encodeURIComponent(blendMatch.id)}` });
+      check("match detail (standings blend): surfaces Blended Elo",
+            bPage.document.body.textContent.includes("Blended Elo")
+            && bPage.document.body.textContent.includes(String(blendMatch.model.blended_elo_team1)));
+    }
   }
 
   // ---------- match detail: start times by source ----------------------------

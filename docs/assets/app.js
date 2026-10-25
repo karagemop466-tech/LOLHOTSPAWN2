@@ -479,27 +479,15 @@
         : `<b>No fixture is unresolved right now</b> — every upcoming Hotspawn LoL match has a pick from an
            external betting line, our Elo model, or a current-split standings record. Anything that later
            loses its evidence is published here as an explicit <b>50.0% / 50.0% placeholder</b>, never an edge.`;
-      // Per-league limitations are part of the executive summary, not only on
-      // the separate Unresolved page, so the reader sees which signal prices
-      // each competition without leaving this page.
-      const bl = d.unresolved?.by_league || [];
-      const perLeague = bl.length ? `
-        <p class="small"><b>Per-league limitations — which signal prices each competition</b></p>
-        <div class="table-wrap"><table>
-          <thead><tr><th scope="col">Competition</th><th scope="col">Fixtures</th><th scope="col">Pricing mix</th><th scope="col">Limitation</th></tr></thead>
-          <tbody>${bl.map((b) => `<tr>
-            <td data-label="Competition"><a class="rowlink" href="leagues.html#league-${esc(slugify(b.tournament))}"><b>${esc(b.tournament)}</b></a></td>
-            <td data-label="Fixtures"><b>${b.fixtures}</b></td>
-            <td data-label="Pricing mix" class="small">💰 ${b.market ?? 0} mkt · 🧮 ${b.elo ?? 0} Elo · 📊 ${b.standings ?? 0} st · 📐 ${b.prior_only ?? 0} prior · ⚠️ ${b.unresolved ?? 0} unres</td>
-            <td data-label="Limitation" class="small">${esc(b.limitation || b.best_signal || "")}</td>
-          </tr>`).join("")}</tbody>
-        </table></div>` : "";
+      // Per-league limitations with verified source links are rendered in
+      // #exec-league-limits-body immediately below in #unresolved-section; avoid
+      // duplicating an unlinked inner table inside the warning callout.
       const tCount = all0.filter((m) => isTossUp(m)).length;
       ubox.innerHTML = `<div class="warnbox"><h3>⚠️ Unresolved picks (${uCount}) &amp; Low-confidence picks (${lcCount}) &amp; 🪙 Coin-flip picks (${tCount})</h3>
       <p>${headline} <b>${lcCount}</b> additional amateur/promotion row${lcCount === 1 ? "" : "s"} rely on thin history (&lt;8 games), a cross-league comparison, or a single debut side against the competition prior and ${lcCount === 1 ? "is" : "are"} capped at Low confidence. Separately, <b>${tCount}</b> pick${tCount === 1 ? " is" : "s are"} a <b>coin-flip</b> — the favourite is at or under ${Math.round(TOSSUP_MAX * 100)}%, so the pick exists but carries no real edge; see them via <a href="picks.html?filter=tossup">All picks → 🪙 Coin-flip</a>. Hotspawn's crowd % is never used.</p>
       ${reasons ? `<p class="small"><b>Breakdown by reason</b></p><ul class="clean small">${reasons}</ul>` : ""}
-      ${perLeague}
       <p class="small"><b>Key limitations for generating low-tier picks</b></p><ul class="clean small">${lims}</ul>
+      <p class="small">Per-competition pricing mix and verified source links are listed in the <a href="#exec-league-limits-table">per-league limits table immediately below ↓</a>.</p>
       <p><a class="btn warn" href="unresolved.html">Open Unresolved &amp; full per-league limitations page →</a></p></div>`;
     }
 
@@ -718,13 +706,19 @@
   }
 
   function renderFlagged(d) {
+    const mix = pricingMix(d);
+    const nonMkt = Math.max(0, (mix.total || 0) - (mix.market || 0));
+    const nm1 = $("#flagged-nonmarket-count");
+    if (nm1) nm1.textContent = nonMkt;
+    const nm2 = $("#flagged-model-count");
+    if (nm2) nm2.textContent = nonMkt;
     const groups = {};
     (d.matches || []).forEach((m) => (m.flags || []).forEach((f) => { (groups[f] = groups[f] || []).push(m); }));
     const order = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
     const gb = $("#flag-groups");
     if (gb) gb.innerHTML = order.length ? order.map((f) => {
       const sampleSrc = groups[f][0]?.sources?.[0]?.url || "https://play.hotspawn.com/lol-pickems";
-      return `<tr><td><span class="flag">${esc(f)}</span><span class="sub">${esc(flagLabel(f))}</span></td><td><b>${groups[f].length}</b></td><td><a href="picks.html?filter=${f === "NO_VERIFIED_SIGNAL" ? "unresolved" : "all"}">picks →</a> · <a href="${esc(sampleSrc)}" target="_blank" rel="noopener">source ↗</a></td></tr>`;
+      return `<tr><td data-label="Flag"><span class="flag">${esc(f)}</span><span class="sub">${esc(flagLabel(f))}</span></td><td data-label="Rows"><b>${groups[f].length}</b></td><td data-label="Inspect"><a href="picks.html?filter=${f === "NO_VERIFIED_SIGNAL" ? "unresolved" : "all"}">picks →</a> · <a href="${esc(sampleSrc)}" target="_blank" rel="noopener">source ↗</a></td></tr>`;
     }).join("") : `<tr><td colspan="3">No flags.</td></tr>`;
 
     const eb = $("#excluded-body");
@@ -777,9 +771,9 @@
     </tr>`).join("");
 
     const ss = $("#sources-status");
-    if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b>${s.url ? `<span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span>` : ""}</td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
+    if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td data-label="Source"><b>${esc(s.name)}</b>${s.url ? `<span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span>` : ""}</td><td data-label="Status"><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td data-label="Rows">${s.count ?? "—"}</td><td class="small" data-label="Note">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
-    if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+    if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td data-label="Provider"><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small" data-label="Observed">${esc(s.observed)}</td><td class="small" data-label="Consequence">${esc(s.consequence)}</td></tr>`).join("");
   }
 
   function renderMatch(d) {
@@ -794,9 +788,15 @@
     const mi = methodInfo(m);
     const pair = pctPair(m.prob_team1);
     const t = whenLocal(m.start_utc);
-    const marketRows = (m.market?.sources || []).map((s) => { const p = pctPair(s.prob_team1); return `<tr><td><b>${esc(s.source)}</b></td><td>${p[0]}</td><td>${p[1]}</td><td>${s.decimal_team1 ? esc(s.decimal_team1) : "—"}</td><td><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`; }).join("");
+    const marketRows = (m.market?.sources || []).map((s) => {
+      const p = pctPair(s.prob_team1);
+      const dec = s.decimal_team1 && s.decimal_team2 ? `${esc(s.decimal_team1)} / ${esc(s.decimal_team2)}` : (s.decimal_team1 ? esc(s.decimal_team1) : "—");
+      return `<tr><td data-label="Source"><b>${esc(s.source)}</b></td><td data-label="${esc(m.team1)}">${p[0]}</td><td data-label="${esc(m.team2)}">${p[1]}</td><td data-label="Decimal odds">${dec}</td><td data-label="Link"><a href="${esc(s.url)}" target="_blank" rel="noopener">open ↗</a></td></tr>`;
+    }).join("");
     const model = m.model || {};
     const h2h = model.h2h ? `${model.h2h.team1_wins}/${model.h2h.games} head-to-head wins for ${esc(m.team1)}` : "No head-to-head sample in the last 24 months.";
+    const elo1 = model.elo_team1 != null ? model.elo_team1 : (model.known_side === "team1" ? model.elo_known : (model.known_side === "team2" ? `${model.elo_prior} (competition prior)` : "—"));
+    const elo2 = model.elo_team2 != null ? model.elo_team2 : (model.known_side === "team2" ? model.elo_known : (model.known_side === "team1" ? `${model.elo_prior} (competition prior)` : "—"));
     box.innerHTML = `
       <div class="detail-hero">
         <div class="match-top"><span class="chip ${mi.cls}">${mi.ico} ${esc(mi.label)}</span><span class="chip ${CONF[m.confidence] || ""}">${esc(m.confidence || "—")} confidence</span>${m.best_of ? `<span class="chip">Bo${esc(m.best_of)}</span>` : ""}${m.tier ? `<span class="chip">${/^WAITING/i.test(m.tier) ? "Tier not published" : `Tier ${esc(m.tier)}`}</span>` : ""}</div>
@@ -811,15 +811,16 @@
         <div>
           <div class="card"><h3>${m.market ? "External betting lines" : "No external betting line"}</h3>
             ${m.market ? `<p class="small">Consensus: <b>${pctPair(m.market.consensus_team1)[0]}</b> ${esc(m.team1)} · <b>${pctPair(m.market.consensus_team1)[1]}</b> ${esc(m.team2)}. Dispersion ${pct1(m.market.dispersion)} across ${m.market.distinct_books ?? m.market.source_count} book(s).${m.market.model_team1 != null ? ` Model: ${pct1(m.market.model_team1)} (edge ${(m.market.model_edge_team1 * 100 >= 0 ? "+" : "")}${(m.market.model_edge_team1 * 100).toFixed(1)} pts).` : ""}</p>
-            <div class="table-wrap"><table><thead><tr><th>Source</th><th>${esc(m.team1)}</th><th>${esc(m.team2)}</th><th>Decimal</th><th>Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
+            <div class="table-wrap"><table><thead><tr><th scope="col">Source</th><th scope="col">${esc(m.team1)}</th><th scope="col">${esc(m.team2)}</th><th scope="col">Decimal</th><th scope="col">Link</th></tr></thead><tbody>${marketRows}</tbody></table></div>`
             : `<p>No bookmaker or prediction-market line was found for this fixture at the time of the update. The pick comes from ${m.model ? esc(mi.label) : "an explicit 50/50 placeholder"}.</p>`}
           </div>
           <div class="card"><h3>Our model &amp; standings inputs</h3>
             ${m.model ? `<dl class="kv">
               <dt>Resolved teams</dt><dd>${esc(model.canonical_team1 || model.resolved_team1 || m.team1)} vs ${esc(model.canonical_team2 || model.resolved_team2 || m.team2)}</dd>
               ${model.standings ? `<dt>Standings record</dt><dd>${esc(m.team1)} <b>${model.standings.team1_wins}–${model.standings.team1_losses}</b> · ${esc(m.team2)} <b>${model.standings.team2_wins}–${model.standings.team2_losses}</b> <span class="small">(${esc(model.standings.kind)} in ${esc(model.standings.page)})</span></dd>` : (model.standings_team1 || model.standings_team2) ? `<dt>Split standings</dt><dd>${typeof model.standings_team1 === "object" ? `${esc(m.team1)} <b>${model.standings_team1.win_series ?? "—"}–${model.standings_team1.loss_series ?? "—"}</b> series` : esc(model.standings_team1 || "—")} · ${typeof model.standings_team2 === "object" ? `${esc(m.team2)} <b>${model.standings_team2.win_series ?? "—"}–${model.standings_team2.loss_series ?? "—"}</b> series` : esc(model.standings_team2 || "—")}</dd>` : ""}
-              <dt>Elo (team 1)</dt><dd>${model.elo_team1 ?? "—"} <span class="small">${model.games_team1_365d != null ? `(${model.games_team1_365d} games in 365d)` : ""}</span></dd>
-              <dt>Elo (team 2)</dt><dd>${model.elo_team2 ?? "—"} <span class="small">${model.games_team2_365d != null ? `(${model.games_team2_365d} games in 365d)` : ""}</span></dd>
+              ${model.blended_elo_team1 != null && model.blended_elo_team2 != null ? `<dt>Blended Elo</dt><dd><b>${model.blended_elo_team1}</b> vs <b>${model.blended_elo_team2}</b> <span class="small">(standings weights ${model.standings_weight_team1 ?? 0} / ${model.standings_weight_team2 ?? 0})</span></dd>` : ""}
+              <dt>Elo (team 1)</dt><dd>${elo1} <span class="small">${model.games_team1_365d != null ? `(${model.games_team1_365d} games in 365d)` : ""}</span></dd>
+              <dt>Elo (team 2)</dt><dd>${elo2} <span class="small">${model.games_team2_365d != null ? `(${model.games_team2_365d} games in 365d)` : ""}</span></dd>
               <dt>Prior used</dt><dd>${esc(model.prior_used || "—")}</dd>
               <dt>Head-to-head</dt><dd>${h2h}</dd>
               <dt>Tournament page</dt><dd>${m.leaguepedia_url ? `<a href="${esc(m.leaguepedia_url)}" target="_blank" rel="noopener">Leaguepedia ↗</a>` : "—"}</dd>
@@ -847,9 +848,24 @@
 
   function renderMethodology(d) {
     const ss = $("#sources-status");
-    if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td>${s.count ?? "—"}</td><td class="small">${esc(s.note || "")}</td></tr>`).join("");
+    if (ss) ss.innerHTML = (d.sources_status || []).map((s) => `<tr><td data-label="Source"><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td data-label="Status"><span class="chip ${s.status === "ok" ? "green" : "amber"}">${esc(s.status)}</span></td><td data-label="Rows">${s.count ?? "—"}</td><td class="small" data-label="Note">${esc(s.note || "")}</td></tr>`).join("");
     const cu = $("#checked-unavailable");
-    if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small">${esc(s.observed)}</td><td class="small">${esc(s.consequence)}</td></tr>`).join("");
+    if (cu) cu.innerHTML = (d.checked_unavailable || []).map((s) => `<tr><td data-label="Provider"><b>${esc(s.name)}</b><span class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span></td><td class="small" data-label="Observed">${esc(s.observed)}</td><td class="small" data-label="Consequence">${esc(s.consequence)}</td></tr>`).join("");
+    const lpCounts = $("#meth-lp-counts");
+    if (lpCounts) {
+      const msRow = (d.sources_status || []).find((s) => /MatchSchedule/i.test(s.name || ""));
+      const msN = msRow?.count != null ? Number(msRow.count).toLocaleString("en-US") : "recorded";
+      const stN = d.model?.standings_rows != null ? Number(d.model.standings_rows).toLocaleString("en-US") : "split";
+      const stP = d.model?.standings_pages != null ? ` across ${d.model.standings_pages} competitions` : "";
+      lpCounts.textContent = `${msN} schedule rows and ${stN} standings rows${stP} fetched in the current snapshot`;
+    }
+    const lcSum = $("#meth-lowconf-summary");
+    if (lcSum) {
+      const lc = d.counts?.low_confidence ?? d.unresolved?.low_confidence_count ?? 0;
+      const fx = d.counts?.fixtures ?? (d.matches || []).length;
+      const un = d.counts?.unresolved ?? d.unresolved?.count ?? 0;
+      lcSum.innerHTML = `<b>${lc} of ${fx} rows</b> are capped at Low confidence for thin samples (&lt;8 games in 365 days), cross-league comparisons, or single-side priors; <b>${un} row${un === 1 ? "" : "s"}</b> ${un === 1 ? "is" : "are"} unresolved in the current snapshot. The per-league version of this table is on`;
+    }
     const mProbe = $("#market-probe-body");
     if (mProbe) mProbe.innerHTML = probeRows(d);
     const mProbeSum = $("#probe-summary");
