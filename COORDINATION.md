@@ -1,6 +1,35 @@
 # Coordination Board
 
-## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim)
+## Session `arena/b95df72a-lolhotspawn2` — 2026-10-25 (claim; handoff from stale `arena/df8a86d2`)
+
+The `arena/df8a86d2` claim below was made 2026-10-24 16:15 UTC with no commits on that
+branch since (checked `origin/arena/df8a86d2-lolhotspawn2` is absent and `main`'s latest
+commit is the scheduled refresh `2173cc9`, payload generated 2026-10-25T10:41:50Z) — older
+than the 60-minute takeover rule, so this session takes over T21–T24 as T25–T28. Nothing
+of that session's is discarded (it produced no commits). Baseline verified by this session:
+156 fixtures · 9 market · 92 MODEL_ELO · 53 MODEL_ELO_STANDINGS · 2 MODEL_ELO_THIN ·
+0 UNRESOLVED · 10 low-confidence; `scripts/verify_site.py` **44 PASS / 0 FAIL / 0 WARN / 1 SKIP**.
+
+Defects found at baseline (verified in code, not inferred):
+1. The executive summary's "Next 24 hours" section renders only 6 cards
+   (`docs/assets/app.js` `.slice(0, 6)`) while its own count says 28 matches lock in 24 h,
+   and the payload stores only 8 IDs (`scripts/update_picks.py` `next_24h[:8]`).
+2. On a phone the first actual pick sits below the hero, a 7-chip legend, the link grid,
+   the stat tiles and the coverage/reconciliation card.
+3. The unresolved summary renders the per-league limitations table and the written
+   limitations twice (once inside `#unresolved-summary`, once in the static
+   `#exec-league-limits-body` / `#exec-limitations` blocks).
+
+| Task | Status | Owner | Files (claimed scope) |
+|---|---|---|---|
+| T25 Show **every** next-24 h pick on the executive summary (no 6-card / 8-ID truncation); heading count must equal cards shown | claimed | arena/b95df72a | `docs/assets/app.js`, `scripts/update_picks.py` (next_24h lines only), `verification/check_dom_render.js` (assert count equality) |
+| T26 Phone-first executive summary: starting-soon picks immediately after the hero, legend collapsed, duplicated per-league/limitations blocks rendered once; unresolved & limitations stays a separate section linked from the summary | claimed | arena/b95df72a | `docs/index.html`, `docs/assets/app.js` |
+| T27 Fresh 2026-10-25 source research for low-tier/unpriced matches (established LoL betting sites → esportsbooks → betting-line aggregators → community), link-verified, appended to the research log | claimed | arena/b95df72a | `research/betting-sources.md` |
+| T28 Integration: re-verify (unit suites + `verify_site.py` + jsdom DOM), live pipeline on this branch, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR + merge here | claimed | arena/b95df72a | `COORDINATION.md`, `docs/data/picks.json` (generated) |
+
+Any session that needs a file in this scope must log a request here instead of editing it.
+
+## Session `arena/df8a86d2-lolhotspawn2` — 2026-10-24 (claim, stale — taken over above)
 
 No other session holds an open claim that is younger than 60 minutes as of 2026-10-24 16:15 UTC; all prior sessions' results are merged to `main` (latest scheduled refresh `72c9b5a`, payload generated 2026-10-24T15:28:56Z). This session works only inside the claimed scope.
 
