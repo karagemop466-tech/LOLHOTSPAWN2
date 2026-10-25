@@ -316,7 +316,7 @@
    "category": "market",
    "http_status": 403,
    "is_json": false,
-   "bytes": 5740,
+   "bytes": 5718,
    "lol_mentions": null,
    "vs_style_items": null,
    "verdict": "blocked to automated requests (HTTP 403) — no line can be read",
