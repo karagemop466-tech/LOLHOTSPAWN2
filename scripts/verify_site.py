@@ -85,7 +85,10 @@ RESULTS_HOSTS = ("lol.fandom.com", "leaguepedia", "liquipedia.net", "bo3.gg",
 # bmbets: no low-tier LoL board). They are cited only on Methodology as sources
 # that were checked and found empty — never a probability input.
 REVIEW_HOSTS = ("betmonitor.com", "esportbet.com", "esportsbets.com",
-                "cloudbet.com", "bmbets.com", "esportsinsider.com")
+                "cloudbet.com", "bmbets.com", "esportsinsider.com",
+                # official tournament organizers cited for manual review (2026-10-25 audit)
+                "primeleague.gg", "rivalsleague.gg", "komplettligaen.no",
+                "tunesf.com", "cloudbet.github.io")
 ALL_HOSTS = (FIXTURE_HOSTS + MARKET_HOSTS + RESULTS_HOSTS + REVIEW_HOSTS
              + ("github.com", "creativecommons.org"))
 
@@ -1117,6 +1120,7 @@ def verify_site(rep: Report, rows: list[dict]) -> None:
 
     verify_structure(rep, DOCS)
     verify_phone_install(rep, DOCS)
+    verify_review_rows(rep, DOCS)
 
 
 # --------------------------------------------------------------------------- structure
@@ -1197,6 +1201,55 @@ def _png_size(path: str) -> tuple[int, int] | None:
     if len(head) < 33 or head[:8] != b"\x89PNG\r\n\x1a\n" or head[12:16] != b"IHDR":
         return None
     return struct.unpack(">II", head[16:24])
+
+
+REVIEW_TABLE_RE = re.compile(
+    r'<section[^>]*id="(?P<sec>[a-z0-9-]+)"[^>]*>(?P<body>.*?)</section>', re.S | re.I)
+REVIEW_TABLES = {"audit-2026-10-25": 8, "source-coverage-flags": 3}
+
+
+def _row_has_link(row_html: str) -> bool:
+    return bool(re.search(r'href="https?://[^"]+"', row_html, re.I))
+
+
+def verify_review_rows(rep: Report, docs_dir: str) -> None:
+    """S17: every row of the manual-review tables must carry an external source link.
+
+    The brief is explicit: a table row may only stay on the site if the reader can
+    click through to the official page that was checked. Counting rows and links per
+    section (rather than trusting the page by eye) keeps a future edit from quietly
+    dropping a link and leaving an unsourced claim behind.
+    """
+    path = os.path.join(docs_dir, "flagged.html")
+    try:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            html = fh.read()
+    except OSError:
+        rep.add("S17", "manual-review tables link a source on every row", FAIL,
+                "docs/flagged.html is missing")
+        return
+    sections = {m.group("sec"): m.group("body") for m in REVIEW_TABLE_RE.finditer(html)}
+    problems: list[str] = []
+    total_rows = 0
+    for sec, minimum in REVIEW_TABLES.items():
+        body = sections.get(sec)
+        if body is None:
+            problems.append(f"section #{sec} is missing")
+            continue
+        tbody = re.search(r"<tbody>(.*?)</tbody>", body, re.S | re.I)
+        rows = re.findall(r"<tr>(.*?)</tr>", tbody.group(1) if tbody else "", re.S | re.I)
+        rows = [r for r in rows if "<td" in r]
+        total_rows += len(rows)
+        if len(rows) < minimum:
+            problems.append(f"#{sec} has {len(rows)} row(s), expected at least {minimum}")
+        bare = [i + 1 for i, r in enumerate(rows) if not _row_has_link(r)]
+        if bare:
+            problems.append(f"#{sec}: row(s) {bare[:6]} carry no external source link")
+    rep.add("S17", "manual-review tables link a source on every row",
+            PASS if not problems else FAIL,
+            (f"{total_rows} reviewed row(s) across {len(REVIEW_TABLES)} section(s), "
+             f"every one links an external page") if not problems else "; ".join(problems[:6]),
+            problems[:6])
 
 
 def verify_phone_install(rep: Report, docs_dir: str) -> None:
