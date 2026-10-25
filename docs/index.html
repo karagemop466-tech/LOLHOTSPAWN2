@@ -58,21 +58,16 @@
 
   <section class="hero">
     <p class="eyebrow">Executive summary · refreshed every 6 hours</p>
-    <h1>Every League of Legends match on Hotspawn — one clear pick, both win probabilities.</h1>
-    <p class="lede">
-      We mirror every upcoming scheduled LoL fixture on
-      <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn's Pick'em lobby</a>
-      and originate an independent probability for each one: 💰 de-vigged sportsbook &amp; prediction-market lines first,
-      otherwise 🧮 our own Elo model on recorded results and split standings.
-      <b>Hotspawn crowd percentages are context only — never an input to any probability.</b>
-    </p>
-    <p class="statusline" id="hero-status">Loading the latest refresh…</p>
+    <h1>Your Hotspawn LoL picks.</h1>
     <div class="hero-actions">
       <a class="btn primary big" href="picks.html">📋 Find every pick <span class="btn-n" id="hero-count-picks">—</span></a>
       <a class="btn primary" href="picks.html?filter=next24">⏰ Next 24 hours <span class="btn-n" id="hero-count-next24">—</span></a>
       <a class="btn" href="leagues.html">🏆 By league / tier</a>
       <a class="btn warn" href="#unresolved-section">⚠️ Unresolved <span class="btn-n" id="hero-count-unresolved">—</span></a>
     </div>
+
+    <p class="lede">Every upcoming LoL fixture on <a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn</a>, with a clear pick and both teams’ estimated win chances where evidence supports them. External lines first; our model otherwise. <b>Never Hotspawn crowd percentages.</b></p>
+    <p class="statusline" id="hero-status">Loading the latest refresh…</p>
     <details class="hero-details">
       <summary class="small">How each probability is produced (tap to expand)</summary>
       <p class="small">
@@ -122,6 +117,11 @@
     <div id="featured"></div>
   </section>
 
+  <aside class="warnbox small" aria-label="Evidence standard">
+    <b>Estimates, not verified outcomes.</b> Market lines come from external publishers; model-only picks use community-reported Leaguepedia records, not organizer-confirmed results.
+    <a href="flagged.html#official-results-audit">Review unverified evidence by match</a> · <a href="unresolved.html">Unresolved picks &amp; limitations</a>.
+  </aside>
+
   <section id="picks-here" aria-labelledby="picks-here-heading">
     <h2 id="picks-here-heading">📌 Where the updated picks are</h2>
     <p class="small">Five taps — every list on this site is one of these. All lists refresh automatically every 6 hours.</p>
@@ -155,8 +155,8 @@
     <details class="hero-details" style="margin-top:10px">
       <summary class="small" style="cursor:pointer"><b>What the method chips mean (tap to expand)</b></summary>
       <div class="legend" aria-label="What the method chips mean" style="margin-top:8px">
-        <span class="chip green">💰 Market consensus</span><span class="legend-t">two or more independent books or prediction markets price this match (de-vigged average)</span>
-        <span class="chip green">💰 Single book line</span><span class="legend-t">only one reachable book prices it — a line, not a consensus</span>
+        <span class="chip green">💰 Market consensus</span><span class="legend-t">two or more independent books or prediction markets provide usable lines (median with 3+ sources; weighted mean with 2)</span>
+        <span class="chip green">💰 Single book line</span><span class="legend-t">one usable source in this snapshot — a line, not a consensus</span>
         <span class="chip blue">🧮 Own Elo model</span><span class="legend-t">our model on Leaguepedia's recorded results</span>
         <span class="chip blue">📊 Elo + standings</span><span class="legend-t">the model blended with the current split table</span>
         <span class="chip amber">🧮 Elo (thin history)</span><span class="legend-t">few recorded games — wide error bars, marked Low confidence</span>
