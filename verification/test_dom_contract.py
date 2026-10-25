@@ -107,6 +107,24 @@ def main() -> int:
                    code == 1 and "C6 match.html" in out, [l for l in out.splitlines() if "C6" in l][:1]))
     shutil.rmtree(os.path.dirname(d))
 
+    # 7. A static tbody <td> missing data-label (mobile stacked table loses column label).
+    d = copy_docs()
+    patch(os.path.join(d, "flagged.html"), '<td data-label="Ref"><b>F14.1</b></td>', '<td><b>F14.1</b></td>')
+    code, out = run(d)
+    checks.append(("unlabelled static <td> fails C7",
+                   code == 1 and "C7 flagged.html" in out, [l for l in out.splitlines() if "C7" in l][:1]))
+    shutil.rmtree(os.path.dirname(d))
+
+    # 8. A parent-escape relative link href="../research/betting-sources.md" (breaks on Pages).
+    d = copy_docs()
+    patch(os.path.join(d, "methodology.html"),
+          'href="https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/betting-sources.md"',
+          'href="../research/betting-sources.md"')
+    code, out = run(d)
+    checks.append(("parent-escape relative href fails C8",
+                   code == 1 and "C8 methodology.html" in out, [l for l in out.splitlines() if "C8" in l][:1]))
+    shutil.rmtree(os.path.dirname(d))
+
     width = max(len(name) for name, _, _ in checks)
     passed = 0
     for name, ok, detail in checks:

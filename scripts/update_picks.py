@@ -216,6 +216,18 @@ def build_league_breakdown(matches: list[dict]) -> list[dict]:
     return rows
 
 
+def _low_conf_reason(m: dict) -> str:
+    if m["method"] == "MODEL_STANDINGS":
+        return "Standings-based line (few decided series)"
+    if "ONE_TEAM_NO_HISTORY" in m["flags"]:
+        return "One team has no recorded history (league prior used)"
+    if "CROSS_LEAGUE_MODEL" in m["flags"]:
+        return "Cross-league comparison (confidence capped at Low)"
+    if m["method"] in ("MODEL_ELO_THIN", "MODEL_ELO_STANDINGS") or "THIN_HISTORY" in m["flags"]:
+        return "Thin history (<8 games in 365 days)"
+    return "Other model uncertainty"
+
+
 def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     now = now_utc()
     matches = annotate_matches(picks["matches"])
@@ -233,16 +245,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
         else:
             reasons["Other"] += 1
     for m in low_conf:
-        if m["method"] in ("MODEL_STANDINGS", "MODEL_ELO_STANDINGS"):
-            reasons["Standings-based line (few decided series)"] += 1
-        elif "ONE_TEAM_NO_HISTORY" in m["flags"]:
-            reasons["One team has no recorded history (league prior used)"] += 1
-        elif "CROSS_LEAGUE_MODEL" in m["flags"]:
-            reasons["Cross-league comparison (confidence capped at Low)"] += 1
-        elif "THIN_HISTORY" in m["flags"]:
-            reasons["Thin history (<5 games in 365 days)"] += 1
-        else:
-            reasons["Other model uncertainty"] += 1
+        reasons[_low_conf_reason(m)] += 1
 
     next_24h = [m for m in matches if (start := parse_iso(m.get("start_utc")))
                 and now <= start <= now + timedelta(hours=24)]
@@ -361,12 +364,7 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
             "low_confidence_count": len(low_conf),
             "reasons": [{"reason": k, "count": v} for k, v in reasons.most_common()],
             "low_confidence_reasons": [{"reason": k, "count": v}
-                                       for k, v in Counter(
-                                           "One team has no recorded history (league prior used)"
-                                           if "ONE_TEAM_NO_HISTORY" in m["flags"] else
-                                           "Cross-league comparison" if "CROSS_LEAGUE_MODEL" in m["flags"] else
-                                           "Thin history (<8 games in 365 days)"
-                                           for m in low_conf).most_common()],
+                                       for k, v in Counter(_low_conf_reason(m) for m in low_conf).most_common()],
             "limitations": LIMITATIONS,
             "by_league": by_league_list,
         },
