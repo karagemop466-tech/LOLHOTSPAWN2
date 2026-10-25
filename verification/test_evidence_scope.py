@@ -53,6 +53,9 @@ class EvidenceScopeTests(unittest.TestCase):
     def test_missing_timestamp_stays_blank(self):
         self.assertIsNone(self.payload(timestamp=None)["input_freshness"][2]["as_of"])
 
+    def test_next_update_is_the_next_cron_tick_not_build_plus_six(self):
+        self.assertEqual(self.payload()["next_update_utc"], "2026-10-25T18:00:00Z")
+
     def test_next24_excludes_past_and_beyond_window(self):
         out = self.payload()
         self.assertEqual(out["counts"]["next_24h"], 1)

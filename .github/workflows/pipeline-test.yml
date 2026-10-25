@@ -75,6 +75,11 @@ jobs:
           node verification/render_check.cjs
           node verification/check_dom_render.js
 
+      - name: Real phone and tablet layout checks (Chromium)
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund jsdom playwright-core @sparticuz/chromium
+          node verification/check_browser.cjs
+
       - name: Verify contracts, unit tests & published site (with live external check)
         if: always()
         run: |

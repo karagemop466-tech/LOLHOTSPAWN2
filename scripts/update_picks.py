@@ -319,7 +319,8 @@ def build_payload(fixtures, markets, leaguepedia, picks, market_probe=None):
     payload = {
         "schema_version": 3,
         "generated_at": utc_iso(now),
-        "next_update_utc": utc_iso(now + timedelta(hours=6)),
+        "next_update_utc": utc_iso(now.replace(minute=0, second=0, microsecond=0)
+                                   + timedelta(hours=6 - now.hour % 6)),
         "stale_after_utc": utc_iso(now + timedelta(hours=8)),
         "input_freshness": [
             {"name": "Hotspawn fixtures", "as_of": fixtures.get("generated_at"),

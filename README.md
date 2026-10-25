@@ -109,3 +109,22 @@ freshness slot and unique ids). `verification/render_check.cjs` loads each page 
 payload and asserts that the picks, tables and counts actually render.
 
 Not affiliated with Hotspawn, Riot Games or any bookmaker. Not betting advice.
+
+### Evidence freshness and phone-layout audit (2026-10-25)
+
+The dashboard now publishes the **actual input snapshot timestamps**, separately
+from the dashboard generation timestamp. Cached/degraded community results trigger
+a visible warning even if the dashboard was just rebuilt. Source links are not
+labelled as official value verification. History citations include the latest
+recorded competition for each rated side, not just the new/upcoming split.
+
+Exact 50/50 rows have no preferred team; an unresolved JSON `pick` is a legacy
+placeholder, not a recommendation. Passed lock times are clearly labelled. The
+next-refresh timestamp identifies the next 00/06/12/18 UTC scheduled tick, not
+simply six hours after a manual build (GitHub Actions may run late).
+
+Real Chromium layout checks now run in branch and scheduled verification CI at
+320/390/768/1280px, complementing jsdom. This caught and fixed phone overflow on
+long team names that DOM-only checks missed. See
+[the evidence/source audit](research/evidence-audit-2026-10-25.md) and
+[the reproducible browser test](verification/check_browser.cjs).

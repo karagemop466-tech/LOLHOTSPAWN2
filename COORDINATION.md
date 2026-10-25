@@ -1501,7 +1501,7 @@ at 2026-10-25T14:09Z; git fetch succeeds. External hosts are unavailable directl
 this sandbox; live source verification must run through GitHub Actions, not be claimed
 from cached data. No verified status will be inferred from a source link alone.
 
-**Concurrent-claim discovery (14:18 UTC):** Actions revealed three other Oct-25
+**Concurrent-claim discovery (2026-10-25, during the audit):** Actions revealed three other Oct-25
 sessions that claimed on their own branches, invisible in this checkout at the
 initial read: `arena/964cb944` (toss-up labels / VfB aliases / sources),
 `arena/57975298` (missing-market counts / sources), `arena/6e003eec` (line probe).
@@ -1514,3 +1514,19 @@ market adapter or alias is changed here. Shared-file integration requests:
 `scripts/update_picks.py` keep their source-list additions alongside input timestamps;
 `scripts/model.py` keep their alias/rating changes alongside latest-history source links.
 This is an integration claim, not permission to overwrite their implementations.
+
+**V1–V3 findings:** live run `40201225832` fetched/builds all 156 fixtures (9 market,
+147 model; 0 unresolved; 11 Low). DOM rendering 59/59; evidence regression 8/8;
+verifier self-tests 45/45; contracts 7/7; books/entity 17/17; audit 23/23.
+Its external-link check correctly failed on a new Pinnacle retail link (404);
+fixed to the observed-200 public guest endpoint, pending rerun. Fresh line-probe
+`40201225819` success at 14:14:25Z: 38 requests, 147 model-only fixtures, zero new
+validated coverage. Research: `research/evidence-audit-2026-10-25.md`.
+
+**Mobile defect verified and fixed:** real Chromium 153/Playwright showed Picks
+and Leagues scrolling to 430px on a 390px phone because long pick names inherited
+`white-space: nowrap`. Scoped mobile badge wrapping now passes 28/28 page–viewport
+checks (7 pages × 320/390/768/1280px), nav target heights 60px. Script and measured
+report are in `verification/check_browser.cjs` / `mobile-browser-2026-10-25.json`.
+This session requests CSS integrators retain this additive @media block alongside
+any toss-up styling. Browser packages remain ignored under node_modules.
