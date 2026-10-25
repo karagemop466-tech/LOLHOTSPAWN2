@@ -168,3 +168,21 @@ LGC Rising) are priced by **no reachable book**, and the site says so per row an
 | Hotspawn fixtures API directly (raw epoch values) | Same egress limit; the match pages and tournament pages were read instead | the production workflow, every 6 hours |
 
 Nothing in this document should be read as a claim that a blocked source was checked successfully.
+
+---
+
+## 7. Follow-up Data-Consistency & Mobile DOM Audit (session `arena/07b651a3`, 2026-10-25)
+
+Re-audited the post-14:27Z `docs/data/picks.json` (`156` fixtures, `9` market, `147` model, `54` standings-blend, `11` Low confidence, `0` unresolved, `9` excluded cancelled fixtures) and all 7 pages at phone widths (`<=760px`), fixing five concrete defects:
+
+1. **`scripts/update_picks.py` (`_low_conf_reason` consistency):**
+   On the 14:27Z payload (`11` Low-confidence rows), `unresolved.reasons` reported `Cross-league: 8`, `Standings-based line: 1` (fixture `1080941` `Simplicity Gaming vs JSK Esports`, which is actually `Low` only because of `CROSS_LEAGUE_MODEL`), `Thin history (<5 games): 1`, and `Other model uncertainty: 1` (fixture `1081421` `FENNEL vs Nothin'Here`, `MODEL_ELO_THIN` with 7 games), contradicting `unresolved.low_confidence_reasons` (`Cross-league: 9`, `Thin history (<8 games): 2`). Unified both tallies via `_low_conf_reason(m)`.
+2. **Duplicate sourceless per-league table on `docs/index.html` (`#unresolved-summary`):**
+   Removed the unlinked 4-column inner table injected inside `.warnbox` (`#unresolved-summary`) so `#exec-league-limits-body` (which carries verified `https://` source links on every row) is the single authoritative per-league limits table on the Executive Summary.
+3. **Mobile `data-label` completeness at `<=760px`:**
+   Added `data-label` attributes to every static and JS-rendered `<tbody>` `<td>` across `docs/flagged.html` (`#source-coverage-flags`, `#audit-2026-10-25`), `docs/methodology.html` (`#low-tier-sources`, `#manual-checks`), and `docs/assets/app.js` (`#flag-groups`, `#sources-status`, `#checked-unavailable`, and `match.html` external betting lines), enforced by `C7` in `verification/check_dom_contract.py` and rendered DOM checks in `verification/check_dom_render.js`.
+4. **Blended Elo & single-side prior display on `docs/match.html`:**
+   `renderMatch` now surfaces `Blended Elo` (`blended_elo_team1` vs `blended_elo_team2` + standings weights) on all 54 `MODEL_ELO_STANDINGS` match pages and handles `elo_known` / `elo_prior` cleanly on `MODEL_LEAGUE_PRIOR` rows.
+5. **Broken `../research/*.md` links, live snapshot bindings & mobile `<head>` parity:**
+   Replaced `href="../research/..."` links in `docs/flagged.html` and `docs/methodology.html` (which 404 under legacy Jekyll GitHub Pages `main:/`) with canonical `https://github.com/karagemop466-tech/LOLHOTSPAWN2/blob/main/research/...` URLs (enforced by `C8`), replaced hardcoded counts (`160 fixtures`, `31,752 schedule rows`) with live payload bindings, and added `viewport-fit=cover` + `color-scheme` across all 7 HTML pages (enforced by `C6`).
+

@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-25T14:55:15.028951Z",
+ "checked_at": "2026-10-25T14:56:26.161952Z",
  "fixture_count": 156,
  "fixture_snapshot_at": "2026-10-25T14:48:26.680586Z",
  "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
@@ -1409,7 +1409,7 @@
      },
      {
       "sport_id": 70,
-      "status": 203
+      "status": 0
      },
      {
       "sport_id": 85,
@@ -1417,7 +1417,7 @@
      },
      {
       "sport_id": 109,
-      "status": 0
+      "status": 203
      }
     ]
    },
@@ -1520,7 +1520,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.betonline.ag/sportsbook/esports/league-of-legends",
    "http_status": 200,
-   "bytes": 366116,
+   "bytes": 366117,
    "is_json": false,
    "lol_mentions": null,
    "error": null,
@@ -1536,7 +1536,7 @@
    "kind": "established-sportsbook",
    "url": "https://sportsbetting.ag/sportsbook/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5824,
+   "bytes": 5845,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1616,7 +1616,7 @@
    "kind": "aggregator-page",
    "url": "https://egamersworld.com/lol/bets",
    "http_status": 403,
-   "bytes": 5718,
+   "bytes": 5740,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1632,7 +1632,7 @@
    "kind": "aggregator-page",
    "url": "https://oddspedia.com/esports/league-of-legends",
    "http_status": 410,
-   "bytes": 341188,
+   "bytes": 341184,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 410",
@@ -1648,7 +1648,7 @@
    "kind": "aggregator-page",
    "url": "https://ggscore.com/en/lol/matches",
    "http_status": 403,
-   "bytes": 5693,
+   "bytes": 5714,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1696,7 +1696,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
    "http_status": 403,
-   "bytes": 5849,
+   "bytes": 5850,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
