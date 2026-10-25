@@ -194,6 +194,34 @@ async function main() {
         pdoc.querySelector("#countline").textContent.includes(String(matches.length)),
         pdoc.querySelector("#countline").textContent.trim());
 
+  // Every visible pick row must also say WHY, in plain language. Before 2026-10-25
+  // the table only named the method ("Own Elo model"), which does not tell a phone
+  // visitor anything; the short reason now sits under the pick on every row.
+  const whyRows = Array.from(pdoc.querySelectorAll("#picks-body tr"));
+  const whyMissing = whyRows.filter((tr) => {
+    const sub = tr.querySelector(".pickcell .sub");
+    return !sub || !sub.textContent.trim();
+  });
+  check("picks: every row states why the pick was made", whyRows.length > 0 && whyMissing.length === 0,
+        `${whyRows.length - whyMissing.length}/${whyRows.length} rows carry a reason`);
+  const whyWrong = whyRows.filter((tr) => {
+    const sub = (tr.querySelector(".pickcell .sub") || {}).textContent || "";
+    const method = tr.querySelector("[data-label=\"Method\"]");
+    const chip = method ? method.textContent : "";
+    if (/Market|Single book/.test(chip)) return !/book/i.test(sub);
+    if (/Elo|standings|prior/i.test(chip)) return !/Elo|standings|prior|history/i.test(sub);
+    return false;
+  });
+  check("picks: the stated reason matches the method actually used", whyWrong.length === 0,
+        `${whyWrong.length} row(s) disagree with their method chip`);
+  const marketReason = whyRows
+    .filter((tr) => /Market|Single book/.test((tr.querySelector("[data-label=\"Method\"]") || {}).textContent || ""))
+    .map((tr) => (tr.querySelector(".pickcell .sub") || {}).textContent || "");
+  check("picks: a single-book row is labelled as not a consensus",
+        marketReason.filter((t) => /single source, not a consensus/.test(t)).length
+          === matches.filter((m) => m.method === "MARKET_SINGLE").length,
+        `${marketReason.filter((t) => /single source/.test(t)).length} single-source row(s)`);
+
   // filter deep-links used by the summary must actually filter
   const next24 = matches.filter((m) => {
     const t = new Date(m.start_utc).getTime();
@@ -298,6 +326,34 @@ async function main() {
     check("match detail: no JS error", (dpage.__errors || []).length === 0, (dpage.__errors || []).join(" | "));
     check("match detail: renders both teams", dtext.includes(m.team1) && dtext.includes(m.team2));
     check("match detail: renders the pick", dtext.includes(m.pick));
+  }
+
+  // ---------- match detail: start times by source ----------------------------
+  // Synthetic payload, so this never goes vacuous when the live snapshot happens to
+  // have no flagged fixture (it had none after the 2026-10-25 14:16Z refresh).
+  const mmRow = matches.find((m) => (m.market?.sources || []).some((s) => s.start_utc));
+  if (mmRow) {
+    const timed = JSON.parse(JSON.stringify(PAYLOAD));
+    timed.matches = timed.matches.map((m) => (String(m.id) === String(mmRow.id)
+      ? Object.assign({}, m, { flags: Array.from(new Set([...(m.flags || []), "START_TIME_MISMATCH"])) })
+      : m));
+    const tpage = await render("match.html", { query: `?id=${encodeURIComponent(mmRow.id)}`, payload: timed });
+    const card = Array.from(tpage.document.querySelectorAll("#match-detail .card"))
+      .find((c) => /Start time by source/.test(c.textContent));
+    check("match detail: start-time-by-source card renders on a flagged fixture", !!card);
+    if (card) {
+      const bookTimes = (mmRow.market?.sources || []).filter((s) => s.start_utc).length;
+      check("match detail: every book's reported start time is listed",
+            bookTimes > 0 && card.querySelectorAll("li").length >= bookTimes + 1,
+            `${card.querySelectorAll("li").length} lines vs 1 Hotspawn + ${bookTimes} book time(s)`);
+      check("match detail: the disagreement is stated in words",
+            /disagrees on this fixture|differs/i.test(card.textContent));
+    }
+    const clean = await render("match.html", { query: `?id=${encodeURIComponent(mmRow.id)}` });
+    const cleanCard = Array.from(clean.document.querySelectorAll("#match-detail .card"))
+      .find((c) => /Start time by source/.test(c.textContent));
+    check("match detail: an unflagged fixture is NOT reported as disagreeing",
+          cleanCard && !/at least one source disagrees/i.test(cleanCard.textContent));
   }
 
   // ---------- self-test: the separate unresolved section must not be vacuous ----

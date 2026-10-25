@@ -1,8 +1,6 @@
 {
- "checked_at": "2026-10-25T14:14:25.196876Z",
+ "checked_at": "2026-10-25T14:18:48.117521Z",
  "fixture_count": 156,
- "fixture_snapshot_at": "2026-10-25T10:41:50.709986Z",
- "scope_note": "Observed coverage of these endpoints from this runner at checked_at only; blocked or unparsed pages do not establish that a bookmaker has no market.",
  "fixtures_without_external_line": 147,
  "candidates_with_new_coverage": [],
  "candidates": [
@@ -35,7 +33,7 @@
    "kind": "prediction-market",
    "url": "https://gamma-api.polymarket.com/events?tag_slug=league-of-legends&active=true&closed=false&limit=200",
    "http_status": 200,
-   "bytes": 4584109,
+   "bytes": 4583005,
    "is_json": true,
    "schedule_records": 17,
    "detail": {
@@ -1417,7 +1415,7 @@
      },
      {
       "sport_id": 109,
-      "status": 203
+      "status": 0
      }
     ]
    },
@@ -1632,7 +1630,7 @@
    "kind": "aggregator-page",
    "url": "https://oddspedia.com/esports/league-of-legends",
    "http_status": 410,
-   "bytes": 341185,
+   "bytes": 341184,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 410",
@@ -1696,7 +1694,7 @@
    "kind": "established-sportsbook",
    "url": "https://www.marathonbet.com/en/betting/Esports/",
    "http_status": 403,
-   "bytes": 5848,
+   "bytes": 5849,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
@@ -1760,7 +1758,7 @@
    "kind": "esportsbook",
    "url": "https://thunderpick.io/esports/league-of-legends",
    "http_status": 403,
-   "bytes": 5767,
+   "bytes": 5789,
    "is_json": false,
    "lol_mentions": null,
    "error": "HTTP 403",
