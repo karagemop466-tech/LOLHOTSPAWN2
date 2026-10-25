@@ -223,9 +223,12 @@
           </tr>
           <tr>
             <td><b>A12</b></td>
-            <td><b>Polymarket prices Prime League <i>1st</i> Division only.</b> Its 1st-division board carries per-map BO3
-            markets, but no 2nd/3rd Division fixture exists there, so it cannot price the 96 PRM rows in this payload.</td>
-            <td><a href="https://polymarket.com/esports/league-of-legends/prime-league-1st-division" target="_blank" rel="noopener">Polymarket PRM 1st Division ↗</a></td>
+            <td><b>Polymarket has no Prime League market today.</b> Read on 2026-10-25, its League of Legends board lists
+            9 markets — <i>Worlds (8)</i> and <i>LGC Rising (1)</i> — and no Prime League board at all: the PRM 1st Division URL
+            previously cited on this page returns <i>“Page not found”</i> (HTTP 404, seen in the 14:39Z verification run and
+            when opened directly). Polymarket only builds a tournament board for the competitions it prices. No 2nd/3rd
+            Division fixture can be priced from it.</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">Polymarket LoL board (live) ↗</a></td>
             <td><span class="chip amber">Division not covered</span> — not applicable</td>
           </tr>
         </tbody>
@@ -275,6 +278,17 @@
             <td>The three Komplettligaen Playoffs lobby cards link to a placeholder (<code>https://www.hotspawn.com/?fixtures=waiting-for-information-2208</code>) instead of a match page, so no per-match permalink exists upstream. The rows keep the fixture id and link the competition page.</td>
             <td><a href="https://play.hotspawn.com/lol-pickems" target="_blank" rel="noopener">Hotspawn lobby ↗</a></td>
             <td><span class="chip amber">Upstream</span> — no match page to link</td>
+          </tr>
+          <tr>
+            <td><b>F20.6</b></td>
+            <td><b>A cited source link on this page was dead and has been corrected.</b>
+              <code>polymarket.com/esports/league-of-legends/prime-league-1st-division</code> returns <i>“Page not found”</i>
+              (HTTP 404) — it is the single dead link the 2026-10-25T14:39Z external-link check failed on (32/40 links 2xx,
+              6 hosts block our client including <code>lol.fandom.com</code>, 1 dead). Polymarket only serves a tournament
+              board for competitions it prices (<code>/worlds</code>, <code>/lgc-rising</code>); there is no Prime League board.
+              Row <b>A12</b> above now links the live LoL board and no longer claims a PRM board exists today.</td>
+            <td><a href="https://polymarket.com/esports/league-of-legends" target="_blank" rel="noopener">Polymarket LoL board ↗</a></td>
+            <td><span class="chip green">Fixed</span> — dead link removed from the site; the reachability rule (X1) now fails a refresh if any cited link 404s</td>
           </tr>
         </tbody>
       </table>

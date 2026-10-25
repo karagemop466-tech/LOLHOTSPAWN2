@@ -386,6 +386,40 @@ def main() -> int:
         print(f"  [{'ok' if ok else 'FAILED'}] cron {expr!r} -> {got} (want {want})")
         results.append(ok)
 
+    # ------------------------------------------------------- CI reporting helpers
+    mixed = [
+        {"id": "X1", "title": "external links reachable", "status": vs.FAIL,
+         "detail": "1 dead\nsecond line", "items": ["https://dead.example -> 404"]},
+        {"id": "D18", "title": "snapshot age", "status": vs.WARN, "detail": "89.8 h"},
+        {"id": "D1", "title": "payload parses", "status": vs.PASS, "detail": "fine"},
+    ]
+    ann = vs.fmt_annotations(mixed)
+    results.append(ann and ann[0].startswith("::error title=X1 ")
+                   and "::warning title=D18 " in ann[1]
+                   and not any("D1 " in a for a in ann))
+    print(f"  [{'ok' if results[-1] else 'FAILED'}] annotations: FAIL->error, WARN->warning, PASS silent")
+    results.append(len(ann) == 2 and "\n" not in "".join(ann)
+                   and "https://dead.example -> 404" in ann[0])
+    print(f"  [{'ok' if results[-1] else 'FAILED'}] annotations: one line per rule, detail kept, no raw newline")
+    truncated = vs.fmt_annotations([{"id": f"R{i}", "title": "t", "status": vs.FAIL,
+                                     "detail": "d"} for i in range(30)], limit=3)
+    results.append(len(truncated) == 4 and truncated[-1].startswith("::warning title=truncated"))
+    print(f"  [{'ok' if results[-1] else 'FAILED'}] annotations: truncation is announced, not silent")
+    results.append(vs.fmt_annotations([{"id": "D1", "title": "t", "status": vs.PASS, "detail": "d"}]) == [])
+    print(f"  [{'ok' if results[-1] else 'FAILED'}] annotations: a fully green run prints none")
+
+    summ = vs.step_summary({"status": vs.FAIL, "data_matches": 3,
+                            "counts": {vs.PASS: 1, vs.FAIL: 1, vs.WARN: 1, vs.SKIP: 0},
+                            "checks": mixed})
+    results.append("| X1 external links reachable | FAIL | 1 dead second line |" in summ
+                   and "pass 1 · fail 1 · warn 1" in summ)
+    print(f"  [{'ok' if results[-1] else 'FAILED'}] step summary: counts + every non-PASS rule as table rows")
+    clean = vs.step_summary({"status": vs.PASS, "data_matches": 3,
+                             "counts": {vs.PASS: 4, vs.FAIL: 0, vs.WARN: 0, vs.SKIP: 0},
+                             "checks": [{"id": "D1", "title": "t", "status": vs.PASS, "detail": "d"}]})
+    results.append("No FAIL or WARN rules." in clean and "| rule |" not in clean)
+    print(f"  [{'ok' if results[-1] else 'FAILED'}] step summary: green run says so explicitly")
+
     print(f"\n{sum(results)}/{len(results)} verifier self-tests passed")
     return 0 if all(results) else 1
 

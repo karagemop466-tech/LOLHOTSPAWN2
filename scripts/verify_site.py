@@ -1582,6 +1582,50 @@ def verify_live(rep: Report, live_url: str) -> None:
         rep.add("X3", "live site serves picks.json", FAIL, f"unreadable: {exc!r}")
 
 
+# ------------------------------------------------------------------- CI reporting
+def _cmd_escape(text: str) -> str:
+    """Escape a GitHub Actions workflow-command message/property value."""
+    return (text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
+
+
+def fmt_annotations(checks: list[dict], limit: int = 25) -> list[str]:
+    """One workflow command per non-PASS rule, so a red run says *what* broke.
+
+    Before this, a failing run ended with a bare `Process completed with exit code 1`
+    and the failing rule's detail only existed inside `verification/report.json`
+    (an artifact a follow-up session may not be able to download).
+    """
+    bad = [c for c in checks if c.get("status") in (FAIL, WARN)]
+    out: list[str] = []
+    for c in bad[:limit]:
+        level = "error" if c["status"] == FAIL else "warning"
+        title = _cmd_escape(f"{c['id']} {c['title']}")
+        msg = " · ".join([f"{c['status']}: {c['detail']}"] + [str(i) for i in (c.get("items") or [])])
+        out.append(f"::{level} title={title}::{_cmd_escape(msg)[:900]}")
+    if len(bad) > limit:
+        out.append("::warning title=truncated annotations::"
+                   f"{len(bad) - limit} of {len(bad)} non-PASS rules are not shown here; "
+                   "see verification/last_report.md")
+    return out
+
+
+def step_summary(out: dict) -> str:
+    """Markdown block for $GITHUB_STEP_SUMMARY: counts plus every non-PASS rule."""
+    counts = out["counts"]
+    lines = [f"### Verification: {out['status']}", "",
+             f"{out['data_matches']} matches · pass {counts[PASS]} · fail {counts[FAIL]}"
+             f" · warn {counts[WARN]} · skip {counts[SKIP]}", ""]
+    bad = [c for c in out["checks"] if c["status"] in (FAIL, WARN)]
+    if bad:
+        lines += ["| rule | status | detail |", "|---|---|---|"]
+        for c in bad:
+            detail = str(c["detail"]).replace("|", "\\|").replace("\n", " ")
+            lines.append(f"| {c['id']} {c['title']} | {c['status']} | {detail} |")
+    else:
+        lines.append("No FAIL or WARN rules.")
+    return "\n".join(lines) + "\n"
+
+
 # --------------------------------------------------------------------------- main
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
@@ -1596,6 +1640,9 @@ def main() -> int:
                     help="Leaguepedia MatchSchedule snapshot JSON to cross-check start times")
     ap.add_argument("--live-url", default="",
                     help="deployed Pages base URL to confirm serving (needs network)")
+    ap.add_argument("--annotate", action="store_true",
+                    help="print GitHub Actions annotations for every non-PASS rule "
+                         "(always writes $GITHUB_STEP_SUMMARY when that variable is set)")
     args = ap.parse_args()
 
     rep = Report()
@@ -1691,6 +1738,17 @@ def main() -> int:
             lines += [f"- {i}" for i in c["items"]]
     with open(args.md_out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
+
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        try:
+            with open(summary_path, "a", encoding="utf-8") as fh:
+                fh.write(step_summary(out) + "\n")
+        except OSError:
+            pass
+    if args.annotate:
+        for line in fmt_annotations(rep.checks):
+            print(line)
 
     if not args.quiet:
         for c in rep.checks:

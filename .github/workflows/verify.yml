@@ -35,14 +35,11 @@ jobs:
       - name: Fixture-coverage union unit tests (lobby + fixtures API)
         run: python3 verification/test_lobby_union.py
 
+      # Offline checks first: a network hiccup upstream must never skip the rules
+      # that protect the published site (that is exactly what happened on 2026-10-25:
+      # one dead external link skipped the coverage, DOM and render checks).
       - name: Verify data + site (offline)
-        run: python3 scripts/verify_site.py --leaguepedia-schedule data/diag
-
-      - name: Verify external source links and the live Pages deployment
-        run: |
-          python3 scripts/verify_site.py \
-            --check-external \
-            --live-url https://karagemop466-tech.github.io/LOLHOTSPAWN2/
+        run: python3 scripts/verify_site.py --leaguepedia-schedule data/diag --annotate
 
       - name: Coverage audit (is every model row backed by a Leaguepedia page?)
         run: |
@@ -74,6 +71,16 @@ jobs:
             echo "jsdom not installed; render checks will SKIP"
           node verification/render_check.cjs
           node verification/check_dom_render.js
+
+      # Network-dependent last: it depends on third-party hosts and on the Pages
+      # deploy of *this* commit, so it can be transiently red. It still fails the job
+      # (a dead cited link is a real defect) — but only after every offline rule ran.
+      - name: Verify external source links and the live Pages deployment
+        run: |
+          python3 scripts/verify_site.py \
+            --check-external \
+            --annotate \
+            --live-url https://karagemop466-tech.github.io/LOLHOTSPAWN2/
 
       - name: Upload verification artifacts
         if: always()
