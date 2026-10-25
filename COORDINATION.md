@@ -1482,3 +1482,6 @@ failures observed on this branch today:
 | I10 | Bovada's *series* moneyline is labelled period “Game”; rejecting every “game” period discarded all prices. CI probe also saw 250 KB JSON while `fetch_bovada()` reported no groups. | **Fixed on `main`** by another session (`_bovada_series_moneyline`); this branch does not re-fix it. |
 | I11 | `pipeline-test` publish rebase (see above) and the publisher's `reset --hard` on push rejection. | **Fixed here**; acceptance = first branch run after this commit. |
 | I12 | Leaguepedia can throttle a shared runner IP; 90 s x 3 retries x ~20 calls exceeds the job timeout. | **Fixed here** (budget + cache + partial-export guard); a live run must confirm the step stays under 25 min. |
+
+## Session arena/f931cee9 — 2026-10-25
+Branch fixed by Arena: `arena/f931cee9-lolhotspawn2`. Previous claims are older than 60 minutes. Claim: freshness/verification audit and targeted mobile data-quality fixes; scope `docs/assets/app.js`, `docs/assets/style.css`, `verification/test_freshness.cjs`, `verification/session-2026-10-25.md`, `COORDINATION.md`. No other open PR scopes will be modified intentionally. Status: in progress. Research will use existing official-source adapters through GitHub Actions because this sandbox only permits GitHub/package-registry outbound hosts. Community estimates are not official verified facts.
