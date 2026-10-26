@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-25T20:25:19.611682Z",
+ "generated_at": "2026-10-26T03:07:26.965933Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1403061,
+  "bytes": 1320955,
   "ng_state": true,
-  "raw_fixtures": 234,
-  "lol_fixtures": 234,
-  "future_lol_fixtures": 130,
-  "already_started": 104,
+  "raw_fixtures": 222,
+  "lol_fixtures": 222,
+  "future_lol_fixtures": 131,
+  "already_started": 91,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 0,
@@ -17,28 +17,28 @@
    "PRM 2nd Division 26-27 Fall": 32,
    "Tunisian Super League 2026": 15,
    "RIVALS LEAGUE Season 2": 11,
-   "Worlds 2026 Main Event": 5,
+   "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 4,
    "Arabian League 2nd Division 2026 Summer": 4,
    "Komplettligaen 2026 Autumn Playoffs": 3,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
-   "LGC Rising 2026 Playoffs": 1,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 1
+   "LGC Rising 2026 Playoffs": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12186
+  "raw_fixtures": 12202
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12186,
-  "lol_fixtures": 1572,
-  "future_lol_fixtures": 135,
-  "already_started": 1437,
+  "raw_fixtures": 12202,
+  "lol_fixtures": 1575,
+  "future_lol_fixtures": 136,
+  "already_started": 1439,
   "future_ids_missing_from_payload": [
    "1079035",
    "1079044",
@@ -53,21 +53,21 @@
    "PRM 2nd Division 26-27 Fall": 36,
    "Tunisian Super League 2026": 15,
    "RIVALS LEAGUE Season 2": 11,
-   "Worlds 2026 Main Event": 5,
    "Arabian League 2nd Division 2026 Summer": 5,
+   "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 4,
    "Komplettligaen 2026 Autumn Playoffs": 3,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
-   "LGC Rising 2026 Playoffs": 1,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 1
+   "LGC Rising 2026 Playoffs": 1
   }
  },
  "payload": {
-  "generated_at": "2026-10-25T20:25:18.691319Z",
-  "published_matches": 130
+  "generated_at": "2026-10-26T03:07:25.987706Z",
+  "published_matches": 131
  },
- "required_future_fixtures": 135,
+ "required_future_fixtures": 136,
  "missing_from_payload": [
   "1079035",
   "1079044",
@@ -131,12 +131,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 234,
-  "lobby_upcoming": 130,
-  "lobby_past_not_priced": 104,
-  "api_upcoming_lol": 135,
+  "lobby_lol_listed": 222,
+  "lobby_upcoming": 131,
+  "lobby_past_not_priced": 91,
+  "api_upcoming_lol": 136,
   "api_excluded": 5,
-  "priced": 130,
+  "priced": 131,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
