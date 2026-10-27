@@ -1,13 +1,13 @@
 # Hotspawn coverage reconciliation
 
-Generated 2026-10-27T03:40:05.244163Z · payload generated 2026-10-27T03:40:04.319098Z
+Generated 2026-10-27T11:36:08.782962Z · payload generated 2026-10-27T11:36:07.666571Z
 
 | Source | HTTP | Raw rows | LoL fixtures | Future LoL | Already started | Future missing from payload |
 |---|---|---|---|---|---|---|
-| lobby | 200 | 211 | 211 | 128 | 83 | 0 |
-| api | 200 | 12214 | 1583 | 133 | 1450 | 5 |
+| lobby | 200 | 214 | 214 | 131 | 83 | 0 |
+| api | 200 | 12229 | 1589 | 139 | 1450 | 8 |
 
-Published payload rows: **128** · required future fixtures (union): **133** · not priced: **5** (documented exclusions: **5**, unexplained: **0**)
+Published payload rows: **131** · required future fixtures (union): **139** · not priced: **8** (documented exclusions: **8**, unexplained: **0**)
 
 ## Fixtures not priced, with the pipeline's reason
 
@@ -18,3 +18,6 @@ Published payload rows: **128** · required future fixtures (union): **133** · 
 | 1079052 | ex-A41G vs Babos Gaming | PRM 2nd Division 26-27 Fall | 2026-11-08T16:00:00Z | Hotspawn status is 'cancelled'; not priced |
 | 1079061 | BvP vs ex-A41G | PRM 2nd Division 26-27 Fall | 2026-11-15T18:30:00Z | Hotspawn status is 'cancelled'; not priced |
 | 1079148 | Void Walkers vs Victorious Demons | Arabian League 2nd Division 2026 Summer | 2026-10-31T19:00:00Z | Hotspawn status is 'cancelled'; not priced |
+| 1080936 | Simplicity Gaming vs Jendouba Esports | Tunisian Super League 2026 | 2026-10-31T17:00:00Z | Hotspawn status is 'cancelled'; not priced |
+| 1080941 | Simplicity Gaming vs JSK Esports | Tunisian Super League 2026 | 2026-11-01T17:00:00Z | Hotspawn status is 'cancelled'; not priced |
+| 1080945 | Olympique Mnihla Academy vs Simplicity Gaming | Tunisian Super League 2026 | 2026-11-07T17:00:00Z | Hotspawn status is 'cancelled'; not priced |

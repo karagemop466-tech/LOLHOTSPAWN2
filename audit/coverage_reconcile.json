@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-10-27T03:40:05.244163Z",
+ "generated_at": "2026-10-27T11:36:08.782962Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1298309,
+  "bytes": 1326464,
   "ng_state": true,
-  "raw_fixtures": 211,
-  "lol_fixtures": 211,
-  "future_lol_fixtures": 128,
+  "raw_fixtures": 214,
+  "lol_fixtures": 214,
+  "future_lol_fixtures": 131,
   "already_started": 83,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
@@ -15,8 +15,9 @@
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 49,
    "PRM 2nd Division 26-27 Fall": 32,
-   "Tunisian Super League 2026": 18,
+   "Tunisian Super League 2026": 15,
    "RIVALS LEAGUE Season 2": 9,
+   "Worlds 2026 Main Event": 6,
    "Arabian League 2nd Division 2026 Summer": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "Komplettligaen 2026 Autumn Playoffs": 3,
@@ -30,29 +31,33 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12214
+  "raw_fixtures": 12229
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12214,
-  "lol_fixtures": 1583,
-  "future_lol_fixtures": 133,
+  "raw_fixtures": 12229,
+  "lol_fixtures": 1589,
+  "future_lol_fixtures": 139,
   "already_started": 1450,
   "future_ids_missing_from_payload": [
    "1079035",
    "1079044",
    "1079052",
    "1079061",
-   "1079148"
+   "1079148",
+   "1080936",
+   "1080941",
+   "1080945"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 5,
+  "future_without_match_page": 8,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 49,
    "PRM 2nd Division 26-27 Fall": 36,
    "Tunisian Super League 2026": 18,
    "RIVALS LEAGUE Season 2": 9,
+   "Worlds 2026 Main Event": 6,
    "Arabian League 2nd Division 2026 Summer": 5,
    "4 Nations 2026 Halloween Heist": 3,
    "Komplettligaen 2026 Autumn Playoffs": 3,
@@ -64,23 +69,29 @@
   }
  },
  "payload": {
-  "generated_at": "2026-10-27T03:40:04.319098Z",
-  "published_matches": 128
+  "generated_at": "2026-10-27T11:36:07.666571Z",
+  "published_matches": 131
  },
- "required_future_fixtures": 133,
+ "required_future_fixtures": 139,
  "missing_from_payload": [
   "1079035",
   "1079044",
   "1079052",
   "1079061",
-  "1079148"
+  "1079148",
+  "1080936",
+  "1080941",
+  "1080945"
  ],
  "excluded_by_pipeline": {
   "1079035": "Hotspawn status is 'cancelled'; not priced",
   "1079044": "Hotspawn status is 'cancelled'; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
   "1079061": "Hotspawn status is 'cancelled'; not priced",
-  "1079148": "Hotspawn status is 'cancelled'; not priced"
+  "1079148": "Hotspawn status is 'cancelled'; not priced",
+  "1080936": "Hotspawn status is 'cancelled'; not priced",
+  "1080941": "Hotspawn status is 'cancelled'; not priced",
+  "1080945": "Hotspawn status is 'cancelled'; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -128,15 +139,42 @@
    "start_utc": "2026-10-31T19:00:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1080936",
+   "team1": "Simplicity Gaming",
+   "team2": "Jendouba Esports",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-10-31T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1080941",
+   "team1": "Simplicity Gaming",
+   "team2": "JSK Esports",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-01T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1080945",
+   "team1": "Olympique Mnihla Academy",
+   "team2": "Simplicity Gaming",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 211,
-  "lobby_upcoming": 128,
+  "lobby_lol_listed": 214,
+  "lobby_upcoming": 131,
   "lobby_past_not_priced": 83,
-  "api_upcoming_lol": 133,
-  "api_excluded": 5,
-  "priced": 128,
+  "api_upcoming_lol": 139,
+  "api_excluded": 8,
+  "priced": 131,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
