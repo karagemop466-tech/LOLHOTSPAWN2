@@ -1,25 +1,26 @@
 {
- "generated_at": "2026-10-28T12:06:31.832939Z",
+ "generated_at": "2026-10-28T22:10:50.723446Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1285253,
+  "bytes": 1319191,
   "ng_state": true,
-  "raw_fixtures": 208,
-  "lol_fixtures": 208,
-  "future_lol_fixtures": 124,
-  "already_started": 84,
+  "raw_fixtures": 212,
+  "lol_fixtures": 212,
+  "future_lol_fixtures": 127,
+  "already_started": 85,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 0,
+  "future_without_match_page": 8,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 49,
+   "PRM 3rd Division 26-27 Fall": 48,
    "PRM 2nd Division 26-27 Fall": 28,
    "Tunisian Super League 2026": 15,
-   "RIVALS LEAGUE Season 2": 7,
-   "Worlds 2026 Main Event": 6,
-   "Arabian League 2nd Division 2026 Summer": 4,
+   "Halloween Cup 2026": 8,
+   "Worlds 2026 Main Event": 5,
+   "RIVALS LEAGUE Season 2": 5,
    "4 Nations 2026 Halloween Heist": 3,
+   "Arabian League 2nd Division 2026 Summer": 3,
    "Komplettligaen 2026 Autumn Playoffs": 3,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
@@ -30,15 +31,15 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12251
+  "raw_fixtures": 12266
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12251,
-  "lol_fixtures": 1589,
-  "future_lol_fixtures": 132,
-  "already_started": 1457,
+  "raw_fixtures": 12266,
+  "lol_fixtures": 1597,
+  "future_lol_fixtures": 135,
+  "already_started": 1462,
   "future_ids_missing_from_payload": [
    "1079035",
    "1079044",
@@ -50,14 +51,15 @@
    "1080945"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 8,
+  "future_without_match_page": 16,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 49,
+   "PRM 3rd Division 26-27 Fall": 48,
    "PRM 2nd Division 26-27 Fall": 32,
    "Tunisian Super League 2026": 18,
-   "RIVALS LEAGUE Season 2": 7,
-   "Worlds 2026 Main Event": 6,
-   "Arabian League 2nd Division 2026 Summer": 5,
+   "Halloween Cup 2026": 8,
+   "Worlds 2026 Main Event": 5,
+   "RIVALS LEAGUE Season 2": 5,
+   "Arabian League 2nd Division 2026 Summer": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "Komplettligaen 2026 Autumn Playoffs": 3,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
@@ -67,10 +69,10 @@
   }
  },
  "payload": {
-  "generated_at": "2026-10-28T12:06:31.118469Z",
-  "published_matches": 124
+  "generated_at": "2026-10-28T22:10:50.070738Z",
+  "published_matches": 127
  },
- "required_future_fixtures": 132,
+ "required_future_fixtures": 135,
  "missing_from_payload": [
   "1079035",
   "1079044",
@@ -167,12 +169,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 208,
-  "lobby_upcoming": 124,
-  "lobby_past_not_priced": 84,
-  "api_upcoming_lol": 132,
+  "lobby_lol_listed": 212,
+  "lobby_upcoming": 127,
+  "lobby_past_not_priced": 85,
+  "api_upcoming_lol": 135,
   "api_excluded": 8,
-  "priced": 124,
+  "priced": 127,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
