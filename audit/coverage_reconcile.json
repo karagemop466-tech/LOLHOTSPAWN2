@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-10-29T04:18:26.791609Z",
+ "generated_at": "2026-10-29T12:16:56.997977Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1293515,
+  "bytes": 1293445,
   "ng_state": true,
   "raw_fixtures": 210,
   "lol_fixtures": 210,
@@ -31,12 +31,12 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12276
+  "raw_fixtures": 12285
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12276,
+  "raw_fixtures": 12285,
   "lol_fixtures": 1597,
   "future_lol_fixtures": 134,
   "already_started": 1463,
@@ -69,7 +69,7 @@
   }
  },
  "payload": {
-  "generated_at": "2026-10-29T04:18:25.766403Z",
+  "generated_at": "2026-10-29T12:16:56.261756Z",
   "published_matches": 126
  },
  "required_future_fixtures": 134,
