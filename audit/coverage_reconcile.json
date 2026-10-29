@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-28T22:10:50.723446Z",
+ "generated_at": "2026-10-29T04:18:26.791609Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1319191,
+  "bytes": 1293515,
   "ng_state": true,
-  "raw_fixtures": 212,
-  "lol_fixtures": 212,
-  "future_lol_fixtures": 127,
-  "already_started": 85,
+  "raw_fixtures": 210,
+  "lol_fixtures": 210,
+  "future_lol_fixtures": 126,
+  "already_started": 84,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 8,
@@ -17,8 +17,8 @@
    "PRM 2nd Division 26-27 Fall": 28,
    "Tunisian Super League 2026": 15,
    "Halloween Cup 2026": 8,
-   "Worlds 2026 Main Event": 5,
    "RIVALS LEAGUE Season 2": 5,
+   "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "Arabian League 2nd Division 2026 Summer": 3,
    "Komplettligaen 2026 Autumn Playoffs": 3,
@@ -31,15 +31,15 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12266
+  "raw_fixtures": 12276
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12266,
+  "raw_fixtures": 12276,
   "lol_fixtures": 1597,
-  "future_lol_fixtures": 135,
-  "already_started": 1462,
+  "future_lol_fixtures": 134,
+  "already_started": 1463,
   "future_ids_missing_from_payload": [
    "1079035",
    "1079044",
@@ -57,9 +57,9 @@
    "PRM 2nd Division 26-27 Fall": 32,
    "Tunisian Super League 2026": 18,
    "Halloween Cup 2026": 8,
-   "Worlds 2026 Main Event": 5,
    "RIVALS LEAGUE Season 2": 5,
    "Arabian League 2nd Division 2026 Summer": 4,
+   "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "Komplettligaen 2026 Autumn Playoffs": 3,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
@@ -69,10 +69,10 @@
   }
  },
  "payload": {
-  "generated_at": "2026-10-28T22:10:50.070738Z",
-  "published_matches": 127
+  "generated_at": "2026-10-29T04:18:25.766403Z",
+  "published_matches": 126
  },
- "required_future_fixtures": 135,
+ "required_future_fixtures": 134,
  "missing_from_payload": [
   "1079035",
   "1079044",
@@ -169,12 +169,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 212,
-  "lobby_upcoming": 127,
-  "lobby_past_not_priced": 85,
-  "api_upcoming_lol": 135,
+  "lobby_lol_listed": 210,
+  "lobby_upcoming": 126,
+  "lobby_past_not_priced": 84,
+  "api_upcoming_lol": 134,
   "api_excluded": 8,
-  "priced": 127,
+  "priced": 126,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
