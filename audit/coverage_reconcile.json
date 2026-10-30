@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-10-30T04:17:44.633703Z",
+ "generated_at": "2026-10-30T12:07:18.689054Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1331257,
+  "bytes": 1297995,
   "ng_state": true,
   "raw_fixtures": 218,
   "lol_fixtures": 218,
-  "future_lol_fixtures": 132,
-  "already_started": 86,
+  "future_lol_fixtures": 126,
+  "already_started": 92,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 22,
+  "future_without_match_page": 16,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 44,
    "PRM 2nd Division 26-27 Fall": 28,
    "Tunisian Super League 2026": 15,
-   "Predator League Philippines 2027": 12,
    "Halloween Cup 2026": 8,
+   "Predator League Philippines 2027": 6,
    "RIVALS LEAGUE Season 2": 5,
    "Komplettligaen 2026 Autumn Playoffs": 3,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
@@ -33,15 +33,15 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12318
+  "raw_fixtures": 12336
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12318,
-  "lol_fixtures": 1611,
-  "future_lol_fixtures": 140,
-  "already_started": 1471,
+  "raw_fixtures": 12336,
+  "lol_fixtures": 1614,
+  "future_lol_fixtures": 137,
+  "already_started": 1477,
   "future_ids_missing_from_payload": [
    "1079035",
    "1079044",
@@ -50,15 +50,18 @@
    "1079148",
    "1080936",
    "1080941",
-   "1080945"
+   "1080945",
+   "1128817",
+   "1128818",
+   "1128819"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 30,
+  "future_without_match_page": 27,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 44,
    "PRM 2nd Division 26-27 Fall": 32,
    "Tunisian Super League 2026": 18,
-   "Predator League Philippines 2027": 12,
+   "Predator League Philippines 2027": 9,
    "Halloween Cup 2026": 8,
    "RIVALS LEAGUE Season 2": 5,
    "Komplettligaen 2026 Autumn Playoffs": 3,
@@ -73,10 +76,10 @@
   }
  },
  "payload": {
-  "generated_at": "2026-10-30T04:17:44.006296Z",
-  "published_matches": 132
+  "generated_at": "2026-10-30T12:07:17.758894Z",
+  "published_matches": 126
  },
- "required_future_fixtures": 140,
+ "required_future_fixtures": 137,
  "missing_from_payload": [
   "1079035",
   "1079044",
@@ -85,7 +88,10 @@
   "1079148",
   "1080936",
   "1080941",
-  "1080945"
+  "1080945",
+  "1128817",
+  "1128818",
+  "1128819"
  ],
  "excluded_by_pipeline": {
   "1079035": "Hotspawn status is 'cancelled'; not priced",
@@ -95,7 +101,10 @@
   "1079148": "Hotspawn status is 'cancelled'; not priced",
   "1080936": "Hotspawn status is 'cancelled'; not priced",
   "1080941": "Hotspawn status is 'cancelled'; not priced",
-  "1080945": "Hotspawn status is 'cancelled'; not priced"
+  "1080945": "Hotspawn status is 'cancelled'; not priced",
+  "1128817": "Not listed in the Hotspawn lobby; not priced",
+  "1128818": "Not listed in the Hotspawn lobby; not priced",
+  "1128819": "Not listed in the Hotspawn lobby; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -170,15 +179,42 @@
    "start_utc": "2026-11-07T17:00:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1128817",
+   "team1": "Team Jamba Juice",
+   "team2": "Sliang Kavite Telecom",
+   "tournament": "Predator League Philippines 2027",
+   "start_utc": "2026-10-31T06:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1128818",
+   "team1": "Team Jamba Juice",
+   "team2": "Celestials",
+   "tournament": "Predator League Philippines 2027",
+   "start_utc": "2026-10-31T08:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1128819",
+   "team1": "Generation of Miracles",
+   "team2": "Team Jamba Juice",
+   "tournament": "Predator League Philippines 2027",
+   "start_utc": "2026-10-31T10:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
   "lobby_lol_listed": 218,
-  "lobby_upcoming": 132,
-  "lobby_past_not_priced": 86,
-  "api_upcoming_lol": 140,
-  "api_excluded": 8,
-  "priced": 132,
+  "lobby_upcoming": 126,
+  "lobby_past_not_priced": 92,
+  "api_upcoming_lol": 137,
+  "api_excluded": 11,
+  "priced": 126,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
