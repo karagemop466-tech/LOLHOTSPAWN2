@@ -1,28 +1,27 @@
 {
- "generated_at": "2026-10-31T03:58:57.173176Z",
+ "generated_at": "2026-10-31T11:41:02.277300Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1233967,
+  "bytes": 1207575,
   "ng_state": true,
-  "raw_fixtures": 206,
-  "lol_fixtures": 206,
-  "future_lol_fixtures": 121,
-  "already_started": 85,
+  "raw_fixtures": 203,
+  "lol_fixtures": 203,
+  "future_lol_fixtures": 113,
+  "already_started": 90,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 19,
+  "future_without_match_page": 8,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 45,
    "PRM 2nd Division 26-27 Fall": 24,
    "Tunisian Super League 2026": 15,
-   "Predator League Philippines 2027": 9,
    "Halloween Cup 2026": 8,
    "RIVALS LEAGUE Season 2": 5,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
+   "Worlds 2026 Main Event": 3,
    "4 Nations 2026 Halloween Heist": 3,
    "LCP 2027 Promotion": 3,
-   "LCK AS 2026 2nd Championship Playoffs": 2,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
    "Arabian League 2nd Division 2026 Summer": 1,
    "Logitech G SuperStrike Cup": 1
@@ -31,15 +30,15 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12358
+  "raw_fixtures": 12367
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12358,
-  "lol_fixtures": 1615,
-  "future_lol_fixtures": 128,
-  "already_started": 1487,
+  "raw_fixtures": 12367,
+  "lol_fixtures": 1618,
+  "future_lol_fixtures": 120,
+  "already_started": 1498,
   "future_ids_missing_from_payload": [
    "1079044",
    "1079052",
@@ -50,28 +49,27 @@
    "1080945"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 26,
+  "future_without_match_page": 15,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 45,
    "PRM 2nd Division 26-27 Fall": 27,
    "Tunisian Super League 2026": 18,
-   "Predator League Philippines 2027": 9,
    "Halloween Cup 2026": 8,
    "RIVALS LEAGUE Season 2": 5,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 3,
+   "Worlds 2026 Main Event": 3,
    "4 Nations 2026 Halloween Heist": 3,
    "LCP 2027 Promotion": 3,
-   "LCK AS 2026 2nd Championship Playoffs": 2,
    "Arabian League 2nd Division 2026 Summer": 2,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
    "Logitech G SuperStrike Cup": 1
   }
  },
  "payload": {
-  "generated_at": "2026-10-31T03:58:56.405590Z",
-  "published_matches": 121
+  "generated_at": "2026-10-31T11:41:01.431570Z",
+  "published_matches": 113
  },
- "required_future_fixtures": 128,
+ "required_future_fixtures": 120,
  "missing_from_payload": [
   "1079044",
   "1079052",
@@ -157,12 +155,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 206,
-  "lobby_upcoming": 121,
-  "lobby_past_not_priced": 85,
-  "api_upcoming_lol": 128,
+  "lobby_lol_listed": 203,
+  "lobby_upcoming": 113,
+  "lobby_past_not_priced": 90,
+  "api_upcoming_lol": 120,
   "api_excluded": 7,
-  "priced": 121,
+  "priced": 113,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
