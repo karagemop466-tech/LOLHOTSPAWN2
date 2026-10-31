@@ -1,79 +1,73 @@
 {
- "generated_at": "2026-10-31T16:48:56.170379Z",
+ "generated_at": "2026-10-31T20:59:57.247985Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1187675,
+  "bytes": 1038535,
   "ng_state": true,
-  "raw_fixtures": 200,
-  "lol_fixtures": 200,
-  "future_lol_fixtures": 103,
-  "already_started": 97,
+  "raw_fixtures": 193,
+  "lol_fixtures": 193,
+  "future_lol_fixtures": 92,
+  "already_started": 101,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 0,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 45,
+   "PRM 3rd Division 26-27 Fall": 44,
    "PRM 2nd Division 26-27 Fall": 24,
-   "Tunisian Super League 2026": 15,
-   "RIVALS LEAGUE Season 2": 5,
-   "Worlds 2026 Main Event": 3,
+   "Tunisian Super League 2026": 10,
+   "RIVALS LEAGUE Season 2": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "LCP 2027 Promotion": 3,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
-   "Arabian League 2nd Division 2026 Summer": 1,
+   "Worlds 2026 Main Event": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Logitech G SuperStrike Cup": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12371
+  "raw_fixtures": 12374
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12371,
+  "raw_fixtures": 12374,
   "lol_fixtures": 1619,
-  "future_lol_fixtures": 110,
-  "already_started": 1509,
+  "future_lol_fixtures": 97,
+  "already_started": 1522,
   "future_ids_missing_from_payload": [
    "1079044",
    "1079052",
    "1079061",
-   "1079148",
-   "1080936",
    "1080941",
    "1080945"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 7,
+  "future_without_match_page": 5,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 45,
+   "PRM 3rd Division 26-27 Fall": 44,
    "PRM 2nd Division 26-27 Fall": 27,
-   "Tunisian Super League 2026": 18,
-   "RIVALS LEAGUE Season 2": 5,
-   "Worlds 2026 Main Event": 3,
+   "Tunisian Super League 2026": 12,
+   "RIVALS LEAGUE Season 2": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "LCP 2027 Promotion": 3,
-   "Arabian League 2nd Division 2026 Summer": 2,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
+   "Worlds 2026 Main Event": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Logitech G SuperStrike Cup": 1
   }
  },
  "payload": {
-  "generated_at": "2026-10-31T16:48:55.264548Z",
-  "published_matches": 103
+  "generated_at": "2026-10-31T20:59:56.343865Z",
+  "published_matches": 92
  },
- "required_future_fixtures": 110,
+ "required_future_fixtures": 97,
  "missing_from_payload": [
   "1079044",
   "1079052",
   "1079061",
-  "1079148",
-  "1080936",
   "1080941",
   "1080945"
  ],
@@ -81,8 +75,6 @@
   "1079044": "Hotspawn status is 'cancelled'; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
   "1079061": "Hotspawn status is 'cancelled'; not priced",
-  "1079148": "Hotspawn status is 'cancelled'; not priced",
-  "1080936": "Hotspawn status is 'cancelled'; not priced",
   "1080941": "Hotspawn status is 'cancelled'; not priced",
   "1080945": "Hotspawn status is 'cancelled'; not priced"
  },
@@ -116,24 +108,6 @@
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
   {
-   "id": "1079148",
-   "team1": "Void Walkers",
-   "team2": "Victorious Demons",
-   "tournament": "Arabian League 2nd Division 2026 Summer",
-   "start_utc": "2026-10-31T19:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
-   "id": "1080936",
-   "team1": "Simplicity Gaming",
-   "team2": "Jendouba Esports",
-   "tournament": "Tunisian Super League 2026",
-   "start_utc": "2026-10-31T17:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
    "id": "1080941",
    "team1": "Simplicity Gaming",
    "team2": "JSK Esports",
@@ -153,12 +127,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 200,
-  "lobby_upcoming": 103,
-  "lobby_past_not_priced": 97,
-  "api_upcoming_lol": 110,
-  "api_excluded": 7,
-  "priced": 103,
+  "lobby_lol_listed": 193,
+  "lobby_upcoming": 92,
+  "lobby_past_not_priced": 101,
+  "api_upcoming_lol": 97,
+  "api_excluded": 5,
+  "priced": 92,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
