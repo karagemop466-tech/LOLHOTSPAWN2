@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-01T04:15:31.820884Z",
+ "generated_at": "2026-11-01T12:40:04.234569Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1003388,
+  "bytes": 1039935,
   "ng_state": true,
-  "raw_fixtures": 190,
-  "lol_fixtures": 190,
-  "future_lol_fixtures": 91,
+  "raw_fixtures": 194,
+  "lol_fixtures": 194,
+  "future_lol_fixtures": 95,
   "already_started": 99,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
@@ -17,6 +17,7 @@
    "PRM 2nd Division 26-27 Fall": 24,
    "Tunisian Super League 2026": 10,
    "RIVALS LEAGUE Season 2": 4,
+   "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "LCP 2027 Promotion": 3,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
@@ -27,57 +28,99 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12397
+  "raw_fixtures": 12418
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12397,
-  "lol_fixtures": 1619,
-  "future_lol_fixtures": 96,
+  "raw_fixtures": 12418,
+  "lol_fixtures": 1630,
+  "future_lol_fixtures": 107,
   "already_started": 1523,
   "future_ids_missing_from_payload": [
+   "1075748",
+   "1075752",
    "1079044",
    "1079052",
    "1079061",
    "1080941",
-   "1080945"
+   "1080945",
+   "1081093",
+   "1083043",
+   "1084905",
+   "1121701",
+   "1121702"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 5,
+  "future_without_match_page": 12,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 44,
+   "PRM 3rd Division 26-27 Fall": 46,
    "PRM 2nd Division 26-27 Fall": 27,
    "Tunisian Super League 2026": 12,
    "RIVALS LEAGUE Season 2": 4,
+   "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "LCP 2027 Promotion": 3,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 2,
+   "Halloween Cup 2026": 2,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
+   "Komplettligaen 2026 Autumn Playoffs": 1,
    "Logitech G SuperStrike Cup": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-01T04:15:30.913754Z",
-  "published_matches": 91
+  "generated_at": "2026-11-01T12:40:03.531917Z",
+  "published_matches": 95
  },
- "required_future_fixtures": 96,
+ "required_future_fixtures": 107,
  "missing_from_payload": [
+  "1075748",
+  "1075752",
   "1079044",
   "1079052",
   "1079061",
   "1080941",
-  "1080945"
+  "1080945",
+  "1081093",
+  "1083043",
+  "1084905",
+  "1121701",
+  "1121702"
  ],
  "excluded_by_pipeline": {
+  "1075748": "Not listed in the Hotspawn lobby; not priced",
+  "1075752": "Not listed in the Hotspawn lobby; not priced",
   "1079044": "Hotspawn status is 'cancelled'; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
   "1079061": "Hotspawn status is 'cancelled'; not priced",
   "1080941": "Hotspawn status is 'cancelled'; not priced",
-  "1080945": "Hotspawn status is 'cancelled'; not priced"
+  "1080945": "Hotspawn status is 'cancelled'; not priced",
+  "1081093": "Not listed in the Hotspawn lobby; not priced",
+  "1083043": "Not listed in the Hotspawn lobby; not priced",
+  "1084905": "Not listed in the Hotspawn lobby; not priced",
+  "1121701": "Not listed in the Hotspawn lobby; not priced",
+  "1121702": "Not listed in the Hotspawn lobby; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
+  {
+   "id": "1075748",
+   "team1": "AIX eSports",
+   "team2": "MT1 Vision",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "start_utc": "2026-11-06T18:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1075752",
+   "team1": "Defiance eSports",
+   "team2": "REH Gaming",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "start_utc": "2026-11-02T18:30:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
   {
    "id": "1079044",
    "team1": "Hannover Esports e.V.",
@@ -122,15 +165,60 @@
    "start_utc": "2026-11-07T17:00:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1081093",
+   "team1": "Clã NKZ Revengers",
+   "team2": "BaronX",
+   "tournament": "LigaGG CELOL B 2026 Split 2 Playoffs",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1083043",
+   "team1": "Rich Gang",
+   "team2": "Playwell Rød Q",
+   "tournament": "Komplettligaen 2026 Autumn Playoffs",
+   "start_utc": "2026-11-01T15:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1084905",
+   "team1": "Clã NKZ VÓRAX",
+   "team2": "EmBRAZA! Esports",
+   "tournament": "LigaGG CELOL A 2026 Split 2 Playoffs",
+   "start_utc": "2026-11-01T21:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1121701",
+   "team1": "Kawaii Kiwis",
+   "team2": "Movistar KOI Karps",
+   "tournament": "Halloween Cup 2026",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1121702",
+   "team1": "Oxygen Gaming",
+   "team2": "Valkiria's Vikings",
+   "tournament": "Halloween Cup 2026",
+   "start_utc": "2026-11-01T16:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 190,
-  "lobby_upcoming": 91,
+  "lobby_lol_listed": 194,
+  "lobby_upcoming": 95,
   "lobby_past_not_priced": 99,
-  "api_upcoming_lol": 96,
-  "api_excluded": 5,
-  "priced": 91,
+  "api_upcoming_lol": 107,
+  "api_excluded": 12,
+  "priced": 95,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
