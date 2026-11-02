@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-02T04:18:31.994524Z",
+ "generated_at": "2026-11-02T14:44:47.407729Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 899392,
+  "bytes": 925438,
   "ng_state": true,
-  "raw_fixtures": 178,
-  "lol_fixtures": 178,
-  "future_lol_fixtures": 81,
+  "raw_fixtures": 180,
+  "lol_fixtures": 180,
+  "future_lol_fixtures": 83,
   "already_started": 97,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
@@ -18,62 +18,66 @@
    "Tunisian Super League 2026": 5,
    "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 3,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
    "LCK AS 2026 2nd Championship Playoffs": 2,
    "RIVALS LEAGUE Season 2": 1,
-   "Logitech G SuperStrike Cup": 1,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 1
+   "Logitech G SuperStrike Cup": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12433
+  "raw_fixtures": 12443
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12433,
-  "lol_fixtures": 1634,
-  "future_lol_fixtures": 85,
+  "raw_fixtures": 12443,
+  "lol_fixtures": 1637,
+  "future_lol_fixtures": 88,
   "already_started": 1549,
   "future_ids_missing_from_payload": [
    "1079044",
    "1079052",
    "1079061",
-   "1080945"
+   "1080945",
+   "1083044"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 6,
+  "future_without_match_page": 7,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 41,
    "PRM 2nd Division 26-27 Fall": 23,
    "Tunisian Super League 2026": 6,
    "Worlds 2026 Main Event": 4,
    "4 Nations 2026 Halloween Heist": 3,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
    "LCK AS 2026 2nd Championship Playoffs": 2,
    "RIVALS LEAGUE Season 2": 1,
    "Logitech G SuperStrike Cup": 1,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 1
+   "Komplettligaen 2026 Autumn Playoffs": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-02T04:18:31.117884Z",
-  "published_matches": 81
+  "generated_at": "2026-11-02T14:44:46.683224Z",
+  "published_matches": 83
  },
- "required_future_fixtures": 85,
+ "required_future_fixtures": 88,
  "missing_from_payload": [
   "1079044",
   "1079052",
   "1079061",
-  "1080945"
+  "1080945",
+  "1083044"
  ],
  "excluded_by_pipeline": {
   "1079044": "Hotspawn status is 'cancelled'; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
   "1079061": "Hotspawn status is 'cancelled'; not priced",
-  "1080945": "Hotspawn status is 'cancelled'; not priced"
+  "1080945": "Hotspawn status is 'cancelled'; not priced",
+  "1083044": "Not listed in the Hotspawn lobby; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -112,15 +116,24 @@
    "start_utc": "2026-11-07T17:00:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1083044",
+   "team1": "VES Japan",
+   "team2": "Rich Gang",
+   "tournament": "Komplettligaen 2026 Autumn Playoffs",
+   "start_utc": "2026-11-13T14:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 178,
-  "lobby_upcoming": 81,
+  "lobby_lol_listed": 180,
+  "lobby_upcoming": 83,
   "lobby_past_not_priced": 97,
-  "api_upcoming_lol": 85,
-  "api_excluded": 4,
-  "priced": 81,
+  "api_upcoming_lol": 88,
+  "api_excluded": 5,
+  "priced": 83,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
