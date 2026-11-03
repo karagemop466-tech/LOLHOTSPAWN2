@@ -1,56 +1,21 @@
 {
- "generated_at": "2026-11-03T00:30:28.377848Z",
+ "generated_at": "2026-11-03T13:37:29.100703Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 947907,
+  "bytes": 915358,
   "ng_state": true,
-  "raw_fixtures": 178,
-  "lol_fixtures": 178,
-  "future_lol_fixtures": 86,
+  "raw_fixtures": 174,
+  "lol_fixtures": 174,
+  "future_lol_fixtures": 82,
   "already_started": 92,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 2,
+  "future_without_match_page": 0,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 39,
    "PRM 2nd Division 26-27 Fall": 20,
-   "Tunisian Super League 2026": 10,
-   "Worlds 2026 Main Event": 4,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
-   "LCP 2027 Promotion": 3,
-   "4 Nations 2026 Halloween Heist": 2,
-   "LCK AS 2026 2nd Championship Playoffs": 2,
-   "RIVALS LEAGUE Season 2": 1,
-   "Logitech G SuperStrike Cup": 1,
-   "Komplettligaen 2026 Autumn Playoffs": 1
-  }
- },
- "fixtures_api": {
-  "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
-  "http": 200,
-  "raw_fixtures": 12472
- },
- "api": {
-  "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
-  "http": 200,
-  "raw_fixtures": 12472,
-  "lol_fixtures": 1643,
-  "future_lol_fixtures": 91,
-  "already_started": 1552,
-  "future_ids_missing_from_payload": [
-   "1079044",
-   "1079052",
-   "1079061",
-   "1080945",
-   "1081095"
-  ],
-  "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 7,
-  "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 39,
-   "PRM 2nd Division 26-27 Fall": 23,
-   "Tunisian Super League 2026": 11,
+   "Tunisian Super League 2026": 5,
    "Worlds 2026 Main Event": 4,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
@@ -62,24 +27,75 @@
    "Komplettligaen 2026 Autumn Playoffs": 1
   }
  },
- "payload": {
-  "generated_at": "2026-11-03T00:30:26.795670Z",
-  "published_matches": 86
+ "fixtures_api": {
+  "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
+  "http": 200,
+  "raw_fixtures": 12479
  },
- "required_future_fixtures": 91,
+ "api": {
+  "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
+  "http": 200,
+  "raw_fixtures": 12479,
+  "lol_fixtures": 1644,
+  "future_lol_fixtures": 92,
+  "already_started": 1552,
+  "future_ids_missing_from_payload": [
+   "1079044",
+   "1079052",
+   "1079061",
+   "1080943",
+   "1080944",
+   "1080945",
+   "1080946",
+   "1080947",
+   "1081705",
+   "1103263"
+  ],
+  "payload_ids_not_in_this_source": [],
+  "future_without_match_page": 10,
+  "tournaments": {
+   "PRM 3rd Division 26-27 Fall": 39,
+   "PRM 2nd Division 26-27 Fall": 23,
+   "Tunisian Super League 2026": 11,
+   "Worlds 2026 Main Event": 4,
+   "4 Nations 2026 Halloween Heist": 3,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
+   "LCP 2027 Promotion": 3,
+   "LCK AS 2026 2nd Championship Playoffs": 2,
+   "RIVALS LEAGUE Season 2": 1,
+   "Logitech G SuperStrike Cup": 1,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
+   "Komplettligaen 2026 Autumn Playoffs": 1
+  }
+ },
+ "payload": {
+  "generated_at": "2026-11-03T13:37:28.249685Z",
+  "published_matches": 82
+ },
+ "required_future_fixtures": 92,
  "missing_from_payload": [
   "1079044",
   "1079052",
   "1079061",
+  "1080943",
+  "1080944",
   "1080945",
-  "1081095"
+  "1080946",
+  "1080947",
+  "1081705",
+  "1103263"
  ],
  "excluded_by_pipeline": {
   "1079044": "Hotspawn status is 'cancelled'; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
   "1079061": "Hotspawn status is 'cancelled'; not priced",
+  "1080943": "Hotspawn status is 'cancelled'; not priced",
+  "1080944": "Hotspawn status is 'cancelled'; not priced",
   "1080945": "Hotspawn status is 'cancelled'; not priced",
-  "1081095": "Not listed in the Hotspawn lobby; not priced"
+  "1080946": "Hotspawn status is 'cancelled'; not priced",
+  "1080947": "Hotspawn status is 'cancelled'; not priced",
+  "1081705": "Not listed in the Hotspawn lobby; not priced",
+  "1103263": "Hotspawn status is 'cancelled'; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -111,6 +127,24 @@
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
   {
+   "id": "1080943",
+   "team1": "El Menzah Esports",
+   "team2": "Olympique Mnihla",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1080944",
+   "team1": "JSK Academy",
+   "team2": "JSK Esports",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
    "id": "1080945",
    "team1": "Olympique Mnihla Academy",
    "team2": "Simplicity Gaming",
@@ -120,22 +154,49 @@
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
   {
-   "id": "1081095",
-   "team1": "Viktus",
-   "team2": "BaronX",
-   "tournament": "LigaGG CELOL B 2026 Split 2 Playoffs",
-   "start_utc": "2026-11-07T16:00:00Z",
+   "id": "1080946",
+   "team1": "Supreme Leaders",
+   "team2": "Jendouba Esports",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1080947",
+   "team1": "Zahrouni Esports",
+   "team2": "Enfida Esports",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1081705",
+   "team1": "Inari Esports",
+   "team2": "Ruddy Ultras",
+   "tournament": "4 Nations 2026 Halloween Heist",
+   "start_utc": "2026-11-09T19:00:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1103263",
+   "team1": "Olympique Mnihla Academy",
+   "team2": "Simplicity Esports",
+   "tournament": "Tunisian Super League 2026",
+   "start_utc": "2026-11-07T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 178,
-  "lobby_upcoming": 86,
+  "lobby_lol_listed": 174,
+  "lobby_upcoming": 82,
   "lobby_past_not_priced": 92,
-  "api_upcoming_lol": 91,
-  "api_excluded": 5,
-  "priced": 86,
+  "api_upcoming_lol": 92,
+  "api_excluded": 10,
+  "priced": 82,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
