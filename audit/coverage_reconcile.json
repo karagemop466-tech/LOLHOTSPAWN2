@@ -1,28 +1,30 @@
 {
- "generated_at": "2026-11-04T13:47:30.502539Z",
+ "generated_at": "2026-11-04T23:12:35.382041Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 993696,
+  "bytes": 1061191,
   "ng_state": true,
-  "raw_fixtures": 184,
-  "lol_fixtures": 184,
-  "future_lol_fixtures": 93,
-  "already_started": 91,
+  "raw_fixtures": 192,
+  "lol_fixtures": 192,
+  "future_lol_fixtures": 99,
+  "already_started": 93,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 17,
+  "future_without_match_page": 15,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 38,
+   "PRM 3rd Division 26-27 Fall": 37,
    "PRM 2nd Division 26-27 Fall": 16,
    "Predator League Indonesia 2027": 15,
    "Tunisian Super League 2026": 5,
-   "Worlds 2026 Main Event": 3,
+   "Predator League Vietnam 2027": 4,
+   "RIVALS LEAGUE Season 2 Playoffs": 4,
    "4 Nations 2026 Halloween Heist": 3,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
-   "Breeze of Glory 2026": 2,
+   "Worlds 2026 Main Event": 2,
    "LCK AS 2026 2nd Championship Playoffs": 2,
+   "Predator League Philippines 2027": 2,
    "Logitech G SuperStrike Cup": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1
@@ -31,15 +33,15 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12551
+  "raw_fixtures": 12556
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12551,
-  "lol_fixtures": 1671,
-  "future_lol_fixtures": 109,
-  "already_started": 1562,
+  "raw_fixtures": 12556,
+  "lol_fixtures": 1673,
+  "future_lol_fixtures": 107,
+  "already_started": 1566,
   "future_ids_missing_from_payload": [
    "1079052",
    "1079061",
@@ -48,41 +50,33 @@
    "1080945",
    "1080946",
    "1080947",
-   "1082749",
-   "1082750",
-   "1082751",
-   "1082752",
-   "1083141",
-   "1083142",
-   "1083143",
-   "1083144",
    "1103263"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 33,
+  "future_without_match_page": 23,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 38,
+   "PRM 3rd Division 26-27 Fall": 37,
    "PRM 2nd Division 26-27 Fall": 18,
    "Predator League Indonesia 2027": 15,
    "Tunisian Super League 2026": 11,
    "Predator League Vietnam 2027": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
-   "Worlds 2026 Main Event": 3,
    "4 Nations 2026 Halloween Heist": 3,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
-   "Breeze of Glory 2026": 2,
+   "Worlds 2026 Main Event": 2,
    "LCK AS 2026 2nd Championship Playoffs": 2,
+   "Predator League Philippines 2027": 2,
    "Logitech G SuperStrike Cup": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-04T13:47:29.452109Z",
-  "published_matches": 93
+  "generated_at": "2026-11-04T23:12:34.487117Z",
+  "published_matches": 99
  },
- "required_future_fixtures": 109,
+ "required_future_fixtures": 107,
  "missing_from_payload": [
   "1079052",
   "1079061",
@@ -91,14 +85,6 @@
   "1080945",
   "1080946",
   "1080947",
-  "1082749",
-  "1082750",
-  "1082751",
-  "1082752",
-  "1083141",
-  "1083142",
-  "1083143",
-  "1083144",
   "1103263"
  ],
  "excluded_by_pipeline": {
@@ -109,14 +95,6 @@
   "1080945": "Hotspawn status is 'cancelled'; not priced",
   "1080946": "Hotspawn status is 'cancelled'; not priced",
   "1080947": "Hotspawn status is 'cancelled'; not priced",
-  "1082749": "Not listed in the Hotspawn lobby; not priced",
-  "1082750": "Not listed in the Hotspawn lobby; not priced",
-  "1082751": "Not listed in the Hotspawn lobby; not priced",
-  "1082752": "Not listed in the Hotspawn lobby; not priced",
-  "1083141": "Not listed in the Hotspawn lobby; not priced",
-  "1083142": "Not listed in the Hotspawn lobby; not priced",
-  "1083143": "Not listed in the Hotspawn lobby; not priced",
-  "1083144": "Not listed in the Hotspawn lobby; not priced",
   "1103263": "Hotspawn status is 'cancelled'; not priced"
  },
  "unexplained_missing": [],
@@ -185,78 +163,6 @@
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
   },
   {
-   "id": "1082749",
-   "team1": "2 Massive",
-   "team2": "Northern Wolves Esports",
-   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
-   "start_utc": "2026-11-07T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1082750",
-   "team1": "B2U",
-   "team2": "Turbo Gaming",
-   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
-   "start_utc": "2026-11-07T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1082751",
-   "team1": "FlameHard",
-   "team2": "Tung Sahur Mid",
-   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
-   "start_utc": "2026-11-07T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1082752",
-   "team1": "Lund Esports Organization OGs",
-   "team2": "Lundqvist Darkside",
-   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
-   "start_utc": "2026-11-07T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1083141",
-   "team1": "No Turning Back",
-   "team2": "Saigon Warriors",
-   "tournament": "Predator League Vietnam 2027",
-   "start_utc": "2026-11-05T08:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1083142",
-   "team1": "F6 Academy",
-   "team2": "Shiba Team",
-   "tournament": "Predator League Vietnam 2027",
-   "start_utc": "2026-11-05T09:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1083143",
-   "team1": "9Gaming",
-   "team2": "1TAP Dino Red",
-   "tournament": "Predator League Vietnam 2027",
-   "start_utc": "2026-11-05T10:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1083144",
-   "team1": "Sống Bằng Tình Yêu",
-   "team2": "CTB Esports",
-   "tournament": "Predator League Vietnam 2027",
-   "start_utc": "2026-11-05T11:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
    "id": "1103263",
    "team1": "Olympique Mnihla Academy",
    "team2": "Simplicity Esports",
@@ -267,12 +173,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 184,
-  "lobby_upcoming": 93,
-  "lobby_past_not_priced": 91,
-  "api_upcoming_lol": 109,
-  "api_excluded": 16,
-  "priced": 93,
+  "lobby_lol_listed": 192,
+  "lobby_upcoming": 99,
+  "lobby_past_not_priced": 93,
+  "api_upcoming_lol": 107,
+  "api_excluded": 8,
+  "priced": 99,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
