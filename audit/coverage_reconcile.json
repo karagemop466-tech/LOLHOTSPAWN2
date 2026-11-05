@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-04T23:12:35.382041Z",
+ "generated_at": "2026-11-05T05:01:16.292648Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 1061191,
+  "bytes": 1052084,
   "ng_state": true,
-  "raw_fixtures": 192,
-  "lol_fixtures": 192,
+  "raw_fixtures": 191,
+  "lol_fixtures": 191,
   "future_lol_fixtures": 99,
-  "already_started": 93,
+  "already_started": 92,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 15,
@@ -33,12 +33,12 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12556
+  "raw_fixtures": 12564
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12556,
+  "raw_fixtures": 12564,
   "lol_fixtures": 1673,
   "future_lol_fixtures": 107,
   "already_started": 1566,
@@ -73,7 +73,7 @@
   }
  },
  "payload": {
-  "generated_at": "2026-11-04T23:12:34.487117Z",
+  "generated_at": "2026-11-05T05:01:15.330543Z",
   "published_matches": 99
  },
  "required_future_fixtures": 107,
@@ -173,9 +173,9 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 192,
+  "lobby_lol_listed": 191,
   "lobby_upcoming": 99,
-  "lobby_past_not_priced": 93,
+  "lobby_past_not_priced": 92,
   "api_upcoming_lol": 107,
   "api_excluded": 8,
   "priced": 99,
