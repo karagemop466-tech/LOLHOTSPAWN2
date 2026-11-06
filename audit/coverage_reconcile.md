@@ -1,13 +1,13 @@
 # Hotspawn coverage reconciliation
 
-Generated 2026-11-06T13:44:03.197324Z · payload generated 2026-11-06T13:44:02.137912Z
+Generated 2026-11-06T22:42:45.457327Z · payload generated 2026-11-06T22:42:44.847454Z
 
 | Source | HTTP | Raw rows | LoL fixtures | Future LoL | Already started | Future missing from payload |
 |---|---|---|---|---|---|---|
-| lobby | 200 | 191 | 191 | 97 | 94 | 0 |
-| api | 200 | 12602 | 1685 | 107 | 1578 | 10 |
+| lobby | 200 | 188 | 188 | 95 | 93 | 0 |
+| api | 200 | 12608 | 1687 | 103 | 1584 | 8 |
 
-Published payload rows: **97** · required future fixtures (union): **107** · not priced: **10** (documented exclusions: **10**, unexplained: **0**)
+Published payload rows: **95** · required future fixtures (union): **103** · not priced: **8** (documented exclusions: **8**, unexplained: **0**)
 
 ## Fixtures not priced, with the pipeline's reason
 
@@ -20,6 +20,4 @@ Published payload rows: **97** · required future fixtures (union): **107** · n
 | 1080945 | Olympique Mnihla Academy vs Simplicity Gaming | Tunisian Super League 2026 | 2026-11-07T17:00:00Z | Hotspawn status is 'cancelled'; not priced |
 | 1080946 | Supreme Leaders vs Jendouba Esports | Tunisian Super League 2026 | 2026-11-07T17:00:00Z | Hotspawn status is 'cancelled'; not priced |
 | 1080947 | Zahrouni Esports vs Enfida Esports | Tunisian Super League 2026 | 2026-11-07T17:00:00Z | Hotspawn status is 'cancelled'; not priced |
-| 1081706 | Crownless vs PNS | 4 Nations 2026 Halloween Heist | 2026-11-12T19:00:00Z | Not listed in the Hotspawn lobby; not priced |
 | 1103263 | Olympique Mnihla Academy vs Simplicity Esports | Tunisian Super League 2026 | 2026-11-07T17:00:00Z | Hotspawn status is 'cancelled'; not priced |
-| 1130166 | Zena Esports vs Hmble | Breeze of Glory 2026 | 2026-11-15T17:00:00Z | Not listed in the Hotspawn lobby; not priced |
