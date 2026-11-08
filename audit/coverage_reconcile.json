@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-07T21:26:34.452030Z",
+ "generated_at": "2026-11-08T04:20:01.114861Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 926041,
+  "bytes": 904140,
   "ng_state": true,
-  "raw_fixtures": 185,
-  "lol_fixtures": 185,
+  "raw_fixtures": 179,
+  "lol_fixtures": 179,
   "future_lol_fixtures": 83,
-  "already_started": 102,
+  "already_started": 96,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 21,
@@ -19,28 +19,28 @@
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
-   "Worlds 2026 Main Event": 2,
    "Predator League Philippines 2027": 2,
    "Breeze of Glory 2026": 2,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
    "4 Nations 2026 Halloween Heist": 2,
    "LCK AS 2026 2nd Championship Playoffs": 1,
    "Predator League Vietnam 2027": 1,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
+   "Worlds 2026 Main Event": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12655
+  "raw_fixtures": 12680
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12655,
-  "lol_fixtures": 1704,
+  "raw_fixtures": 12680,
+  "lol_fixtures": 1705,
   "future_lol_fixtures": 85,
-  "already_started": 1619,
+  "already_started": 1620,
   "future_ids_missing_from_payload": [
    "1079052",
    "1079061"
@@ -54,18 +54,18 @@
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
-   "Worlds 2026 Main Event": 2,
    "Predator League Philippines 2027": 2,
    "Breeze of Glory 2026": 2,
+   "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
    "4 Nations 2026 Halloween Heist": 2,
    "LCK AS 2026 2nd Championship Playoffs": 1,
    "Predator League Vietnam 2027": 1,
-   "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
+   "Worlds 2026 Main Event": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-07T21:26:33.708717Z",
+  "generated_at": "2026-11-08T04:20:00.308293Z",
   "published_matches": 83
  },
  "required_future_fixtures": 85,
@@ -99,9 +99,9 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 185,
+  "lobby_lol_listed": 179,
   "lobby_upcoming": 83,
-  "lobby_past_not_priced": 102,
+  "lobby_past_not_priced": 96,
   "api_upcoming_lol": 85,
   "api_excluded": 2,
   "priced": 83,

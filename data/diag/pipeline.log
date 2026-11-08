@@ -1,69 +1,69 @@
-[2026-11-07T21:24:49+00:00] hotspawn: 83 future LoL fixtures via fixtures-api+lobby-permalinks (21 without a published match page)
-[2026-11-07T21:24:49+00:00] markets: Pinnacle -> ok (2 records)
-[2026-11-07T21:24:50+00:00] markets: Unibet -> ok (2 records)
-[2026-11-07T21:24:52+00:00] markets: Bovada -> ok (2 records)
-[2026-11-07T21:24:53+00:00] markets: Polymarket -> ok (5 records)
-[2026-11-07T21:24:56+00:00] leaguepedia: 2024-11-07 -> 2025-01-21 got 1760 rows (total 1760)
-[2026-11-07T21:24:58+00:00] leaguepedia: 2025-01-21 -> 2025-04-06 got 4366 rows (total 6126)
-[2026-11-07T21:25:01+00:00] leaguepedia: window 2025-04-06->2025-06-20 hit 5000, splitting
-[2026-11-07T21:25:07+00:00] leaguepedia: 2025-04-06 -> 2025-06-20 got 5108 rows (total 11234)
-[2026-11-07T21:25:09+00:00] leaguepedia: 2025-06-20 -> 2025-09-03 got 4273 rows (total 15507)
-[2026-11-07T21:25:12+00:00] leaguepedia: 2025-09-03 -> 2025-11-17 got 2415 rows (total 17922)
-[2026-11-07T21:25:15+00:00] leaguepedia: 2025-11-17 -> 2026-01-31 got 2412 rows (total 20334)
-[2026-11-07T21:25:17+00:00] leaguepedia: 2026-01-31 -> 2026-04-16 got 4051 rows (total 24385)
-[2026-11-07T21:25:20+00:00] leaguepedia: 2026-04-16 -> 2026-06-30 got 3653 rows (total 28038)
-[2026-11-07T21:25:23+00:00] leaguepedia: 2026-06-30 -> 2026-09-13 got 2852 rows (total 30890)
-[2026-11-07T21:25:25+00:00] leaguepedia: 2026-09-13 -> 2026-11-27 got 1761 rows (total 32651)
-[2026-11-07T21:25:28+00:00] leaguepedia: 2026-11-27 -> 2027-01-06 got 6 rows (total 32657)
-[2026-11-07T21:25:39+00:00] leaguepedia: 31785 results, 218 schedule rows, 10 unscheduled, 2946 standings, 3577 teams
-[2026-11-07T21:25:56+00:00] model: {'fixtures': 83, 'resolved': 73, 'unresolved': 10, 'resolved_pct': 88.0, 'with_external_market': 4, 'with_model': 69, 'with_team_specific_model': 63, 'with_prior_only': 6, 'published_picks': 83, 'both_market_and_model': 4, 'counts_by_method': {'MARKET_CONSENSUS': 2, 'MODEL_ELO': 43, 'MODEL_ELO_STANDINGS': 13, 'MODEL_ELO_THIN': 7, 'UNRESOLVED': 10, 'MODEL_LEAGUE_PRIOR': 6, 'MARKET_SINGLE': 2}}
-[2026-11-07T21:25:56+00:00] probe: Pinnacle (guest JSON) -> HTTP 200 json=True lol=1
-[2026-11-07T21:25:56+00:00] probe: Betfair Exchange -> HTTP 403 json=False lol=None
-[2026-11-07T21:25:56+00:00] probe: Smarkets API (sports index) -> HTTP 404 json=False lol=None
-[2026-11-07T21:25:57+00:00] probe: Betway Esports LoL -> HTTP 404 json=False lol=None
-[2026-11-07T21:25:57+00:00] probe: BetOnline LoL -> HTTP 200 json=False lol=0
-[2026-11-07T21:25:57+00:00] probe: SportsBetting.ag LoL -> HTTP 403 json=False lol=None
-[2026-11-07T21:25:57+00:00] probe: TonyBet LoL -> HTTP 200 json=False lol=0
-[2026-11-07T21:25:58+00:00] probe: Unibet LoL (HTML shell) -> HTTP 404 json=False lol=None
-[2026-11-07T21:25:58+00:00] probe: GG.Bet LoL -> HTTP 403 json=False lol=None
-[2026-11-07T21:25:58+00:00] probe: Thunderpick LoL -> HTTP 403 json=False lol=None
-[2026-11-07T21:26:00+00:00] probe: Rivalry LoL -> HTTP 503 json=False lol=None
-[2026-11-07T21:26:00+00:00] probe: Midnite LoL -> HTTP 200 json=False lol=0
-[2026-11-07T21:26:01+00:00] probe: BC.Game LoL -> HTTP 200 json=False lol=0
-[2026-11-07T21:26:01+00:00] probe: Stake LoL -> HTTP 403 json=False lol=None
-[2026-11-07T21:26:01+00:00] probe: Cloudbet — Prime League 2nd Division (claimed coverage) -> HTTP 200 json=False lol=21
-[2026-11-07T21:26:02+00:00] probe: Cloudbet LoL hub -> HTTP 200 json=False lol=600
-[2026-11-07T21:26:03+00:00] probe: 1xBet line feed (sports index) -> HTTP 203 json=False lol=None
-[2026-11-07T21:26:03+00:00] probe: OddsPapi (API — no key configured) -> HTTP 404 json=False lol=None
-[2026-11-07T21:26:04+00:00] probe: odds-api.io (API — no key configured) -> HTTP 200 json=True lol=0
-[2026-11-07T21:26:05+00:00] probe: PandaScore LoL upcoming (API — no token configured) -> HTTP 403 json=False lol=None
-[2026-11-07T21:26:07+00:00] probe: OddsPortal LoL -> HTTP 200 json=False lol=7
-[2026-11-07T21:26:08+00:00] probe: BetExplorer LoL -> HTTP 404 json=False lol=None
-[2026-11-07T21:26:08+00:00] probe: eGamersWorld LoL odds -> HTTP 403 json=False lol=None
-[2026-11-07T21:26:09+00:00] probe: Betmonitor — Prime League 2nd Division comparison -> HTTP 200 json=False lol=5
-[2026-11-07T21:26:10+00:00] probe: Betmonitor — esports odds hub -> HTTP 200 json=False lol=5
-[2026-11-07T21:26:12+00:00] probe: EsportBet — LoL odds board -> HTTP 200 json=False lol=304
-[2026-11-07T21:26:12+00:00] probe: EsportsBets — LoL betting guide -> HTTP 200 json=False lol=129
-[2026-11-07T21:26:14+00:00] probe: Oddspedia — generic LoL odds path (410 as of 2026-10-24) -> HTTP 410 json=False lol=None
-[2026-11-07T21:26:15+00:00] probe: BMBets — LoL Prime League (book-by-book comparison) -> HTTP 200 json=False lol=1
-[2026-11-07T21:26:16+00:00] probe: Cloudbet — Prime League 2nd Division events -> HTTP 200 json=False lol=21
-[2026-11-07T21:26:16+00:00] probe: Cloudbet sports API (no key configured) -> HTTP 401 json=False lol=None
-[2026-11-07T21:26:18+00:00] probe: bmbets — LoL Prime League 2nd Division -> HTTP 200 json=False lol=1
-[2026-11-07T21:26:20+00:00] probe: esportsinsider — PRM 1st Division odds page -> HTTP 200 json=False lol=41
-[2026-11-07T21:26:24+00:00] probe: Strafe — LoL odds (Oddspedia feed) -> HTTP 200 json=False lol=101
-[2026-11-07T21:26:24+00:00] probe: Cloudbet — LoL hub (competitions listed) -> HTTP 200 json=False lol=600
-[2026-11-07T21:26:24+00:00] probe: Cloudbet — Prime League 2nd Division board -> HTTP 200 json=False lol=21
-[2026-11-07T21:26:26+00:00] probe: OddsPortal — Prime League odds page -> HTTP 200 json=False lol=56
-[2026-11-07T21:26:28+00:00] probe: BMBets — Prime League 2nd Division board -> HTTP 200 json=False lol=1
-[2026-11-07T21:26:28+00:00] probe: Rainbet — LoL sportsbook (geo-restricted) -> HTTP 200 json=False lol=3
-[2026-11-07T21:26:29+00:00] probe: Unibet DE Kambi brand feed (control) -> HTTP 400 json=False lol=None
-[2026-11-07T21:26:29+00:00] probe: Unibet Kambi feed with market=DE (coverage control) -> HTTP 200 json=True lol=6
-[2026-11-07T21:26:29+00:00] probe: Kalshi esports series -> HTTP 200 json=True lol=0
-[2026-11-07T21:26:30+00:00] probe: Manifold Markets LoL search -> HTTP 200 json=True lol=5
-[2026-11-07T21:26:31+00:00] probe: gol.gg tournament index -> HTTP 200 json=False lol=4
-[2026-11-07T21:26:33+00:00] probe: bo3.gg LoL matches -> HTTP 200 json=False lol=137
-[2026-11-07T21:26:33+00:00] probe: Oracle's Elixir downloads (community CSVs) -> HTTP 403 json=False lol=None
-[2026-11-07T21:26:33+00:00] probe: Riot LoLESports official schedule -> HTTP 403 json=False lol=None
-[2026-11-07T21:26:33+00:00] probe: Liquipedia LoL API -> HTTP 200 json=True lol=5
-[2026-11-07T21:26:33+00:00] wrote docs/data/picks.json: {'fixtures': 83, 'next_24h': 26, 'market': 4, 'model': 69, 'standings': 13, 'resolved': 73, 'unresolved': 10, 'low_confidence': 17, 'hotspawn_without_match_page': 21, 'excluded_not_priced': 2}
-[2026-11-07T21:26:33+00:00] preflight: verify_site.py PASS (exit 0) - == PASS · pass 51 · fail 0 · warn 1 · skip 1 ==
+[2026-11-08T04:18:23+00:00] hotspawn: 83 future LoL fixtures via fixtures-api+lobby-permalinks (21 without a published match page)
+[2026-11-08T04:18:24+00:00] markets: Pinnacle -> ok (1 records)
+[2026-11-08T04:18:24+00:00] markets: Unibet -> ok (1 records)
+[2026-11-08T04:18:25+00:00] markets: Bovada -> ok (1 records)
+[2026-11-08T04:18:26+00:00] markets: Polymarket -> ok (5 records)
+[2026-11-08T04:18:28+00:00] leaguepedia: 2024-11-08 -> 2025-01-22 got 1757 rows (total 1757)
+[2026-11-08T04:18:31+00:00] leaguepedia: 2025-01-22 -> 2025-04-07 got 4369 rows (total 6126)
+[2026-11-08T04:18:34+00:00] leaguepedia: window 2025-04-07->2025-06-21 hit 5000, splitting
+[2026-11-08T04:18:39+00:00] leaguepedia: 2025-04-07 -> 2025-06-21 got 5106 rows (total 11232)
+[2026-11-08T04:18:42+00:00] leaguepedia: 2025-06-21 -> 2025-09-04 got 4272 rows (total 15504)
+[2026-11-08T04:18:45+00:00] leaguepedia: 2025-09-04 -> 2025-11-18 got 2430 rows (total 17934)
+[2026-11-08T04:18:47+00:00] leaguepedia: 2025-11-18 -> 2026-02-01 got 2450 rows (total 20384)
+[2026-11-08T04:18:50+00:00] leaguepedia: 2026-02-01 -> 2026-04-17 got 3999 rows (total 24383)
+[2026-11-08T04:18:53+00:00] leaguepedia: 2026-04-17 -> 2026-07-01 got 3652 rows (total 28035)
+[2026-11-08T04:18:56+00:00] leaguepedia: 2026-07-01 -> 2026-09-14 got 2854 rows (total 30889)
+[2026-11-08T04:18:58+00:00] leaguepedia: 2026-09-14 -> 2026-11-28 got 1759 rows (total 32648)
+[2026-11-08T04:19:01+00:00] leaguepedia: 2026-11-28 -> 2027-01-07 got 6 rows (total 32654)
+[2026-11-08T04:19:12+00:00] leaguepedia: 31787 results, 220 schedule rows, 10 unscheduled, 2946 standings, 3577 teams
+[2026-11-08T04:19:27+00:00] model: {'fixtures': 83, 'resolved': 73, 'unresolved': 10, 'resolved_pct': 88.0, 'with_external_market': 3, 'with_model': 70, 'with_team_specific_model': 64, 'with_prior_only': 6, 'published_picks': 83, 'both_market_and_model': 3, 'counts_by_method': {'MODEL_ELO': 44, 'MODEL_ELO_STANDINGS': 13, 'MODEL_ELO_THIN': 7, 'MARKET_CONSENSUS': 1, 'UNRESOLVED': 10, 'MODEL_LEAGUE_PRIOR': 6, 'MARKET_SINGLE': 2}}
+[2026-11-08T04:19:28+00:00] probe: Pinnacle (guest JSON) -> HTTP 200 json=True lol=1
+[2026-11-08T04:19:28+00:00] probe: Betfair Exchange -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:28+00:00] probe: Smarkets API (sports index) -> HTTP 404 json=False lol=None
+[2026-11-08T04:19:28+00:00] probe: Betway Esports LoL -> HTTP 404 json=False lol=None
+[2026-11-08T04:19:29+00:00] probe: BetOnline LoL -> HTTP 200 json=False lol=0
+[2026-11-08T04:19:29+00:00] probe: SportsBetting.ag LoL -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:29+00:00] probe: TonyBet LoL -> HTTP 200 json=False lol=0
+[2026-11-08T04:19:30+00:00] probe: Unibet LoL (HTML shell) -> HTTP 404 json=False lol=None
+[2026-11-08T04:19:30+00:00] probe: GG.Bet LoL -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:30+00:00] probe: Thunderpick LoL -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:32+00:00] probe: Rivalry LoL -> HTTP 503 json=False lol=None
+[2026-11-08T04:19:32+00:00] probe: Midnite LoL -> HTTP 200 json=False lol=0
+[2026-11-08T04:19:33+00:00] probe: BC.Game LoL -> HTTP 200 json=False lol=0
+[2026-11-08T04:19:33+00:00] probe: Stake LoL -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:33+00:00] probe: Cloudbet — Prime League 2nd Division (claimed coverage) -> HTTP 200 json=False lol=21
+[2026-11-08T04:19:34+00:00] probe: Cloudbet LoL hub -> HTTP 200 json=False lol=600
+[2026-11-08T04:19:34+00:00] probe: 1xBet line feed (sports index) -> HTTP 203 json=False lol=None
+[2026-11-08T04:19:35+00:00] probe: OddsPapi (API — no key configured) -> HTTP 404 json=False lol=None
+[2026-11-08T04:19:35+00:00] probe: odds-api.io (API — no key configured) -> HTTP 200 json=True lol=0
+[2026-11-08T04:19:35+00:00] probe: PandaScore LoL upcoming (API — no token configured) -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:37+00:00] probe: OddsPortal LoL -> HTTP 200 json=False lol=7
+[2026-11-08T04:19:37+00:00] probe: BetExplorer LoL -> HTTP 404 json=False lol=None
+[2026-11-08T04:19:38+00:00] probe: eGamersWorld LoL odds -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:39+00:00] probe: Betmonitor — Prime League 2nd Division comparison -> HTTP 200 json=False lol=5
+[2026-11-08T04:19:39+00:00] probe: Betmonitor — esports odds hub -> HTTP 200 json=False lol=5
+[2026-11-08T04:19:42+00:00] probe: EsportBet — LoL odds board -> HTTP 200 json=False lol=299
+[2026-11-08T04:19:42+00:00] probe: EsportsBets — LoL betting guide -> HTTP 200 json=False lol=129
+[2026-11-08T04:19:44+00:00] probe: Oddspedia — generic LoL odds path (410 as of 2026-10-24) -> HTTP 410 json=False lol=None
+[2026-11-08T04:19:46+00:00] probe: BMBets — LoL Prime League (book-by-book comparison) -> HTTP 200 json=False lol=1
+[2026-11-08T04:19:46+00:00] probe: Cloudbet — Prime League 2nd Division events -> HTTP 200 json=False lol=21
+[2026-11-08T04:19:46+00:00] probe: Cloudbet sports API (no key configured) -> HTTP 401 json=False lol=None
+[2026-11-08T04:19:47+00:00] probe: bmbets — LoL Prime League 2nd Division -> HTTP 200 json=False lol=1
+[2026-11-08T04:19:48+00:00] probe: esportsinsider — PRM 1st Division odds page -> HTTP 200 json=False lol=41
+[2026-11-08T04:19:52+00:00] probe: Strafe — LoL odds (Oddspedia feed) -> HTTP 200 json=False lol=101
+[2026-11-08T04:19:53+00:00] probe: Cloudbet — LoL hub (competitions listed) -> HTTP 200 json=False lol=600
+[2026-11-08T04:19:54+00:00] probe: Cloudbet — Prime League 2nd Division board -> HTTP 200 json=False lol=21
+[2026-11-08T04:19:54+00:00] probe: OddsPortal — Prime League odds page -> HTTP 200 json=False lol=56
+[2026-11-08T04:19:55+00:00] probe: BMBets — Prime League 2nd Division board -> HTTP 200 json=False lol=1
+[2026-11-08T04:19:56+00:00] probe: Rainbet — LoL sportsbook (geo-restricted) -> HTTP 200 json=False lol=3
+[2026-11-08T04:19:56+00:00] probe: Unibet DE Kambi brand feed (control) -> HTTP 400 json=False lol=None
+[2026-11-08T04:19:56+00:00] probe: Unibet Kambi feed with market=DE (coverage control) -> HTTP 200 json=True lol=4
+[2026-11-08T04:19:56+00:00] probe: Kalshi esports series -> HTTP 200 json=True lol=0
+[2026-11-08T04:19:56+00:00] probe: Manifold Markets LoL search -> HTTP 200 json=True lol=5
+[2026-11-08T04:19:57+00:00] probe: gol.gg tournament index -> HTTP 200 json=False lol=4
+[2026-11-08T04:19:59+00:00] probe: bo3.gg LoL matches -> HTTP 200 json=False lol=140
+[2026-11-08T04:19:59+00:00] probe: Oracle's Elixir downloads (community CSVs) -> HTTP 403 json=False lol=None
+[2026-11-08T04:19:59+00:00] probe: Riot LoLESports official schedule -> HTTP 403 json=False lol=None
+[2026-11-08T04:20:00+00:00] probe: Liquipedia LoL API -> HTTP 200 json=True lol=5
+[2026-11-08T04:20:00+00:00] wrote docs/data/picks.json: {'fixtures': 83, 'next_24h': 27, 'market': 3, 'model': 70, 'standings': 13, 'resolved': 73, 'unresolved': 10, 'low_confidence': 17, 'hotspawn_without_match_page': 21, 'excluded_not_priced': 2}
+[2026-11-08T04:20:00+00:00] preflight: verify_site.py PASS (exit 0) - == PASS · pass 51 · fail 0 · warn 1 · skip 1 ==
