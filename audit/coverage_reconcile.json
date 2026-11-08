@@ -1,30 +1,29 @@
 {
- "generated_at": "2026-11-08T04:20:01.114861Z",
+ "generated_at": "2026-11-08T12:44:39.836322Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 904140,
+  "bytes": 979172,
   "ng_state": true,
-  "raw_fixtures": 179,
-  "lol_fixtures": 179,
-  "future_lol_fixtures": 83,
-  "already_started": 96,
+  "raw_fixtures": 194,
+  "lol_fixtures": 194,
+  "future_lol_fixtures": 92,
+  "already_started": 102,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 21,
+  "future_without_match_page": 33,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 34,
    "Predator League Indonesia 2027": 15,
    "PRM 2nd Division 26-27 Fall": 12,
+   "LPL Youth Academy 2026": 12,
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
-   "Predator League Philippines 2027": 2,
    "Breeze of Glory 2026": 2,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
    "4 Nations 2026 Halloween Heist": 2,
-   "LCK AS 2026 2nd Championship Playoffs": 1,
-   "Predator League Vietnam 2027": 1,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
    "Worlds 2026 Main Event": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1
   }
@@ -32,53 +31,75 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12680
+  "raw_fixtures": 12780
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12680,
-  "lol_fixtures": 1705,
-  "future_lol_fixtures": 85,
-  "already_started": 1620,
+  "raw_fixtures": 12780,
+  "lol_fixtures": 1803,
+  "future_lol_fixtures": 98,
+  "already_started": 1705,
   "future_ids_missing_from_payload": [
+   "1075775",
    "1079052",
-   "1079061"
+   "1079061",
+   "1130807",
+   "1130918",
+   "1130919"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 23,
+  "future_without_match_page": 39,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 34,
+   "PRM 3rd Division 26-27 Fall": 35,
    "Predator League Indonesia 2027": 15,
    "PRM 2nd Division 26-27 Fall": 14,
+   "LPL Youth Academy 2026": 12,
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 3,
    "LCP 2027 Promotion": 3,
-   "Predator League Philippines 2027": 2,
    "Breeze of Glory 2026": 2,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 2,
    "4 Nations 2026 Halloween Heist": 2,
-   "LCK AS 2026 2nd Championship Playoffs": 1,
-   "Predator League Vietnam 2027": 1,
+   "Asia Esports Championship 2026": 2,
+   "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
+   "Arabian League 2nd Division 2026 Summer Playoffs": 1,
    "Worlds 2026 Main Event": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-08T04:20:00.308293Z",
-  "published_matches": 83
+  "generated_at": "2026-11-08T12:44:39.241091Z",
+  "published_matches": 92
  },
- "required_future_fixtures": 85,
+ "required_future_fixtures": 98,
  "missing_from_payload": [
+  "1075775",
   "1079052",
-  "1079061"
+  "1079061",
+  "1130807",
+  "1130918",
+  "1130919"
  ],
  "excluded_by_pipeline": {
+  "1075775": "Not listed in the Hotspawn lobby; not priced",
   "1079052": "Hotspawn status is 'cancelled'; not priced",
-  "1079061": "Hotspawn status is 'cancelled'; not priced"
+  "1079061": "Hotspawn status is 'cancelled'; not priced",
+  "1130807": "Not listed in the Hotspawn lobby; not priced",
+  "1130918": "Not listed in the Hotspawn lobby; not priced",
+  "1130919": "Not listed in the Hotspawn lobby; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
+  {
+   "id": "1075775",
+   "team1": "Team 300 White",
+   "team2": "Socken und Sandalen",
+   "tournament": "PRM 3rd Division 26-27 Fall",
+   "start_utc": "2026-11-10T18:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
   {
    "id": "1079052",
    "team1": "ex-A41G",
@@ -96,15 +117,42 @@
    "start_utc": "2026-11-15T18:30:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1130807",
+   "team1": "Void Walkers",
+   "team2": "Slam Dunk",
+   "tournament": "Arabian League 2nd Division 2026 Summer Playoffs",
+   "start_utc": "2026-11-08T17:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1130918",
+   "team1": "陰陽四小時",
+   "team2": "Sponge Gaming",
+   "tournament": "Asia Esports Championship 2026",
+   "start_utc": "2026-11-21T05:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1130919",
+   "team1": "KR迎神隊",
+   "team2": "沒有意義",
+   "tournament": "Asia Esports Championship 2026",
+   "start_utc": "2026-11-21T09:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 179,
-  "lobby_upcoming": 83,
-  "lobby_past_not_priced": 96,
-  "api_upcoming_lol": 85,
-  "api_excluded": 2,
-  "priced": 83,
+  "lobby_lol_listed": 194,
+  "lobby_upcoming": 92,
+  "lobby_past_not_priced": 102,
+  "api_upcoming_lol": 98,
+  "api_excluded": 6,
+  "priced": 92,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
