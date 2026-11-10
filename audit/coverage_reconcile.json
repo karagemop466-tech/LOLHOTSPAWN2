@@ -1,27 +1,27 @@
 {
- "generated_at": "2026-11-10T01:10:52.699578Z",
+ "generated_at": "2026-11-10T14:18:40.260058Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 897951,
+  "bytes": 893494,
   "ng_state": true,
-  "raw_fixtures": 176,
-  "lol_fixtures": 176,
-  "future_lol_fixtures": 80,
-  "already_started": 96,
+  "raw_fixtures": 180,
+  "lol_fixtures": 180,
+  "future_lol_fixtures": 73,
+  "already_started": 107,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 8,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 23,
-   "Predator League Indonesia 2027": 12,
-   "LPL Youth Academy 2026": 9,
+   "Predator League Indonesia 2027": 10,
    "PRM 2nd Division 26-27 Fall": 8,
    "Madrid in Game 2026": 8,
+   "LPL Youth Academy 2026": 6,
    "HLL 2026 Super Cup": 4,
-   "LCP 2027 Promotion": 3,
    "RIVALS LEAGUE Season 2 Playoffs": 3,
    "Asia Esports Championship 2026": 2,
+   "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
@@ -35,29 +35,30 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12837
+  "raw_fixtures": 12842
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12837,
-  "lol_fixtures": 1817,
-  "future_lol_fixtures": 81,
-  "already_started": 1736,
+  "raw_fixtures": 12842,
+  "lol_fixtures": 1822,
+  "future_lol_fixtures": 75,
+  "already_started": 1747,
   "future_ids_missing_from_payload": [
-   "1079061"
+   "1079061",
+   "1081424"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 9,
+  "future_without_match_page": 10,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 23,
-   "Predator League Indonesia 2027": 12,
-   "LPL Youth Academy 2026": 9,
+   "Predator League Indonesia 2027": 10,
    "PRM 2nd Division 26-27 Fall": 9,
    "Madrid in Game 2026": 8,
+   "LPL Youth Academy 2026": 6,
    "HLL 2026 Super Cup": 4,
-   "LCP 2027 Promotion": 3,
    "RIVALS LEAGUE Season 2 Playoffs": 3,
+   "LCP 2027 Promotion": 2,
    "Asia Esports Championship 2026": 2,
    "4 Nations 2026 Halloween Heist": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1,
@@ -70,15 +71,17 @@
   }
  },
  "payload": {
-  "generated_at": "2026-11-10T01:10:52.098493Z",
-  "published_matches": 80
+  "generated_at": "2026-11-10T14:18:39.189477Z",
+  "published_matches": 73
  },
- "required_future_fixtures": 81,
+ "required_future_fixtures": 75,
  "missing_from_payload": [
-  "1079061"
+  "1079061",
+  "1081424"
  ],
  "excluded_by_pipeline": {
-  "1079061": "Hotspawn status is 'cancelled'; not priced"
+  "1079061": "Hotspawn status is 'cancelled'; not priced",
+  "1081424": "Not listed in the Hotspawn lobby; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -90,15 +93,24 @@
    "start_utc": "2026-11-15T18:30:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1081424",
+   "team1": "Nothin'Here",
+   "team2": "Saigon Warriors",
+   "tournament": "LCP 2027 Promotion",
+   "start_utc": "2026-11-12T09:00:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 176,
-  "lobby_upcoming": 80,
-  "lobby_past_not_priced": 96,
-  "api_upcoming_lol": 81,
-  "api_excluded": 1,
-  "priced": 80,
+  "lobby_lol_listed": 180,
+  "lobby_upcoming": 73,
+  "lobby_past_not_priced": 107,
+  "api_upcoming_lol": 75,
+  "api_excluded": 2,
+  "priced": 73,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
