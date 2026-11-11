@@ -1,29 +1,29 @@
 {
- "generated_at": "2026-11-11T04:38:00.746525Z",
+ "generated_at": "2026-11-11T13:31:54.376399Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 838653,
+  "bytes": 811624,
   "ng_state": true,
   "raw_fixtures": 170,
   "lol_fixtures": 170,
-  "future_lol_fixtures": 72,
-  "already_started": 98,
+  "future_lol_fixtures": 66,
+  "already_started": 104,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 0,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 20,
-   "Predator League Indonesia 2027": 9,
    "PRM 2nd Division 26-27 Fall": 8,
    "Madrid in Game 2026": 8,
-   "LPL Youth Academy 2026": 6,
+   "Predator League Indonesia 2027": 7,
    "HLL 2026 Super Cup": 4,
-   "LCP 2027 Promotion": 2,
+   "LPL Youth Academy 2026": 3,
    "GG Arena by Teknosa Season 2": 2,
    "Breeze of Glory 2026": 2,
    "RIVALS LEAGUE Season 2 Playoffs": 2,
    "Asia Esports Championship 2026": 2,
+   "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
@@ -36,32 +36,34 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12850
+  "raw_fixtures": 12871
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12850,
-  "lol_fixtures": 1826,
-  "future_lol_fixtures": 73,
-  "already_started": 1753,
+  "raw_fixtures": 12871,
+  "lol_fixtures": 1828,
+  "future_lol_fixtures": 69,
+  "already_started": 1759,
   "future_ids_missing_from_payload": [
-   "1079061"
+   "1079061",
+   "1082753",
+   "1082756"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 1,
+  "future_without_match_page": 3,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 20,
-   "Predator League Indonesia 2027": 9,
    "PRM 2nd Division 26-27 Fall": 9,
    "Madrid in Game 2026": 8,
-   "LPL Youth Academy 2026": 6,
+   "Predator League Indonesia 2027": 7,
    "HLL 2026 Super Cup": 4,
-   "LCP 2027 Promotion": 2,
+   "RIVALS LEAGUE Season 2 Playoffs": 4,
+   "LPL Youth Academy 2026": 3,
    "GG Arena by Teknosa Season 2": 2,
    "Breeze of Glory 2026": 2,
-   "RIVALS LEAGUE Season 2 Playoffs": 2,
    "Asia Esports Championship 2026": 2,
+   "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
@@ -72,15 +74,19 @@
   }
  },
  "payload": {
-  "generated_at": "2026-11-11T04:37:59.469403Z",
-  "published_matches": 72
+  "generated_at": "2026-11-11T13:31:53.420386Z",
+  "published_matches": 66
  },
- "required_future_fixtures": 73,
+ "required_future_fixtures": 69,
  "missing_from_payload": [
-  "1079061"
+  "1079061",
+  "1082753",
+  "1082756"
  ],
  "excluded_by_pipeline": {
-  "1079061": "Hotspawn status is 'cancelled'; not priced"
+  "1079061": "Hotspawn status is 'cancelled'; not priced",
+  "1082753": "Not listed in the Hotspawn lobby; not priced",
+  "1082756": "Not listed in the Hotspawn lobby; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -92,15 +98,33 @@
    "start_utc": "2026-11-15T18:30:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
+  },
+  {
+   "id": "1082753",
+   "team1": "2 Massive",
+   "team2": "B2U",
+   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
+   "start_utc": "2026-11-14T17:30:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
+  },
+  {
+   "id": "1082756",
+   "team1": "Turbo Gaming",
+   "team2": "Northern Wolves Esports",
+   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
+   "start_utc": "2026-11-15T17:30:00Z",
+   "hotspawn_url": null,
+   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
   "lobby_lol_listed": 170,
-  "lobby_upcoming": 72,
-  "lobby_past_not_priced": 98,
-  "api_upcoming_lol": 73,
-  "api_excluded": 1,
-  "priced": 72,
+  "lobby_upcoming": 66,
+  "lobby_past_not_priced": 104,
+  "api_upcoming_lol": 69,
+  "api_excluded": 3,
+  "priced": 66,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
