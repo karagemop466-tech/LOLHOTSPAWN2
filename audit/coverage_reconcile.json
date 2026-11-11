@@ -1,17 +1,17 @@
 {
- "generated_at": "2026-11-10T22:49:45.480230Z",
+ "generated_at": "2026-11-11T04:38:00.746525Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 807127,
+  "bytes": 838653,
   "ng_state": true,
-  "raw_fixtures": 173,
-  "lol_fixtures": 173,
-  "future_lol_fixtures": 69,
-  "already_started": 104,
+  "raw_fixtures": 170,
+  "lol_fixtures": 170,
+  "future_lol_fixtures": 72,
+  "already_started": 98,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 8,
+  "future_without_match_page": 0,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 20,
    "Predator League Indonesia 2027": 9,
@@ -20,6 +20,8 @@
    "LPL Youth Academy 2026": 6,
    "HLL 2026 Super Cup": 4,
    "LCP 2027 Promotion": 2,
+   "GG Arena by Teknosa Season 2": 2,
+   "Breeze of Glory 2026": 2,
    "RIVALS LEAGUE Season 2 Playoffs": 2,
    "Asia Esports Championship 2026": 2,
    "4 Nations 2026 Halloween Heist": 1,
@@ -28,27 +30,26 @@
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
-   "Breeze of Glory 2026": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12844
+  "raw_fixtures": 12850
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12844,
-  "lol_fixtures": 1822,
-  "future_lol_fixtures": 70,
-  "already_started": 1752,
+  "raw_fixtures": 12850,
+  "lol_fixtures": 1826,
+  "future_lol_fixtures": 73,
+  "already_started": 1753,
   "future_ids_missing_from_payload": [
    "1079061"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 9,
+  "future_without_match_page": 1,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 20,
    "Predator League Indonesia 2027": 9,
@@ -57,6 +58,8 @@
    "LPL Youth Academy 2026": 6,
    "HLL 2026 Super Cup": 4,
    "LCP 2027 Promotion": 2,
+   "GG Arena by Teknosa Season 2": 2,
+   "Breeze of Glory 2026": 2,
    "RIVALS LEAGUE Season 2 Playoffs": 2,
    "Asia Esports Championship 2026": 2,
    "4 Nations 2026 Halloween Heist": 1,
@@ -65,15 +68,14 @@
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
-   "Breeze of Glory 2026": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-10T22:49:44.768123Z",
-  "published_matches": 69
+  "generated_at": "2026-11-11T04:37:59.469403Z",
+  "published_matches": 72
  },
- "required_future_fixtures": 70,
+ "required_future_fixtures": 73,
  "missing_from_payload": [
   "1079061"
  ],
@@ -93,12 +95,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 173,
-  "lobby_upcoming": 69,
-  "lobby_past_not_priced": 104,
-  "api_upcoming_lol": 70,
+  "lobby_lol_listed": 170,
+  "lobby_upcoming": 72,
+  "lobby_past_not_priced": 98,
+  "api_upcoming_lol": 73,
   "api_excluded": 1,
-  "priced": 69,
+  "priced": 72,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
