@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-12T00:01:49.168878Z",
+ "generated_at": "2026-11-12T07:00:10.834924Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 767569,
+  "bytes": 745275,
   "ng_state": true,
-  "raw_fixtures": 166,
-  "lol_fixtures": 166,
-  "future_lol_fixtures": 63,
-  "already_started": 103,
+  "raw_fixtures": 160,
+  "lol_fixtures": 160,
+  "future_lol_fixtures": 61,
+  "already_started": 99,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 0,
@@ -19,10 +19,9 @@
    "Predator League Indonesia 2027": 6,
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
-   "LPL Youth Academy 2026": 3,
+   "LPL Youth Academy 2026": 2,
    "Tunisian Super League 2026": 2,
    "Asia Esports Championship 2026": 2,
-   "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
@@ -36,15 +35,15 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12884
+  "raw_fixtures": 12912
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12884,
+  "raw_fixtures": 12912,
   "lol_fixtures": 1830,
-  "future_lol_fixtures": 64,
-  "already_started": 1766,
+  "future_lol_fixtures": 62,
+  "already_started": 1768,
   "future_ids_missing_from_payload": [
    "1079061"
   ],
@@ -57,10 +56,9 @@
    "Predator League Indonesia 2027": 6,
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
-   "LPL Youth Academy 2026": 3,
+   "LPL Youth Academy 2026": 2,
    "Tunisian Super League 2026": 2,
    "Asia Esports Championship 2026": 2,
-   "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Komplettligaen 2026 Autumn Playoffs": 1,
    "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
@@ -72,10 +70,10 @@
   }
  },
  "payload": {
-  "generated_at": "2026-11-12T00:01:47.726577Z",
-  "published_matches": 63
+  "generated_at": "2026-11-12T07:00:09.933384Z",
+  "published_matches": 61
  },
- "required_future_fixtures": 64,
+ "required_future_fixtures": 62,
  "missing_from_payload": [
   "1079061"
  ],
@@ -95,20 +93,14 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 166,
-  "lobby_upcoming": 63,
-  "lobby_past_not_priced": 103,
-  "api_upcoming_lol": 64,
+  "lobby_lol_listed": 160,
+  "lobby_upcoming": 61,
+  "lobby_past_not_priced": 99,
+  "api_upcoming_lol": 62,
   "api_excluded": 1,
-  "priced": 63,
-  "lobby_only_in_union": [
-   "1132384",
-   "1132385"
-  ],
-  "lobby_only_priced": [
-   "1132384",
-   "1132385"
-  ],
+  "priced": 61,
+  "lobby_only_in_union": [],
+  "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
   "priced_not_in_lobby": [],
   "rule": "Priced = every upcoming LoL fixture listed in the Hotspawn lobby with status 'scheduled', taking the union of the lobby transfer state and the fixtures API (a fixture the lobby lists but the API lags on is priced from the lobby row)."

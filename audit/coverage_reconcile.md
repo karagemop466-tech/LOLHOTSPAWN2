@@ -1,13 +1,13 @@
 # Hotspawn coverage reconciliation
 
-Generated 2026-11-12T00:01:49.168878Z · payload generated 2026-11-12T00:01:47.726577Z
+Generated 2026-11-12T07:00:10.834924Z · payload generated 2026-11-12T07:00:09.933384Z
 
 | Source | HTTP | Raw rows | LoL fixtures | Future LoL | Already started | Future missing from payload |
 |---|---|---|---|---|---|---|
-| lobby | 200 | 166 | 166 | 63 | 103 | 0 |
-| api | 200 | 12884 | 1830 | 64 | 1766 | 1 |
+| lobby | 200 | 160 | 160 | 61 | 99 | 0 |
+| api | 200 | 12912 | 1830 | 62 | 1768 | 1 |
 
-Published payload rows: **63** · required future fixtures (union): **64** · not priced: **1** (documented exclusions: **1**, unexplained: **0**)
+Published payload rows: **61** · required future fixtures (union): **62** · not priced: **1** (documented exclusions: **1**, unexplained: **0**)
 
 ## Fixtures not priced, with the pipeline's reason
 
