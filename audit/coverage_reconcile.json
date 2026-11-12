@@ -1,27 +1,26 @@
 {
- "generated_at": "2026-11-11T13:31:54.376399Z",
+ "generated_at": "2026-11-12T00:01:49.168878Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 811624,
+  "bytes": 767569,
   "ng_state": true,
-  "raw_fixtures": 170,
-  "lol_fixtures": 170,
-  "future_lol_fixtures": 66,
-  "already_started": 104,
+  "raw_fixtures": 166,
+  "lol_fixtures": 166,
+  "future_lol_fixtures": 63,
+  "already_started": 103,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
   "future_without_match_page": 0,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 20,
+   "PRM 3rd Division 26-27 Fall": 17,
    "PRM 2nd Division 26-27 Fall": 8,
    "Madrid in Game 2026": 8,
-   "Predator League Indonesia 2027": 7,
+   "Predator League Indonesia 2027": 6,
    "HLL 2026 Super Cup": 4,
+   "RIVALS LEAGUE Season 2 Playoffs": 4,
    "LPL Youth Academy 2026": 3,
-   "GG Arena by Teknosa Season 2": 2,
-   "Breeze of Glory 2026": 2,
-   "RIVALS LEAGUE Season 2 Playoffs": 2,
+   "Tunisian Super League 2026": 2,
    "Asia Esports Championship 2026": 2,
    "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
@@ -30,38 +29,36 @@
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
+   "Breeze of Glory 2026": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12871
+  "raw_fixtures": 12884
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12871,
-  "lol_fixtures": 1828,
-  "future_lol_fixtures": 69,
-  "already_started": 1759,
+  "raw_fixtures": 12884,
+  "lol_fixtures": 1830,
+  "future_lol_fixtures": 64,
+  "already_started": 1766,
   "future_ids_missing_from_payload": [
-   "1079061",
-   "1082753",
-   "1082756"
+   "1079061"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 3,
+  "future_without_match_page": 1,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 20,
+   "PRM 3rd Division 26-27 Fall": 17,
    "PRM 2nd Division 26-27 Fall": 9,
    "Madrid in Game 2026": 8,
-   "Predator League Indonesia 2027": 7,
+   "Predator League Indonesia 2027": 6,
    "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
    "LPL Youth Academy 2026": 3,
-   "GG Arena by Teknosa Season 2": 2,
-   "Breeze of Glory 2026": 2,
+   "Tunisian Super League 2026": 2,
    "Asia Esports Championship 2026": 2,
    "LCP 2027 Promotion": 1,
    "4 Nations 2026 Halloween Heist": 1,
@@ -70,23 +67,20 @@
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
+   "Breeze of Glory 2026": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-11T13:31:53.420386Z",
-  "published_matches": 66
+  "generated_at": "2026-11-12T00:01:47.726577Z",
+  "published_matches": 63
  },
- "required_future_fixtures": 69,
+ "required_future_fixtures": 64,
  "missing_from_payload": [
-  "1079061",
-  "1082753",
-  "1082756"
+  "1079061"
  ],
  "excluded_by_pipeline": {
-  "1079061": "Hotspawn status is 'cancelled'; not priced",
-  "1082753": "Not listed in the Hotspawn lobby; not priced",
-  "1082756": "Not listed in the Hotspawn lobby; not priced"
+  "1079061": "Hotspawn status is 'cancelled'; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -98,35 +92,23 @@
    "start_utc": "2026-11-15T18:30:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
-   "id": "1082753",
-   "team1": "2 Massive",
-   "team2": "B2U",
-   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
-   "start_utc": "2026-11-14T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1082756",
-   "team1": "Turbo Gaming",
-   "team2": "Northern Wolves Esports",
-   "tournament": "RIVALS LEAGUE Season 2 Playoffs",
-   "start_utc": "2026-11-15T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 170,
-  "lobby_upcoming": 66,
-  "lobby_past_not_priced": 104,
-  "api_upcoming_lol": 69,
-  "api_excluded": 3,
-  "priced": 66,
-  "lobby_only_in_union": [],
-  "lobby_only_priced": [],
+  "lobby_lol_listed": 166,
+  "lobby_upcoming": 63,
+  "lobby_past_not_priced": 103,
+  "api_upcoming_lol": 64,
+  "api_excluded": 1,
+  "priced": 63,
+  "lobby_only_in_union": [
+   "1132384",
+   "1132385"
+  ],
+  "lobby_only_priced": [
+   "1132384",
+   "1132385"
+  ],
   "lobby_upcoming_missing_from_priced": [],
   "priced_not_in_lobby": [],
   "rule": "Priced = every upcoming LoL fixture listed in the Hotspawn lobby with status 'scheduled', taking the union of the lobby transfer state and the fixtures API (a fixture the lobby lists but the API lags on is priced from the lobby row)."
