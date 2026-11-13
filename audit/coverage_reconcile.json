@@ -1,25 +1,25 @@
 {
- "generated_at": "2026-11-12T19:32:07.377095Z",
+ "generated_at": "2026-11-13T04:58:35.563040Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 745178,
+  "bytes": 740395,
   "ng_state": true,
-  "raw_fixtures": 159,
-  "lol_fixtures": 159,
-  "future_lol_fixtures": 62,
-  "already_started": 97,
+  "raw_fixtures": 156,
+  "lol_fixtures": 156,
+  "future_lol_fixtures": 61,
+  "already_started": 95,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 5,
+  "future_without_match_page": 0,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 16,
    "PRM 2nd Division 26-27 Fall": 8,
    "Madrid in Game 2026": 8,
    "Red Bull League of Its Own 2026": 5,
    "Predator League Indonesia 2027": 4,
-   "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
+   "HLL 2026 Super Cup": 3,
    "Tunisian Super League 2026": 2,
    "Breeze of Glory 2026": 2,
    "Asia Esports Championship 2026": 2,
@@ -35,28 +35,28 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12920
+  "raw_fixtures": 12938
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12920,
+  "raw_fixtures": 12938,
   "lol_fixtures": 1837,
-  "future_lol_fixtures": 63,
-  "already_started": 1774,
+  "future_lol_fixtures": 62,
+  "already_started": 1775,
   "future_ids_missing_from_payload": [
    "1079061"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 6,
+  "future_without_match_page": 1,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 16,
    "PRM 2nd Division 26-27 Fall": 9,
    "Madrid in Game 2026": 8,
    "Red Bull League of Its Own 2026": 5,
    "Predator League Indonesia 2027": 4,
-   "HLL 2026 Super Cup": 4,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
+   "HLL 2026 Super Cup": 3,
    "Tunisian Super League 2026": 2,
    "Breeze of Glory 2026": 2,
    "Asia Esports Championship 2026": 2,
@@ -70,10 +70,10 @@
   }
  },
  "payload": {
-  "generated_at": "2026-11-12T19:32:06.333991Z",
-  "published_matches": 62
+  "generated_at": "2026-11-13T04:58:34.633842Z",
+  "published_matches": 61
  },
- "required_future_fixtures": 63,
+ "required_future_fixtures": 62,
  "missing_from_payload": [
   "1079061"
  ],
@@ -93,12 +93,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 159,
-  "lobby_upcoming": 62,
-  "lobby_past_not_priced": 97,
-  "api_upcoming_lol": 63,
+  "lobby_lol_listed": 156,
+  "lobby_upcoming": 61,
+  "lobby_past_not_priced": 95,
+  "api_upcoming_lol": 62,
   "api_excluded": 1,
-  "priced": 62,
+  "priced": 61,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
