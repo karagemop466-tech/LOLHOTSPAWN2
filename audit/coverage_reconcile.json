@@ -1,93 +1,82 @@
 {
- "generated_at": "2026-11-13T13:54:37.125388Z",
+ "generated_at": "2026-11-13T23:15:04.040856Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 731645,
+  "bytes": 663415,
   "ng_state": true,
-  "raw_fixtures": 156,
-  "lol_fixtures": 156,
-  "future_lol_fixtures": 59,
-  "already_started": 97,
+  "raw_fixtures": 155,
+  "lol_fixtures": 155,
+  "future_lol_fixtures": 52,
+  "already_started": 103,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 0,
+  "future_without_match_page": 2,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 16,
-   "PRM 2nd Division 26-27 Fall": 8,
+   "PRM 3rd Division 26-27 Fall": 15,
    "Madrid in Game 2026": 8,
    "Red Bull League of Its Own 2026": 5,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
-   "Predator League Indonesia 2027": 3,
-   "HLL 2026 Super Cup": 3,
+   "PRM 2nd Division 26-27 Fall": 4,
+   "Predator League Indonesia 2027": 2,
    "Tunisian Super League 2026": 2,
    "Breeze of Glory 2026": 2,
+   "GG Arena by Teknosa Season 2": 2,
    "Asia Esports Championship 2026": 2,
-   "Komplettligaen 2026 Autumn Playoffs": 1,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
+   "HLL 2026 Super Cup": 1,
+   "4 Nations 2026 Halloween Heist": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12959
+  "raw_fixtures": 12960
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12959,
+  "raw_fixtures": 12960,
   "lol_fixtures": 1840,
-  "future_lol_fixtures": 63,
-  "already_started": 1777,
+  "future_lol_fixtures": 53,
+  "already_started": 1787,
   "future_ids_missing_from_payload": [
-   "1079061",
-   "1081707",
-   "1132746",
-   "1132747"
+   "1079061"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 4,
+  "future_without_match_page": 3,
   "tournaments": {
-   "PRM 3rd Division 26-27 Fall": 16,
-   "PRM 2nd Division 26-27 Fall": 9,
+   "PRM 3rd Division 26-27 Fall": 15,
    "Madrid in Game 2026": 8,
+   "PRM 2nd Division 26-27 Fall": 5,
    "Red Bull League of Its Own 2026": 5,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
-   "Predator League Indonesia 2027": 3,
-   "HLL 2026 Super Cup": 3,
+   "Predator League Indonesia 2027": 2,
    "Tunisian Super League 2026": 2,
    "Breeze of Glory 2026": 2,
    "GG Arena by Teknosa Season 2": 2,
    "Asia Esports Championship 2026": 2,
-   "Komplettligaen 2026 Autumn Playoffs": 1,
-   "LigaGG CELOL B 2026 Split 2 Playoffs": 1,
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
+   "HLL 2026 Super Cup": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-13T13:54:36.239742Z",
-  "published_matches": 59
+  "generated_at": "2026-11-13T23:15:03.313678Z",
+  "published_matches": 52
  },
- "required_future_fixtures": 63,
+ "required_future_fixtures": 53,
  "missing_from_payload": [
-  "1079061",
-  "1081707",
-  "1132746",
-  "1132747"
+  "1079061"
  ],
  "excluded_by_pipeline": {
-  "1079061": "Hotspawn status is 'cancelled'; not priced",
-  "1081707": "Not listed in the Hotspawn lobby; not priced",
-  "1132746": "Not listed in the Hotspawn lobby; not priced",
-  "1132747": "Not listed in the Hotspawn lobby; not priced"
+  "1079061": "Hotspawn status is 'cancelled'; not priced"
  },
  "unexplained_missing": [],
  "missing_detail": [
@@ -99,42 +88,15 @@
    "start_utc": "2026-11-15T18:30:00Z",
    "hotspawn_url": null,
    "exclusion_reason": "Hotspawn status is 'cancelled'; not priced"
-  },
-  {
-   "id": "1081707",
-   "team1": "Inari Esports",
-   "team2": "Crownless",
-   "tournament": "4 Nations 2026 Halloween Heist",
-   "start_utc": "2026-11-16T19:00:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1132746",
-   "team1": "Balta Esports",
-   "team2": "Çakıl",
-   "tournament": "GG Arena by Teknosa Season 2",
-   "start_utc": "2026-11-16T14:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
-  },
-  {
-   "id": "1132747",
-   "team1": "PCIFIC Esports",
-   "team2": "SU Esports",
-   "tournament": "GG Arena by Teknosa Season 2",
-   "start_utc": "2026-11-16T17:30:00Z",
-   "hotspawn_url": null,
-   "exclusion_reason": "Not listed in the Hotspawn lobby; not priced"
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 156,
-  "lobby_upcoming": 59,
-  "lobby_past_not_priced": 97,
-  "api_upcoming_lol": 63,
-  "api_excluded": 4,
-  "priced": 59,
+  "lobby_lol_listed": 155,
+  "lobby_upcoming": 52,
+  "lobby_past_not_priced": 103,
+  "api_upcoming_lol": 53,
+  "api_excluded": 1,
+  "priced": 52,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
