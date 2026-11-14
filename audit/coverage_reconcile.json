@@ -1,23 +1,24 @@
 {
- "generated_at": "2026-11-13T23:15:04.040856Z",
+ "generated_at": "2026-11-14T04:52:03.300360Z",
  "lobby": {
   "url": "https://play.hotspawn.com/lol-pickems",
   "http": 200,
-  "bytes": 663415,
+  "bytes": 675248,
   "ng_state": true,
-  "raw_fixtures": 155,
-  "lol_fixtures": 155,
-  "future_lol_fixtures": 52,
-  "already_started": 103,
+  "raw_fixtures": 149,
+  "lol_fixtures": 149,
+  "future_lol_fixtures": 54,
+  "already_started": 95,
   "future_ids_missing_from_payload": [],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 2,
+  "future_without_match_page": 0,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 15,
    "Madrid in Game 2026": 8,
    "Red Bull League of Its Own 2026": 5,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
    "PRM 2nd Division 26-27 Fall": 4,
+   "HLL 2026 Super Cup": 3,
    "Predator League Indonesia 2027": 2,
    "Tunisian Super League 2026": 2,
    "Breeze of Glory 2026": 2,
@@ -26,7 +27,6 @@
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
-   "HLL 2026 Super Cup": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Predator League Philippines 2027": 1
   }
@@ -34,26 +34,27 @@
  "fixtures_api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12960
+  "raw_fixtures": 12990
  },
  "api": {
   "url": "https://phpstack-1372681-6459848.cloudwaysapps.com/api/v1/fixtures",
   "http": 200,
-  "raw_fixtures": 12960,
-  "lol_fixtures": 1840,
-  "future_lol_fixtures": 53,
+  "raw_fixtures": 12990,
+  "lol_fixtures": 1842,
+  "future_lol_fixtures": 55,
   "already_started": 1787,
   "future_ids_missing_from_payload": [
    "1079061"
   ],
   "payload_ids_not_in_this_source": [],
-  "future_without_match_page": 3,
+  "future_without_match_page": 1,
   "tournaments": {
    "PRM 3rd Division 26-27 Fall": 15,
    "Madrid in Game 2026": 8,
    "PRM 2nd Division 26-27 Fall": 5,
    "Red Bull League of Its Own 2026": 5,
    "RIVALS LEAGUE Season 2 Playoffs": 4,
+   "HLL 2026 Super Cup": 3,
    "Predator League Indonesia 2027": 2,
    "Tunisian Super League 2026": 2,
    "Breeze of Glory 2026": 2,
@@ -62,16 +63,15 @@
    "Worlds 2026 Main Event": 1,
    "LigaGG CELOL A 2026 Split 2 Playoffs": 1,
    "Predator League Vietnam 2027": 1,
-   "HLL 2026 Super Cup": 1,
    "4 Nations 2026 Halloween Heist": 1,
    "Predator League Philippines 2027": 1
   }
  },
  "payload": {
-  "generated_at": "2026-11-13T23:15:03.313678Z",
-  "published_matches": 52
+  "generated_at": "2026-11-14T04:52:02.423953Z",
+  "published_matches": 54
  },
- "required_future_fixtures": 53,
+ "required_future_fixtures": 55,
  "missing_from_payload": [
   "1079061"
  ],
@@ -91,12 +91,12 @@
   }
  ],
  "pipeline_reconciliation": {
-  "lobby_lol_listed": 155,
-  "lobby_upcoming": 52,
-  "lobby_past_not_priced": 103,
-  "api_upcoming_lol": 53,
+  "lobby_lol_listed": 149,
+  "lobby_upcoming": 54,
+  "lobby_past_not_priced": 95,
+  "api_upcoming_lol": 55,
   "api_excluded": 1,
-  "priced": 52,
+  "priced": 54,
   "lobby_only_in_union": [],
   "lobby_only_priced": [],
   "lobby_upcoming_missing_from_priced": [],
