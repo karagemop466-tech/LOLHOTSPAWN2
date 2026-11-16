@@ -1,1 +1,1 @@
-Hotspawn fixture fetch failed: api={'status': 500, 'error': 'fixtures API unusable'} lobby={'status': 200, 'error': 'fixtures payload missing from ng-state'}
+Only 27 future LoL fixtures parsed - refusing to overwrite good data
